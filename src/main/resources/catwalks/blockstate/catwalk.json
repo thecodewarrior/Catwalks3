@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "normal": {"model": "catwalks:catwalkModel"},
+    "inventory": {"model": "catwalks:catwalkModel"}
+  }
+}

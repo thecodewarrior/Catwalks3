@@ -1,4 +1,4 @@
-package catwalks.render;
+package catwalks.renderOld;
 
 import java.io.IOException;
 import java.util.HashMap;

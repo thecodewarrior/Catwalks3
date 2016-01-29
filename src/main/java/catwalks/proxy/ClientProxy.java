@@ -1,14 +1,6 @@
 package catwalks.proxy;
 
-import catwalks.CatwalksMod;
 import catwalks.register.BlockRegister;
-import catwalks.render.CatwalkModel;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientProxy extends CommonProxy {
 //	
