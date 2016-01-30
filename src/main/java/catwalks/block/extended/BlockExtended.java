@@ -16,7 +16,7 @@ public abstract class BlockExtended extends BlockBase {
 	
 	@Override
 	public TileEntity createTileEntity(World world, IBlockState state) {
-		return new TileExtended(getData(world, state));
+		return new TileExtended();
 	}
 	
 	@Override

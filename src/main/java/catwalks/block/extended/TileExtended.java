@@ -11,11 +11,9 @@ import net.minecraft.tileentity.TileEntity;
 public class TileExtended extends TileEntity {
 
 	public long meta;
-	public ExtendedData data;
+	public ExtendedData data; // unused for now
 	
-	public TileExtended(ExtendedData data) {
-		this.data = data;
-	}
+	public TileExtended() {}
 	
 	public boolean getBoolean(int id) {
 		return ( meta & (0x1 << id) ) != 0;
@@ -27,10 +25,12 @@ public class TileExtended extends TileEntity {
 		} else {
 			meta = meta & ~(1 << id);
 		}
+		this.markDirty();
 	}
 	
 	@Override
 	public void writeToNBT(NBTTagCompound compound) {
+		super.writeToNBT(compound);
 		compound.setLong("m", meta);
 		PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
 		if(data != null) {
@@ -41,6 +41,7 @@ public class TileExtended extends TileEntity {
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
+		super.readFromNBT(compound);
 		meta = compound.getLong("m");
 		byte[] array = compound.getByteArray("d");
 		PacketBuffer buf = new PacketBuffer(Unpooled.wrappedBuffer(array));

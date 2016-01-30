@@ -63,18 +63,18 @@ public class ModelUtils {
     		break;
     	case UP:
     		twoFace(quads, sprite,
-        		new Vec3(0, 1, 0),
-        		new Vec3(1, 1, 0),
+            	new Vec3(0, 1, 0),
+        		new Vec3(0, 1, 1),
         		new Vec3(1, 1, 1),
-        		new Vec3(0, 1, 1)
+        		new Vec3(1, 1, 0)
         	);
     		break;
     	case NORTH:
     		twoFace(quads, sprite,
-            		new Vec3(0, 1, 0),
-    			new Vec3(0, 0, 0),
-        		new Vec3(1, 0, 0),
-        		new Vec3(1, 1, 0)
+    			new Vec3(1, 1, 0),
+            	new Vec3(1, 0, 0),
+        		new Vec3(0, 0, 0),
+    			new Vec3(0, 1, 0)
         	);
     		break;
     	case SOUTH:
@@ -87,10 +87,10 @@ public class ModelUtils {
     		break;
     	case EAST:
     		twoFace(quads, sprite,
-    			new Vec3(0, 1, 1),
-            	new Vec3(0, 0, 1),
+        		new Vec3(0, 1, 0),
             	new Vec3(0, 0, 0),
-        		new Vec3(0, 1, 0)
+            	new Vec3(0, 0, 1),
+    			new Vec3(0, 1, 1)
         	);
     		break;
     	case WEST:

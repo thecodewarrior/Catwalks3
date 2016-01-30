@@ -2,10 +2,12 @@ package catwalks.register;
 
 import catwalks.CatwalksMod;
 import catwalks.block.BlockCatwalk;
+import catwalks.block.extended.TileExtended;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -15,6 +17,7 @@ public class BlockRegister {
 	
 	
 	public static void register() {
+		GameRegistry.registerTileEntity(TileExtended.class, "tileExtended");
 		catwalk = new BlockCatwalk();
 	}
 	
