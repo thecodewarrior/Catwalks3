@@ -1,6 +1,8 @@
 package catwalks.proxy;
 
 import catwalks.register.BlockRegister;
+import catwalks.render.ModelLoaderCatwalksMod;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 
 public class ClientProxy extends CommonProxy {
 //	
@@ -36,6 +38,7 @@ public class ClientProxy extends CommonProxy {
 //    }
 	
 	public void preInit() {
+		ModelLoaderRegistry.registerLoader(ModelLoaderCatwalksMod.instance);
 		BlockRegister.initRender();
 	}
 	
