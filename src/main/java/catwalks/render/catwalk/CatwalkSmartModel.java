@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
+import catwalks.CatwalksMod;
 import catwalks.block.BlockCatwalk;
 import catwalks.render.BakedModelBase;
 import catwalks.render.ModelUtils;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 public class CatwalkSmartModel extends SmartModelBase {
@@ -49,8 +51,8 @@ public class CatwalkSmartModel extends SmartModelBase {
         private boolean down;
 		
 		public Model() {
-			side = ModelUtils.getSprite( CatwalkModel.TEXTURE_SHEET );
-			bottom = ModelUtils.getSprite( CatwalkModel.TEXTURE_SHEET );
+			side = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side_tl") );
+			bottom = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side") );
 		}
 		
 		public Model(boolean down, boolean north, boolean south, boolean west, boolean east) {

@@ -7,6 +7,7 @@ import com.google.common.primitives.Ints;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
@@ -15,10 +16,12 @@ import net.minecraftforge.client.model.pipeline.LightUtil;
 public class ModelUtils {
 	
 	public static TextureAtlasSprite getSprite(ResourceLocation location) {
-		if(Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry(location.toString()) == null) {
+		TextureMap map = Minecraft.getMinecraft().getTextureMapBlocks();
+		if(map.getTextureExtry(location.toString()) == null) {
 			int i = 0; // breakpoint here to test for non-registered texture vs. not found texture.
+			i = i+1-1;
 		}
-		return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
+		return map.getAtlasSprite(location.toString());
 	}
 	
     public static int[] vertexToInts(double x, double y, double z, float u, float v, TextureAtlasSprite sprite) {

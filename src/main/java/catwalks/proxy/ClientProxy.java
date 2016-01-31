@@ -1,46 +1,54 @@
 package catwalks.proxy;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import catwalks.CatwalksMod;
 import catwalks.register.BlockRegister;
-import catwalks.render.ModelLoaderCatwalksMod;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
+import catwalks.render.catwalk.CatwalkSmartModel;
+import catwalks.texture.TextureGenerator;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientProxy extends CommonProxy {
 //	
 //	List<String>
 //	
-//	@SubscribeEvent
-//    // Allows us to add entries for our icons
-//    public void textureStitch(TextureStitchEvent.Pre event) {
-//		
-//        icons = new TextureAtlasSprite[BlockDenseOre.maxMetdata];
-//
-//        TextureMap textureMap = event.map;
-//
-//        for (DenseOre entry : DenseOresRegistry.ores.values()) {
-//            int i = entry.id;
-//
-//            // Note: Normally you would simply use map.registerSprite(), this method
-//            // is only required for custom texture classes.
-//
-//            // name of custom icon ( must equal getIconName() )
-//            String name = TextureOre.getDerivedName(entry.texture);
-//            // see if there's already an icon of that name
-//            TextureAtlasSprite texture = textureMap.getTextureExtry(name);
-//            if (texture == null) {
-//                // if not create one and put it in the register
-//                texture = new TextureOre(entry);
-//                textureMap.setTextureEntry(name, texture);
-//            }
-//
-//            icons[i] = textureMap.getTextureExtry(name);
-//        }
-//
-//    }
 	
 	public void preInit() {
-		ModelLoaderRegistry.registerLoader(ModelLoaderCatwalksMod.instance);
+//		ModelLoaderRegistry.registerLoader(ModelLoaderCatwalksMod.instance);
 		BlockRegister.initRender();
+		MinecraftForge.EVENT_BUS.register(TextureGenerator.instance);
+		( (IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager() ).registerReloadListener(TextureGenerator.instance);
 	}
+	
+	Map<ModelResourceLocation, IBakedModel> models = new HashMap<>();
+	
+	private void model(String loc, IBakedModel model) {
+		models.put(new ModelResourceLocation(CatwalksMod.MODID + ":" + loc), model);
+	}
+	
+	@SubscribeEvent
+    public void onModelBakeEvent(ModelBakeEvent event) {
+		models.clear();
+		
+		model("catwalk", new CatwalkSmartModel());
+		
+        for (Entry<ModelResourceLocation, IBakedModel> model : models.entrySet()) {
+			
+        	Object object =  event.modelRegistry.getObject(model.getKey());
+            if (object != null) {
+                event.modelRegistry.putObject(model.getKey(), model.getValue());
+            }
+        	
+		}
+    }
 	
 //	@SubscribeEvent
 //    public void onModelBakeEvent(ModelBakeEvent event) {
