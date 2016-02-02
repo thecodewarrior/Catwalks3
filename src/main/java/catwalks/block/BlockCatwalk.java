@@ -254,6 +254,9 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
         	flatmop.top = 0.5;
         }
         
+        if( world.isSideSolid(pos.offset(sideHit), sideHit.getOpposite()) )
+        	flatmop.sideDistance = 0.006;
+        
         return flatmop;
     }
 	
