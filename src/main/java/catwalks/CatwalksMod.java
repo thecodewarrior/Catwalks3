@@ -2,6 +2,7 @@ package catwalks;
 
 import catwalks.proxy.CommonProxy;
 import catwalks.register.BlockRegister;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -13,6 +14,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 public class CatwalksMod {
     public static final String MODID = "catwalks";
     public static final String VERSION = "1.0";
+    
+    public static boolean developmentEnvironment = (Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment");
     
     @SidedProxy(serverSide="catwalks.proxy.CommonProxy", clientSide="catwalks.proxy.ClientProxy")
     public static CommonProxy proxy;

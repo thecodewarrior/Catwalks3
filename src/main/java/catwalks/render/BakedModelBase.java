@@ -34,7 +34,7 @@ public abstract class BakedModelBase implements IBakedModel {
 	}
 
 	@Override
-	public abstract TextureAtlasSprite getTexture();
+	public abstract TextureAtlasSprite getParticleTexture();
 
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms() {

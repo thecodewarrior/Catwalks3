@@ -20,7 +20,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 public class CatwalkSmartModel extends SmartModelBase {
 
 	@Override
-	public TextureAtlasSprite getTexture() {
+	public TextureAtlasSprite getParticleTexture() {
 		return null;
 	}
 
@@ -62,17 +62,12 @@ public class CatwalkSmartModel extends SmartModelBase {
             this.west = west;
             this.east = east;
             this.down = down;
+            genFaces();
 		}
 		
-		@Override
-		public List<BakedQuad> getFaceQuads(EnumFacing side) {
-			return ImmutableList.of();
-		}
-
-		@Override
-		public List<BakedQuad> getGeneralQuads() {
-	        List<BakedQuad> quads = new ArrayList<>();
-	        
+		List<BakedQuad> quads = new ArrayList<>();
+		
+		public void genFaces() {
 	        if(north) {
 	        	ModelUtils.putFace(quads, EnumFacing.NORTH, side);
 	        }
@@ -89,11 +84,26 @@ public class CatwalkSmartModel extends SmartModelBase {
 	        if(down) {
 	        	ModelUtils.putFace(quads, EnumFacing.DOWN, bottom);
 	        }
-	        return quads;
+		}
+		
+		@Override
+		public List<BakedQuad> getFaceQuads(EnumFacing side) {
+			List<BakedQuad> faceQuads = new ArrayList<>();
+			for (BakedQuad bakedQuad : quads) {
+				if(bakedQuad.getFace() == side) {
+					faceQuads.add(bakedQuad);
+				}
+			}
+			return faceQuads;
+		}
+
+		@Override
+		public List<BakedQuad> getGeneralQuads() {
+			return ImmutableList.of();
 	    }
 
 		@Override
-		public TextureAtlasSprite getTexture() {
+		public TextureAtlasSprite getParticleTexture() {
 			return null;
 		}
 		

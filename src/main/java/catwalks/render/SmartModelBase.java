@@ -35,7 +35,7 @@ public abstract class SmartModelBase implements IFlexibleBakedModel, ISmartBlock
 	}
 
 	@Override
-	public abstract TextureAtlasSprite getTexture();
+	public abstract TextureAtlasSprite getParticleTexture();
 
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms() {

@@ -31,16 +31,19 @@ public class BlockRegister {
 				new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side"),
 				new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/side/base")
 			));
+		
 		TextureGenerator.addTexture(new CompositeTexture(
 				new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side_t"),
 				new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/side/base"),
 				new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/side/decorations/tape")
 			));
+		
 		TextureGenerator.addTexture(new CompositeTexture(
 				new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side_l"),
 				new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/side/base"),
 				new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/side/decorations/lights")
 			));
+		
 		TextureGenerator.addTexture(new CompositeTexture(
 				new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side_tl"),
 				new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/side/base"),

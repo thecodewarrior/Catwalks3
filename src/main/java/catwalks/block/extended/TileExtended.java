@@ -16,10 +16,12 @@ public class TileExtended extends TileEntity {
 	public TileExtended() {}
 	
 	public boolean getBoolean(int id) {
+		if(id < 0) return false;
 		return ( meta & (0x1 << id) ) != 0;
 	}
 	
 	public void setBoolean(int id, boolean bool) {
+		if(id < 0) return;
 		if(bool) {
 			meta = meta | (1 << id);
 		} else {
