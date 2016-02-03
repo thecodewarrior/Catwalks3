@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import catwalks.CatwalksMod;
 import catwalks.register.BlockRegister;
+import catwalks.register.ItemRegister;
 import catwalks.render.catwalk.CatwalkSmartModel;
 import catwalks.texture.TextureGenerator;
 import catwalks.util.ExtendedFlatHighlightMOP;
@@ -18,7 +19,6 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,8 +39,9 @@ public class ClientProxy extends CommonProxy {
 	
 	public void preInit() {
 		BlockRegister.initRender();
+		ItemRegister.initRender();
 		MinecraftForge.EVENT_BUS.register(TextureGenerator.instance);
-		( (IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager() ).registerReloadListener(TextureGenerator.instance);
+//		( (IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager() ).registerReloadListener(TextureGenerator.instance);
 	}
 	
 	Map<ModelResourceLocation, IBakedModel> models = new HashMap<>();

@@ -31,7 +31,9 @@ public class CatwalkSmartModel extends SmartModelBase {
         		state.getValue(BlockCatwalk.NORTH),
         		state.getValue(BlockCatwalk.SOUTH),
         		state.getValue(BlockCatwalk.EAST),
-        		state.getValue(BlockCatwalk.WEST)
+        		state.getValue(BlockCatwalk.WEST),
+        		state.getValue(BlockCatwalk.TAPE),
+        		state.getValue(BlockCatwalk.LIGHTS)
         	);
 	}
 
@@ -51,17 +53,21 @@ public class CatwalkSmartModel extends SmartModelBase {
         private boolean down;
 		
 		public Model() {
-			side = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side_tl") );
-			bottom = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side") );
+			side = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side_") );
+			bottom = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_bottom_") );
 		}
 		
-		public Model(boolean down, boolean north, boolean south, boolean west, boolean east) {
+		public Model(boolean down, boolean north, boolean south, boolean west, boolean east, boolean tape, boolean lights) {
 			this();
 			this.north = north;
             this.south = south;
             this.west = west;
             this.east = east;
             this.down = down;
+            
+            side = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side_" + BlockCatwalk.makeTexturePostfix(tape,lights)) );
+			bottom = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_bottom") );
+            
             genFaces();
 		}
 		

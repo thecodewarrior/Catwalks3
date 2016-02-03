@@ -2,6 +2,9 @@ package catwalks;
 
 import catwalks.proxy.CommonProxy;
 import catwalks.register.BlockRegister;
+import catwalks.register.ItemRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -9,6 +12,8 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod(modid = CatwalksMod.MODID, version = CatwalksMod.VERSION)
 public class CatwalksMod {
@@ -23,6 +28,7 @@ public class CatwalksMod {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
     	BlockRegister.register();
+    	ItemRegister.register();
     	MinecraftForge.EVENT_BUS.register(proxy);
     	proxy.preInit();
     }
@@ -31,4 +37,12 @@ public class CatwalksMod {
     public void init(FMLInitializationEvent event) {
     	
     }
+    
+    public static CreativeTabs tab = new CreativeTabs("tabCatwalks") {
+		@Override
+		@SideOnly(Side.CLIENT)
+		public Item getTabIconItem() {
+			return Item.getItemFromBlock( BlockRegister.catwalk );
+		}
+	};
 }

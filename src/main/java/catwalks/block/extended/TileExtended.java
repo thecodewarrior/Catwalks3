@@ -27,6 +27,7 @@ public class TileExtended extends TileEntity {
 		} else {
 			meta = meta & ~(1 << id);
 		}
+		this.worldObj.markBlockForUpdate(pos);
 		this.markDirty();
 	}
 	

@@ -13,30 +13,25 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import catwalks.CatwalksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class TextureGenerator implements IResourceManagerReloadListener {
+public class TextureGenerator {
 
 	public static TextureGenerator instance = new TextureGenerator();
 	
 	public static Map<ResourceLocation, CompositeTexture> textures = new HashMap<>();
 	
 	public static void addTexture(CompositeTexture texture) {
-		if(textures.containsKey(texture.name)) {
-			
-		}
 		textures.put(texture.name, texture);
 	}
 	
 	@SubscribeEvent
-    // Allows us to add entries for our icons
     public void textureStitch(TextureStitchEvent.Pre event) {
 		
 		TextureMap map = event.map;
@@ -53,14 +48,11 @@ public class TextureGenerator implements IResourceManagerReloadListener {
 		}
 
     }
-
-	@Override
-	public void onResourceManagerReload(IResourceManager resourceManager) {
-//		dumpAtlas();
-	}
 	
 	@SubscribeEvent
     public void dumpAtlas(TextureStitchEvent.Post event) {
+		if(!CatwalksMod.developmentEnvironment)
+			return;
         Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
 
         int width = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);

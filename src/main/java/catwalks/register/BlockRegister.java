@@ -28,7 +28,7 @@ public class BlockRegister {
 	public static void initRender() {
 		ModelLoader.setCustomStateMapper(catwalk, new StateMapperStatic("catwalk"));
 		TextureGenerator.addTexture(new CompositeTexture(
-				new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side"),
+				new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side_"),
 				new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/side/base")
 			));
 		
@@ -49,6 +49,11 @@ public class BlockRegister {
 				new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/side/base"),
 				new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/side/decorations/tape"),
 				new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/side/decorations/lights")
+			));
+		
+		TextureGenerator.addTexture(new CompositeTexture(
+				new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_bottom"),
+				new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/bottom/base")
 			));
 	}
 	

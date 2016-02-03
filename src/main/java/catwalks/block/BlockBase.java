@@ -1,14 +1,7 @@
 package catwalks.block;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import catwalks.CatwalksMod;
-import codechicken.lib.raytracer.ExtendedMOP;
-import codechicken.lib.raytracer.IndexedCuboid6;
 import codechicken.lib.raytracer.RayTracer;
-import codechicken.lib.vec.BlockCoord;
-import codechicken.lib.vec.Vector3;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,7 +12,6 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -36,6 +28,7 @@ public abstract class BlockBase extends Block {
 		super(materialIn);
 		setUnlocalizedName(name);
 		setRegistryName(name);
+		setCreativeTab(CatwalksMod.tab);
 		if(clazz == null) {
 			GameRegistry.registerBlock(this);
 		} else {

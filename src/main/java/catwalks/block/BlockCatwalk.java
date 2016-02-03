@@ -12,6 +12,7 @@ import catwalks.block.extended.BlockExtended;
 import catwalks.block.extended.ExtendedData;
 import catwalks.block.extended.TileExtended;
 import catwalks.block.property.UPropertyBool;
+import catwalks.register.ItemRegister;
 import catwalks.util.AABBUtils;
 import catwalks.util.ExtendedFlatHighlightMOP;
 import codechicken.lib.raytracer.ExtendedMOP;
@@ -27,6 +28,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
@@ -113,6 +115,33 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 		;
 	}
 	
+	public static String makeTexturePostfix(boolean tape, boolean lights) {
+		String str = "";
+		if(tape)   str += 't';
+		if(lights) str += 'l';
+		return str;
+	}
+	
+	public boolean putDecoration(World world, BlockPos pos, String name, boolean value) {
+		TileExtended tile = (TileExtended) world.getTileEntity(pos);
+		
+		if("lights".equals(name)) {
+			if(tile.getBoolean(I_LIGHTS) == value) {
+				return false;
+			}
+			tile.setBoolean(I_LIGHTS, value);
+			return true;
+		}
+		if("tape".equals(name)) {
+			if(tile.getBoolean(I_TAPE) == value) {
+				return false;
+			}
+			tile.setBoolean(I_TAPE, value);
+			return true;
+		}
+		return false;
+	}
+	
 	@Override
 	public boolean isOpaqueCube() {
 		return false;
@@ -135,6 +164,16 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
 			EnumFacing side, float hitX, float hitY, float hitZ) {
+		
+		if(playerIn.inventory.getCurrentItem() != null &&
+				(
+						playerIn.inventory.getCurrentItem().getItem() == ItemRegister.lights ||
+						playerIn.inventory.getCurrentItem().getItem() == ItemRegister.tape
+
+				)
+			) {
+			return false;
+		}
 		
 		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
 		int id = 0;
@@ -201,7 +240,7 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 	public MovingObjectPosition collisionRayTrace(World world, BlockPos pos, EntityPlayer player, Vec3 start, Vec3 end) {
         List<IndexedCuboid6> cuboids = new LinkedList<IndexedCuboid6>();
         IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
-        boolean hasWrench = true;
+//        boolean hasWrench = true;
     	
         AxisAlignedBB bounds = new AxisAlignedBB(pos, pos.add(1, 1, 1));
         double thickness = Float.MIN_VALUE;
@@ -224,6 +263,12 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
         
         Cuboid6 cuboid = new Cuboid6(bounds);
     	AABBUtils.offsetSide(cuboid, EnumFacing.UP, -(1-thickness));
+    	if(!state.getValue(BOTTOM)) {
+    		cuboid.max.x -= 0.25;
+    		cuboid.max.z -= 0.25;
+    		cuboid.min.x += 0.25;
+    		cuboid.min.z += 0.25;
+    	}
     	cuboids.add(
 			new IndexedCuboid6(
 				EnumFacing.DOWN,
@@ -253,6 +298,9 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
         if( sideHit.getAxis() != Axis.Y && !state.getValue(faceToProperty.get(sideHit)) ) {
         	flatmop.top = 0.5;
         }
+        if( sideHit == EnumFacing.DOWN && !state.getValue(BOTTOM) ) {
+        	flatmop.top = flatmop.bottom = flatmop.left = flatmop.right = 0.25;
+        }
         
         if( world.isSideSolid(pos.offset(sideHit), sideHit.getOpposite()) )
         	flatmop.sideDistance = 0.006;
@@ -262,6 +310,8 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 	
 	@Override
 	public void addCollisionBoxesToList(World world, BlockPos pos, IBlockState rawState, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
+		
+		boolean eNull = collidingEntity == null;
 		
         IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
 		
@@ -277,7 +327,7 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
         	Cuboid6 cuboid = new Cuboid6(bounds);
         	AABBUtils.offsetSide(cuboid, facing.getOpposite(), -(1-thickness));
         	
-        	if(!collidingEntity.isSneaking())
+        	if(eNull || !collidingEntity.isSneaking())
         		cuboid.max.y += 0.5;
         	
 //        	AABBUtils.offsetSide(cuboid, EnumFacing.UP, 0.5);
