@@ -8,6 +8,7 @@ import catwalks.texture.TextureGenerator;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -27,6 +28,7 @@ public class BlockRegister {
 	@SideOnly(Side.CLIENT)
 	public static void initRender() {
 		ModelLoader.setCustomStateMapper(catwalk, new StateMapperStatic("catwalk"));
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(catwalk), 0, new ModelResourceLocation(catwalk.getRegistryName(), "inventory"));
 		TextureGenerator.addTexture(new CompositeTexture(
 				new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side_"),
 				new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/side/base")

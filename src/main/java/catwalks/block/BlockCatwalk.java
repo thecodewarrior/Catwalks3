@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import com.google.common.collect.Lists;
 
@@ -13,24 +14,28 @@ import catwalks.block.extended.ExtendedData;
 import catwalks.block.extended.TileExtended;
 import catwalks.block.property.UPropertyBool;
 import catwalks.register.ItemRegister;
+import catwalks.shade.ccl.raytracer.ExtendedMOP;
+import catwalks.shade.ccl.raytracer.IndexedCuboid6;
+import catwalks.shade.ccl.raytracer.RayTracer;
+import catwalks.shade.ccl.vec.BlockCoord;
+import catwalks.shade.ccl.vec.Cuboid6;
+import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.AABBUtils;
 import catwalks.util.ExtendedFlatHighlightMOP;
-import codechicken.lib.raytracer.ExtendedMOP;
-import codechicken.lib.raytracer.IndexedCuboid6;
-import codechicken.lib.raytracer.RayTracer;
-import codechicken.lib.vec.BlockCoord;
-import codechicken.lib.vec.Cuboid6;
-import codechicken.lib.vec.Vector3;
+import catwalks.util.GeneralUtil;
+import catwalks.util.WrenchChecker;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -60,6 +65,7 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 	
 	public BlockCatwalk() {
 		super(Material.iron, "catwalk");
+		setHardness(1.5f);
 		if(faceToProperty.isEmpty()) {
 			faceToProperty.put(EnumFacing.DOWN,  BOTTOM);
 			faceToProperty.put(EnumFacing.NORTH, NORTH);
@@ -165,13 +171,12 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
 			EnumFacing side, float hitX, float hitY, float hitZ) {
 		
-		if(playerIn.inventory.getCurrentItem() != null &&
-				(
-						playerIn.inventory.getCurrentItem().getItem() == ItemRegister.lights ||
-						playerIn.inventory.getCurrentItem().getItem() == ItemRegister.tape
-
-				)
-			) {
+		if( playerIn.inventory.getCurrentItem() != null) {
+			if(!WrenchChecker.isAWrench( playerIn.inventory.getCurrentItem().getItem() ))
+				return false;
+			if(playerIn.inventory.getCurrentItem().getItem() instanceof ItemBlock)
+				return false;
+		} else {
 			return false;
 		}
 		
@@ -198,10 +203,6 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 			break;
 		}
 		
-		if(playerIn.inventory.getCurrentItem() != null && playerIn.inventory.getCurrentItem().getItem() instanceof ItemBlock) {
-			return false;
-		}
-		
 		if(side != EnumFacing.UP ) {
 			tile.setBoolean(id, !tile.getBoolean(id));
 			tile.markDirty();
@@ -210,6 +211,46 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 		}
 		
 		return super.onBlockActivated(worldIn, pos, state, playerIn, side, hitX, hitY, hitZ);
+	}
+	
+	@Override
+	public boolean canHarvestBlock(IBlockAccess world, BlockPos pos, EntityPlayer player) {
+		return true;
+	}
+	
+	@Override
+	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+		return Item.getItemFromBlock(this);
+	}
+	
+	@Override
+	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+		
+		for (EnumFacing direction : EnumFacing.HORIZONTALS) {
+			if(worldIn.getBlockState(pos.offset(direction)).getBlock() == this) {
+				TileExtended tile = (TileExtended) worldIn.getTileEntity(pos.offset(direction));
+				if(tile.getBoolean(faceToIndex.get(direction.getOpposite())) == false) {
+					tile.setBoolean(faceToIndex.get(direction.getOpposite()), true);
+					worldIn.markBlockForUpdate(pos.offset(direction));
+				}
+			}
+			
+		}
+		
+		IExtendedBlockState estate = (IExtendedBlockState) getExtendedState(state, worldIn, pos);
+		List<ItemStack> drops = new ArrayList<>();
+		if(estate.getValue(TAPE)) {
+			drops.add(new ItemStack(ItemRegister.tape, 1, ItemRegister.tape.getMaxDamage() - 1));
+		}
+		if(estate.getValue(LIGHTS)) {
+			drops.add(new ItemStack(ItemRegister.lights, 1, ItemRegister.lights.getMaxDamage() - 1));
+		}
+		
+		for (ItemStack stack : drops) {
+			GeneralUtil.spawnItemStack(worldIn, pos.getX()+0.5, pos.getY()+0.5, pos.getZ	()+0.5, stack);
+		}
+		
+		super.breakBlock(worldIn, pos, state);
 	}
 	
 	@Override
@@ -246,10 +287,18 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
         double thickness = Float.MIN_VALUE;
         
         for (EnumFacing facing : EnumFacing.HORIZONTALS) {
+        	boolean exists = state.getValue(faceToProperty.get(facing));
+        	boolean nextBlockIsCatalk = world.getBlockState(pos.offset(facing)).getBlock() == this;
+        	if(!exists && nextBlockIsCatalk) {
+                IExtendedBlockState nextState = (IExtendedBlockState) getExtendedState(world.getBlockState(pos.offset(facing)), world, pos.offset(facing));
+                if( nextState.getValue(faceToProperty.get(facing.getOpposite())) ) {
+                	continue;
+                }
+        	}
         	Cuboid6 cuboid = new Cuboid6(bounds);
         	AABBUtils.offsetSide(cuboid, facing.getOpposite(), -(1-thickness));
         	
-        	if( !state.getValue(faceToProperty.get(facing)) ) {
+        	if( !exists ) {
         		cuboid.max.y -= 0.5;
         	}
         	

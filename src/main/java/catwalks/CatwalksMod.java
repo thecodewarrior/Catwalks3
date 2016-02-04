@@ -3,6 +3,7 @@ package catwalks;
 import catwalks.proxy.CommonProxy;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
+import catwalks.util.WrenchChecker;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.Launch;
@@ -35,7 +36,7 @@ public class CatwalksMod {
     
     @EventHandler
     public void init(FMLInitializationEvent event) {
-    	
+    	WrenchChecker.init();
     }
     
     public static CreativeTabs tab = new CreativeTabs("tabCatwalks") {

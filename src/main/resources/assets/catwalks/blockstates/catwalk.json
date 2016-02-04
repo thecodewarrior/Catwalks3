@@ -1,7 +1,11 @@
 {
-    "variants": {
-        "normal": {
-            "model": "catwalks:smartmodel/catwalk"
-        }
-    }
+  "forge_marker": 1,
+  "defaults": {
+    "model": "catwalks:catwalk"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}]
+  }
 }
+

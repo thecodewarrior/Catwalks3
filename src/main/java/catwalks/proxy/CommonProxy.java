@@ -2,11 +2,17 @@ package catwalks.proxy;
 
 import java.util.List;
 
-import codechicken.lib.raytracer.RayTracer;
+import catwalks.item.ItemDecoration;
+import catwalks.shade.ccl.raytracer.RayTracer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class CommonProxy {
 	public void preInit() {}
@@ -32,5 +38,35 @@ public class CommonProxy {
 			}
 		}
 		return player;
+	}
+	
+	@SubscribeEvent
+	public void itemPickup(EntityItemPickupEvent event) {
+		ItemStack stack = event.item.getEntityItem();
+		InventoryPlayer inv = event.entityPlayer.inventory;
+		boolean changed = false;
+
+		if(stack != null && stack.getItem() instanceof ItemDecoration) {
+			for (int i = 0; i < inv.getSizeInventory(); i++) {
+				ItemStack slotStack = inv.getStackInSlot(i);
+				if(slotStack != null && slotStack.getItem() == stack.getItem() && slotStack.getItemDamage() != 0) {
+					int toTake = slotStack.getItemDamage();
+					int available = stack.getMaxDamage()-stack.getItemDamage();
+					int toput = Math.min(toTake, available);
+					
+					slotStack.setItemDamage(slotStack.getItemDamage()-toput);
+					stack.setItemDamage(stack.getItemDamage()+toput);
+					changed = true;
+				}
+			}
+			if(stack.getItemDamage() == stack.getMaxDamage())
+				stack.stackSize--;
+			
+			if(changed) {
+				event.setResult(Result.ALLOW);
+				event.entityPlayer.inventoryContainer.detectAndSendChanges();
+			}
+		}
+		
 	}
 }

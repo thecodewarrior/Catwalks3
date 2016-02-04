@@ -110,7 +110,7 @@ public class CatwalkSmartModel extends SmartModelBase {
 
 		@Override
 		public TextureAtlasSprite getParticleTexture() {
-			return null;
+			return bottom;
 		}
 		
 	}

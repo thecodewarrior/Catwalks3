@@ -1,8 +1,8 @@
 package catwalks.util;
 
-import codechicken.lib.raytracer.ExtendedMOP;
-import codechicken.lib.vec.BlockCoord;
-import codechicken.lib.vec.Vector3;
+import catwalks.shade.ccl.raytracer.ExtendedMOP;
+import catwalks.shade.ccl.vec.BlockCoord;
+import catwalks.shade.ccl.vec.Vector3;
 import net.minecraft.util.EnumFacing;
 
 public class ExtendedFlatHighlightMOP extends ExtendedMOP {

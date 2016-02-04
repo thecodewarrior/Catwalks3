@@ -1,6 +1,6 @@
 package catwalks.util;
 
-import codechicken.lib.vec.Cuboid6;
+import catwalks.shade.ccl.vec.Cuboid6;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.AxisDirection;

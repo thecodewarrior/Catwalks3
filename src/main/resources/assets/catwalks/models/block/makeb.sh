@@ -32,11 +32,11 @@ do
 	echo "Making $BLOCK.json item"
 	echo "{
     \"parent\": \"$MODID:block/$BLOCK\"
-    "display": {
-            "thirdperson": {
-            "rotation": [ 10, -45, 170 ],
-            "translation": [ 0, 1.5, -2.75 ],
-            "scale": [ 0.375, 0.375, 0.375 ]
+    \"display\": {
+            \"thirdperson\": {
+            \"rotation\": [ 10, -45, 170 ],
+            \"translation\": [ 0, 1.5, -2.75 ],
+            \"scale\": [ 0.375, 0.375, 0.375 ]
         }
     }
 }

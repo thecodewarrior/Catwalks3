@@ -14,12 +14,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemRegister {
 	
 	public static ItemDecoration lights, tape;
-	public static ItemBase tool;
+	public static ItemCatwalkTool tool;
+	public static ItemBase grate;
 	
 	public static void register() {
 		lights = new ItemDecoration("lights");
 		tape   = new ItemDecoration("tape");
 		tool   = new ItemCatwalkTool();
+		grate  = new ItemBase("grate");
 		
 		CraftingManager.getInstance().addRecipe(new RecipeDecorationRepair());
 		CraftingManager.getInstance().addRecipe(new RecipeDecorationSplit());

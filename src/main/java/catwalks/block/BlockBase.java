@@ -1,7 +1,7 @@
 package catwalks.block;
 
 import catwalks.CatwalksMod;
-import codechicken.lib.raytracer.RayTracer;
+import catwalks.shade.ccl.raytracer.RayTracer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;

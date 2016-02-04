@@ -2,12 +2,11 @@ package catwalks.item;
 
 import catwalks.block.BlockCatwalk;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.StatList;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -48,5 +47,17 @@ public class ItemDecoration extends ItemBase {
 		}
 		stack.setItemDamage(stack.getItemDamage()-amount);
     }
+	
+	public boolean hasCustomEntity(ItemStack stack) {
+		return true;
+	}
+
+	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
+		Entity e = new EntityItemDecoration(world, location.posX, location.posY, location.posZ, itemstack);
+		NBTTagCompound tag = new NBTTagCompound();
+		location.writeToNBT(tag);
+		e.readFromNBT(tag);
+		return e;
+	}
 	
 }
