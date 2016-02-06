@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import catwalks.CatwalksMod;
+import catwalks.util.Logs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -58,7 +59,8 @@ public class TextureGenerator {
         int width = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
         int height = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT);
 
-        System.out.printf("Atlas is %d wide by %d tall%n", width, height);
+        Logs.log("Dumping atlas...");
+        Logs.log(String.format("Atlas is %d wide by %d tall%n", width, height));
 
         int pixels = width * height;
         

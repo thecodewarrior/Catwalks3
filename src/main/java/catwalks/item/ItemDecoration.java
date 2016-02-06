@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 
 public class ItemDecoration extends ItemBase {
 
-	private int maxDamage = 50;
+	private int maxDamage = 256;
 	
 	public ItemDecoration(String name) {
 		super(name);

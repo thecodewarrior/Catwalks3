@@ -49,10 +49,10 @@
 		
 	],
     "textures": {
-        "bottom": "catwalks:blocks/catwalk/bottom/base",
-        "side": "catwalks:blocks/catwalk/side/base",
-        "ibottom": "catwalks:blocks/catwalk/bottom/base",
-        "iside": "catwalks:blocks/catwalk/side/base"
+        "bottom": "catwalks:blocks/catwalk/steel/bottom/base",
+        "side": "catwalks:blocks/catwalk/steel/side/base",
+        "ibottom": "catwalks:blocks/catwalk/steel/bottom",
+        "iside": "catwalks:blocks/catwalk/steel/side/base"
     },
     "display": {
         "thirdperson": {

@@ -24,7 +24,7 @@ public abstract class BlockBase extends Block {
 		this(material, name, null);
 	}
 	
-	public BlockBase(Material materialIn, String name, Class<? extends ItemBlock> clazz) {
+	public BlockBase(Material materialIn, String name, Class<?> clazz) {
 		super(materialIn);
 		setUnlocalizedName(name);
 		setRegistryName(name);
@@ -32,7 +32,7 @@ public abstract class BlockBase extends Block {
 		if(clazz == null) {
 			GameRegistry.registerBlock(this);
 		} else {
-			GameRegistry.registerBlock(this, clazz);
+			GameRegistry.registerBlock(this, (Class<? extends ItemBlock>)clazz);
 		}
 	}
 	

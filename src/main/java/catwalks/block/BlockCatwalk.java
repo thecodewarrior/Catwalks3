@@ -9,10 +9,12 @@ import java.util.Random;
 
 import com.google.common.collect.Lists;
 
+import catwalks.CatwalksMod;
 import catwalks.block.extended.BlockExtended;
 import catwalks.block.extended.ExtendedData;
 import catwalks.block.extended.TileExtended;
 import catwalks.block.property.UPropertyBool;
+import catwalks.item.ItemBlockCatwalk;
 import catwalks.register.ItemRegister;
 import catwalks.shade.ccl.raytracer.ExtendedMOP;
 import catwalks.shade.ccl.raytracer.IndexedCuboid6;
@@ -26,21 +28,22 @@ import catwalks.util.GeneralUtil;
 import catwalks.util.WrenchChecker;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
@@ -48,6 +51,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 
@@ -63,8 +68,19 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 	public static UPropertyBool TAPE   = new UPropertyBool("tape");
 	public static UPropertyBool LIGHTS = new UPropertyBool("lights");
 	
+	public static PropertyEnum<EnumCatwalkMaterial> MATERIAL = PropertyEnum.create("material", EnumCatwalkMaterial.class);
+	
+	public static enum EnumCatwalkMaterial implements IStringSerializable {
+		STEEL, STONE, WOOD, CUSTOM1, CUSTOM2, CUSTOM3;
+
+		@Override
+		public String getName() {
+			return this.name();
+		}
+	}
+	
 	public BlockCatwalk() {
-		super(Material.iron, "catwalk");
+		super(Material.iron, "catwalk", ItemBlockCatwalk.class);
 		setHardness(1.5f);
 		if(faceToProperty.isEmpty()) {
 			faceToProperty.put(EnumFacing.DOWN,  BOTTOM);
@@ -83,11 +99,6 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 			faceToIndex.put(EnumFacing.UP,    -1);
 		}
 	}
-
-	@Override
-	public int getMetaFromState(IBlockState state) { return 0; }
-	@Override
-	public IBlockState getStateFromMeta(int meta) { return getDefaultState(); }
 	
 	@Override
 	public ExtendedData getData(World world, IBlockState state) {
@@ -95,14 +106,20 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 	}
 	
 	@Override
+	public int getLightValue(IBlockAccess world, BlockPos pos) {
+		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		return state.getValue(LIGHTS) ? 15 : 0;
+	}
+	
+	@Override
 	@SuppressWarnings("rawtypes")
 	protected BlockState createBlockState() {
-		IProperty[] listedProperties = new IProperty[0]; // no listed properties
+		IProperty[] listedProperties = new IProperty[] { MATERIAL }; // no listed properties
         IUnlistedProperty[] unlistedProperties = new IUnlistedProperty[] { BOTTOM, NORTH, SOUTH, WEST, EAST, TAPE, LIGHTS };
         return new ExtendedBlockState(this, listedProperties, unlistedProperties);
 	}
 	
-	int I_BOTTOM=0, I_NORTH=1, I_SOUTH=2, I_EAST=3, I_WEST=4, I_TAPE=5, I_LIGHTS=6;
+	int I_BOTTOM=0, I_NORTH=1, I_SOUTH=2, I_EAST=3, I_WEST=4, I_TAPE=5, I_LIGHTS=6, I_MATERIAL=7, I_MATERIAL_LEN=3;
 	
 	@Override
     public IBlockState getExtendedState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
@@ -121,8 +138,9 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 		;
 	}
 	
-	public static String makeTexturePostfix(boolean tape, boolean lights) {
-		String str = "";
+	public static String makeTextureGenName(String type, EnumCatwalkMaterial material, boolean tape, boolean lights) {
+		String str = CatwalksMod.MODID + ":/gen/catwalk_" + type + "_";
+		str += material.getName().toLowerCase() + "_";
 		if(tape)   str += 't';
 		if(lights) str += 'l';
 		return str;
@@ -222,6 +240,33 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
 		return Item.getItemFromBlock(this);
 	}
+	
+	@Override
+	public int damageDropped(IBlockState state) {
+        return state.getValue(MATERIAL).ordinal();
+    }
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list)
+    {
+        for (EnumCatwalkMaterial enumdyecolor : EnumCatwalkMaterial.values())
+        {
+            list.add(new ItemStack(itemIn, 1, enumdyecolor.ordinal()));
+        }
+    }
+	
+	@Override
+    public IBlockState getStateFromMeta(int meta)
+    {
+        return this.getDefaultState().withProperty(MATERIAL, EnumCatwalkMaterial.values()[ meta ]);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state)
+    {
+        return state.getValue(MATERIAL).ordinal();
+    }
 	
 	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {

@@ -1,7 +1,11 @@
 package catwalks.register;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import catwalks.CatwalksMod;
 import catwalks.block.BlockCatwalk;
+import catwalks.block.BlockCatwalk.EnumCatwalkMaterial;
 import catwalks.block.extended.TileExtended;
 import catwalks.texture.CompositeTexture;
 import catwalks.texture.TextureGenerator;
@@ -29,6 +33,32 @@ public class BlockRegister {
 	public static void initRender() {
 		ModelLoader.setCustomStateMapper(catwalk, new StateMapperStatic("catwalk"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(catwalk), 0, new ModelResourceLocation(catwalk.getRegistryName(), "inventory"));
+		
+		boolean[] TF = new boolean[] {true, false};
+		
+		for (EnumCatwalkMaterial material : EnumCatwalkMaterial.values()) {
+			for(boolean tape : TF) {
+				for(boolean lights : TF) {
+					
+					List<ResourceLocation> textures = new ArrayList<>();
+					
+					textures.add(new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/" + material.getName().toLowerCase() + "/side/base"));
+					if(tape)
+						textures.add(new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/" + material.getName().toLowerCase() + "/side/decorations/tape"));
+					if(lights)
+						textures.add(new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/" + material.getName().toLowerCase() + "/side/decorations/lights"));
+					TextureGenerator.addTexture(new CompositeTexture(
+						new ResourceLocation(BlockCatwalk.makeTextureGenName("side", material, tape, lights)),
+						textures
+					));
+				}
+			}
+			TextureGenerator.addTexture(new CompositeTexture(
+					new ResourceLocation(BlockCatwalk.makeTextureGenName("bottom", material, false, false)),
+					new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/" + material.getName().toLowerCase() + "/bottom")
+				));
+		}
+		
 		TextureGenerator.addTexture(new CompositeTexture(
 				new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side_"),
 				new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/side/base")

@@ -16,4 +16,9 @@ public class CompositeTexture {
 		this.layers = Lists.newArrayList(layers);
 	}
 	
+	public CompositeTexture(ResourceLocation name, List<ResourceLocation> layers) {
+		this.name = name;
+		this.layers = layers;
+	}
+	
 }

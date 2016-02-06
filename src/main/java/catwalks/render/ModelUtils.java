@@ -37,13 +37,25 @@ public class ModelUtils {
     }
 
 	public static void twoFace(List<BakedQuad> quads, TextureAtlasSprite sprite, Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4) {
-		quads.add(quad( sprite, v1, v2, v3, v4 ));
+		quads.add(quadInvertSide( sprite, v1, v2, v3, v4 ));
 		quads.add(quad( sprite, v4, v3, v2, v1 ));
 	}
     
     public static BakedQuad quad(TextureAtlasSprite sprite, Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4) {
         Vec3 normal = v1.subtract(v2).crossProduct(v3.subtract(v2));
         EnumFacing side = LightUtil.toSide((float) normal.xCoord, (float) normal.yCoord, (float) normal.zCoord);
+
+        return new BakedQuad(Ints.concat(
+                vertexToInts(v1.xCoord, v1.yCoord, v1.zCoord, 0,  0 , sprite),
+                vertexToInts(v2.xCoord, v2.yCoord, v2.zCoord, 0,  16, sprite),
+                vertexToInts(v3.xCoord, v3.yCoord, v3.zCoord, 16, 16, sprite),
+                vertexToInts(v4.xCoord, v4.yCoord, v4.zCoord, 16, 0 , sprite)
+        ), -1, side);
+    }
+    
+    public static BakedQuad quadInvertSide(TextureAtlasSprite sprite, Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4) {
+        Vec3 normal = v1.subtract(v2).crossProduct(v3.subtract(v2));
+        EnumFacing side = LightUtil.toSide((float) normal.xCoord, (float) normal.yCoord, (float) normal.zCoord).getOpposite();
 
         return new BakedQuad(Ints.concat(
                 vertexToInts(v1.xCoord, v1.yCoord, v1.zCoord, 0,  0 , sprite),

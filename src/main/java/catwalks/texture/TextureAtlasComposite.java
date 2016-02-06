@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import catwalks.util.Logs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.IResource;
@@ -59,7 +60,7 @@ public class TextureAtlasComposite extends TextureAtlasSprite {
 				composite(sofar, stitching);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logs.logError(e.getClass().getName() + " : " + e.getMessage() + " while loading sprite");
 			return true;
 		}
 		
