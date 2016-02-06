@@ -15,6 +15,8 @@ public class TileExtended extends TileEntity {
 	
 	public TileExtended() {}
 	
+	{ /* getters/setters */ }
+	
 	public boolean getBoolean(int id) {
 		if(id < 0) return false;
 		return ( meta & (0x1 << id) ) != 0;
@@ -64,6 +66,8 @@ public class TileExtended extends TileEntity {
 		value = value & lenMask;     //# 0x000000000xxxxx00
 		meta = meta | value;         //d 0xdddddddddxxxxxdd
 	}
+	
+	{ /* normal Tile Entity stuff */ }
 	
 	@Override
 	public void writeToNBT(NBTTagCompound compound) {
