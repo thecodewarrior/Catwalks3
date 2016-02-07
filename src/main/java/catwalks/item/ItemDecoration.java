@@ -19,6 +19,7 @@ public class ItemDecoration extends ItemBase {
 		super(name);
 		setMaxStackSize(1);
 		setMaxDamage(maxDamage);
+		setUnlocalizedName("decoration."+name);
 	}
 	
 	

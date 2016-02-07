@@ -1,2 +1,8 @@
 tile.catwalk.steel.name=Catwalk
 tile.catwalk.wood.name=Wooden Catwalk
+tile.catwalk.stone.name=Stone Catwalk
+
+item.decoration.lights.name=Catwalk Lights
+item.decoration.tape.name=Catwalk Tape
+item.catwalktool.name=Catwalk adjuster
+item.catwalktool.info.0=§8§oOther wrenches work

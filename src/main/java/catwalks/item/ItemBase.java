@@ -1,12 +1,13 @@
 package catwalks.item;
 
+import java.util.List;
+
 import catwalks.CatwalksMod;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraftforge.client.model.ModelLoader;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemBase extends Item{
 	public String name;
@@ -16,5 +17,22 @@ public class ItemBase extends Item{
 		this.name = name;
 		GameRegistry.registerItem(this, name);
 		setCreativeTab(CatwalksMod.tab);
+	}
+	
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+		int i = 0;
+		String unloc = getUnlocalizedName() + ".info.";
+		
+		while(true) {
+			
+			if(!StatCollector.canTranslate(unloc+i))
+				break;
+			
+			tooltip.add(StatCollector.translateToLocal(unloc+i));
+			i += 1;
+		}
+		
+		super.addInformation(stack, playerIn, tooltip, advanced);
 	}
 }

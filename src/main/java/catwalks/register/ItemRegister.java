@@ -21,7 +21,7 @@ public class ItemRegister {
 		lights = new ItemDecoration("lights");
 		tape   = new ItemDecoration("tape");
 		tool   = new ItemCatwalkTool();
-		grate  = new ItemBase("grate");
+		grate  = new ItemBase("steelgrate");
 		
 		CraftingManager.getInstance().addRecipe(new RecipeDecorationRepair());
 		CraftingManager.getInstance().addRecipe(new RecipeDecorationSplit());

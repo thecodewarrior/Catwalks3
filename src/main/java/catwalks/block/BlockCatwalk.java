@@ -242,84 +242,85 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 	}
 
 	@Override
-		public MovingObjectPosition collisionRayTrace(World world, BlockPos pos, EntityPlayer player, Vec3 start, Vec3 end) {
-	        List<IndexedCuboid6> cuboids = new LinkedList<IndexedCuboid6>();
-	        IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
-	//        boolean hasWrench = true;
-	    	
-	        AxisAlignedBB bounds = new AxisAlignedBB(pos, pos.add(1, 1, 1));
-	        double thickness = Float.MIN_VALUE;
-	        
-	        for (EnumFacing facing : EnumFacing.HORIZONTALS) {
-	        	boolean exists = state.getValue(faceToProperty.get(facing));
-	        	boolean nextBlockIsCatalk = world.getBlockState(pos.offset(facing)).getBlock() == this;
-	        	if(!exists && nextBlockIsCatalk) {
-	                IExtendedBlockState nextState = (IExtendedBlockState) getExtendedState(world.getBlockState(pos.offset(facing)), world, pos.offset(facing));
-	                if( nextState.getValue(faceToProperty.get(facing.getOpposite())) ) {
-	                	continue;
-	                }
-	        	}
-	        	Cuboid6 cuboid = new Cuboid6(bounds);
-	        	AABBUtils.offsetSide(cuboid, facing.getOpposite(), -(1-thickness));
-	        	
-	        	if( !exists ) {
-	        		cuboid.max.y -= 0.5;
-	        	}
-	        	
-	        	cuboids.add(
-	    			new IndexedCuboid6(
-	    				facing,
-	    				cuboid
-	    			)
-	    		);
-			}
-	        
-	        Cuboid6 cuboid = new Cuboid6(bounds);
-	    	AABBUtils.offsetSide(cuboid, EnumFacing.UP, -(1-thickness));
-	    	if(!state.getValue(BOTTOM)) {
-	    		cuboid.max.x -= 0.25;
-	    		cuboid.max.z -= 0.25;
-	    		cuboid.min.x += 0.25;
-	    		cuboid.min.z += 0.25;
-	    	}
-	    	cuboids.add(
-				new IndexedCuboid6(
-					EnumFacing.DOWN,
-					cuboid
-				)
-			);
-	        
-	        List<ExtendedMOP> hits = Lists.newArrayList();
-	        RayTracer.instance().rayTraceCuboids(new Vector3(start), new Vector3(end), cuboids, new BlockCoord(pos), this, hits);
-	        ExtendedMOP mop = null;
-	        
-	        for (ExtendedMOP hit : hits) {
-				if(mop == null || hit.dist < mop.dist)
-					mop = hit;
-			}
-	        
-	        if(mop == null)
-	        	return null;
-	        
-	    	if(mop.sideHit == ((EnumFacing)mop.hitInfo).getOpposite() && mop.sideHit.getAxis() != Axis.Y) {
-	    		mop.sideHit = (EnumFacing)mop.hitInfo;
-	    	}
-	        
-	        ExtendedFlatHighlightMOP flatmop = new ExtendedFlatHighlightMOP(mop);
-	        EnumFacing sideHit = (EnumFacing)mop.hitInfo;
-	        flatmop.side = sideHit;
-	        if( sideHit.getAxis() != Axis.Y && !state.getValue(faceToProperty.get(sideHit)) ) {
-	        	flatmop.top = 0.5;
-	        }
-	        if( sideHit == EnumFacing.DOWN && !state.getValue(BOTTOM) ) {
-	        	flatmop.top = flatmop.bottom = flatmop.left = flatmop.right = 0.25;
-	        }
-	        
-	        if( world.isSideSolid(pos.offset(sideHit), sideHit.getOpposite()) )
-	        	flatmop.sideDistance = 0.006;
-	        
-	        return flatmop;
-	    }
+	public MovingObjectPosition collisionRayTrace(World world, BlockPos pos, EntityPlayer player, Vec3 start, Vec3 end) {
+        List<IndexedCuboid6> cuboids = new LinkedList<IndexedCuboid6>();
+        IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+//        boolean hasWrench = true;
+    	
+        AxisAlignedBB bounds = new AxisAlignedBB(pos, pos.add(1, 1, 1));
+        double thickness = Float.MIN_VALUE;
+        
+        for (EnumFacing facing : EnumFacing.HORIZONTALS) {
+        	boolean exists = state.getValue(faceToProperty.get(facing));
+        	boolean nextBlockIsCatalk = world.getBlockState(pos.offset(facing)).getBlock() == this;
+        	if(!exists && nextBlockIsCatalk) {
+                IExtendedBlockState nextState = (IExtendedBlockState) getExtendedState(world.getBlockState(pos.offset(facing)), world, pos.offset(facing));
+                if( nextState.getValue(faceToProperty.get(facing.getOpposite())) ) {
+                	continue;
+                }
+        	}
+        	Cuboid6 cuboid = new Cuboid6(bounds);
+        	AABBUtils.offsetSide(cuboid, facing.getOpposite(), -(1-thickness));
+        	
+        	if( !exists ) {
+        		cuboid.max.y -= 0.5;
+        	}
+        	
+        	if( !exists && player.inventory.getCurrentItem() != null && WrenchChecker.isAWrench(player.inventory.getCurrentItem().getItem()))
+        	cuboids.add(
+    			new IndexedCuboid6(
+    				facing,
+    				cuboid
+    			)
+    		);
+		}
+        
+        Cuboid6 cuboid = new Cuboid6(bounds);
+    	AABBUtils.offsetSide(cuboid, EnumFacing.UP, -(1-thickness));
+    	if(!state.getValue(BOTTOM)) {
+    		cuboid.max.x -= 0.25;
+    		cuboid.max.z -= 0.25;
+    		cuboid.min.x += 0.25;
+    		cuboid.min.z += 0.25;
+    	}
+    	cuboids.add(
+			new IndexedCuboid6(
+				EnumFacing.DOWN,
+				cuboid
+			)
+		);
+        
+        List<ExtendedMOP> hits = Lists.newArrayList();
+        RayTracer.instance().rayTraceCuboids(new Vector3(start), new Vector3(end), cuboids, new BlockCoord(pos), this, hits);
+        ExtendedMOP mop = null;
+        
+        for (ExtendedMOP hit : hits) {
+			if(mop == null || hit.dist < mop.dist)
+				mop = hit;
+		}
+        
+        if(mop == null)
+        	return null;
+        
+    	if(mop.sideHit == ((EnumFacing)mop.hitInfo).getOpposite() && mop.sideHit.getAxis() != Axis.Y) {
+    		mop.sideHit = (EnumFacing)mop.hitInfo;
+    	}
+        
+        ExtendedFlatHighlightMOP flatmop = new ExtendedFlatHighlightMOP(mop);
+        EnumFacing sideHit = (EnumFacing)mop.hitInfo;
+        flatmop.side = sideHit;
+        if( sideHit.getAxis() != Axis.Y && !state.getValue(faceToProperty.get(sideHit)) ) {
+        	flatmop.top = 0.5;
+        }
+        if( sideHit == EnumFacing.DOWN && !state.getValue(BOTTOM) ) {
+        	flatmop.top = flatmop.bottom = flatmop.left = flatmop.right = 0.25;
+        }
+        
+        if( world.isSideSolid(pos.offset(sideHit), sideHit.getOpposite()) )
+        	flatmop.sideDistance = 0.006;
+        
+        return flatmop;
+    }
 
 	@Override
 		public void addCollisionBoxesToList(World world, BlockPos pos, IBlockState rawState, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
