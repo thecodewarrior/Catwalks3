@@ -102,6 +102,7 @@ public class TileExtended extends TileEntity {
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
 		readFromNBT(pkt.getNbtCompound());
+		this.worldObj.markBlockForUpdate(pos);
 	}
 	
 }

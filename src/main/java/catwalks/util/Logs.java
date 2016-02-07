@@ -4,6 +4,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import catwalks.CatwalksMod;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
@@ -17,7 +18,7 @@ public class Logs {
     public static long prevTicks = -1;
     private Logger logger;
 
-    public static boolean debugMode = false;
+    public static boolean debugMode = CatwalksMod.developmentEnvironment;
     public static boolean doLogging = false;
 
     private Logs() {
@@ -32,11 +33,11 @@ public class Logs {
         return instance;
     }
 
-    public static void logError(String msg) {
-        getInstance().logger.log(Level.ERROR, msg);
+    public static void error(String message, Object... args) {
+        getInstance().logger.log(Level.ERROR, String.format(message, args));
     }
 
-    public static void log(World world, TileEntity te, String message) {
+    public static void log(World world, TileEntity te, String message, Object... args) {
         if (doLogging) {
             long ticks = world.getTotalWorldTime();
             if (ticks != prevTicks) {
@@ -44,25 +45,25 @@ public class Logs {
                 getInstance().logger.log(Level.INFO, "=== Time " + ticks + " ===");
             }
             String id = te.getPos().getX() + "," + te.getPos().getY() + "," + te.getPos().getZ() + ": ";
-            getInstance().logger.log(Level.INFO, id + message);
+            getInstance().logger.log(Level.INFO, id + String.format(message, args));
         }
     }
 
-    public static void log(String message) {
-        getInstance().logger.log(Level.INFO, message);
+    public static void log(String message, Object... args) {
+        getInstance().logger.log(Level.INFO, String.format(message, args));
     }
 
-    public static void logDebug(String message) {
+    public static void debug(String message, Object... args) {
         if (debugMode) {
-            getInstance().logger.log(Level.INFO, message);
+            getInstance().logger.log(Level.INFO, String.format(message, args));
         }
     }
 
-    public static void message(EntityPlayer player, String message) {
-        player.addChatComponentMessage(new ChatComponentText(message));
+    public static void message(EntityPlayer player, String message, Object... args) {
+        player.addChatComponentMessage(new ChatComponentText(String.format(message, args)));
     }
 
-    public static void warn(EntityPlayer player, String message) {
-        player.addChatComponentMessage(new ChatComponentText(message).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)));
+    public static void warn(EntityPlayer player, String message, Object... args) {
+        player.addChatComponentMessage(new ChatComponentText(String.format(message, args)).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)));
     }
 }

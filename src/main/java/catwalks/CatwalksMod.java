@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @Mod(modid = CatwalksMod.MODID, version = CatwalksMod.VERSION)
 public class CatwalksMod {
     public static final String MODID = "catwalks";
-    public static final String VERSION = "1.0";
+    public static final String VERSION = "0.0.0.1";
     
     public static boolean developmentEnvironment = (Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment");
     

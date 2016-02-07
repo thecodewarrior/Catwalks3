@@ -201,7 +201,6 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 				TileExtended tile = (TileExtended) worldIn.getTileEntity(pos.offset(direction));
 				if(tile.getBoolean(faceToIndex.get(direction.getOpposite())) == false) {
 					tile.setBoolean(faceToIndex.get(direction.getOpposite()), true);
-					worldIn.markBlockForUpdate(pos.offset(direction));
 				}
 			}
 			

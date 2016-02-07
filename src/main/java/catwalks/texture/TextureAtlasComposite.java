@@ -60,7 +60,7 @@ public class TextureAtlasComposite extends TextureAtlasSprite {
 				composite(sofar, stitching);
 			}
 		} catch (IOException e) {
-			Logs.logError(e.getClass().getName() + " : " + e.getMessage() + " while loading sprite");
+			Logs.error(e.getClass().getName() + " : " + e.getMessage() + " while loading sprite");
 			return true;
 		}
 		

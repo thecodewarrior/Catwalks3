@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import org.lwjgl.opengl.GL11;
 
 import catwalks.CatwalksMod;
+import catwalks.langplus.LangPlus;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
 import catwalks.render.catwalk.CatwalkSmartModel;
@@ -41,6 +42,7 @@ public class ClientProxy extends CommonProxy {
 		BlockRegister.initRender();
 		ItemRegister.initRender();
 		MinecraftForge.EVENT_BUS.register(TextureGenerator.instance);
+//		LangPlus.addMod(CatwalksMod.MODID);
 //		( (IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager() ).registerReloadListener(TextureGenerator.instance);
 	}
 	

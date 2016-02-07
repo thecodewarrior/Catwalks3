@@ -15,44 +15,42 @@
 			"from": [ 0, 0, 0 ],
 			"to": [ 16, 16, 0 ],
 			"faces": {
-	            "south": { "texture": "#iside", "cullface": "north" }
+	            "south": { "texture": "#side", "cullface": "north" }
 	        }
 	    },
 		{
 			"from": [ 0, 0, 16 ],
 			"to": [ 16, 16, 16 ],
 			"faces": {
-	            "north": { "texture": "#iside", "cullface": "south" }
+	            "north": { "texture": "#side", "cullface": "south" }
 	        }
 	    },
 		{
 			"from": [ 0, 0, 0 ],
 			"to": [ 0, 16, 16 ],
 			"faces": {
-	            "east": { "texture": "#iside", "cullface": "west" }
+	            "east": { "texture": "#side", "cullface": "west" }
 	        }
 	    },
 		{
 			"from": [ 16, 0, 0 ],
 			"to": [ 16, 16, 16 ],
 			"faces": {
-	            "west": { "texture": "#iside", "cullface": "east" }
+	            "west": { "texture": "#side", "cullface": "east" }
 	        }
 	    },
 		{
 			"from": [ 0, 0, 0 ],
 			"to": [ 16, 0, 16 ],
 			"faces": {
-	            "up": { "texture": "#ibottom", "cullface": "down" }
+	            "up": { "texture": "#bottom", "cullface": "down" }
 	        }
 	    }
 		
 	],
     "textures": {
-        "bottom": "catwalks:blocks/catwalk/steel/bottom/base",
-        "side": "catwalks:blocks/catwalk/steel/side/base",
-        "ibottom": "catwalks:blocks/catwalk/steel/bottom",
-        "iside": "catwalks:blocks/catwalk/steel/side/base"
+        "bottom": "catwalks:blocks/catwalk/steel/bottom",
+        "side": "catwalks:blocks/catwalk/steel/side/base"
     },
     "display": {
         "thirdperson": {
