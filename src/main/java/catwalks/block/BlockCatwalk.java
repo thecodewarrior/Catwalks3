@@ -1,10 +1,8 @@
 package catwalks.block;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import com.google.common.collect.Lists;
@@ -25,6 +23,7 @@ import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.AABBUtils;
 import catwalks.util.ExtendedFlatHighlightMOP;
 import catwalks.util.GeneralUtil;
+import catwalks.util.Trimap;
 import catwalks.util.WrenchChecker;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -57,6 +56,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 
 	public static UPropertyBool BOTTOM = new UPropertyBool("bottom");
+	public static UPropertyBool TOP    = new UPropertyBool("top");
 	public static UPropertyBool NORTH  = new UPropertyBool("north");
 	public static UPropertyBool SOUTH  = new UPropertyBool("south");
 	public static UPropertyBool EAST   = new UPropertyBool("east");
@@ -65,10 +65,12 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 	public static UPropertyBool TAPE   = new UPropertyBool("tape");
 	public static UPropertyBool LIGHTS = new UPropertyBool("lights");
 	
-	int I_BOTTOM=0, I_NORTH=1, I_SOUTH=2, I_EAST=3, I_WEST=4, I_TAPE=5, I_LIGHTS=6;
+	int I_BOTTOM=0, I_TOP=1, I_NORTH=2, I_SOUTH=3, I_EAST=4, I_WEST=16+0, I_TAPE=16+1, I_LIGHTS=16+2;
 
-	public static Map<EnumFacing, UPropertyBool> faceToProperty = new HashMap<>();
-	public static Map<EnumFacing, Integer> faceToIndex = new HashMap<>();
+	public static Trimap<UPropertyBool, EnumFacing, Integer> sides = new Trimap<>(UPropertyBool.class, EnumFacing.class, Integer.class);
+	
+//	public static Map<EnumFacing, UPropertyBool> faceToProperty = new HashMap<>();
+//	public static Map<EnumFacing, Integer> faceToIndex = new HashMap<>();
 	
 	public static PropertyEnum<EnumCatwalkMaterial> MATERIAL = PropertyEnum.create("material", EnumCatwalkMaterial.class);
 	
@@ -84,22 +86,13 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 	public BlockCatwalk() {
 		super(Material.iron, "catwalk", ItemBlockCatwalk.class);
 		setHardness(1.5f);
-		if(faceToProperty.isEmpty()) {
-			faceToProperty.put(EnumFacing.DOWN,  BOTTOM);
-			faceToProperty.put(EnumFacing.NORTH, NORTH);
-			faceToProperty.put(EnumFacing.SOUTH, SOUTH);
-			faceToProperty.put(EnumFacing.EAST,  EAST);
-			faceToProperty.put(EnumFacing.WEST,  WEST);
-		}
 		
-		if(faceToIndex.isEmpty()) {
-			faceToIndex.put(EnumFacing.DOWN,  I_BOTTOM);
-			faceToIndex.put(EnumFacing.NORTH, I_NORTH);
-			faceToIndex.put(EnumFacing.SOUTH, I_SOUTH);
-			faceToIndex.put(EnumFacing.EAST,  I_EAST);
-			faceToIndex.put(EnumFacing.WEST,  I_WEST);
-			faceToIndex.put(EnumFacing.UP,    -1);
-		}
+		sides.put(BOTTOM, EnumFacing.DOWN,  I_BOTTOM);
+		sides.put(TOP,    EnumFacing.UP,    I_TOP   );
+		sides.put(NORTH,  EnumFacing.NORTH, I_NORTH );
+		sides.put(SOUTH,  EnumFacing.SOUTH, I_SOUTH );
+		sides.put(EAST,   EnumFacing.EAST,  I_EAST  );
+		sides.put(WEST,   EnumFacing.WEST,  I_WEST  );
 	}
 	
 	@Override
@@ -116,27 +109,7 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 		}
 		
 		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
-		int id = 0;
-		
-		switch (side) {
-		case DOWN:
-			id = I_BOTTOM;
-			break;
-		case NORTH:
-			id = I_NORTH;
-			break;
-		case SOUTH:
-			id = I_SOUTH;
-			break;
-		case EAST:
-			id = I_EAST;
-			break;
-		case WEST:
-			id = I_WEST;
-			break;
-		default:
-			break;
-		}
+		int id = sides.getC(side);
 		
 		if(side != EnumFacing.UP ) {
 			tile.setBoolean(id, !tile.getBoolean(id));
@@ -199,8 +172,8 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 		for (EnumFacing direction : EnumFacing.HORIZONTALS) {
 			if(worldIn.getBlockState(pos.offset(direction)).getBlock() == this) {
 				TileExtended tile = (TileExtended) worldIn.getTileEntity(pos.offset(direction));
-				if(tile.getBoolean(faceToIndex.get(direction.getOpposite())) == false) {
-					tile.setBoolean(faceToIndex.get(direction.getOpposite()), true);
+				if(tile.getBoolean(sides.getC(direction.getOpposite())) == false) {
+					tile.setBoolean(sides.getC(direction.getOpposite()), true);
 				}
 			}
 			
@@ -227,14 +200,14 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 		TileExtended ourTile = (TileExtended) worldIn.getTileEntity(pos);
 		
 		for (EnumFacing direction : EnumFacing.VALUES) {
-			ourTile.setBoolean(faceToIndex.get(direction), true);
+			ourTile.setBoolean(sides.getC(direction), true);
 		}
 		
 		for (EnumFacing direction : EnumFacing.HORIZONTALS) {
 			if(worldIn.getBlockState(pos.offset(direction)).getBlock() == this) {
 				TileExtended tile = (TileExtended) worldIn.getTileEntity(pos.offset(direction));
-				ourTile.setBoolean(faceToIndex.get(direction), false);
-				   tile.setBoolean(faceToIndex.get(direction.getOpposite()), false);
+				ourTile.setBoolean(sides.getC(direction), false);
+				   tile.setBoolean(sides.getC(direction.getOpposite()), false);
 			}
 			
 		}
@@ -251,11 +224,11 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
         double thickness = Float.MIN_VALUE;
         
         for (EnumFacing facing : EnumFacing.HORIZONTALS) {
-        	boolean exists = state.getValue(faceToProperty.get(facing));
+        	boolean exists = state.getValue(sides.getA(facing));
         	boolean nextBlockIsCatalk = world.getBlockState(pos.offset(facing)).getBlock() == this;
         	if(!exists && nextBlockIsCatalk) {
                 IExtendedBlockState nextState = (IExtendedBlockState) getExtendedState(world.getBlockState(pos.offset(facing)), world, pos.offset(facing));
-                if( nextState.getValue(faceToProperty.get(facing.getOpposite())) ) {
+                if( nextState.getValue(sides.getA(facing.getOpposite())) ) {
                 	continue;
                 }
         	}
@@ -266,13 +239,13 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
         		cuboid.max.y -= 0.5;
         	}
         	
-        	if( !exists && player.inventory.getCurrentItem() != null && WrenchChecker.isAWrench(player.inventory.getCurrentItem().getItem()))
-        	cuboids.add(
-    			new IndexedCuboid6(
-    				facing,
-    				cuboid
-    			)
-    		);
+        	if( exists || ( player.inventory.getCurrentItem() != null && WrenchChecker.isAWrench(player.inventory.getCurrentItem().getItem()) ))
+	        	cuboids.add(
+	    			new IndexedCuboid6(
+	    				facing,
+	    				cuboid
+	    			)
+	    		);
 		}
         
         Cuboid6 cuboid = new Cuboid6(bounds);
@@ -309,7 +282,7 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
         ExtendedFlatHighlightMOP flatmop = new ExtendedFlatHighlightMOP(mop);
         EnumFacing sideHit = (EnumFacing)mop.hitInfo;
         flatmop.side = sideHit;
-        if( sideHit.getAxis() != Axis.Y && !state.getValue(faceToProperty.get(sideHit)) ) {
+        if( sideHit.getAxis() != Axis.Y && !state.getValue(sides.getA(sideHit)) ) {
         	flatmop.top = 0.5;
         }
         if( sideHit == EnumFacing.DOWN && !state.getValue(BOTTOM) ) {
@@ -335,7 +308,7 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 	        double thickness = Float.MIN_VALUE;
 	        
 	        for (EnumFacing facing : EnumFacing.HORIZONTALS) {
-	        	if( !state.getValue(faceToProperty.get(facing)) ) {
+	        	if( !state.getValue(sides.getA(facing)) ) {
 	        		continue;
 	        	}
 	        	Cuboid6 cuboid = new Cuboid6(bounds);
@@ -394,7 +367,7 @@ public class BlockCatwalk extends BlockExtended implements ICatwalkConnect {
 	
 	public boolean isSideOpen(World world, BlockPos pos, EnumFacing side) {
 		TileExtended tile = (TileExtended) world.getTileEntity(pos);
-		return tile.getBoolean(faceToIndex.get(side));
+		return tile.getBoolean(sides.getC(side));
 	}
 
 	public boolean isWide(World world, BlockPos pos, EnumFacing side) {

@@ -13,13 +13,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemRegister {
 	
-	public static ItemDecoration lights, tape;
+	public static ItemDecoration lights, tape, vines;
 	public static ItemCatwalkTool tool;
 	public static ItemBase grate;
 	
 	public static void register() {
 		lights = new ItemDecoration("lights");
 		tape   = new ItemDecoration("tape");
+		vines  = new ItemDecoration("vines");
 		tool   = new ItemCatwalkTool();
 		grate  = new ItemBase("steelgrate");
 		
