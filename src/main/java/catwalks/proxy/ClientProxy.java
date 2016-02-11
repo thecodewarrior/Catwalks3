@@ -8,10 +8,12 @@ import java.util.Map.Entry;
 import org.lwjgl.opengl.GL11;
 
 import catwalks.CatwalksMod;
-import catwalks.langplus.LangPlus;
+import catwalks.block.BlockCatwalkBase.Quad;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
 import catwalks.render.catwalk.CatwalkSmartModel;
+import catwalks.shade.ccl.vec.Matrix4;
+import catwalks.shade.ccl.vec.Vector3;
 import catwalks.texture.TextureGenerator;
 import catwalks.util.ExtendedFlatHighlightMOP;
 import net.minecraft.client.Minecraft;
@@ -91,33 +93,33 @@ public class ClientProxy extends CommonProxy {
             
             GlStateManager.translate(pos.getX()-d0, pos.getY()-d1, pos.getZ()-d2);
             
-            GlStateManager.translate(0.5, 0.5, 0.5);
+//            GlStateManager.translate(0.5, 0.5, 0.5);
             
-            switch (event.target.sideHit) {
-			case WEST:
-				GlStateManager.rotate(180, 0, 1, 0);
-				break;
-			case NORTH:
-				GlStateManager.rotate(90, 0, 1, 0);
-				break;
-			case SOUTH:
-				GlStateManager.rotate(-90, 0, 1, 0);
-				break;
-			case DOWN:
-				GlStateManager.rotate(-90, 1, 0, 0);
-				GlStateManager.rotate(90, 0, 1, 0);
-				GlStateManager.scale(1, 1, -1);
-				break;
-			case UP:
-				GlStateManager.rotate(90, 1, 0, 0);
-				GlStateManager.rotate(90, 0, 1, 0);
-				GlStateManager.rotate(180, 1, 0, 0);
-				break;
-			default:
-				break;
-			}
+//            switch (event.target.sideHit) {
+//			case WEST:
+//				GlStateManager.rotate(180, 0, 1, 0);
+//				break;
+//			case NORTH:
+//				GlStateManager.rotate(90, 0, 1, 0);
+//				break;
+//			case SOUTH:
+//				GlStateManager.rotate(-90, 0, 1, 0);
+//				break;
+//			case DOWN:
+//				GlStateManager.rotate(-90, 1, 0, 0);
+//				GlStateManager.rotate(90, 0, 1, 0);
+//				GlStateManager.scale(1, 1, -1);
+//				break;
+//			case UP:
+//				GlStateManager.rotate(90, 1, 0, 0);
+//				GlStateManager.rotate(90, 0, 1, 0);
+//				GlStateManager.rotate(180, 1, 0, 0);
+//				break;
+//			default:
+//				break;
+//			}
             
-            GlStateManager.translate(-0.5, -0.5, -0.5);
+//            GlStateManager.translate(-0.5, -0.5, -0.5);
 
             
             
@@ -126,28 +128,41 @@ public class ClientProxy extends CommonProxy {
             
             Tessellator tessellator = Tessellator.getInstance();
             WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        
-            double d = 0.0020000000949949026D, D = 1+d;
             
             worldrenderer.begin(1, DefaultVertexFormats.POSITION);
             
-            worldrenderer.pos(D-mop.sideDistance, D-mop.top,	d+mop.right).endVertex();
-            worldrenderer.pos(D-mop.sideDistance, D-mop.top,	D-mop.left).endVertex();
+            Quad q = mop.quad.copy();
             
-            worldrenderer.pos(D-mop.sideDistance, d+mop.bottom, d+mop.right).endVertex();
-            worldrenderer.pos(D-mop.sideDistance, d+mop.bottom, D-mop.left).endVertex();
+            Vector3 center = new Vector3(
+            	(q.v1.x + q.v2.x + q.v3.x + q.v4.x)/4.0,
+            	(q.v1.y + q.v2.y + q.v3.y + q.v4.y)/4.0,
+            	(q.v1.z + q.v2.z + q.v3.z + q.v4.z)/4.0
+            );
             
-            worldrenderer.pos(D-mop.sideDistance, d+mop.bottom, D-mop.left).endVertex();
-            worldrenderer.pos(D-mop.sideDistance, D-mop.top,	D-mop.left).endVertex();
+            Matrix4 matrix = new Matrix4();
+            matrix.translate(center.multiply(-1));
+            matrix.scale(new Vector3(1.004, 1.004, 1.004));
+            matrix.translate(center.multiply(-1));
+            q.apply(matrix);
             
-            worldrenderer.pos(D-mop.sideDistance, d+mop.bottom, d+mop.right).endVertex();
-            worldrenderer.pos(D-mop.sideDistance, D-mop.top,	d+mop.right).endVertex();
+            worldrenderer.pos(q.v1.x, q.v1.y, q.v1.z).endVertex(); // begin outside
+            worldrenderer.pos(q.v2.x, q.v2.y, q.v2.z).endVertex();
             
-            worldrenderer.pos(D-mop.sideDistance, d+mop.bottom, d+mop.right).endVertex();
-            worldrenderer.pos(D-mop.sideDistance, D-mop.top,	D-mop.left).endVertex();
+            worldrenderer.pos(q.v2.x, q.v2.y, q.v2.z).endVertex();
+            worldrenderer.pos(q.v3.x, q.v3.y, q.v3.z).endVertex();
             
-            worldrenderer.pos(D-mop.sideDistance, d+mop.bottom, D-mop.left).endVertex();
-            worldrenderer.pos(D-mop.sideDistance, D-mop.top,	d+mop.right).endVertex();
+            worldrenderer.pos(q.v3.x, q.v3.y, q.v3.z).endVertex();
+            worldrenderer.pos(q.v4.x, q.v4.y, q.v4.z).endVertex();
+
+            worldrenderer.pos(q.v4.x, q.v4.y, q.v4.z).endVertex();
+            worldrenderer.pos(q.v1.x, q.v1.y, q.v1.z).endVertex(); // end outside
+
+            
+            worldrenderer.pos(q.v1.x, q.v1.y, q.v1.z).endVertex(); // cross
+            worldrenderer.pos(q.v3.x, q.v3.y, q.v3.z).endVertex();
+
+            worldrenderer.pos(q.v2.x, q.v2.y, q.v2.z).endVertex(); // cross
+            worldrenderer.pos(q.v4.x, q.v4.y, q.v4.z).endVertex();
             
             tessellator.draw();
             

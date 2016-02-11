@@ -5,7 +5,8 @@ import java.util.List;
 
 import catwalks.CatwalksMod;
 import catwalks.block.BlockCatwalk;
-import catwalks.block.BlockCatwalk.EnumCatwalkMaterial;
+import catwalks.block.BlockCatwalkBase;
+import catwalks.block.BlockCatwalkBase.EnumCatwalkMaterial;
 import catwalks.block.extended.TileExtended;
 import catwalks.texture.CompositeTexture;
 import catwalks.texture.TextureGenerator;
@@ -39,22 +40,25 @@ public class BlockRegister {
 		for (EnumCatwalkMaterial material : EnumCatwalkMaterial.values()) {
 			for(boolean tape : TF) {
 				for(boolean lights : TF) {
-					
-					List<ResourceLocation> textures = new ArrayList<>();
-					
-					textures.add(new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/" + material.getName().toLowerCase() + "/side/base"));
-					if(tape)
-						textures.add(new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/" + material.getName().toLowerCase() + "/side/decorations/tape"));
-					if(lights)
-						textures.add(new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/" + material.getName().toLowerCase() + "/side/decorations/lights"));
-					TextureGenerator.addTexture(new CompositeTexture(
-						new ResourceLocation(BlockCatwalk.makeTextureGenName("side", material, tape, lights)),
-						textures
-					));
+					for(boolean vines : TF) {					
+						List<ResourceLocation> textures = new ArrayList<>();
+						
+						textures.add(new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/" + material.getName().toLowerCase() + "/side/base"));
+						if(tape)
+							textures.add(new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/" + material.getName().toLowerCase() + "/side/decorations/tape"));
+						if(lights)
+							textures.add(new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/" + material.getName().toLowerCase() + "/side/decorations/lights"));
+						if(vines)
+							textures.add(new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/" + material.getName().toLowerCase() + "/side/decorations/vines"));
+						TextureGenerator.addTexture(new CompositeTexture(
+							new ResourceLocation(BlockCatwalkBase.makeTextureGenName("catwalk", "side", material, tape, lights, vines)),
+							textures
+						));
+					}
 				}
 			}
 			TextureGenerator.addTexture(new CompositeTexture(
-					new ResourceLocation(BlockCatwalk.makeTextureGenName("bottom", material, false, false)),
+					new ResourceLocation(BlockCatwalkBase.makeTextureGenName("catwalk", "bottom", material, false, false, false)),
 					new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/" + material.getName().toLowerCase() + "/bottom")
 				));
 		}

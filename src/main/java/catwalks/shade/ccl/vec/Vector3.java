@@ -13,6 +13,7 @@ import catwalks.shade.ccl.util.Copyable;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -88,6 +89,22 @@ public class Vector3 implements Copyable<Vector3>
         return new Vector3(da[2], da[0], da[1]);
     }
 
+    /**
+     * Not ChickenBones
+     */
+    public static Vector3 axis(Axis axis) {
+    	if(axis == Axis.X) {
+    		return new Vector3(1, 0, 0);
+    	}
+    	if(axis == Axis.Y) {
+    		return new Vector3(0, 1, 0);
+    	}
+    	if(axis == Axis.Z) {
+    		return new Vector3(0, 0, 1);
+    	}
+    	return zero.copy();
+    }
+    
     public Vector3 set(double d, double d1, double d2) {
         x = d;
         y = d1;

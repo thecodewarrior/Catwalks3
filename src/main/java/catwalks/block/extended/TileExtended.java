@@ -13,8 +13,8 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TileExtended extends TileEntity {
 
-	public BitSet meta;
-	public ExtendedData data; // unused for now
+	public BitSet meta = new BitSet();
+//	public ExtendedData data; // unused for now
 	
 	public TileExtended() {}
 	
@@ -60,23 +60,23 @@ public class TileExtended extends TileEntity {
 	public void writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
 //		compound.setLong("m", meta);
-		PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-		buf.writeByteArray(meta.toByteArray());
-		if(data != null) {
-			data.write(buf);
-		}
-		compound.setByteArray("d", buf.array());
+//		PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+//		buf.writeByteArray(meta.toByteArray());
+//		if(data != null) {
+//			data.write(buf);
+//		}
+		compound.setByteArray("m", meta.toByteArray());
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		byte[] array = compound.getByteArray("d");
-		PacketBuffer buf = new PacketBuffer(Unpooled.wrappedBuffer(array));
+		byte[] array = compound.getByteArray("m");
+//		PacketBuffer buf = new PacketBuffer(Unpooled.wrappedBuffer(array));
 		meta = BitSet.valueOf(array);
-		if(data != null) {
-			data.read(buf);
-		}
+//		if(data != null) {
+//			data.read(buf);
+//		}
 	}
 	
 	@Override

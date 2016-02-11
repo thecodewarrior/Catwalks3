@@ -7,7 +7,8 @@ import com.google.common.collect.ImmutableList;
 
 import catwalks.CatwalksMod;
 import catwalks.block.BlockCatwalk;
-import catwalks.block.BlockCatwalk.EnumCatwalkMaterial;
+import catwalks.block.BlockCatwalkBase;
+import catwalks.block.BlockCatwalkBase.EnumCatwalkMaterial;
 import catwalks.render.BakedModelBase;
 import catwalks.render.ModelUtils;
 import catwalks.render.SmartModelBase;
@@ -28,14 +29,15 @@ public class CatwalkSmartModel extends SmartModelBase {
 	@Override
 	public IBakedModel newBakedModel(IExtendedBlockState state) {
 		return new Model(
-				state.getValue(BlockCatwalk.MATERIAL),
-        		state.getValue(BlockCatwalk.BOTTOM),
-        		state.getValue(BlockCatwalk.NORTH),
-        		state.getValue(BlockCatwalk.SOUTH),
-        		state.getValue(BlockCatwalk.EAST),
-        		state.getValue(BlockCatwalk.WEST),
-        		state.getValue(BlockCatwalk.TAPE),
-        		state.getValue(BlockCatwalk.LIGHTS)
+				state.getValue(BlockCatwalkBase.MATERIAL),
+        		state.getValue(BlockCatwalkBase.BOTTOM),
+        		state.getValue(BlockCatwalkBase.NORTH),
+        		state.getValue(BlockCatwalkBase.SOUTH),
+        		state.getValue(BlockCatwalkBase.EAST),
+        		state.getValue(BlockCatwalkBase.WEST),
+        		state.getValue(BlockCatwalkBase.TAPE),
+        		state.getValue(BlockCatwalkBase.LIGHTS),
+        		state.getValue(BlockCatwalkBase.VINES)
         	);
 	}
 
@@ -59,7 +61,7 @@ public class CatwalkSmartModel extends SmartModelBase {
 			bottom = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_bottom_") );
 		}
 		
-		public Model(EnumCatwalkMaterial material, boolean down, boolean north, boolean south, boolean west, boolean east, boolean tape, boolean lights) {
+		public Model(EnumCatwalkMaterial material, boolean down, boolean north, boolean south, boolean west, boolean east, boolean tape, boolean lights, boolean vines) {
 			this();
 			this.north = north;
             this.south = south;
@@ -67,8 +69,8 @@ public class CatwalkSmartModel extends SmartModelBase {
             this.east = east;
             this.down = down;
             
-            side = ModelUtils.getSprite( new ResourceLocation(BlockCatwalk.makeTextureGenName("side", material, tape, lights)) );
-			bottom = ModelUtils.getSprite( new ResourceLocation(BlockCatwalk.makeTextureGenName("bottom", material, false, false)));
+            side = ModelUtils.getSprite( new ResourceLocation(BlockCatwalk.makeTextureGenName("catwalk", "side", material, tape, lights, vines)) );
+			bottom = ModelUtils.getSprite( new ResourceLocation(BlockCatwalk.makeTextureGenName("catwalk", "bottom", material, false, false, false)));
             
             genFaces();
 		}
