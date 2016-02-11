@@ -222,6 +222,8 @@ public abstract class BlockCatwalkBase extends BlockExtended {
 		List<CollisionBox> boxes = getCollisionBoxes(state);
 		
     	for (CollisionBox box : boxes) {
+    		if(!state.getValue(box.enableProperty))
+    			continue;
 			Cuboid6 cuboid = (eNull || !collidingEntity.isSneaking()) ? box.normal : box.sneak;
 			
 			if(cuboid.aabb().intersectsWith(originMask)) {

@@ -163,7 +163,6 @@ public class BlockCatwalk extends BlockCatwalkBase implements ICatwalkConnect {
 	
 	@Override
 	public List<LookSide> lookSides(IExtendedBlockState state) {
-		initSides();
 		return sideLookBoxes;
 	}
 	
