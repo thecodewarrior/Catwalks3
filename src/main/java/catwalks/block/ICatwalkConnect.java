@@ -7,7 +7,7 @@ import net.minecraft.world.World;
 public interface ICatwalkConnect {
 
 	public boolean isSideOpen(World world, BlockPos pos, EnumFacing side);
-	
+	public boolean canConnectToSide(World world, BlockPos pos, EnumFacing side);
 	public boolean isWide(World world, BlockPos pos, EnumFacing side);
 	
 }

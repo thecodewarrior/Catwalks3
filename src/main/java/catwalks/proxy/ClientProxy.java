@@ -117,7 +117,9 @@ public class ClientProxy extends CommonProxy {
             
             Matrix4 matrix = new Matrix4();
             matrix.translate(center.multiply(-1));
-            matrix.scale(new Vector3(1.004, 1.004, 1.004));
+            
+            if(!Minecraft.getMinecraft().theWorld.isSideSolid(event.target.getBlockPos().offset(event.target.sideHit), event.target.sideHit.getOpposite()))
+            	matrix.scale(new Vector3(1.002, 1.002, 1.002));
             matrix.translate(center.multiply(-1));
             q.apply(matrix);
             

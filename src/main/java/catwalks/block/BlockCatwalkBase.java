@@ -164,6 +164,24 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		return str;
 	}
 
+	{/* ICatwalkConnectable */}
+	
+	@Override
+	public boolean canConnectToSide(World world, BlockPos pos, EnumFacing side) {
+		return true;
+	}
+	
+	@Override
+	public boolean isSideOpen(World world, BlockPos pos, EnumFacing side) {
+		TileExtended tile = (TileExtended) world.getTileEntity(pos);
+		return tile.getBoolean(sides.getC(side));
+	}
+
+	@Override
+	public boolean isWide(World world, BlockPos pos, EnumFacing side) {
+		return true;
+	}
+	
 	{ /* state */ }
 	
 	@Override

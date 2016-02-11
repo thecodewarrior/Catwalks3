@@ -3,26 +3,18 @@ package catwalks.block;
 import java.util.ArrayList;
 import java.util.List;
 
-import catwalks.block.extended.TileExtended;
 import catwalks.item.ItemBlockCatwalk;
 import catwalks.shade.ccl.vec.Cuboid6;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.AABBUtils;
-import catwalks.util.WrenchChecker;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 public class BlockCatwalk extends BlockCatwalkBase {
-	
 	
 	public BlockCatwalk() {
 		super(Material.iron, "catwalk", ItemBlockCatwalk.class);
@@ -143,16 +135,5 @@ public class BlockCatwalk extends BlockCatwalkBase {
 	@Override
 	public List<CollisionBox> getCollisionBoxes(IExtendedBlockState state) {
 		return collisionBoxes;
-	}
-
-	{/* ICatwalkConnectable */}
-	
-	public boolean isSideOpen(World world, BlockPos pos, EnumFacing side) {
-		TileExtended tile = (TileExtended) world.getTileEntity(pos);
-		return tile.getBoolean(sides.getC(side));
-	}
-
-	public boolean isWide(World world, BlockPos pos, EnumFacing side) {
-		return true;
 	}
 }
