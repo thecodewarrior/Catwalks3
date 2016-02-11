@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
+import com.google.common.base.Optional;
+
 import catwalks.CatwalksMod;
 import catwalks.block.BlockCatwalkBase.Quad;
 import catwalks.register.BlockRegister;
@@ -16,6 +18,8 @@ import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.texture.TextureGenerator;
 import catwalks.util.ExtendedFlatHighlightMOP;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
@@ -27,11 +31,16 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientProxy extends CommonProxy {
@@ -93,39 +102,6 @@ public class ClientProxy extends CommonProxy {
             
             GlStateManager.translate(pos.getX()-d0, pos.getY()-d1, pos.getZ()-d2);
             
-//            GlStateManager.translate(0.5, 0.5, 0.5);
-            
-//            switch (event.target.sideHit) {
-//			case WEST:
-//				GlStateManager.rotate(180, 0, 1, 0);
-//				break;
-//			case NORTH:
-//				GlStateManager.rotate(90, 0, 1, 0);
-//				break;
-//			case SOUTH:
-//				GlStateManager.rotate(-90, 0, 1, 0);
-//				break;
-//			case DOWN:
-//				GlStateManager.rotate(-90, 1, 0, 0);
-//				GlStateManager.rotate(90, 0, 1, 0);
-//				GlStateManager.scale(1, 1, -1);
-//				break;
-//			case UP:
-//				GlStateManager.rotate(90, 1, 0, 0);
-//				GlStateManager.rotate(90, 0, 1, 0);
-//				GlStateManager.rotate(180, 1, 0, 0);
-//				break;
-//			default:
-//				break;
-//			}
-            
-//            GlStateManager.translate(-0.5, -0.5, -0.5);
-
-            
-            
-            
-            
-            
             Tessellator tessellator = Tessellator.getInstance();
             WorldRenderer worldrenderer = tessellator.getWorldRenderer();
             
@@ -174,10 +150,57 @@ public class ClientProxy extends CommonProxy {
 		}
 	}
 	
+	{ /* dev only */ }
+	
+	@SubscribeEvent
+	public void debugText(RenderGameOverlayEvent.Text event) {
+		if(!CatwalksMod.developmentEnvironment)
+			return;
+		
+		if(!Minecraft.getMinecraft().gameSettings.showDebugInfo)
+			return;
+		
+		Minecraft mc = Minecraft.getMinecraft();
+		
+		if(Minecraft.getMinecraft().thePlayer.isSneaking()) {
+			if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && mc.objectMouseOver.getBlockPos() != null)
+            {
+                BlockPos blockpos = mc.objectMouseOver.getBlockPos();
+                IBlockState iblockstate = mc.theWorld.getBlockState(blockpos);
+                
+                IBlockState maybeExtended = iblockstate.getBlock().getExtendedState(iblockstate, mc.theWorld, blockpos);
+                
+                if(maybeExtended instanceof IExtendedBlockState) {
+                	IExtendedBlockState extended = (IExtendedBlockState)maybeExtended;
+                	
+                	for (IUnlistedProperty<?> entry : extended.getUnlistedNames())
+                    {
+                		Object value = extended.getValue(entry);
+                        String s = value.toString();
+
+                        if (value == Boolean.TRUE)
+                        {
+                            s = EnumChatFormatting.GREEN + "" + EnumChatFormatting.ITALIC + s;
+                        }
+                        else if (value == Boolean.FALSE)
+                        {
+                            s = EnumChatFormatting.RED + "" +  EnumChatFormatting.ITALIC + s;
+                        }
+
+                        event.right.add(EnumChatFormatting.ITALIC + entry.getName() + ": " + s);
+                    }
+                }  
+            }
+		}
+	}
+	
 
 	@SubscribeEvent
 	public void worldRender(RenderWorldLastEvent event)
 	{
+		if(!CatwalksMod.developmentEnvironment)
+			return;
+		
 		Minecraft mc = Minecraft.getMinecraft();
 
 		if(!mc.getRenderManager().isDebugBoundingBox() || mc.theWorld == null || mc.thePlayer == null || mc.thePlayer.getEntityBoundingBox() == null)

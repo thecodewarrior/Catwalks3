@@ -2,6 +2,7 @@ package catwalks.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.google.common.collect.Lists;
 
@@ -9,6 +10,7 @@ import catwalks.CatwalksMod;
 import catwalks.block.extended.BlockExtended;
 import catwalks.block.extended.TileExtended;
 import catwalks.block.property.UPropertyBool;
+import catwalks.block.property.UPropertyEnum;
 import catwalks.register.ItemRegister;
 import catwalks.shade.ccl.vec.BlockCoord;
 import catwalks.shade.ccl.vec.Cuboid6;
@@ -25,12 +27,15 @@ import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -42,7 +47,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class BlockCatwalkBase extends BlockExtended {
+public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalkConnect {
 
 	public BlockCatwalkBase(Material material, String name) {
 		super(material, name);
@@ -70,8 +75,10 @@ public abstract class BlockCatwalkBase extends BlockExtended {
 	public static UPropertyBool LIGHTS = new UPropertyBool("lights");
 	public static UPropertyBool VINES  = new UPropertyBool("vines");
 	
+	public static UPropertyEnum<EnumFacing> FACING = UPropertyEnum.create("facing", EnumFacing.class);
+	
 	public static Trimap<UPropertyBool, EnumFacing, Integer> sides = new Trimap<>(UPropertyBool.class, EnumFacing.class, Integer.class);
-	static int I_BOTTOM=0, I_TOP=1, I_NORTH=2, I_SOUTH=3, I_EAST=4, I_WEST=5, I_MATERIAL_ID=6, I_MATERIAL_LEN=4, I_TAPE=10, I_LIGHTS=11, I_VINES=12;
+	static int I_BOTTOM=0, I_TOP=1, I_NORTH=2, I_SOUTH=3, I_EAST=4, I_WEST=5,  I_FACING_ID=6, I_FACING_LEN=3, I_TAPE=10, I_LIGHTS=11, I_VINES=12;
 
 	static {
 		sides.put(BOTTOM, EnumFacing.DOWN,  I_BOTTOM);
@@ -93,6 +100,32 @@ public abstract class BlockCatwalkBase extends BlockExtended {
 		public String getName() {
 			return this.name();
 		}
+	}
+	
+	@Override
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+			EnumFacing side, float hitX, float hitY, float hitZ) {
+		
+		if( playerIn.inventory.getCurrentItem() != null) {
+			if(!WrenchChecker.isAWrench( playerIn.inventory.getCurrentItem().getItem() ))
+				return false;
+			if(playerIn.inventory.getCurrentItem().getItem() instanceof ItemBlock)
+				return false;
+		} else {
+			return false;
+		}
+		
+		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
+		int id = sides.getC(side);
+		
+		if(side != EnumFacing.UP ) {
+			tile.setBoolean(id, !tile.getBoolean(id));
+			tile.markDirty();
+			worldIn.markBlockForUpdate(pos);
+			return true;
+		}
+		
+		return super.onBlockActivated(worldIn, pos, state, playerIn, side, hitX, hitY, hitZ);
 	}
 	
 	public boolean putDecoration(World world, BlockPos pos, String name, boolean value) {
@@ -122,6 +155,17 @@ public abstract class BlockCatwalkBase extends BlockExtended {
 		return false;
 	}
 	
+	public static String makeTextureGenName(String type, String part, EnumCatwalkMaterial material, boolean tape, boolean lights, boolean vines) {
+		String str = CatwalksMod.MODID + ":/gen/" + type + "_" + part + "_";
+		str += material.getName().toLowerCase() + "_";
+		if(tape)   str += 't';
+		if(lights) str += 'l';
+		if(vines)  str += 'v';
+		return str;
+	}
+
+	{ /* state */ }
+	
 	@Override
 	public IBlockState getExtendedState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
 		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
@@ -137,11 +181,115 @@ public abstract class BlockCatwalkBase extends BlockExtended {
 				.withProperty(TAPE,   pass && tile.getBoolean(I_TAPE)  )
 				.withProperty(LIGHTS, pass && tile.getBoolean(I_LIGHTS))
 				.withProperty(VINES,  pass && tile.getBoolean(I_VINES) )
+				.withProperty(FACING, pass ? EnumFacing.VALUES[tile.getNumber(I_FACING_ID, I_FACING_LEN)] : EnumFacing.UP)
 		;
 	}
 	
+	@Override
+	@SuppressWarnings("rawtypes")
+	protected BlockState createBlockState() {
+		IProperty[] listedProperties = new IProperty[] { MATERIAL };
+	    List<IUnlistedProperty> unlistedProperties = new ArrayList<IUnlistedProperty>();
+	    unlistedProperties.addAll(Lists.asList(BOTTOM, new IUnlistedProperty[] { NORTH, SOUTH, WEST, EAST, FACING, TAPE, LIGHTS, VINES }));
+	    
+	    return new ExtendedBlockState(this, listedProperties, unlistedProperties.toArray(new IUnlistedProperty[0]));
+	}
+
+	{ /* rendering */ }
+	
+	@Override
+	public int getLightValue(IBlockAccess world, BlockPos pos) {
+		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		return state.getValue(LIGHTS) ? 15 : 0;
+	}
+
+	@Override
+	public boolean isOpaqueCube() {
+		return false;
+	}
+	
+	@Override
+	public boolean isFullCube() {
+		return false;
+	}
+	
+	@Override
+	public EnumWorldBlockLayer getBlockLayer() {
+		return EnumWorldBlockLayer.CUTOUT_MIPPED;
+	}
+	
+	{ /* placing/breaking */ }
+
+	@Override
+	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+		
+		IExtendedBlockState estate = (IExtendedBlockState) getExtendedState(state, worldIn, pos);
+		List<ItemStack> drops = new ArrayList<>();
+		if(estate.getValue(TAPE)) {
+			drops.add(new ItemStack(ItemRegister.tape, 1, ItemRegister.tape.getMaxDamage() - 1));
+		}
+		if(estate.getValue(LIGHTS)) {
+			drops.add(new ItemStack(ItemRegister.lights, 1, ItemRegister.lights.getMaxDamage() - 1));
+		}
+		if(estate.getValue(VINES)) {
+			drops.add(new ItemStack(ItemRegister.vines, 1, ItemRegister.vines.getMaxDamage() - 1));
+		}
+		
+		for (ItemStack stack : drops) {
+			GeneralUtil.spawnItemStack(worldIn, pos.getX()+0.5, pos.getY()+0.5, pos.getZ	()+0.5, stack);
+		}
+		
+		for (EnumFacing direction : EnumFacing.HORIZONTALS) {
+			if(worldIn.getBlockState(pos.offset(direction)).getBlock() instanceof BlockCatwalkBase) {
+				TileExtended tile = (TileExtended) worldIn.getTileEntity(pos.offset(direction));
+				if(tile.getBoolean(sides.getC(direction.getOpposite())) == false) {
+					tile.setBoolean(sides.getC(direction.getOpposite()), true);
+				}
+			}
+			
+		}
+		
+		super.breakBlock(worldIn, pos, state);
+	}
+
+	@Override
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		TileExtended ourTile = (TileExtended) worldIn.getTileEntity(pos);
+		
+		ourTile.setNumber(I_FACING_ID, I_FACING_LEN, placer.getHorizontalFacing().ordinal());
+		
+		for (EnumFacing direction : EnumFacing.VALUES) {
+			ourTile.setBoolean(sides.getC(direction), true);
+		}
+		
+		for (EnumFacing direction : EnumFacing.HORIZONTALS) {
+			if(worldIn.getBlockState(pos.offset(direction)).getBlock() instanceof BlockCatwalkBase) {
+				TileExtended tile = (TileExtended) worldIn.getTileEntity(pos.offset(direction));
+				ourTile.setBoolean(sides.getC(direction), false);
+				   tile.setBoolean(sides.getC(direction.getOpposite()), false);
+			}
+			
+		}
+		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+	}
+
 
 	{ /* meta */ }
+	
+	@Override
+	public int damageDropped(IBlockState state) {
+	    return state.getValue(MATERIAL).ordinal();
+	}
+
+	@Override
+	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+		return Item.getItemFromBlock(this);
+	}
+
+	@Override
+	public boolean canHarvestBlock(IBlockAccess world, BlockPos pos, EntityPlayer player) {
+		return true;
+	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -163,46 +311,6 @@ public abstract class BlockCatwalkBase extends BlockExtended {
 	public int getMetaFromState(IBlockState state)
 	{
 	    return state.getValue(MATERIAL).ordinal();
-	}
-	
-	@Override
-	@SuppressWarnings("rawtypes")
-	protected BlockState createBlockState() {
-		IProperty[] listedProperties = new IProperty[] { MATERIAL }; // no listed properties
-	    List<IUnlistedProperty> unlistedProperties = new ArrayList<IUnlistedProperty>();
-	    unlistedProperties.addAll(Lists.asList(BOTTOM, new IUnlistedProperty[] { NORTH, SOUTH, WEST, EAST, TAPE, LIGHTS, VINES }));
-	    
-	    return new ExtendedBlockState(this, listedProperties, unlistedProperties.toArray(new IUnlistedProperty[0]));
-	}
-	
-	public static String makeTextureGenName(String type, String part, EnumCatwalkMaterial material, boolean tape, boolean lights, boolean vines) {
-		String str = CatwalksMod.MODID + ":/gen/" + type + "_" + part + "_";
-		str += material.getName().toLowerCase() + "_";
-		if(tape)   str += 't';
-		if(lights) str += 'l';
-		if(vines)  str += 'v';
-		return str;
-	}
-	
-	@Override
-	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-		IExtendedBlockState estate = (IExtendedBlockState) getExtendedState(state, worldIn, pos);
-		List<ItemStack> drops = new ArrayList<>();
-		if(estate.getValue(TAPE)) {
-			drops.add(new ItemStack(ItemRegister.tape, 1, ItemRegister.tape.getMaxDamage() - 1));
-		}
-		if(estate.getValue(LIGHTS)) {
-			drops.add(new ItemStack(ItemRegister.lights, 1, ItemRegister.lights.getMaxDamage() - 1));
-		}
-		if(estate.getValue(VINES)) {
-			drops.add(new ItemStack(ItemRegister.vines, 1, ItemRegister.vines.getMaxDamage() - 1));
-		}
-		
-		for (ItemStack stack : drops) {
-			GeneralUtil.spawnItemStack(worldIn, pos.getX()+0.5, pos.getY()+0.5, pos.getZ	()+0.5, stack);
-		}
-		
-		super.breakBlock(worldIn, pos, state);
 	}
 	
 	{ /* collision */ }

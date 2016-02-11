@@ -16,9 +16,7 @@ public abstract class BlockExtended extends BlockBase {
 	public BlockExtended(Material materialIn, String name, Class<?> clazz) {
 		super(materialIn, name, clazz);
 	}
-	
-	public abstract ExtendedData getData(World world, IBlockState state);
-	
+		
 	@Override
 	public TileEntity createTileEntity(World world, IBlockState state) {
 		return new TileExtended();

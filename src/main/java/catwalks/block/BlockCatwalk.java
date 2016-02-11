@@ -2,12 +2,9 @@ package catwalks.block;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import catwalks.block.extended.ExtendedData;
 import catwalks.block.extended.TileExtended;
 import catwalks.item.ItemBlockCatwalk;
-import catwalks.shade.ccl.raytracer.IndexedCuboid6;
 import catwalks.shade.ccl.vec.Cuboid6;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
@@ -15,87 +12,21 @@ import catwalks.util.AABBUtils;
 import catwalks.util.WrenchChecker;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumWorldBlockLayer;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
-public class BlockCatwalk extends BlockCatwalkBase implements ICatwalkConnect {
+public class BlockCatwalk extends BlockCatwalkBase {
 	
 	
 	public BlockCatwalk() {
 		super(Material.iron, "catwalk", ItemBlockCatwalk.class);
 		setHardness(1.5f);
-	}
-	
-	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-			EnumFacing side, float hitX, float hitY, float hitZ) {
-		
-		if( playerIn.inventory.getCurrentItem() != null) {
-			if(!WrenchChecker.isAWrench( playerIn.inventory.getCurrentItem().getItem() ))
-				return false;
-			if(playerIn.inventory.getCurrentItem().getItem() instanceof ItemBlock)
-				return false;
-		} else {
-			return false;
-		}
-		
-		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
-		int id = sides.getC(side);
-		
-		if(side != EnumFacing.UP ) {
-			tile.setBoolean(id, !tile.getBoolean(id));
-			tile.markDirty();
-			worldIn.markBlockForUpdate(pos);
-			return true;
-		}
-		
-		return super.onBlockActivated(worldIn, pos, state, playerIn, side, hitX, hitY, hitZ);
-	}
-
-	@Override
-	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-		
-		for (EnumFacing direction : EnumFacing.HORIZONTALS) {
-			if(worldIn.getBlockState(pos.offset(direction)).getBlock() == this) {
-				TileExtended tile = (TileExtended) worldIn.getTileEntity(pos.offset(direction));
-				if(tile.getBoolean(sides.getC(direction.getOpposite())) == false) {
-					tile.setBoolean(sides.getC(direction.getOpposite()), true);
-				}
-			}
-			
-		}
-		
-		super.breakBlock(worldIn, pos, state);
-	}
-
-	@Override
-	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-		TileExtended ourTile = (TileExtended) worldIn.getTileEntity(pos);
-		
-		for (EnumFacing direction : EnumFacing.VALUES) {
-			ourTile.setBoolean(sides.getC(direction), true);
-		}
-		
-		for (EnumFacing direction : EnumFacing.HORIZONTALS) {
-			if(worldIn.getBlockState(pos.offset(direction)).getBlock() == this) {
-				TileExtended tile = (TileExtended) worldIn.getTileEntity(pos.offset(direction));
-				ourTile.setBoolean(sides.getC(direction), false);
-				   tile.setBoolean(sides.getC(direction.getOpposite()), false);
-			}
-			
-		}
-		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 	}
 
 	private List<LookSide> sideLookBoxes;
@@ -213,22 +144,6 @@ public class BlockCatwalk extends BlockCatwalkBase implements ICatwalkConnect {
 	public List<CollisionBox> getCollisionBoxes(IExtendedBlockState state) {
 		return collisionBoxes;
 	}
-	
-
-	@Override
-	public int damageDropped(IBlockState state) {
-	    return state.getValue(MATERIAL).ordinal();
-	}
-
-	@Override
-	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-		return Item.getItemFromBlock(this);
-	}
-
-	@Override
-	public boolean canHarvestBlock(IBlockAccess world, BlockPos pos, EntityPlayer player) {
-		return true;
-	}
 
 	{/* ICatwalkConnectable */}
 	
@@ -239,35 +154,5 @@ public class BlockCatwalk extends BlockCatwalkBase implements ICatwalkConnect {
 
 	public boolean isWide(World world, BlockPos pos, EnumFacing side) {
 		return true;
-	}
-
-	{ /* rendering */}
-
-	@Override
-	public int getLightValue(IBlockAccess world, BlockPos pos) {
-		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
-		return state.getValue(LIGHTS) ? 15 : 0;
-	}
-
-	@Override
-	public boolean isOpaqueCube() {
-		return false;
-	}
-	
-	@Override
-	public boolean isFullCube() {
-		return false;
-	}
-	
-	@Override
-	public EnumWorldBlockLayer getBlockLayer() {
-		return EnumWorldBlockLayer.CUTOUT_MIPPED;
-	}
-	
-	{/* accessors */}
-
-	@Override
-	public ExtendedData getData(World world, IBlockState state) {
-		return null;
 	}
 }
