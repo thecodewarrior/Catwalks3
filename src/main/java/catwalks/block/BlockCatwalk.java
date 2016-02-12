@@ -3,15 +3,19 @@ package catwalks.block;
 import java.util.ArrayList;
 import java.util.List;
 
+import catwalks.block.extended.TileExtended;
 import catwalks.item.ItemBlockCatwalk;
 import catwalks.shade.ccl.vec.Cuboid6;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.AABBUtils;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 public class BlockCatwalk extends BlockCatwalkBase {
@@ -21,6 +25,27 @@ public class BlockCatwalk extends BlockCatwalkBase {
 		setHardness(1.5f);
 	}
 
+	@Override
+	public void updateSide(World worldIn, BlockPos pos, EnumFacing side) {
+		IBlockState state = worldIn.getBlockState(pos.offset(side));
+		TileExtended tile = (TileExtended)worldIn.getTileEntity(pos);
+		boolean sideState = true;
+
+		if(state.getBlock() instanceof BlockCatwalk) {
+			sideState = false;
+		}
+		
+		if(state.getBlock() instanceof BlockCatwalkMultiblock) {
+			IBlockState belowState = worldIn.getBlockState(pos.offset(side).offset(EnumFacing.DOWN));
+			IExtendedBlockState extendedState = (IExtendedBlockState) belowState.getBlock().getExtendedState(belowState, worldIn, pos.offset(side).offset(EnumFacing.DOWN));
+			if(extendedState.getValue(FACING) == side.getOpposite()) {
+				sideState = false;
+			}
+		}
+		
+		tile.setBoolean(sides.getC(side), sideState);
+	}
+	
 	private List<LookSide> sideLookBoxes;
 	
 	@Override
@@ -55,7 +80,7 @@ public class BlockCatwalk extends BlockCatwalkBase {
 		double q = Math.toRadians(90);
 		Vector3 y = new Vector3(0, 1, 0);
 		s = side.copy();
-		s.apply(new Matrix4().translate(center).translate(negCenter));
+//		s.apply(new Matrix4().translate(center).translate(negCenter));
 		s.showProperty = NORTH; s.side = EnumFacing.NORTH;
 		sideLookBoxes.add(s);
 		

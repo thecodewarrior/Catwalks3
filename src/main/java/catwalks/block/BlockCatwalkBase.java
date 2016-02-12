@@ -281,16 +281,25 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		}
 		
 		for (EnumFacing direction : EnumFacing.HORIZONTALS) {
-			if(worldIn.getBlockState(pos.offset(direction)).getBlock() instanceof BlockCatwalkBase) {
-				TileExtended tile = (TileExtended) worldIn.getTileEntity(pos.offset(direction));
-				ourTile.setBoolean(sides.getC(direction), false);
-				   tile.setBoolean(sides.getC(direction.getOpposite()), false);
+			IBlockState besideState = worldIn.getBlockState(pos.offset(direction));
+			if(besideState.getBlock() instanceof BlockCatwalkBase) {
+				(  (BlockCatwalkBase)besideState.getBlock()  ).updateSide(worldIn, pos.offset(direction), direction.getOpposite());
+				(  (BlockCatwalkBase)state.getBlock()  ).updateSide(worldIn, pos, direction);
 			}
+			if(besideState.getBlock() instanceof BlockCatwalkMultiblock) {
+				(  (BlockCatwalkBase)besideState.getBlock()  ).updateSide(worldIn, pos.offset(direction).offset(EnumFacing.DOWN), direction.getOpposite());
+				(  (BlockCatwalkBase)state.getBlock()  ).updateSide(worldIn, pos, direction);
+			}
+//				TileExtended tile = (TileExtended) worldIn.getTileEntity(pos.offset(direction));
+//				ourTile.setBoolean(sides.getC(direction), false);
+//				   tile.setBoolean(sides.getC(direction.getOpposite()), false);
 			
 		}
+		
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 	}
 
+	public abstract void updateSide(World worldIn, BlockPos pos, EnumFacing side);
 
 	{ /* meta */ }
 	
@@ -446,6 +455,14 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			return enableProperty.getName() + " => " + normal.toString() + " | " + sneak.toString();
 		}
 		
+		public CollisionBox copy() {
+			CollisionBox box = new CollisionBox();
+			box.normal = normal.copy();
+			box.sneak  = sneak.copy();
+			box.enableProperty = enableProperty;
+			return box;
+		}
+		
 	}
 	
 	public static class LookSide {
@@ -476,6 +493,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			side.wrenchSide = wrenchSide.copy();
 			side.showProperty = showProperty;
 			side.showWithoutWrench = showWithoutWrench;
+			side.side = this.side;
 			
 			return side;
 		}

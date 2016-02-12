@@ -103,6 +103,16 @@ public class Cuboid6 implements Copyable<Cuboid6>
         max.add(o.max);
         return this;
     }
+    
+    
+    /**
+     * NOT CHICKENBONES
+     */
+    public Cuboid6 offset(Vector3 vector) {
+        min.add(vector);
+        max.add(vector);
+        return this;
+    }
 
     public Vector3 center() {
         return min.copy().add(max).multiply(0.5);

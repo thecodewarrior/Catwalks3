@@ -7,18 +7,16 @@ import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
-import com.google.common.base.Optional;
-
 import catwalks.CatwalksMod;
 import catwalks.block.BlockCatwalkBase.Quad;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
 import catwalks.render.catwalk.CatwalkSmartModel;
+import catwalks.render.catwalk.CatwalkStairSmartModel;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.texture.TextureGenerator;
 import catwalks.util.ExtendedFlatHighlightMOP;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -68,6 +66,7 @@ public class ClientProxy extends CommonProxy {
 		models.clear();
 		
 		model("catwalk", new CatwalkSmartModel());
+		model("catwalkStair", new CatwalkStairSmartModel());
 		
         for (Entry<ModelResourceLocation, IBakedModel> model : models.entrySet()) {
 			
