@@ -5,13 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import catwalks.block.extended.EnumCubeEdge;
 import catwalks.block.extended.TileExtended;
+import catwalks.block.property.UPropertyBool;
 import catwalks.item.ItemBlockCatwalk;
 import catwalks.register.BlockRegister;
 import catwalks.shade.ccl.vec.Cuboid6;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.AABBUtils;
+import catwalks.util.GeneralUtil;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -20,98 +23,52 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 public class BlockCatwalkStair extends BlockCatwalkBase {
 
+	public static final UPropertyBool EAST_TOP = new UPropertyBool("EASTTOP");
+	public static final UPropertyBool WEST_TOP = new UPropertyBool("WESTTOP");
+	
+	public static final int I_EAST_TOP = I_BASE_LEN+1, I_WEST_TOP = I_BASE_LEN+2;
+	
 	public BlockCatwalkStair() {
 		super(Material.iron, "catwalkStair", ItemBlockCatwalk.class);
 		setHardness(1.5f);
 	}
-
+	
 	@Override
-	public void updateSide(World worldIn, BlockPos pos, EnumFacing side) {
-		IExtendedBlockState ourState = (IExtendedBlockState) getExtendedState(worldIn.getBlockState(pos), worldIn, pos);
-		IBlockState state = worldIn.getBlockState(pos.offset(side));
-		boolean sideState = true;
-		EnumFacing actualSide = side, facing = ourState.getValue(FACING);
-		if(side == facing) {
-			actualSide = EnumFacing.NORTH;
-			if(state.getBlock() instanceof BlockCatwalk) {
-				sideState = false;
-			}
-			if(state.getBlock() instanceof BlockCatwalkMultiblock) {
-				IBlockState belowState = worldIn.getBlockState(pos.offset(side).offset(EnumFacing.DOWN));
-				IExtendedBlockState extendedState = (IExtendedBlockState) belowState.getBlock().getExtendedState(belowState, worldIn, pos.offset(side).offset(EnumFacing.DOWN));
-				if(extendedState.getValue(FACING) == side.getOpposite()) {
-					sideState = false;
-				}
-			}
-		}
-
-		if(side.getOpposite() == facing) {
-			actualSide = EnumFacing.SOUTH;
-			if(state.getBlock() instanceof BlockCatwalk) {
-				sideState = false;
-			}
-			if(state.getBlock() instanceof BlockCatwalkMultiblock) {
-				IBlockState belowState = worldIn.getBlockState(pos.offset(side).offset(EnumFacing.DOWN));
-				IExtendedBlockState extendedState = (IExtendedBlockState) belowState.getBlock().getExtendedState(belowState, worldIn, pos.offset(side).offset(EnumFacing.DOWN));
-				if(extendedState.getValue(FACING) == side.getOpposite()) {
-					sideState = false;
-				}
-			}
-		}
-		
-		if(side.getAxis() != Axis.Y && side.getAxis() != facing.getAxis()) {
-			if(facing == EnumFacing.NORTH) {
-				// noop
-			}
-			if(facing == EnumFacing.SOUTH) {
-				actualSide = side.getOpposite();
-			}
-			if(facing == EnumFacing.EAST || facing == EnumFacing.WEST) {
-				if(side == EnumFacing.NORTH)
-					actualSide = EnumFacing.WEST;
-				if(side == EnumFacing.SOUTH)
-					actualSide = EnumFacing.EAST;
-				if(facing == EnumFacing.WEST)
-					actualSide = actualSide.getOpposite();
-			}
-			
-			if(state.getBlock() instanceof BlockCatwalkStair) {
-				IExtendedBlockState extendedState = (IExtendedBlockState) state.getBlock().getExtendedState(state, worldIn, pos.offset(side).offset(EnumFacing.DOWN));
-				if(extendedState.getValue(FACING) == facing) {
-					sideState = false;
-				}
-
-			}
-		}
-		
-		TileExtended tile = (TileExtended)worldIn.getTileEntity(pos);
-		tile.setBoolean(sides.getC(side), sideState);
+	public void addAdditionalProperties(List<IUnlistedProperty> list) {
+		list.add(EAST_TOP);
+		list.add(WEST_TOP);
+	}
+	
+	@Override
+	public IExtendedBlockState addProperties(TileExtended tile, IExtendedBlockState state) {
+		return state
+				.withProperty(EAST_TOP, tile.getBoolean(I_EAST_TOP))
+				.withProperty(WEST_TOP, tile.getBoolean(I_WEST_TOP))
+		;
 	}
 	
 	@Override
 	public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {
-		return super.canPlaceBlockAt(worldIn, pos);// && worldIn.getBlockState(pos.offset(EnumFacing.UP)).getBlock().isReplaceable(worldIn, pos.offset(EnumFacing.UP));
+		return super.canPlaceBlockAt(worldIn, pos) && worldIn.getBlockState(pos.offset(EnumFacing.UP)).getBlock().isReplaceable(worldIn, pos.offset(EnumFacing.UP));
 	}
 	
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-		worldIn.setBlockState(pos.offset(EnumFacing.UP), BlockRegister.multiblockPart.getDefaultState());
+		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
+		
+		tile.setBoolean(I_EAST_TOP, true);
+		tile.setBoolean(I_WEST_TOP, true);
+		
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 		
-		pos = pos.offset(EnumFacing.UP);
-		
-		for (EnumFacing direction : EnumFacing.HORIZONTALS) {
-			if(worldIn.getBlockState(pos.offset(direction)).getBlock() instanceof BlockCatwalkBase) {
-				(  (BlockCatwalkBase)worldIn.getBlockState(pos.offset(direction)).getBlock()  ).updateSide(worldIn, pos.offset(direction), direction.getOpposite());
-				(  (BlockCatwalkBase)state.getBlock()  ).updateSide(worldIn, pos, direction);
-			}
-		}
+		worldIn.setBlockState(pos.offset(EnumFacing.UP), BlockRegister.multiblockPart.getDefaultState());
+		GeneralUtil.updateSurroundingCatwalkBlocks(worldIn, pos.offset(EnumFacing.UP));
 	}
 	
 	@Override
@@ -283,15 +240,15 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 			new Vector3(0, 0,   1),
 			new Vector3(0, h,   1),
 			new Vector3(0, 1+h, 0),
-			new Vector3(0, h,   0)
+			new Vector3(0, 1,   0)
 		);
-		
-		side.showProperty = EAST;
-		side.side = EnumFacing.EAST;
-		sides.add(side.copy());
 		
 		side.showProperty = WEST;
 		side.side = EnumFacing.WEST;
+		sides.add(side.copy());
+		
+		side.showProperty = EAST;
+		side.side = EnumFacing.EAST;
 		side.mainSide  .apply(new Matrix4().translate(new Vector3(1, 0, 0)));
 		side.wrenchSide.apply(new Matrix4().translate(new Vector3(1, 0, 0)));
 		sides.add(side.copy());
@@ -317,8 +274,75 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 
 	@Override
 	public List<LookSide> lookSides(IExtendedBlockState state) {
-		initSides();
 		return sideLookBoxes.get(state.getValue(FACING));
 	}
+	
+	{ /* ICatwalkConnect */ }
 
+	@Override
+	public boolean hasEdge(World world, BlockPos pos, EnumCubeEdge edge) {
+		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		if(state.getValue(BlockCatwalkBase.FACING) == edge.getDir1()) {
+			EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(BlockCatwalkBase.FACING)), edge.getDir2());
+			if(actualDir == EnumFacing.EAST && state.getValue(BlockCatwalkStair.EAST_TOP)) {
+				return true;
+			}
+			if(actualDir == EnumFacing.WEST && state.getValue(BlockCatwalkStair.WEST_TOP)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean hasSide(World world, BlockPos pos, EnumFacing side) {
+		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(BlockCatwalkBase.FACING)), side);
+		if(actualDir == EnumFacing.EAST && state.getValue(BlockCatwalkStair.EAST_TOP)) {
+			return true;
+		}
+		if(actualDir == EnumFacing.WEST && state.getValue(BlockCatwalkStair.WEST_TOP)) {
+			return true;
+		}
+		if(side == state.getValue(BlockCatwalkBase.FACING).getOpposite()) {
+			return state.getValue(BlockCatwalkBase.SOUTH);
+		}
+		return false;
+	}
+	
+	@Override
+	public void setSide(World world, BlockPos pos, EnumFacing side, boolean value) {
+		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		TileExtended tile = (TileExtended) world.getTileEntity(pos);
+		
+		EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(BlockCatwalkBase.FACING)), side);
+		if(actualDir == EnumFacing.EAST && state.getValue(BlockCatwalkBase.EAST)) {
+			tile.setBoolean(BlockCatwalkBase.I_EAST, value);
+		}
+		if(actualDir == EnumFacing.WEST && state.getValue(BlockCatwalkBase.WEST)) {
+			tile.setBoolean(BlockCatwalkBase.I_WEST, value);
+		}
+		if(side == state.getValue(BlockCatwalkBase.FACING).getOpposite()) {
+			tile.setBoolean(BlockCatwalkBase.I_SOUTH, value);
+		}
+	}
+	
+	@Override
+	public Object sideData(World world, BlockPos pos, EnumFacing side) {
+		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		return state.getValue(BlockCatwalkBase.FACING);
+	}
+	
+	@Override
+	public EnumSideType sideType(World world, BlockPos pos, EnumFacing side) {
+		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		if(side == state.getValue(BlockCatwalkBase.FACING)) {
+			return null;
+		}
+		if(side == state.getValue(BlockCatwalkBase.FACING).getOpposite()) {
+			return EnumSideType.FULL;
+		}
+		return EnumSideType.SLOPE_BOTTOM;
+	}
+	
 }

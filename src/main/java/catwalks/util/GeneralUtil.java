@@ -4,10 +4,15 @@ import java.util.BitSet;
 import java.util.Random;
 
 import catwalks.block.BlockCatwalkBase.Tri;
+import catwalks.block.ICatwalkConnect;
 import catwalks.shade.ccl.vec.Vector3;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.world.World;
 
 public class GeneralUtil {
@@ -81,6 +86,8 @@ public class GeneralUtil {
 	        return null;                   // do not deal with this case
 
 	    dir = end.copy().sub(start);             // ray direction vector
+	    start.sub(dir.copy().normalize().multiply(0.25));
+	    dir = end.copy().sub(start);             // ray direction vector
 	    w0 = start.copy().sub(tri.v1);
 	    a = -n.copy().dotProduct(w0);
 	    b =  n.copy().dotProduct(dir);
@@ -115,5 +122,42 @@ public class GeneralUtil {
         	return null;
 	    
 	    return intersect;                       // I is in T
+	}
+	
+	public static void updateSurroundingCatwalkBlocks(World world, BlockPos pos) {
+		IBlockState state = world.getBlockState(pos);
+		boolean isCW = false;
+		if(state.getBlock() instanceof ICatwalkConnect) {
+			isCW = true;
+		}
+		for (EnumFacing direction : EnumFacing.HORIZONTALS) {
+			if(world.getBlockState(pos.offset(direction)).getBlock() instanceof ICatwalkConnect) {
+				(  (ICatwalkConnect)world.getBlockState(pos.offset(direction)).getBlock()  ).updateSide(world, pos.offset(direction), direction.getOpposite());
+			}
+			if(isCW) {
+				(  (ICatwalkConnect)state.getBlock()  ).updateSide(world, pos, direction);
+			}
+		}
+	}
+	
+	public static int getRotation(EnumFacing from, EnumFacing to) {
+		if(from.getAxis() == Axis.Y || to.getAxis() == Axis.Y) {
+			return 0;
+		}
+		return to.getHorizontalIndex() - from.getHorizontalIndex();
+	}
+	
+	public static EnumFacing rotateFacing(int rotation, EnumFacing dir) {
+		if(dir.getAxis() == Axis.Y) {
+			return dir;
+		}
+		return EnumFacing.HORIZONTALS[Math.abs( (dir.getHorizontalIndex() + rotation )%EnumFacing.HORIZONTALS.length )];
+	}
+	
+	public static EnumFacing derotateFacing(int rotation, EnumFacing dir) {
+		if(dir.getAxis() == Axis.Y) {
+			return dir;
+		}
+		return EnumFacing.HORIZONTALS[Math.abs( (dir.getHorizontalIndex() - rotation )%EnumFacing.HORIZONTALS.length )];
 	}
 }

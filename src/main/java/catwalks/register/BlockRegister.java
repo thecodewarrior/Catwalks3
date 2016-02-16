@@ -7,7 +7,7 @@ import catwalks.CatwalksMod;
 import catwalks.block.BlockCatwalk;
 import catwalks.block.BlockCatwalkBase;
 import catwalks.block.BlockCatwalkBase.EnumCatwalkMaterial;
-import catwalks.block.BlockCatwalkMultiblock;
+import catwalks.block.BlockCatwalkStairTop;
 import catwalks.block.BlockCatwalkStair;
 import catwalks.block.extended.TileExtended;
 import catwalks.texture.CompositeTexture;
@@ -26,13 +26,13 @@ public class BlockRegister {
 
 	public static BlockCatwalk catwalk;
 	public static BlockCatwalkStair catwalkStair;
-	public static BlockCatwalkMultiblock multiblockPart;
+	public static BlockCatwalkStairTop multiblockPart;
 	
 	public static void register() {
 		GameRegistry.registerTileEntity(TileExtended.class, "tileExtended");
 		catwalk = new BlockCatwalk();
 		catwalkStair = new BlockCatwalkStair();
-		multiblockPart = new BlockCatwalkMultiblock();
+		multiblockPart = new BlockCatwalkStairTop();
 	}
 	
 	@SideOnly(Side.CLIENT)

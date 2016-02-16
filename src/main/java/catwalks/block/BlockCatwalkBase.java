@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nonnull;
+
 import com.google.common.collect.Lists;
 
 import catwalks.CatwalksMod;
@@ -166,21 +168,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 
 	{/* ICatwalkConnectable */}
 	
-	@Override
-	public boolean canConnectToSide(World world, BlockPos pos, EnumFacing side) {
-		return true;
-	}
 	
-	@Override
-	public boolean isSideOpen(World world, BlockPos pos, EnumFacing side) {
-		TileExtended tile = (TileExtended) world.getTileEntity(pos);
-		return tile.getBoolean(sides.getC(side));
-	}
-
-	@Override
-	public boolean isWide(World world, BlockPos pos, EnumFacing side) {
-		return true;
-	}
 	
 	{ /* state */ }
 	
@@ -190,7 +178,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		
 		boolean pass = tile != null;
 		
-		return ((IExtendedBlockState)state)
+		IExtendedBlockState estate = ((IExtendedBlockState)state)
 				.withProperty(BOTTOM, pass && tile.getBoolean(I_BOTTOM))
 				.withProperty(NORTH,  pass && tile.getBoolean(I_NORTH) )
 				.withProperty(SOUTH,  pass && tile.getBoolean(I_SOUTH) )
@@ -199,8 +187,22 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 				.withProperty(TAPE,   pass && tile.getBoolean(I_TAPE)  )
 				.withProperty(LIGHTS, pass && tile.getBoolean(I_LIGHTS))
 				.withProperty(VINES,  pass && tile.getBoolean(I_VINES) )
-				.withProperty(FACING, pass ? EnumFacing.VALUES[tile.getNumber(I_FACING_ID, I_FACING_LEN)] : EnumFacing.UP)
-		;
+				.withProperty(FACING, pass ? EnumFacing.VALUES[tile.getNumber(I_FACING_ID, I_FACING_LEN)] : EnumFacing.UP);
+		
+		if(tile != null) {
+			estate = addProperties(tile, estate);
+		}
+		
+		return estate;
+	}
+	
+	public IExtendedBlockState addProperties(TileExtended tile, @Nonnull IExtendedBlockState state) {
+		return state;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public void addAdditionalProperties(List<IUnlistedProperty> list) {
+		
 	}
 	
 	@Override
@@ -209,6 +211,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		IProperty[] listedProperties = new IProperty[] { MATERIAL };
 	    List<IUnlistedProperty> unlistedProperties = new ArrayList<IUnlistedProperty>();
 	    unlistedProperties.addAll(Lists.asList(BOTTOM, new IUnlistedProperty[] { NORTH, SOUTH, WEST, EAST, FACING, TAPE, LIGHTS, VINES }));
+	    addAdditionalProperties(unlistedProperties);
 	    
 	    return new ExtendedBlockState(this, listedProperties, unlistedProperties.toArray(new IUnlistedProperty[0]));
 	}
@@ -280,26 +283,10 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			ourTile.setBoolean(sides.getC(direction), true);
 		}
 		
-		for (EnumFacing direction : EnumFacing.HORIZONTALS) {
-			IBlockState besideState = worldIn.getBlockState(pos.offset(direction));
-			if(besideState.getBlock() instanceof BlockCatwalkBase) {
-				(  (BlockCatwalkBase)besideState.getBlock()  ).updateSide(worldIn, pos.offset(direction), direction.getOpposite());
-				(  (BlockCatwalkBase)state.getBlock()  ).updateSide(worldIn, pos, direction);
-			}
-			if(besideState.getBlock() instanceof BlockCatwalkMultiblock) {
-				(  (BlockCatwalkBase)besideState.getBlock()  ).updateSide(worldIn, pos.offset(direction).offset(EnumFacing.DOWN), direction.getOpposite());
-				(  (BlockCatwalkBase)state.getBlock()  ).updateSide(worldIn, pos, direction);
-			}
-//				TileExtended tile = (TileExtended) worldIn.getTileEntity(pos.offset(direction));
-//				ourTile.setBoolean(sides.getC(direction), false);
-//				   tile.setBoolean(sides.getC(direction.getOpposite()), false);
-			
-		}
+		GeneralUtil.updateSurroundingCatwalkBlocks(worldIn, pos);
 		
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 	}
-
-	public abstract void updateSide(World worldIn, BlockPos pos, EnumFacing side);
 
 	{ /* meta */ }
 	
@@ -354,6 +341,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		
         IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
 		
+        if(CatwalksMod.developmentEnvironment) initColllisionBoxes();
 		List<CollisionBox> boxes = getCollisionBoxes(state);
 		
     	for (CollisionBox box : boxes) {
@@ -383,6 +371,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			start = new Vector3(startRaw).sub(blockPosVec),
 			end   = new Vector3(  endRaw).sub(blockPosVec);
 		
+		if(CatwalksMod.developmentEnvironment) initSides();
 		List<LookSide> sides = lookSides(state);
 		if(sides == null) {
 			return null;

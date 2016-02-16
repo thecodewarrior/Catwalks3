@@ -3,6 +3,7 @@ package catwalks.block;
 import java.util.ArrayList;
 import java.util.List;
 
+import catwalks.block.extended.EnumCubeEdge;
 import catwalks.block.extended.TileExtended;
 import catwalks.item.ItemBlockCatwalk;
 import catwalks.shade.ccl.vec.Cuboid6;
@@ -24,26 +25,35 @@ public class BlockCatwalk extends BlockCatwalkBase {
 		super(Material.iron, "catwalk", ItemBlockCatwalk.class);
 		setHardness(1.5f);
 	}
-
+	
 	@Override
-	public void updateSide(World worldIn, BlockPos pos, EnumFacing side) {
-		IBlockState state = worldIn.getBlockState(pos.offset(side));
-		TileExtended tile = (TileExtended)worldIn.getTileEntity(pos);
-		boolean sideState = true;
-
-		if(state.getBlock() instanceof BlockCatwalk) {
-			sideState = false;
-		}
-		
-		if(state.getBlock() instanceof BlockCatwalkMultiblock) {
-			IBlockState belowState = worldIn.getBlockState(pos.offset(side).offset(EnumFacing.DOWN));
-			IExtendedBlockState extendedState = (IExtendedBlockState) belowState.getBlock().getExtendedState(belowState, worldIn, pos.offset(side).offset(EnumFacing.DOWN));
-			if(extendedState.getValue(FACING) == side.getOpposite()) {
-				sideState = false;
-			}
-		}
-		
-		tile.setBoolean(sides.getC(side), sideState);
+	public boolean hasEdge(World world, BlockPos pos, EnumCubeEdge edge) {
+		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		return state.getValue(sides.getA(edge.getDir1())) || (edge.getDir2().getAxis() != Axis.Y && state.getValue(sides.getA(edge.getDir2())) );
+	}
+	
+	@Override
+	public boolean hasSide(World world, BlockPos pos, EnumFacing side) {
+		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		return (side.getAxis() != Axis.Y && state.getValue(sides.getA(side)) );
+	}
+	
+	@Override
+	public void setSide(World world, BlockPos pos, EnumFacing side, boolean value) {
+		if(side.getAxis() == Axis.Y)
+			return;
+		TileExtended tile = (TileExtended) world.getTileEntity(pos);
+		tile.setBoolean(sides.getC(side), value);
+	}
+	
+	@Override
+	public Object sideData(World world, BlockPos pos, EnumFacing side) {
+		return null;
+	}
+	
+	@Override
+	public EnumSideType sideType(World world, BlockPos pos, EnumFacing side) {
+		return EnumSideType.FULL;
 	}
 	
 	private List<LookSide> sideLookBoxes;
