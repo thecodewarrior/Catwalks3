@@ -18,6 +18,7 @@ import catwalks.util.GeneralUtil;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
@@ -75,6 +76,12 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
 		worldIn.setBlockState(pos.offset(EnumFacing.UP), Blocks.air.getDefaultState()); 
 		super.breakBlock(worldIn, pos, state);
+	}
+	
+	@Override
+	public EnumFacing transformAffectedSide(World world, BlockPos pos, IBlockState state, EnumFacing side) {
+		IExtendedBlockState estate = (IExtendedBlockState)getExtendedState(state, world, pos);
+		return GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, estate.getValue(BlockCatwalkBase.FACING)), side);
 	}
 	
 	public Map<EnumFacing, List<CollisionBox>> collisionBoxes;
@@ -191,7 +198,8 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	
 	@Override
 	public List<CollisionBox> getCollisionBoxes(IExtendedBlockState state) {
-		return collisionBoxes.get(state.getValue(FACING));
+		List<CollisionBox> list = collisionBoxes.get(state.getValue(FACING));
+		return list;
 	}
 	
 	private Map<EnumFacing, List<LookSide>> sideLookBoxes;
@@ -225,22 +233,24 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 		
 		side.showProperty = NORTH;
 		side.side = EnumFacing.NORTH;
-		side.mainSide  .apply(new Matrix4().translate(new Vector3(0, 1, -1)));
-		side.wrenchSide.apply(new Matrix4().translate(new Vector3(0, 1, -1)));
+		side.mainSide  .apply(new Matrix4().translate(new Vector3(0, 0, -1)));
+		side.wrenchSide.apply(new Matrix4().translate(new Vector3(0, 0, -1)));
+		side.offset = new BlockPos(0, 1, 0);
 		sides.add(side.copy());
+		side.offset = new BlockPos(0, 0, 0);
 		
-		side.mainSide = new Quad(
+		// bottom sides
+		side.mainSide = new Tri(
 			new Vector3(0, 0, 1),
 			new Vector3(0, 1, 1),
-			new Vector3(0, 2, 0),
 			new Vector3(0, 1, 0)
 		);
 		
 		side.wrenchSide = new Quad(
-			new Vector3(0, 0,   1),
-			new Vector3(0, h,   1),
-			new Vector3(0, 1+h, 0),
-			new Vector3(0, 1,   0)
+			new Vector3(0, 0, 1),
+			new Vector3(0, h, 1),
+			new Vector3(0, 1, h),
+			new Vector3(0, 1, 0)
 		);
 		
 		side.showProperty = WEST;
@@ -253,9 +263,36 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 		side.wrenchSide.apply(new Matrix4().translate(new Vector3(1, 0, 0)));
 		sides.add(side.copy());
 		
+		
+		// top sides
+		side.mainSide = new Tri(
+			new Vector3(0, 0, 1),
+			new Vector3(0, 1, 0),
+			new Vector3(0, 0, 0)
+		);
+		
+		side.wrenchSide = new Quad(
+			new Vector3(0, 0, h),
+			new Vector3(0, h, 0),
+			new Vector3(0, 0, 0),
+			new Vector3(0, 0, 0)
+		);
+		
+		side.offset = new BlockPos(0, 1, 0);
+		
+		side.showProperty = WEST_TOP;
+		side.side = EnumFacing.WEST;
+		sides.add(side.copy());
+		
+		side.showProperty = EAST_TOP;
+		side.side = EnumFacing.EAST;
+		side.mainSide  .apply(new Matrix4().translate(new Vector3(1, 0, 0)));
+		side.wrenchSide.apply(new Matrix4().translate(new Vector3(1, 0, 0)));
+		sides.add(side.copy());
+		
 		double q = Math.toRadians(90);
 		Matrix4 matrix = new Matrix4();
-        
+		
         for (EnumFacing dir : new EnumFacing[]{EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.WEST}) {
 			
         	List<LookSide> turnedSides = new ArrayList<>();
@@ -263,6 +300,7 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
         	for (LookSide rawSide : sides) {
         		LookSide turnedSide = rawSide.copy();
         		turnedSide.apply(matrix);
+        		turnedSide.side = GeneralUtil.rotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, dir), turnedSide.side);
 				turnedSides.add(turnedSide);
 			}
         	

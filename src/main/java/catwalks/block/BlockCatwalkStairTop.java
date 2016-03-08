@@ -9,6 +9,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -22,6 +23,17 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect {
 
 	public BlockCatwalkStairTop() {
 		super(Material.iron, "catwalkStairTop");
+	}
+	
+	@Override
+	public float getPlayerRelativeBlockHardness(EntityPlayer playerIn, World worldIn, BlockPos pos) {
+		return worldIn.getBlockState(pos.offset(EnumFacing.DOWN)).getBlock().getPlayerRelativeBlockHardness(playerIn, worldIn, pos.offset(EnumFacing.DOWN));
+	}
+	
+	@Override
+	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+		super.breakBlock(worldIn, pos, state);
+		worldIn.setBlockState(pos.offset(EnumFacing.DOWN), Blocks.air.getDefaultState());
 	}
 	
 	private IExtendedBlockState getBelowState(World world, BlockPos pos) {

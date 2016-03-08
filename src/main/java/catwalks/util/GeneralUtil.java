@@ -72,7 +72,7 @@ public class GeneralUtil {
 	
 	public static final float SMALL_NUM = 0.00000001f;
 	
-	public static Vector3 intersectRayTri( Vector3 start, Vector3 end, Tri tri ) {		
+	public static Vector3 intersectRayTri( Vector3 start, Vector3 end, Tri tri ) {
 		Vector3 intersect;
 	    Vector3    u, v, n;              // triangle vectors
 	    Vector3    dir, w0, w;           // ray vectors
@@ -86,9 +86,10 @@ public class GeneralUtil {
 	        return null;                   // do not deal with this case
 
 	    dir = end.copy().sub(start);             // ray direction vector
-	    start.sub(dir.copy().normalize().multiply(0.25));
+//	    start.sub(dir.copy().normalize().multiply(0.25));
 	    dir = end.copy().sub(start);             // ray direction vector
-	    w0 = start.copy().sub(tri.v1);
+	    w0 = start.copy();
+	    w0.sub(tri.v1);
 	    a = -n.copy().dotProduct(w0);
 	    b =  n.copy().dotProduct(dir);
 	    if (Math.abs(b) < SMALL_NUM) {     // ray is  parallel to triangle plane
@@ -106,7 +107,6 @@ public class GeneralUtil {
 	    	return null;                   // => no intersect
 
 	    intersect = start.copy().add(dir.copy().multiply(r));            // intersect point of ray and plane
-
 	    
 	    float angles = 0;
 
@@ -151,13 +151,19 @@ public class GeneralUtil {
 		if(dir.getAxis() == Axis.Y) {
 			return dir;
 		}
-		return EnumFacing.HORIZONTALS[Math.abs( (dir.getHorizontalIndex() + rotation )%EnumFacing.HORIZONTALS.length )];
+		int i = (dir.getHorizontalIndex() + rotation )%EnumFacing.HORIZONTALS.length;
+		if( i < 0 )
+			i += EnumFacing.HORIZONTALS.length;
+		return EnumFacing.HORIZONTALS[i];
 	}
 	
 	public static EnumFacing derotateFacing(int rotation, EnumFacing dir) {
 		if(dir.getAxis() == Axis.Y) {
 			return dir;
 		}
-		return EnumFacing.HORIZONTALS[Math.abs( (dir.getHorizontalIndex() - rotation )%EnumFacing.HORIZONTALS.length )];
+		int i = (dir.getHorizontalIndex() - rotation )%EnumFacing.HORIZONTALS.length;
+		if( i < 0 )
+			i += EnumFacing.HORIZONTALS.length;
+		return EnumFacing.HORIZONTALS[i];
 	}
 }

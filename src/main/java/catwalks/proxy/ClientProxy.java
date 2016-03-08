@@ -1,5 +1,7 @@
 package catwalks.proxy;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +10,7 @@ import java.util.Map.Entry;
 import org.lwjgl.opengl.GL11;
 
 import catwalks.CatwalksMod;
-import catwalks.block.BlockCatwalkBase.Quad;
+import catwalks.block.BlockCatwalkBase.Face;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
 import catwalks.render.catwalk.CatwalkSmartModel;
@@ -23,6 +25,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -31,6 +34,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -46,6 +50,8 @@ public class ClientProxy extends CommonProxy {
 	public EntityPlayer getPlayerLooking(Vec3 start, Vec3 end) {
 		return Minecraft.getMinecraft().thePlayer;
 	}
+	
+	public static List<Tuple<Vector3, Double>> hits = new ArrayList<>();
 	
 	public void preInit() {
 		BlockRegister.initRender();
@@ -106,40 +112,39 @@ public class ClientProxy extends CommonProxy {
             
             worldrenderer.begin(1, DefaultVertexFormats.POSITION);
             
-            Quad q = mop.quad.copy();
-            
-            Vector3 center = new Vector3(
-            	(q.v1.x + q.v2.x + q.v3.x + q.v4.x)/4.0,
-            	(q.v1.y + q.v2.y + q.v3.y + q.v4.y)/4.0,
-            	(q.v1.z + q.v2.z + q.v3.z + q.v4.z)/4.0
-            );
+            Face q = mop.quad.copy();
+            Vector3[] points = q.points();
             
             Matrix4 matrix = new Matrix4();
-            matrix.translate(center.multiply(-1));
+            matrix.translate(Vector3.center.copy().multiply(-1));
             
             if(!Minecraft.getMinecraft().theWorld.isSideSolid(event.target.getBlockPos().offset(event.target.sideHit), event.target.sideHit.getOpposite()))
             	matrix.scale(new Vector3(1.002, 1.002, 1.002));
-            matrix.translate(center.multiply(-1));
+            matrix.translate(Vector3.center);
             q.apply(matrix);
             
-            worldrenderer.pos(q.v1.x, q.v1.y, q.v1.z).endVertex(); // begin outside
-            worldrenderer.pos(q.v2.x, q.v2.y, q.v2.z).endVertex();
+            Vector3 prev = null;
             
-            worldrenderer.pos(q.v2.x, q.v2.y, q.v2.z).endVertex();
-            worldrenderer.pos(q.v3.x, q.v3.y, q.v3.z).endVertex();
-            
-            worldrenderer.pos(q.v3.x, q.v3.y, q.v3.z).endVertex();
-            worldrenderer.pos(q.v4.x, q.v4.y, q.v4.z).endVertex();
-
-            worldrenderer.pos(q.v4.x, q.v4.y, q.v4.z).endVertex();
-            worldrenderer.pos(q.v1.x, q.v1.y, q.v1.z).endVertex(); // end outside
-
-            
-            worldrenderer.pos(q.v1.x, q.v1.y, q.v1.z).endVertex(); // cross
-            worldrenderer.pos(q.v3.x, q.v3.y, q.v3.z).endVertex();
-
-            worldrenderer.pos(q.v2.x, q.v2.y, q.v2.z).endVertex(); // cross
-            worldrenderer.pos(q.v4.x, q.v4.y, q.v4.z).endVertex();
+            for (int i = 0; i < points.length; i++) {
+            	if(i == 0)
+            		prev = points[points.length-1];
+				Vector3 point = points[i];
+				
+				worldrenderer.pos(prev.x,  prev.y,  prev.z ).endVertex();
+				worldrenderer.pos(point.x, point.y, point.z).endVertex();
+				
+				for (int j = 0; j < points.length/2; j++) {
+					if(j != i && j != i+1 && j != i-1) {
+						
+						Vector3 opp = points[j];
+						
+						worldrenderer.pos(opp.x,   opp.y,   opp.z  ).endVertex();
+						worldrenderer.pos(point.x, point.y, point.z).endVertex();
+						
+					}
+				}
+				prev = point;
+			}
             
             tessellator.draw();
             
@@ -190,7 +195,9 @@ public class ClientProxy extends CommonProxy {
 
                         event.right.add(EnumChatFormatting.ITALIC + entry.getName() + ": " + s);
                     }
-                }  
+                }
+                
+                event.left.add("Looking at side: " + mc.objectMouseOver.sideHit.getName() );
             }
 		}
 	}
@@ -203,11 +210,6 @@ public class ClientProxy extends CommonProxy {
 			return;
 		
 		Minecraft mc = Minecraft.getMinecraft();
-
-		if(!mc.getRenderManager().isDebugBoundingBox() || mc.theWorld == null || mc.thePlayer == null || mc.thePlayer.getEntityBoundingBox() == null)
-			return;
-		double d = 0.0020000000949949026D;
-		mc.mcProfiler.startSection("blockBBs");
 
 		GlStateManager.pushAttrib();
 		GlStateManager.disableLighting();
@@ -227,22 +229,68 @@ public class ClientProxy extends CommonProxy {
         double z = rootPlayer.lastTickPosZ + (rootPlayer.posZ - rootPlayer.lastTickPosZ) * event.partialTicks;
         GlStateManager.translate(-x, -y, -z);
 		
-        AxisAlignedBB searchBB = mc.thePlayer.getEntityBoundingBox().expand(2,2,2);
-        
-		List<AxisAlignedBB> aabbs = mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, searchBB);
+		mc.mcProfiler.startSection("blockBBs");
 		
-		for (AxisAlignedBB bb : aabbs) {
-			RenderGlobal.drawOutlinedBoundingBox(bb.expand(d, d, d), 127, 255, 127, 255);
+		if(!mc.getRenderManager().isDebugBoundingBox() || mc.theWorld == null || mc.thePlayer == null || mc.thePlayer.getEntityBoundingBox() == null)
+		{} else {
+			
+			double d = 0.0020000000949949026D;
+	        AxisAlignedBB searchBB = mc.thePlayer.getEntityBoundingBox().expand(2,2,2);
+	        
+			List<AxisAlignedBB> aabbs = mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, searchBB);
+			
+			for (AxisAlignedBB bb : aabbs) {
+				RenderGlobal.drawOutlinedBoundingBox(bb.expand(d, d, d), 127, 255, 127, 255);
+			}
 		}
 		
-		GlStateManager.depthMask(true);
+		mc.mcProfiler.endStartSection("hitDist");
+		
         GlStateManager.enableTexture2D();
+		
+		Tessellator t = Tessellator.getInstance();
+		WorldRenderer w = t.getWorldRenderer();
+		RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+//		w.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
+		hits.sort(new Comparator<Tuple<Vector3, Double>>() {
+			@Override
+			public int compare(Tuple<Vector3, Double> o1, Tuple<Vector3, Double> o2) {
+				if(o1.getSecond() < o2.getSecond())
+					return 1;
+				if(o1.getSecond() == o2.getSecond())
+					return 0;
+				if(o1.getSecond() > o2.getSecond())
+					return -1;
+				return 0;
+			}
+		});
+		int i = 0;
+		for (Tuple<Vector3, Double> tuple : hits) {
+			Vector3 v = tuple.getFirst();
+			GlStateManager.pushMatrix();
+//			GlStateManager.translate((float) (x - renderManager.viewerPosX), (float) (y - renderManager.viewerPosY), (float) (z - renderManager.viewerPosZ));
+			GlStateManager.translate(v.x, v.y, v.z);
+			GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+			GlStateManager.rotate(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
+			GlStateManager.scale(0.02, 0.02, 0.02);
+			GlStateManager.rotate(180, 0, 0, 1);
+			GlStateManager.translate(5, i*9, 0);
+			mc.fontRendererObj.drawString(String.format("%.6f", tuple.getSecond() ), 0, 0, 0xFFFFFF);
+			
+			GlStateManager.popMatrix();
+			i++;
+		}
+		
+//		t.draw();
+		
+		mc.mcProfiler.endSection();
+		
+		GlStateManager.depthMask(true);
+//        GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
 		
 		GlStateManager.popAttrib();
 		GlStateManager.popMatrix();
-		
-		mc.mcProfiler.endSection();
 	}
 	
 }

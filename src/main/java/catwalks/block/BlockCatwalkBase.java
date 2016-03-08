@@ -13,7 +13,9 @@ import catwalks.block.extended.BlockExtended;
 import catwalks.block.extended.TileExtended;
 import catwalks.block.property.UPropertyBool;
 import catwalks.block.property.UPropertyEnum;
+import catwalks.proxy.ClientProxy;
 import catwalks.register.ItemRegister;
+import catwalks.shade.ccl.util.Copyable;
 import catwalks.shade.ccl.vec.BlockCoord;
 import catwalks.shade.ccl.vec.Cuboid6;
 import catwalks.shade.ccl.vec.Matrix4;
@@ -40,6 +42,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -50,7 +53,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalkConnect {
-
+	
 	public BlockCatwalkBase(Material material, String name) {
 		super(material, name);
 		init();
@@ -121,6 +124,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		int id = sides.getC(side);
 		
 		if(side != EnumFacing.UP ) {
+			side = transformAffectedSide(worldIn, pos, state, side);
 			tile.setBoolean(id, !tile.getBoolean(id));
 			tile.markDirty();
 			worldIn.markBlockForUpdate(pos);
@@ -130,6 +134,9 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		return super.onBlockActivated(worldIn, pos, state, playerIn, side, hitX, hitY, hitZ);
 	}
 	
+	public EnumFacing transformAffectedSide(World world, BlockPos pos, IBlockState state, EnumFacing side) {	
+		return side;
+	}
 	public boolean putDecoration(World world, BlockPos pos, String name, boolean value) {
 		TileExtended tile = (TileExtended) world.getTileEntity(pos);
 		
@@ -156,19 +163,6 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		}
 		return false;
 	}
-	
-	public static String makeTextureGenName(String type, String part, EnumCatwalkMaterial material, boolean tape, boolean lights, boolean vines) {
-		String str = CatwalksMod.MODID + ":/gen/" + type + "_" + part + "_";
-		str += material.getName().toLowerCase() + "_";
-		if(tape)   str += 't';
-		if(lights) str += 'l';
-		if(vines)  str += 'v';
-		return str;
-	}
-
-	{/* ICatwalkConnectable */}
-	
-	
 	
 	{ /* state */ }
 	
@@ -366,6 +360,8 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
 		boolean hasWrench = player.inventory.getCurrentItem() != null && WrenchChecker.isAWrench(player.inventory.getCurrentItem().getItem());
 		
+		BlockCoord hitPos = new BlockCoord(pos);
+		
 		Vector3
 			blockPosVec = new Vector3(pos),
 			start = new Vector3(startRaw).sub(blockPosVec),
@@ -380,9 +376,9 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		LookSide hitSide = null;
 		Vector3 hitVector = null;
 		double smallestDistanceSq = Double.POSITIVE_INFINITY;
-		
+		ClientProxy.hits.clear();
 		for (LookSide side : sides) {
-			Quad quad = null;
+			Face quad = null;
 			if(side.showProperty == null || state.getValue(side.showProperty)) {
 				quad = side.mainSide;
 			} else if(side.showWithoutWrench || hasWrench) {
@@ -391,11 +387,24 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			if(quad == null)
 				continue;
 			
+			start.x -= side.offset.getX();
+			start.y -= side.offset.getY();
+			start.z -= side.offset.getZ();
+			
+			end.x   -= side.offset.getX();
+			end.y   -= side.offset.getY();
+			end.z   -= side.offset.getZ();
+			
 			Tri[] tris = quad.tris();
 			for (Tri tri : tris) {
-				Vector3 vec = GeneralUtil.intersectRayTri(start, end, tri);
+				Vector3 vec = GeneralUtil.intersectRayTri(start.copy(), end.copy(), tri);
 				if(vec != null) {
-					double distanceSq = vec.copy().sub(start).magSquared();
+					Vector3 sub = vec.copy().sub(start);
+					double distanceSq = sub.magSquared();
+					if(distanceSq < 4.1 && distanceSq > 3.9) {
+						distanceSq = distanceSq -1 +1;
+					}
+					ClientProxy.hits.add(new Tuple<Vector3, Double>(vec.copy().add(blockPosVec).add(new Vector3(side.offset)), Math.sqrt( distanceSq )));
 					if(distanceSq < smallestDistanceSq) {
 						hitSide = side;
 						hitVector = vec.copy().add(blockPosVec);
@@ -403,12 +412,20 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 					}
 				}
 			}
+			
+			start.x += side.offset.getX();
+			start.y += side.offset.getY();
+			start.z += side.offset.getZ();
+			
+			end.x   += side.offset.getX();
+			end.y   += side.offset.getY();
+			end.z   += side.offset.getZ();
 		}
 		
 		if(hitSide == null)
 			return null;
 		
-		Quad quad = null;
+		Face quad = null;
 		
 		if(hitSide.showProperty == null || state.getValue(hitSide.showProperty)) {
 			quad = hitSide.mainSide;
@@ -416,9 +433,13 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			quad = hitSide.wrenchSide;
 		}
 		
+		hitPos.x += hitSide.offset.getX();
+		hitPos.y += hitSide.offset.getY();
+		hitPos.z += hitSide.offset.getZ();
+		
 		ExtendedFlatHighlightMOP mop = new ExtendedFlatHighlightMOP(quad, hitVector,
 						( hitSide.side == null ? EnumFacing.UP : hitSide.side ).ordinal(),
-						new BlockCoord(pos), null,
+						hitPos, null,
 						Math.sqrt(smallestDistanceSq)
 				) ;
 
@@ -455,12 +476,15 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	}
 	
 	public static class LookSide {
-		public Quad mainSide, wrenchSide;
+		public Face mainSide, wrenchSide;
 		public UPropertyBool showProperty;
 		public boolean showWithoutWrench;
 		public EnumFacing side;
+		public BlockPos offset;
 		
-		public LookSide() {}
+		public LookSide() {
+			this.offset = new BlockPos(0,0,0);
+		}
 		
 		public LookSide(Quad mainSide, Quad wrenchSide, EnumFacing side, UPropertyBool showProperty, boolean showWithoutWrench) {
 			this.mainSide = mainSide;
@@ -468,6 +492,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			this.showProperty = showProperty;
 			this.showWithoutWrench = showWithoutWrench;
 			this.side = side;
+			this.offset = new BlockPos(0,0,0);
 		}
 		
 		public void apply(Matrix4 matrix) {
@@ -483,7 +508,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			side.showProperty = showProperty;
 			side.showWithoutWrench = showWithoutWrench;
 			side.side = this.side;
-			
+			side.offset = this.offset;
 			return side;
 		}
 		
@@ -494,7 +519,13 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		
 	}
 	
-	public static class Quad {
+	public abstract static class Face implements Copyable<Face> {
+		public abstract void apply(Matrix4 matrix);
+		public abstract Tri[] tris();
+		public abstract Vector3[] points();
+	}
+	
+	public static class Quad extends Face {
 		public Vector3 v1, v2, v3, v4;
 		
 		public Quad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4) {
@@ -523,12 +554,19 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		}
 		
 		@Override
+		public Vector3[] points() {
+			return new Vector3[] {
+				v1, v2, v3, v4
+			};
+		}
+		
+		@Override
 		public String toString() {
 			return "(" + v1.toString() + ", " + v2.toString() + ", " + v3.toString() + ", " + v4.toString() + ")";
 		}
 	}
 	
-	public static class Tri {
+	public static class Tri extends Face {
 		public Vector3 v1, v2, v3;
 		public Tri(Vector3 v1, Vector3 v2, Vector3 v3) {
 			this.v1 = v1;
@@ -547,8 +585,22 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		}
 		
 		@Override
+		public Tri[] tris() {
+			return new Tri[] { this };
+		}
+		
+		@Override
+		public Vector3[] points() {
+			return new Vector3[] {
+				v1, v2, v3
+			};
+		}
+		
+		@Override
 		public String toString() {
 			return "(" + v1.toString() + ", " + v2.toString() + ", " + v3.toString() + ")";
 		}
+
+		
 	}
 }

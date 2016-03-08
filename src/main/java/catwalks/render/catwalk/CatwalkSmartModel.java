@@ -12,6 +12,7 @@ import catwalks.block.BlockCatwalkBase.EnumCatwalkMaterial;
 import catwalks.render.BakedModelBase;
 import catwalks.render.ModelUtils;
 import catwalks.render.SmartModelBase;
+import catwalks.texture.CatwalkVariant;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.IBakedModel;
@@ -69,8 +70,10 @@ public class CatwalkSmartModel extends SmartModelBase {
             this.east = east;
             this.down = down;
             
-            side = ModelUtils.getSprite( new ResourceLocation(BlockCatwalk.makeTextureGenName("catwalk", "side", material, tape, lights, vines)) );
-			bottom = ModelUtils.getSprite( new ResourceLocation(BlockCatwalk.makeTextureGenName("catwalk", "bottom", material, false, false, false)));
+            CatwalkVariant variant = new CatwalkVariant(material, tape, lights, vines);
+            
+            side = ModelUtils.getSprite( new ResourceLocation(variant.getTextureName("catwalk/side")));
+			bottom = ModelUtils.getSprite( new ResourceLocation(variant.getTextureName("catwalk/bottom")));
             
             genFaces();
 		}

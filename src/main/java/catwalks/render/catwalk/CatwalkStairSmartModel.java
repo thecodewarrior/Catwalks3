@@ -12,6 +12,7 @@ import catwalks.block.BlockCatwalkBase.EnumCatwalkMaterial;
 import catwalks.render.BakedModelBase;
 import catwalks.render.ModelUtils;
 import catwalks.render.SmartModelBase;
+import catwalks.texture.CatwalkVariant;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.IBakedModel;
@@ -49,7 +50,7 @@ public class CatwalkStairSmartModel extends SmartModelBase {
 
 	public static class Model extends BakedModelBase {
 		
-		private TextureAtlasSprite side, bottom;
+		private TextureAtlasSprite texture;
 
         private boolean north;
         private boolean south;
@@ -58,8 +59,7 @@ public class CatwalkStairSmartModel extends SmartModelBase {
         private boolean down;
 		
 		public Model() {
-			side = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side_") );
-			bottom = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_bottom_") );
+			texture = ModelUtils.getSprite( new ResourceLocation(CatwalkVariant.NULLS[0].getTextureName("stair/base")) );
 		}
 		
 		public Model(EnumCatwalkMaterial material, boolean down, boolean north, boolean south, boolean west, boolean east, boolean tape, boolean lights, boolean vines, EnumFacing facing) {
@@ -70,8 +70,9 @@ public class CatwalkStairSmartModel extends SmartModelBase {
             this.east = east;
             this.down = down;
             
-            side = ModelUtils.getSprite( new ResourceLocation(BlockCatwalk.makeTextureGenName("catwalk", "side", material, tape, lights, vines)) );
-			bottom = ModelUtils.getSprite( new ResourceLocation(BlockCatwalk.makeTextureGenName("catwalk", "bottom", material, false, false, false)));
+            CatwalkVariant variant = new CatwalkVariant(material, tape, lights, vines);
+
+            texture = ModelUtils.getSprite( new ResourceLocation(variant.getTextureName("stair/base")) );
             
             genFaces();
 		}
@@ -80,20 +81,20 @@ public class CatwalkStairSmartModel extends SmartModelBase {
 		
 		public void genFaces() {
 	        if(north) {
-	        	ModelUtils.putFace(quads, EnumFacing.NORTH, side);
+	        	ModelUtils.putFace(quads, EnumFacing.NORTH, texture);
 	        }
 	        if(south) {
-	        	ModelUtils.putFace(quads, EnumFacing.SOUTH, side);
+	        	ModelUtils.putFace(quads, EnumFacing.SOUTH, texture);
 	        }
 	        if(east) {
-	        	ModelUtils.putFace(quads, EnumFacing.EAST, side);
+	        	ModelUtils.putFace(quads, EnumFacing.EAST, texture);
 	        }
 	        if(west) {
-	        	ModelUtils.putFace(quads, EnumFacing.WEST, side);
+	        	ModelUtils.putFace(quads, EnumFacing.WEST, texture);
 	        }
 	        
 	        if(down) {
-	        	ModelUtils.putFace(quads, EnumFacing.DOWN, bottom);
+	        	ModelUtils.putFace(quads, EnumFacing.DOWN, texture);
 	        }
 		}
 		
@@ -115,7 +116,7 @@ public class CatwalkStairSmartModel extends SmartModelBase {
 
 		@Override
 		public TextureAtlasSprite getParticleTexture() {
-			return bottom;
+			return texture;
 		}
 		
 	}
