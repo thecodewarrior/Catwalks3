@@ -86,7 +86,7 @@ public class GeneralUtil {
 	        return null;                   // do not deal with this case
 
 	    dir = end.copy().sub(start);             // ray direction vector
-//	    start.sub(dir.copy().normalize().multiply(0.25));
+	    start.sub(dir.copy().normalize().multiply(0.25));
 	    dir = end.copy().sub(start);             // ray direction vector
 	    w0 = start.copy();
 	    w0.sub(tri.v1);

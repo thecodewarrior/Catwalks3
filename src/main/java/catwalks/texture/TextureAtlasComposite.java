@@ -44,10 +44,11 @@ public class TextureAtlasComposite extends TextureAtlasSprite {
 	
 	public boolean load(IResourceManager manager, ResourceLocation location) {
 		BufferedImage sofar = null, stitching = null;
-      AnimationMetadataSection animation = null;
-      
-		try {
-			for (ResourceLocation loc : texture.layers) {
+		AnimationMetadataSection animation = null;
+		
+		int ignoredLayers = 0;
+		for (ResourceLocation loc : texture.layers) {
+			try {
 				IResource iresource = manager.getResource(fileLoc(loc));
 				stitching = ImageIO.read(iresource.getInputStream());
 				
@@ -58,12 +59,19 @@ public class TextureAtlasComposite extends TextureAtlasSprite {
 				}
 				
 				composite(sofar, stitching);
+			} catch (IOException e) {
+				ignoredLayers++;
 			}
-		} catch (IOException e) {
-			Logs.error(e.getClass().getName() + " : " + e.getMessage() + " while loading sprite");
-			return true;
 		}
 		
+		if(ignoredLayers == texture.layers.size()) { // no layers found
+			Logs.warn("completly ignored %s due to no layers existing", texture.name.getResourceDomain() + ":" + texture.name.getResourcePath());
+			return true; // don't stitch, use missing texture
+		}
+		
+		if(ignoredLayers > 0) {
+			Logs.warn("ignored %d out of %d layers while loading %s", texture.layers.size(), ignoredLayers, texture.name.getResourceDomain() + ":" + texture.name.getResourcePath());
+		}
 		
 		int mp = Minecraft.getMinecraft().gameSettings.mipmapLevels;
 		BufferedImage[] finalTexture = new BufferedImage[1 + mp];

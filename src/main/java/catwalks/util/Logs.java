@@ -36,6 +36,20 @@ public class Logs {
     public static void error(String message, Object... args) {
         getInstance().logger.log(Level.ERROR, String.format(message, args));
     }
+    
+    public static void warn(String message, Object... args) {
+        getInstance().logger.log(Level.WARN, String.format(message, args));
+    }
+
+    public static void log(String message, Object... args) {
+        getInstance().logger.log(Level.INFO, String.format(message, args));
+    }
+
+    public static void debug(String message, Object... args) {
+        if (debugMode) {
+            getInstance().logger.log(Level.INFO, String.format(message, args));
+        }
+    }
 
     public static void log(World world, TileEntity te, String message, Object... args) {
         if (doLogging) {
@@ -46,16 +60,6 @@ public class Logs {
             }
             String id = te.getPos().getX() + "," + te.getPos().getY() + "," + te.getPos().getZ() + ": ";
             getInstance().logger.log(Level.INFO, id + String.format(message, args));
-        }
-    }
-
-    public static void log(String message, Object... args) {
-        getInstance().logger.log(Level.INFO, String.format(message, args));
-    }
-
-    public static void debug(String message, Object... args) {
-        if (debugMode) {
-            getInstance().logger.log(Level.INFO, String.format(message, args));
         }
     }
 

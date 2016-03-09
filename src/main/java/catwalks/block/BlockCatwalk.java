@@ -126,7 +126,7 @@ public class BlockCatwalk extends BlockCatwalkBase {
 	
 	{ /* collision */ }
 	
-	public List<CollisionBox> collisionBoxes;
+	private List<CollisionBox> collisionBoxes;
 	
 	@Override
 	public void initColllisionBoxes() {

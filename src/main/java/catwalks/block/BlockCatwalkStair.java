@@ -15,6 +15,7 @@ import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.AABBUtils;
 import catwalks.util.GeneralUtil;
+import catwalks.util.Logs;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -198,7 +199,11 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	
 	@Override
 	public List<CollisionBox> getCollisionBoxes(IExtendedBlockState state) {
-		List<CollisionBox> list = collisionBoxes.get(state.getValue(FACING));
+		EnumFacing facing = state.getValue(FACING);
+		List<CollisionBox> list = collisionBoxes.get(facing);
+		if(list == null) {
+			Logs.error("ERROR: tried to get collision boxes for invalid facing value! %s", facing.toString());
+		}
 		return list;
 	}
 	

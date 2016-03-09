@@ -80,22 +80,22 @@ public class CatwalkStairSmartModel extends SmartModelBase {
 		List<BakedQuad> quads = new ArrayList<>();
 		
 		public void genFaces() {
-	        if(north) {
-	        	ModelUtils.putFace(quads, EnumFacing.NORTH, texture);
-	        }
-	        if(south) {
-	        	ModelUtils.putFace(quads, EnumFacing.SOUTH, texture);
-	        }
-	        if(east) {
-	        	ModelUtils.putFace(quads, EnumFacing.EAST, texture);
-	        }
-	        if(west) {
-	        	ModelUtils.putFace(quads, EnumFacing.WEST, texture);
-	        }
-	        
-	        if(down) {
-	        	ModelUtils.putFace(quads, EnumFacing.DOWN, texture);
-	        }
+//	        if(north) {
+//	        	ModelUtils.putFace(quads, EnumFacing.NORTH, texture);
+//	        }
+//	        if(south) {
+//	        	ModelUtils.putFace(quads, EnumFacing.SOUTH, texture);
+//	        }
+//	        if(east) {
+//	        	ModelUtils.putFace(quads, EnumFacing.EAST, texture);
+//	        }
+//	        if(west) {
+//	        	ModelUtils.putFace(quads, EnumFacing.WEST, texture);
+//	        }
+//	        
+//	        if(down) {
+//	        	ModelUtils.putFace(quads, EnumFacing.DOWN, texture);
+//	        }
 		}
 		
 		@Override

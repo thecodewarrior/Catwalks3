@@ -31,7 +31,7 @@ do
 
 	echo "Making $BLOCK.json item"
 	echo "{
-    \"parent\": \"$MODID:block/$BLOCK\"
+    \"parent\": \"$MODID:block/$BLOCK\",
     \"display\": {
             \"thirdperson\": {
             \"rotation\": [ 10, -45, 170 ],

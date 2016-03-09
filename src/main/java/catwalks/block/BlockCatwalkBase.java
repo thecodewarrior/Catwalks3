@@ -22,6 +22,7 @@ import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.ExtendedFlatHighlightMOP;
 import catwalks.util.GeneralUtil;
+import catwalks.util.Logs;
 import catwalks.util.Trimap;
 import catwalks.util.WrenchChecker;
 import net.minecraft.block.material.Material;
@@ -333,10 +334,16 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		
 		boolean eNull = collidingEntity == null;
 		
-        IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		
+		IBlockState plainState = world.getBlockState(pos);
+        IExtendedBlockState state = (IExtendedBlockState) getExtendedState(plainState, world, pos);
 		
         if(CatwalksMod.developmentEnvironment) initColllisionBoxes();
 		List<CollisionBox> boxes = getCollisionBoxes(state);
+		
+		if(boxes == null) {
+			Logs.error("ERROR: Collision box list null!");
+		}
 		
     	for (CollisionBox box : boxes) {
     		if(!state.getValue(box.enableProperty))

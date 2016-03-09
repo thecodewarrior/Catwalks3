@@ -1,6 +1,7 @@
 tile.catwalk.steel.name=Catwalk
 tile.catwalk.wood.name=Wooden Catwalk
 tile.catwalk.stone.name=Stone Catwalk
+tile.catwalk.custom.name=Unlocalized: tile.catwalk.custom.name
 
 item.decoration.lights.name=Catwalk Lights
 item.decoration.tape.name=Catwalk Decoration

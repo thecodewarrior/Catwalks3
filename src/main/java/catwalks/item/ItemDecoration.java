@@ -27,7 +27,8 @@ public class ItemDecoration extends ItemBase {
 	public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side,
 			float hitX, float hitY, float hitZ) {
 		
-		if( (  stack.getItemDamage() == this.getMaxDamage(stack) && !playerIn.isSneaking()  ) || (  stack.getItemDamage() == 0 && playerIn.isSneaking()  ) ) {
+		if( (  stack.getItemDamage() == this.getMaxDamage(stack) && !playerIn.isSneaking()  ) || (  stack.getItemDamage() == 0 && playerIn.isSneaking()  )
+				&& !playerIn.capabilities.isCreativeMode) {
 			return false;
 		}
 		

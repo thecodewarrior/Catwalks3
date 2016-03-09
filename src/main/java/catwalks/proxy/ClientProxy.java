@@ -15,6 +15,7 @@ import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
 import catwalks.render.catwalk.CatwalkSmartModel;
 import catwalks.render.catwalk.CatwalkStairSmartModel;
+import catwalks.shade.ccl.raytracer.RayTracer;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.texture.TextureGenerator;
@@ -26,6 +27,8 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -33,13 +36,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -82,6 +89,25 @@ public class ClientProxy extends CommonProxy {
             }
         	
 		}
+    }
+	
+	@SubscribeEvent
+    public void textureStitch(TextureStitchEvent.Pre event) {
+		
+		TextureMap map = event.map;
+		
+		for(ResourceLocation tex : BlockRegister.textures) {
+			
+			map.getTextureExtry(tex.toString());
+			TextureAtlasSprite texture = map.getTextureExtry(tex.toString());
+			
+			if(texture == null) {
+				map.registerSprite(tex);
+//				texture = ModelLoader.defaultTextureGetter().apply(tex);
+//				map.setTextureEntry(tex.toString(), texture);
+			}
+		}
+
     }
 	
 	@SubscribeEvent
@@ -246,47 +272,61 @@ public class ClientProxy extends CommonProxy {
 		
 		mc.mcProfiler.endStartSection("hitDist");
 		
-        GlStateManager.enableTexture2D();
+		if(Minecraft.getMinecraft().gameSettings.showDebugInfo && rootPlayer.isSneaking()) {
 		
-		Tessellator t = Tessellator.getInstance();
-		WorldRenderer w = t.getWorldRenderer();
-		RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-//		w.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
-		hits.sort(new Comparator<Tuple<Vector3, Double>>() {
-			@Override
-			public int compare(Tuple<Vector3, Double> o1, Tuple<Vector3, Double> o2) {
-				if(o1.getSecond() < o2.getSecond())
-					return 1;
-				if(o1.getSecond() == o2.getSecond())
-					return 0;
-				if(o1.getSecond() > o2.getSecond())
-					return -1;
-				return 0;
-			}
-		});
-		int i = 0;
-		for (Tuple<Vector3, Double> tuple : hits) {
-			Vector3 v = tuple.getFirst();
-			GlStateManager.pushMatrix();
-//			GlStateManager.translate((float) (x - renderManager.viewerPosX), (float) (y - renderManager.viewerPosY), (float) (z - renderManager.viewerPosZ));
-			GlStateManager.translate(v.x, v.y, v.z);
-			GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-			GlStateManager.rotate(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-			GlStateManager.scale(0.02, 0.02, 0.02);
-			GlStateManager.rotate(180, 0, 0, 1);
-			GlStateManager.translate(5, i*9, 0);
-			mc.fontRendererObj.drawString(String.format("%.6f", tuple.getSecond() ), 0, 0, 0xFFFFFF);
+			if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
 			
-			GlStateManager.popMatrix();
-			i++;
+				
+                if(hits.isEmpty()) {
+                	Vector3 vec = new Vector3(mc.objectMouseOver.hitVec);
+                	Vector3 eyepos = new Vector3(RayTracer.getStartVec(rootPlayer));
+                	hits.add(new Tuple<Vector3, Double>(vec, vec.copy().sub(eyepos).mag()));
+                }
+				
+		        GlStateManager.enableTexture2D();
+				
+				RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+				hits.sort(new Comparator<Tuple<Vector3, Double>>() {
+					@Override
+					public int compare(Tuple<Vector3, Double> o1, Tuple<Vector3, Double> o2) {
+						if(o1.getSecond() < o2.getSecond())
+							return 1;
+						if(o1.getSecond() == o2.getSecond())
+							return 0;
+						if(o1.getSecond() > o2.getSecond())
+							return -1;
+						return 0;
+					}
+				});
+				int height = 9;
+				int i = 0;
+				if(mc.objectMouseOver.sideHit == EnumFacing.UP) {
+					height = -9;
+					i = 1;
+				}
+				for (Tuple<Vector3, Double> tuple : hits) {
+					Vector3 v = tuple.getFirst();
+					GlStateManager.pushMatrix();
+					GlStateManager.translate(v.x, v.y, v.z);
+					GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+					GlStateManager.rotate(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
+					GlStateManager.scale(0.007, 0.007, 0.007);
+					GlStateManager.rotate(180, 0, 0, 1);
+					GlStateManager.translate(5, i*height, 0);
+					
+					mc.fontRendererObj.drawString(String.format("%.6f", tuple.getSecond() ), 0, 0, 0xFFFFFF);
+					
+					GlStateManager.popMatrix();
+					i++;
+				}
+				
+            	hits.clear();
+			}
 		}
-		
-//		t.draw();
-		
 		mc.mcProfiler.endSection();
 		
 		GlStateManager.depthMask(true);
-//        GlStateManager.enableTexture2D();
+        GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
 		
 		GlStateManager.popAttrib();

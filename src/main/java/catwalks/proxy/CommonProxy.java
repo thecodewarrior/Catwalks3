@@ -50,13 +50,16 @@ public class CommonProxy {
 	@SubscribeEvent
 	public void itemPickup(EntityItemPickupEvent event) {
 		ItemStack stack = event.item.getEntityItem();
+		if(event.entityPlayer == null) {
+			return;
+		}
 		InventoryPlayer inv = event.entityPlayer.inventory;
 		boolean changed = false;
 
 		if(stack != null && stack.getItem() instanceof ItemDecoration) {
 			for (int i = 0; i < inv.getSizeInventory(); i++) {
 				ItemStack slotStack = inv.getStackInSlot(i);
-				if(slotStack != null && slotStack.getItem() == stack.getItem() && slotStack.getItemDamage() != 0) {
+				if(slotStack != null && slotStack.getItem() == stack.getItem() && ( slotStack.getItemDamage() != 0 || event.entityPlayer.capabilities.isCreativeMode)) {
 					int toTake = slotStack.getItemDamage();
 					int available = stack.getMaxDamage()-stack.getItemDamage();
 					int toput = Math.min(toTake, available);

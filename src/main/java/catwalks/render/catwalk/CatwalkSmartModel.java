@@ -6,13 +6,12 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 import catwalks.CatwalksMod;
-import catwalks.block.BlockCatwalk;
 import catwalks.block.BlockCatwalkBase;
 import catwalks.block.BlockCatwalkBase.EnumCatwalkMaterial;
 import catwalks.render.BakedModelBase;
 import catwalks.render.ModelUtils;
+import catwalks.render.ModelUtils.SpritelessQuad;
 import catwalks.render.SmartModelBase;
-import catwalks.texture.CatwalkVariant;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.IBakedModel;
@@ -49,13 +48,10 @@ public class CatwalkSmartModel extends SmartModelBase {
 
 	public static class Model extends BakedModelBase {
 		
-		private TextureAtlasSprite side, bottom;
+		private TextureAtlasSprite side, tapeTex, lightsTex, vinesTex, bottom;
 
-        private boolean north;
-        private boolean south;
-        private boolean west;
-        private boolean east;
-        private boolean down;
+        private boolean north, south, west, east, down;
+        private boolean tape, lights, vines;
 		
 		public Model() {
 			side = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side_") );
@@ -69,33 +65,48 @@ public class CatwalkSmartModel extends SmartModelBase {
             this.west = west;
             this.east = east;
             this.down = down;
+            this.tape = tape;
+            this.lights = lights;
+            this.vines = vines;
             
-            CatwalkVariant variant = new CatwalkVariant(material, tape, lights, vines);
+            String mat = material.getName().toLowerCase();
             
-            side = ModelUtils.getSprite( new ResourceLocation(variant.getTextureName("catwalk/side")));
-			bottom = ModelUtils.getSprite( new ResourceLocation(variant.getTextureName("catwalk/bottom")));
+            side = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/side/base"));
+            bottom = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/bottom/base"));
             
+            tapeTex   = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/side/decorations/tape"));
+            lightsTex = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/side/decorations/lights"));
+            vinesTex  = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/side/decorations/vines"));
+                        
             genFaces();
 		}
 		
 		List<BakedQuad> quads = new ArrayList<>();
 		
 		public void genFaces() {
+			List<SpritelessQuad> rawQuads = new ArrayList<>();
 	        if(north) {
-	        	ModelUtils.putFace(quads, EnumFacing.NORTH, side);
+	        	ModelUtils.putFace(rawQuads, EnumFacing.NORTH);
 	        }
 	        if(south) {
-	        	ModelUtils.putFace(quads, EnumFacing.SOUTH, side);
+	        	ModelUtils.putFace(rawQuads, EnumFacing.SOUTH);
 	        }
 	        if(east) {
-	        	ModelUtils.putFace(quads, EnumFacing.EAST, side);
+	        	ModelUtils.putFace(rawQuads, EnumFacing.EAST);
 	        }
 	        if(west) {
-	        	ModelUtils.putFace(quads, EnumFacing.WEST, side);
+	        	ModelUtils.putFace(rawQuads, EnumFacing.WEST);
 	        }
 	        
+	        ModelUtils.processQuads(rawQuads, quads, side);
+	        if(  tape) ModelUtils.processQuads(rawQuads, quads,   tapeTex);
+	        if(lights) ModelUtils.processQuads(rawQuads, quads, lightsTex);
+	        if( vines) ModelUtils.processQuads(rawQuads, quads,  vinesTex);
+	        
 	        if(down) {
-	        	ModelUtils.putFace(quads, EnumFacing.DOWN, bottom);
+	        	rawQuads.clear();
+	        	ModelUtils.putFace(rawQuads, EnumFacing.DOWN);
+	        	ModelUtils.processQuads(rawQuads, quads, bottom);
 	        }
 		}
 		
