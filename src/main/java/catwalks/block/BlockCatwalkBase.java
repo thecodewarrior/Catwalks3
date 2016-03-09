@@ -122,10 +122,10 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		}
 		
 		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
-		int id = sides.getC(side);
 		
 		if(side != EnumFacing.UP ) {
 			side = transformAffectedSide(worldIn, pos, state, side);
+			int id = sides.getC(side);
 			tile.setBoolean(id, !tile.getBoolean(id));
 			tile.markDirty();
 			worldIn.markBlockForUpdate(pos);

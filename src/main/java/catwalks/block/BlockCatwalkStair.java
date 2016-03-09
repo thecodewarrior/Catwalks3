@@ -1,9 +1,11 @@
 package catwalks.block;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import catwalks.block.extended.EnumCubeEdge;
 import catwalks.block.extended.TileExtended;
@@ -19,7 +21,6 @@ import catwalks.util.Logs;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
@@ -89,7 +90,7 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	
 	@Override
 	public void initColllisionBoxes() {
-		collisionBoxes = new HashMap<>();
+		collisionBoxes = new EnumMap<>(EnumFacing.class);
 		List<CollisionBox> boxes = new ArrayList<>();
 		
 		AxisAlignedBB bounds = new AxisAlignedBB(0,0,0 , 1,1,1);
@@ -200,8 +201,14 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	@Override
 	public List<CollisionBox> getCollisionBoxes(IExtendedBlockState state) {
 		EnumFacing facing = state.getValue(FACING);
+		boolean hasKey = collisionBoxes.containsKey(facing);
 		List<CollisionBox> list = collisionBoxes.get(facing);
 		if(list == null) {
+			boolean isNorth = facing == EnumFacing.NORTH;
+			boolean hasNorth = collisionBoxes.containsKey(EnumFacing.NORTH);
+			Set<EnumFacing> set = collisionBoxes.keySet();
+			boolean setHasNorth = set.contains(EnumFacing.NORTH);
+			boolean hasItNow = collisionBoxes.containsKey(facing);
 			Logs.error("ERROR: tried to get collision boxes for invalid facing value! %s", facing.toString());
 		}
 		return list;

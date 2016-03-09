@@ -5,11 +5,13 @@ import java.util.List;
 import catwalks.block.extended.EnumCubeEdge;
 import catwalks.block.extended.TileExtended;
 import catwalks.util.GeneralUtil;
+import catwalks.util.WrenchChecker;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -23,6 +25,29 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect {
 
 	public BlockCatwalkStairTop() {
 		super(Material.iron, "catwalkStairTop");
+	}
+	
+	@Override
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState ourState, EntityPlayer playerIn,
+			EnumFacing side, float hitX, float hitY, float hitZ) {
+		if( playerIn.inventory.getCurrentItem() != null) {
+			if(!WrenchChecker.isAWrench( playerIn.inventory.getCurrentItem().getItem() ))
+				return false;
+			if(playerIn.inventory.getCurrentItem().getItem() instanceof ItemBlock)
+				return false;
+		} else {
+			return false;
+		}
+		
+		IExtendedBlockState state = getBelowState(worldIn, pos);
+		
+		if(side != EnumFacing.UP ) {
+			side = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(BlockCatwalkBase.FACING)), side);
+			setSide(worldIn, pos, side, !hasSide(worldIn, pos, side));
+			return true;
+		}
+		
+		return true;
 	}
 	
 	@Override
