@@ -53,7 +53,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalkConnect {
+public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalkConnect, IDecoratable {
 	
 	public BlockCatwalkBase(Material material, String name) {
 		super(material, name);
@@ -138,6 +138,8 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	public EnumFacing transformAffectedSide(World world, BlockPos pos, IBlockState state, EnumFacing side) {	
 		return side;
 	}
+	
+	@Override
 	public boolean putDecoration(World world, BlockPos pos, String name, boolean value) {
 		TileExtended tile = (TileExtended) world.getTileEntity(pos);
 		
@@ -255,15 +257,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			GeneralUtil.spawnItemStack(worldIn, pos.getX()+0.5, pos.getY()+0.5, pos.getZ	()+0.5, stack);
 		}
 		
-		for (EnumFacing direction : EnumFacing.HORIZONTALS) {
-			if(worldIn.getBlockState(pos.offset(direction)).getBlock() instanceof BlockCatwalkBase) {
-				TileExtended tile = (TileExtended) worldIn.getTileEntity(pos.offset(direction));
-				if(tile.getBoolean(sides.getC(direction.getOpposite())) == false) {
-					tile.setBoolean(sides.getC(direction.getOpposite()), true);
-				}
-			}
-			
-		}
+		GeneralUtil.updateSurroundingCatwalkBlocks(worldIn, pos);
 		
 		super.breakBlock(worldIn, pos, state);
 	}

@@ -70,6 +70,11 @@ public class BlockRegister {
 		registerTextureAllMaterials("blocks/catwalk/<mat>/side/decorations/lights");
 		registerTextureAllMaterials("blocks/catwalk/<mat>/side/decorations/vines");
 		
+		registerTextureAllMaterials("blocks/stair/<mat>/base");
+		registerTextureAllMaterials("blocks/stair/<mat>/decorations/tape");
+		registerTextureAllMaterials("blocks/stair/<mat>/decorations/lights");
+		registerTextureAllMaterials("blocks/stair/<mat>/decorations/vines");
+		
 	}
 	
 	

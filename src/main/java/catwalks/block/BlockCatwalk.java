@@ -3,6 +3,9 @@ package catwalks.block;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
+
 import catwalks.block.extended.EnumCubeEdge;
 import catwalks.block.extended.TileExtended;
 import catwalks.item.ItemBlockCatwalk;
@@ -11,7 +14,6 @@ import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.AABBUtils;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -130,7 +132,7 @@ public class BlockCatwalk extends BlockCatwalkBase {
 	
 	@Override
 	public void initColllisionBoxes() {
-		collisionBoxes = new ArrayList<>();
+		Builder<CollisionBox> builder = ImmutableList.<CollisionBox>builder();
 		
 		AxisAlignedBB bounds = new AxisAlignedBB(0,0,0 , 1,1,1);
         double thickness = Float.MIN_VALUE;
@@ -148,7 +150,7 @@ public class BlockCatwalk extends BlockCatwalkBase {
         	cuboid.max.y += 0.5;
         	box.normal = cuboid.copy();
         	
-        	collisionBoxes.add(box);
+        	builder.add(box);
 		}
         
         CollisionBox box = new CollisionBox();
@@ -163,8 +165,9 @@ public class BlockCatwalk extends BlockCatwalkBase {
 //    	cuboid.max.y += 0.5;
     	box.normal = cuboid.copy();
         
-    	collisionBoxes.add(box);
+    	builder.add(box);
 		
+    	collisionBoxes = builder.build();
 	}
 	
 	@Override

@@ -1,11 +1,13 @@
 package catwalks.block;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 
 import catwalks.block.extended.EnumCubeEdge;
 import catwalks.block.extended.TileExtended;
@@ -36,7 +38,7 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	public static final UPropertyBool WEST_TOP = new UPropertyBool("WESTTOP");
 	
 	public static final int I_EAST_TOP = I_BASE_LEN+1, I_WEST_TOP = I_BASE_LEN+2;
-	
+	public static final double STEP_COUNT = 4;
 	public BlockCatwalkStair() {
 		super(Material.iron, "catwalkStair", ItemBlockCatwalk.class);
 		setHardness(1.5f);
@@ -90,11 +92,11 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	
 	@Override
 	public void initColllisionBoxes() {
-		collisionBoxes = new EnumMap<>(EnumFacing.class);
+		Builder<EnumFacing, List<CollisionBox>> builder = ImmutableMap.<EnumFacing, List<CollisionBox>>builder();
 		List<CollisionBox> boxes = new ArrayList<>();
 		
 		AxisAlignedBB bounds = new AxisAlignedBB(0,0,0 , 1,1,1);
-        double thickness = Float.MIN_VALUE, stepCount = 4, stepLength = 1.0/stepCount;
+        double thickness = Float.MIN_VALUE, stepLength = 1.0/STEP_COUNT;
         
         Cuboid6 cuboid = new Cuboid6(bounds);
         
@@ -103,7 +105,7 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
         
         cuboid.offset(new Vector3(0, stepLength/2.0, 0));
         
-        for (int i = 0; i < stepCount; i++) {
+        for (int i = 0; i < STEP_COUNT; i++) {
         	CollisionBox box = new CollisionBox();
             
             box.enableProperty = BOTTOM;
@@ -125,28 +127,59 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
         AABBUtils.offsetSide(cuboid,  EnumFacing.EAST,  -(1-thickness));
         AABBUtils.offsetSide(cuboid2, EnumFacing.WEST,  -(1-thickness));
         
-        for (int i = 0; i < stepCount; i++) {
+        // West
+        for (int i = 0; i < STEP_COUNT; i++) {
+        	// top
         	CollisionBox box = new CollisionBox();
-            
-            box.enableProperty = EAST;
+        	
+            box.enableProperty = WEST_TOP;
             
             box.normal = cuboid.copy();
             box.normal.max.y += 0.5;
+            box.normal.min.y = 1;
             box.sneak  = cuboid.copy();
+            box.sneak.min.y = 1;
+            
+            boxes.add(box);
+            
+            // bottom
+            box = new CollisionBox();
+            
+            box.enableProperty = WEST;
+            
+            box.normal = cuboid.copy();
+            box.normal.max.y = 1;
+            box.sneak  = cuboid.copy();
+            box.sneak.max.y = 1;
             
             boxes.add(box);
             
             cuboid.offset(new Vector3(0, stepLength, -stepLength));
 		}
         
-        for (int i = 0; i < stepCount; i++) {
+        for (int i = 0; i < STEP_COUNT; i++) {
+        	// top
         	CollisionBox box = new CollisionBox();
-            
-            box.enableProperty = WEST;
+        	
+            box.enableProperty = EAST_TOP;
             
             box.normal = cuboid2.copy();
             box.normal.max.y += 0.5;
+            box.normal.min.y = 1;
             box.sneak  = cuboid2.copy();
+            box.sneak.min.y = 1;
+            
+            boxes.add(box);
+            
+            // bottom
+            box = new CollisionBox();
+            
+            box.enableProperty = EAST;
+            
+            box.normal = cuboid2.copy();
+            box.normal.max.y = 1;
+            box.sneak  = cuboid2.copy();
+            box.sneak.max.y = 1;
             
             boxes.add(box);
             
@@ -192,10 +225,11 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 				turnedBoxes.add(turnedBox);
 			}
         	
-        	collisionBoxes.put(dir, turnedBoxes);
+        	builder.put(dir, turnedBoxes);
         	
         	matrix.translate(new Vector3(0.5, 0.5, 0.5)).rotate(-q, new Vector3(0, 1, 0)).translate(new Vector3(-0.5, -0.5, -0.5));
 		}
+        collisionBoxes = builder.build();
 	}
 	
 	@Override
@@ -302,6 +336,52 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 		side.wrenchSide.apply(new Matrix4().translate(new Vector3(1, 0, 0)));
 		sides.add(side.copy());
 		
+		double stepLength = 1.0/STEP_COUNT;
+		
+		for (int i = 0; i < STEP_COUNT; i++) {
+            side.showProperty = null;
+            
+            double y = i*stepLength + stepLength/2 - 1, minZ = 1-i*stepLength, maxZ = 1-(i+1)*stepLength;
+            side.mainSide = new Quad(
+            		new Vector3(0, y, minZ),
+            		new Vector3(0, y, maxZ),
+            		new Vector3(1, y, maxZ),
+            		new Vector3(1, y, minZ)
+            		);
+            side.side = EnumFacing.DOWN;
+            sides.add(side.copy());
+            if(i != 0) {
+            	side.mainSide = new Quad(
+                		new Vector3(0, y-stepLength, minZ),
+                		new Vector3(0, y,            minZ),
+                		new Vector3(1, y,            minZ),
+                		new Vector3(1, y-stepLength, minZ)
+                		);
+                side.side = EnumFacing.DOWN;
+                sides.add(side.copy());
+            }
+            if(i == 0) {
+            	side.mainSide = new Quad(
+                		new Vector3(0, y-stepLength/2, minZ),
+                		new Vector3(0, y,              minZ),
+                		new Vector3(1, y,              minZ),
+                		new Vector3(1, y-stepLength/2, minZ)
+                		);
+                side.side = EnumFacing.DOWN;
+                sides.add(side.copy());
+            }
+            if(i == STEP_COUNT-1) {
+            	side.mainSide = new Quad(
+                		new Vector3(0, y,              maxZ),
+                		new Vector3(0, y+stepLength/2, maxZ),
+                		new Vector3(1, y+stepLength/2, maxZ),
+                		new Vector3(1, y,              maxZ)
+                		);
+                side.side = EnumFacing.DOWN;
+                sides.add(side.copy());
+            }
+		}
+		
 		double q = Math.toRadians(90);
 		Matrix4 matrix = new Matrix4();
 		
@@ -380,7 +460,9 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	@Override
 	public Object sideData(World world, BlockPos pos, EnumFacing side) {
 		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
-		return state.getValue(BlockCatwalkBase.FACING);
+		if(side.getAxis() != state.getValue(BlockCatwalkBase.FACING).getAxis())
+			return state.getValue(BlockCatwalkBase.FACING);
+		return null;
 	}
 	
 	@Override

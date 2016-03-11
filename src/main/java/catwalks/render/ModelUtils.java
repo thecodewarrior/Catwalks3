@@ -85,10 +85,10 @@ public class ModelUtils {
         EnumFacing side = LightUtil.toSide((float) normal.xCoord, (float) normal.yCoord, (float) normal.zCoord);
 
         return new SpritelessQuad(
-        		v1, 0,  0,
-        		v2, 0,  16,
-        		v3, 16, 16,
-        		v4, 16, 0,
+        		v1, 16, 0,
+        		v2, 16, 16,
+        		v3, 0,  16,
+        		v4, 0,  0,
         	side);
     }
     
@@ -108,6 +108,38 @@ public class ModelUtils {
     	for (SpritelessQuad spritelessQuad : rawQuads) {
 			quads.add(spritelessQuad.bakedQuad(sprite));
 		}
+    }
+    
+    public static void putQuad(List<SpritelessQuad> quads, EnumFacing facing,
+    		double x1, double y1, double z1, float u1, float v1,
+    		double x2, double y2, double z2, float u2, float v2,
+    		double x3, double y3, double z3, float u3, float v3,
+    		double x4, double y4, double z4, float u4, float v4) {
+    	
+    	Vec3
+    		p1 = new Vec3(x1,y1,z1),
+    		p2 = new Vec3(x2,y2,z2),
+    		p3 = new Vec3(x3,y3,z3),
+    		p4 = new Vec3(x4,y4,z4);
+
+        quads.add(
+        	new SpritelessQuad(
+        		p1, u1, v1,
+        		p2, u2, v2,
+        		p3, u3, v3,
+        		p4, u4, v4,
+        	facing)
+        );
+        
+        quads.add(
+        	new SpritelessQuad(
+        		p4, u4, v4,
+        		p3, u3, v3,
+        		p2, u2, v2,
+        		p1, u1, v1,
+        	facing)
+        );
+    	
     }
     
     public static void putFace(List<SpritelessQuad> quads, EnumFacing facing) {

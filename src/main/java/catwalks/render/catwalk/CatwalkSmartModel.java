@@ -54,8 +54,8 @@ public class CatwalkSmartModel extends SmartModelBase {
         private boolean tape, lights, vines;
 		
 		public Model() {
-			side = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_side_") );
-			bottom = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":gen/catwalk_bottom_") );
+			side = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/steel/side/base"));
+            bottom = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/steel/bottom/base"));
 		}
 		
 		public Model(EnumCatwalkMaterial material, boolean down, boolean north, boolean south, boolean west, boolean east, boolean tape, boolean lights, boolean vines) {
