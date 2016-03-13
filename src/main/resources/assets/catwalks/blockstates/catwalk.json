@@ -1,11 +1,10 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "catwalks:catwalk"
+    "model": "catwalks:catwalkinv"
   },
   "variants": {
-    "normal": [{}],
-    "inventory": [{}]
+	  "normal": [{}]
   }
 }
 

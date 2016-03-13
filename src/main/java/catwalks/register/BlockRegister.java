@@ -57,23 +57,35 @@ public class BlockRegister {
 	@SideOnly(Side.CLIENT)
 	public static void initRender() {
 		ModelLoader.setCustomStateMapper(catwalk, new StateMapperStatic("catwalk"));
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(catwalk), 0, new ModelResourceLocation(catwalk.getRegistryName(), "inventory"));
+		Item catwalkItem = Item.getItemFromBlock(catwalk);
+		ResourceLocation catwalkRL = Item.itemRegistry.getNameForObject(catwalkItem);
+		ModelLoader.setCustomModelResourceLocation(catwalkItem, 0, new ModelResourceLocation(catwalkRL.toString()+"_steel" , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(catwalkItem, 1, new ModelResourceLocation(catwalkRL.toString()+"_stone" , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(catwalkItem, 2, new ModelResourceLocation(catwalkRL.toString()+"_wood"  , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(catwalkItem, 3, new ModelResourceLocation(catwalkRL.toString()+"_custom", "inventory" ));
+		
 		ModelLoader.setCustomStateMapper(catwalkStair, new StateMapperStatic("catwalkStair"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(catwalkStair), 0, new ModelResourceLocation(catwalkStair.getRegistryName(), "inventory"));
 		
 //		registerTextureVariants("catwalk/side",   "blocks/catwalk/<mat>/side/");
 //		registerTextureVariants("catwalk/bottom", "blocks/catwalk/<mat>/bottom/");
 		
-		registerTextureAllMaterials("blocks/catwalk/<mat>/bottom/base");
+		// Catwalk
 		registerTextureAllMaterials("blocks/catwalk/<mat>/side/base");
-		registerTextureAllMaterials("blocks/catwalk/<mat>/side/decorations/tape");
-		registerTextureAllMaterials("blocks/catwalk/<mat>/side/decorations/lights");
-		registerTextureAllMaterials("blocks/catwalk/<mat>/side/decorations/vines");
+		registerTextureAllMaterials("blocks/catwalk/<mat>/side/tape");
+		registerTextureAllMaterials("blocks/catwalk/<mat>/side/lights");
+		registerTextureAllMaterials("blocks/catwalk/<mat>/side/speed");
 		
+		registerTextureAllMaterials("blocks/catwalk/<mat>/bottom/base");
+		registerTextureAllMaterials("blocks/catwalk/<mat>/bottom/tape");
+		registerTextureAllMaterials("blocks/catwalk/<mat>/bottom/lights");
+		registerTextureAllMaterials("blocks/catwalk/<mat>/bottom/speed");
+
+		// Stair
 		registerTextureAllMaterials("blocks/stair/<mat>/base");
-		registerTextureAllMaterials("blocks/stair/<mat>/decorations/tape");
-		registerTextureAllMaterials("blocks/stair/<mat>/decorations/lights");
-		registerTextureAllMaterials("blocks/stair/<mat>/decorations/vines");
+		registerTextureAllMaterials("blocks/stair/<mat>/tape");
+		registerTextureAllMaterials("blocks/stair/<mat>/lights");
+		registerTextureAllMaterials("blocks/stair/<mat>/speed");
 		
 	}
 	

@@ -1,0 +1,14 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "catwalks:catwalkinv"
+  },
+  "variants": {
+    "inventory": [{
+	    "textures": {
+	        "bottom": "catwalks:blocks/catwalk/custom/bottom/base",
+	        "side": "catwalks:blocks/catwalk/custom/side/base"
+	    }
+    }]
+  }
+}

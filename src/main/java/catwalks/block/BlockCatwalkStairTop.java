@@ -1,11 +1,15 @@
 package catwalks.block;
 
 import java.util.List;
+import java.util.Random;
 
 import catwalks.block.extended.EnumCubeEdge;
 import catwalks.block.extended.TileExtended;
+import catwalks.register.BlockRegister;
 import catwalks.util.GeneralUtil;
+import catwalks.util.Logs;
 import catwalks.util.WrenchChecker;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -25,6 +29,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 
 	public BlockCatwalkStairTop() {
 		super(Material.iron, "catwalkStairTop");
+		this.setTickRandomly(true);
 	}
 	
 	@Override
@@ -49,6 +54,25 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		}
 		
 		return true;
+	}
+	
+	public boolean checkForValidity(World worldIn, BlockPos pos) {
+		if(worldIn.getBlockState(pos.offset(EnumFacing.DOWN)).getBlock() != BlockRegister.catwalkStair) {
+			worldIn.setBlockState(pos, Blocks.air.getDefaultState());
+			Logs.warn("Removed invalid CatwalkStairTop block at (%d, %d, %d) in dim %s (%d)", pos.getX(), pos.getY(), pos.getZ(), worldIn.provider.getDimensionName(), worldIn.provider.getDimensionId());
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public void randomTick(World worldIn, BlockPos pos, IBlockState state, Random random) {
+		checkForValidity(worldIn, pos);
+	}
+	
+	@Override
+	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+		checkForValidity(worldIn, pos);
 	}
 	
 	@Override
@@ -77,6 +101,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	@Override
 	public boolean hasEdge(World world, BlockPos pos, EnumCubeEdge edge) {
 		IExtendedBlockState state = getBelowState(world, pos);
+		
 		if(state.getValue(BlockCatwalkBase.FACING) == edge.getDir1()) {
 			EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(BlockCatwalkBase.FACING)), edge.getDir2());
 			if(actualDir == EnumFacing.EAST && state.getValue(BlockCatwalkStair.EAST_TOP)) {
@@ -109,6 +134,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	@Override
 	public void setSide(World world, BlockPos pos, EnumFacing side, boolean value) {
 		IExtendedBlockState state = getBelowState(world, pos);
+		
 		TileExtended tile = (TileExtended) world.getTileEntity(pos.offset(EnumFacing.DOWN));
 		
 		EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(BlockCatwalkBase.FACING)), side);
@@ -134,6 +160,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	@Override
 	public EnumSideType sideType(World world, BlockPos pos, EnumFacing side) {
 		IExtendedBlockState state = getBelowState(world, pos);
+		
 		if(side == state.getValue(BlockCatwalkBase.FACING)) {
 			return EnumSideType.FULL;
 		}
@@ -174,6 +201,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	public MovingObjectPosition collisionRayTrace(World world, BlockPos pos, EntityPlayer player, Vec3 start,
 			Vec3 end) {
 		IBlockState state = world.getBlockState(pos.offset(EnumFacing.DOWN));
+		
 		if(state.getBlock() instanceof BlockBase) {
 			MovingObjectPosition mop = state.getBlock().collisionRayTrace(world, pos.offset(EnumFacing.DOWN), start, end);
 			return mop;

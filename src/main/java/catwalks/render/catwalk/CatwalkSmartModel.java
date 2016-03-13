@@ -37,7 +37,7 @@ public class CatwalkSmartModel extends SmartModelBase {
         		state.getValue(BlockCatwalkBase.WEST),
         		state.getValue(BlockCatwalkBase.TAPE),
         		state.getValue(BlockCatwalkBase.LIGHTS),
-        		state.getValue(BlockCatwalkBase.VINES)
+        		state.getValue(BlockCatwalkBase.SPEED)
         	);
 	}
 
@@ -48,18 +48,17 @@ public class CatwalkSmartModel extends SmartModelBase {
 
 	public static class Model extends BakedModelBase {
 		
-		private TextureAtlasSprite side, tapeTex, lightsTex, vinesTex, bottom;
+		private TextureAtlasSprite side, sideTapeTex, sideLightsTex, sideSpeedTex;
+		private TextureAtlasSprite bottom, bottomTapeTex, bottomLightsTex, bottomSpeedTex;
 
         private boolean north, south, west, east, down;
-        private boolean tape, lights, vines;
+        private boolean tape, lights, speed;
 		
 		public Model() {
-			side = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/steel/side/base"));
-            bottom = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/steel/bottom/base"));
+			this(EnumCatwalkMaterial.STEEL, false, false, false, false, false, false, false, false);
 		}
 		
-		public Model(EnumCatwalkMaterial material, boolean down, boolean north, boolean south, boolean west, boolean east, boolean tape, boolean lights, boolean vines) {
-			this();
+		public Model(EnumCatwalkMaterial material, boolean down, boolean north, boolean south, boolean west, boolean east, boolean tape, boolean lights, boolean speed) {
 			this.north = north;
             this.south = south;
             this.west = west;
@@ -67,17 +66,22 @@ public class CatwalkSmartModel extends SmartModelBase {
             this.down = down;
             this.tape = tape;
             this.lights = lights;
-            this.vines = vines;
+            this.speed = speed;
             
             String mat = material.getName().toLowerCase();
             
-            side = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/side/base"));
-            bottom = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/bottom/base"));
+            side          = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/side/base"));
             
-            tapeTex   = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/side/decorations/tape"));
-            lightsTex = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/side/decorations/lights"));
-            vinesTex  = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/side/decorations/vines"));
-                        
+            sideTapeTex   = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/side/tape"));
+            sideLightsTex = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/side/lights"));
+            sideSpeedTex  = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/side/speed"));
+
+            bottom          = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/bottom/base"));
+
+            bottomTapeTex   = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/bottom/tape"));
+            bottomLightsTex = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/bottom/lights"));
+            bottomSpeedTex  = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/bottom/speed"));
+            
             genFaces();
 		}
 		
@@ -99,14 +103,17 @@ public class CatwalkSmartModel extends SmartModelBase {
 	        }
 	        
 	        ModelUtils.processQuads(rawQuads, quads, side);
-	        if(  tape) ModelUtils.processQuads(rawQuads, quads,   tapeTex);
-	        if(lights) ModelUtils.processQuads(rawQuads, quads, lightsTex);
-	        if( vines) ModelUtils.processQuads(rawQuads, quads,  vinesTex);
+	        if(  tape) ModelUtils.processQuads(rawQuads, quads,   sideTapeTex);
+	        if(lights) ModelUtils.processQuads(rawQuads, quads, sideLightsTex);
+	        if( speed) ModelUtils.processQuads(rawQuads, quads,  sideSpeedTex);
 	        
 	        if(down) {
 	        	rawQuads.clear();
 	        	ModelUtils.putFace(rawQuads, EnumFacing.DOWN);
 	        	ModelUtils.processQuads(rawQuads, quads, bottom);
+	        	if(  tape) ModelUtils.processQuads(rawQuads, quads,   bottomTapeTex);
+		        if(lights) ModelUtils.processQuads(rawQuads, quads, bottomLightsTex);
+		        if( speed) ModelUtils.processQuads(rawQuads, quads,  bottomSpeedTex);
 	        }
 		}
 		

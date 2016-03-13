@@ -13,14 +13,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemRegister {
 	
-	public static ItemDecoration lights, tape, vines;
+	public static ItemDecoration lights, tape, speed;
 	public static ItemCatwalkTool tool;
 	public static ItemBase grate;
 	
 	public static void register() {
 		lights = new ItemDecoration("lights");
 		tape   = new ItemDecoration("tape");
-		vines  = new ItemDecoration("vines");
+		speed  = new ItemDecoration("speed");
 		tool   = new ItemCatwalkTool();
 		grate  = new ItemBase("steelgrate");
 		
@@ -30,7 +30,7 @@ public class ItemRegister {
 	
 	@SideOnly(Side.CLIENT)
 	public static void initRender() {
-		registerRender(lights, tape, tool);
+		registerRender(lights, tape, speed, tool, grate);
 	}
 	
 	@SideOnly(Side.CLIENT)

@@ -122,7 +122,7 @@ public class BlockCatwalk extends BlockCatwalkBase {
 	}
 	
 	@Override
-	public List<LookSide> lookSides(IExtendedBlockState state) {
+	public List<LookSide> lookSides(IExtendedBlockState state, World world, BlockPos pos) {
 		return sideLookBoxes;
 	}
 	
@@ -171,7 +171,7 @@ public class BlockCatwalk extends BlockCatwalkBase {
 	}
 	
 	@Override
-	public List<CollisionBox> getCollisionBoxes(IExtendedBlockState state) {
+	public List<CollisionBox> getCollisionBoxes(IExtendedBlockState state, World world, BlockPos pos) {
 		return collisionBoxes;
 	}
 }

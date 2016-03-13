@@ -46,7 +46,7 @@ public class CatwalkStairSmartModel extends SmartModelBase {
         		state.getValue(BlockCatwalkStair.EAST_TOP),
         		state.getValue(BlockCatwalkBase.TAPE),
         		state.getValue(BlockCatwalkBase.LIGHTS),
-        		state.getValue(BlockCatwalkBase.VINES),
+        		state.getValue(BlockCatwalkBase.SPEED),
         		state.getValue(BlockCatwalkBase.FACING)
         	);
 	}
@@ -95,9 +95,9 @@ public class CatwalkStairSmartModel extends SmartModelBase {
             
             texture = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/stair/"+mat+"/base"));
             
-            tapeTex   = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/stair/"+mat+"/decorations/tape"));
-            lightsTex = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/stair/"+mat+"/decorations/lights"));
-            vinesTex  = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/stair/"+mat+"/decorations/vines"));
+            tapeTex   = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/stair/"+mat+"/tape"));
+            lightsTex = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/stair/"+mat+"/lights"));
+            vinesTex  = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/stair/"+mat+"/vines"));
             
             genFaces();
 		}

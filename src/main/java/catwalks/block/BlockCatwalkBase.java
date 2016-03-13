@@ -66,6 +66,8 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	}
 	
 	public void init() {
+		IExtendedBlockState state = (IExtendedBlockState) this.blockState.getBaseState();
+		this.setDefaultState(state.withProperty(FACING, EnumFacing.NORTH));
 		initSides();
 		initColllisionBoxes();
 	}
@@ -79,12 +81,12 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	
 	public static UPropertyBool TAPE   = new UPropertyBool("tape");
 	public static UPropertyBool LIGHTS = new UPropertyBool("lights");
-	public static UPropertyBool VINES  = new UPropertyBool("vines");
+	public static UPropertyBool SPEED  = new UPropertyBool("speed");
 	
 	public static UPropertyEnum<EnumFacing> FACING = UPropertyEnum.create("facing", EnumFacing.class);
 	
 	public static Trimap<UPropertyBool, EnumFacing, Integer> sides = new Trimap<>(UPropertyBool.class, EnumFacing.class, Integer.class);
-	static int I_BOTTOM=0, I_TOP=1, I_NORTH=2, I_SOUTH=3, I_EAST=4, I_WEST=5,  I_FACING_ID=6, I_FACING_LEN=3, I_TAPE=10, I_LIGHTS=11, I_VINES=12;
+	static int I_BOTTOM=0, I_TOP=1, I_NORTH=2, I_SOUTH=3, I_EAST=4, I_WEST=5,  I_FACING_ID=6, I_FACING_LEN=3, I_TAPE=10, I_LIGHTS=11, I_SPEED=12;
 
 	static {
 		sides.put(BOTTOM, EnumFacing.DOWN,  I_BOTTOM);
@@ -157,11 +159,11 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			tile.setBoolean(I_TAPE, value);
 			return true;
 		}
-		if("vines".equals(name)) {
-			if(tile.getBoolean(I_VINES) == value) {
+		if("speed".equals(name)) {
+			if(tile.getBoolean(I_SPEED) == value) {
 				return false;
 			}
-			tile.setBoolean(I_VINES, value);
+			tile.setBoolean(I_SPEED, value);
 			return true;
 		}
 		return false;
@@ -183,7 +185,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 				.withProperty(WEST,   pass && tile.getBoolean(I_WEST)  )
 				.withProperty(TAPE,   pass && tile.getBoolean(I_TAPE)  )
 				.withProperty(LIGHTS, pass && tile.getBoolean(I_LIGHTS))
-				.withProperty(VINES,  pass && tile.getBoolean(I_VINES) )
+				.withProperty(SPEED,  pass && tile.getBoolean(I_SPEED) )
 				.withProperty(FACING, pass ? EnumFacing.VALUES[tile.getNumber(I_FACING_ID, I_FACING_LEN)] : EnumFacing.UP);
 		
 		if(tile != null) {
@@ -207,7 +209,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	protected BlockState createBlockState() {
 		IProperty[] listedProperties = new IProperty[] { MATERIAL };
 	    List<IUnlistedProperty> unlistedProperties = new ArrayList<IUnlistedProperty>();
-	    unlistedProperties.addAll(Lists.asList(BOTTOM, new IUnlistedProperty[] { NORTH, SOUTH, WEST, EAST, FACING, TAPE, LIGHTS, VINES }));
+	    unlistedProperties.addAll(Lists.asList(BOTTOM, new IUnlistedProperty[] { NORTH, SOUTH, WEST, EAST, FACING, TAPE, LIGHTS, SPEED }));
 	    addAdditionalProperties(unlistedProperties);
 	    
 	    return new ExtendedBlockState(this, listedProperties, unlistedProperties.toArray(new IUnlistedProperty[0]));
@@ -249,8 +251,8 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		if(estate.getValue(LIGHTS)) {
 			drops.add(new ItemStack(ItemRegister.lights, 1, ItemRegister.lights.getMaxDamage() - 1));
 		}
-		if(estate.getValue(VINES)) {
-			drops.add(new ItemStack(ItemRegister.vines, 1, ItemRegister.vines.getMaxDamage() - 1));
+		if(estate.getValue(SPEED)) {
+			drops.add(new ItemStack(ItemRegister.speed, 1, ItemRegister.speed.getMaxDamage() - 1));
 		}
 		
 		for (ItemStack stack : drops) {
@@ -319,7 +321,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	{ /* collision */ }
 	
 	public abstract void initColllisionBoxes();
-	public abstract List<CollisionBox> getCollisionBoxes(IExtendedBlockState state);
+	public abstract List<CollisionBox> getCollisionBoxes(IExtendedBlockState state, World world, BlockPos pos);
 	
 	@Override
 	public void addCollisionBoxesToList(World world, BlockPos pos, IBlockState rawState, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
@@ -333,7 +335,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
         IExtendedBlockState state = (IExtendedBlockState) getExtendedState(plainState, world, pos);
 		
         if(CatwalksMod.developmentEnvironment) initColllisionBoxes();
-		List<CollisionBox> boxes = getCollisionBoxes(state);
+		List<CollisionBox> boxes = getCollisionBoxes(state, world, pos);
 		
 		if(boxes == null) {
 			Logs.error("ERROR: Collision box list null!");
@@ -354,7 +356,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	
 	public abstract void initSides();
 	
-	public abstract List<LookSide> lookSides(IExtendedBlockState state);
+	public abstract List<LookSide> lookSides(IExtendedBlockState state, World world, BlockPos pos);
 	
 	@Override
 	public MovingObjectPosition collisionRayTrace(World world, BlockPos pos, EntityPlayer player, Vec3 startRaw, Vec3 endRaw) {
@@ -369,7 +371,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			end   = new Vector3(  endRaw).sub(blockPosVec);
 		
 		if(CatwalksMod.developmentEnvironment) initSides();
-		List<LookSide> sides = lookSides(state);
+		List<LookSide> sides = lookSides(state, world, pos);
 		if(sides == null) {
 			return null;
 		}

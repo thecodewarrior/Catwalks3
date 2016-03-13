@@ -29,4 +29,5 @@ do
     }
 }
 " > "$ITEM.json"
+	read -p "Did you register the item in ItemRegister.initRender()?" yn
 done

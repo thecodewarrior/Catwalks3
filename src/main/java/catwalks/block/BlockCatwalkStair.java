@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
@@ -42,6 +43,21 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	public BlockCatwalkStair() {
 		super(Material.iron, "catwalkStair", ItemBlockCatwalk.class);
 		setHardness(1.5f);
+		setTickRandomly(true);
+	}
+	
+	public boolean checkForValidity(World worldIn, BlockPos pos) {
+		if(worldIn.getBlockState(pos.offset(EnumFacing.UP)).getBlock() != BlockRegister.multiblockPart) {
+			worldIn.setBlockState(pos, Blocks.air.getDefaultState());
+			Logs.warn("Removed invalid CatwalkStair block at (%d, %d, %d) in dim %s (%d)", pos.getX(), pos.getY(), pos.getZ(), worldIn.provider.getDimensionName(), worldIn.provider.getDimensionId());
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public void randomTick(World worldIn, BlockPos pos, IBlockState state, Random random) {
+		checkForValidity(worldIn, pos);
 	}
 	
 	@Override
@@ -233,17 +249,16 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	}
 	
 	@Override
-	public List<CollisionBox> getCollisionBoxes(IExtendedBlockState state) {
+	public List<CollisionBox> getCollisionBoxes(IExtendedBlockState state, World world, BlockPos pos) {
 		EnumFacing facing = state.getValue(FACING);
-		boolean hasKey = collisionBoxes.containsKey(facing);
 		List<CollisionBox> list = collisionBoxes.get(facing);
 		if(list == null) {
-			boolean isNorth = facing == EnumFacing.NORTH;
-			boolean hasNorth = collisionBoxes.containsKey(EnumFacing.NORTH);
-			Set<EnumFacing> set = collisionBoxes.keySet();
-			boolean setHasNorth = set.contains(EnumFacing.NORTH);
-			boolean hasItNow = collisionBoxes.containsKey(facing);
-			Logs.error("ERROR: tried to get collision boxes for invalid facing value! %s", facing.toString());
+			Logs.warn("Tried to get collision boxes for invalid facing value! %s at (%d, %d, %d) in dim %s (%d)",
+					facing.toString().toUpperCase(), pos.getX(), pos.getY(), pos.getZ(), world.provider.getDimensionName(), world.provider.getDimensionId());
+			world.setBlockState(pos, Blocks.air.getDefaultState());
+			Logs.warn("Removed invalid CatwalkStair block at (%d, %d, %d) in dim %s (%d)",
+					pos.getX(), pos.getY(), pos.getZ(), world.provider.getDimensionName(), world.provider.getDimensionId());
+			list = collisionBoxes.get(EnumFacing.NORTH);
 		}
 		return list;
 	}
@@ -403,7 +418,7 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	}
 
 	@Override
-	public List<LookSide> lookSides(IExtendedBlockState state) {
+	public List<LookSide> lookSides(IExtendedBlockState state, World world, BlockPos pos) {
 		return sideLookBoxes.get(state.getValue(FACING));
 	}
 	

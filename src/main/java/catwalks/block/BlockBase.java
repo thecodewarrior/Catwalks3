@@ -24,6 +24,7 @@ public abstract class BlockBase extends Block {
 		this(material, name, null);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public BlockBase(Material materialIn, String name, Class<?> clazz) {
 		super(materialIn);
 		setUnlocalizedName(name);
