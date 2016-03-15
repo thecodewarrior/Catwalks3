@@ -21,7 +21,7 @@ plugins {
 }
 */
 // major.minor.patch.build
-version = "0.0.0.2"
+version = "0.0.0a2"
 group= "thecodewarrior.catwalks" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "catwalks"
 

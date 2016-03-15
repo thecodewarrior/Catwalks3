@@ -5,26 +5,16 @@ import java.util.List;
 
 import catwalks.CatwalksMod;
 import catwalks.block.BlockCatwalk;
-import catwalks.block.BlockCatwalkBase;
 import catwalks.block.BlockCatwalkBase.EnumCatwalkMaterial;
 import catwalks.block.BlockCatwalkStair;
 import catwalks.block.BlockCatwalkStairTop;
 import catwalks.block.extended.TileExtended;
-import catwalks.texture.CatwalkVariant;
-import catwalks.texture.CatwalkVariant.StaticCatwalkVariant;
-import catwalks.texture.CompositeTexture;
-import catwalks.texture.TextureAtlasComposite;
-import catwalks.texture.TextureGenerator;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -35,13 +25,13 @@ public class BlockRegister {
 	
 	public static BlockCatwalk catwalk;
 	public static BlockCatwalkStair catwalkStair;
-	public static BlockCatwalkStairTop multiblockPart;
+	public static BlockCatwalkStairTop stairTop;
 	
 	public static void register() {
 		GameRegistry.registerTileEntity(TileExtended.class, "tileExtended");
 		catwalk = new BlockCatwalk();
 		catwalkStair = new BlockCatwalkStair();
-		multiblockPart = new BlockCatwalkStairTop();
+		stairTop = new BlockCatwalkStairTop();
 	}
 	
 	private static void registerTexture(String path) {
@@ -65,6 +55,7 @@ public class BlockRegister {
 		ModelLoader.setCustomModelResourceLocation(catwalkItem, 3, new ModelResourceLocation(catwalkRL.toString()+"_custom", "inventory" ));
 		
 		ModelLoader.setCustomStateMapper(catwalkStair, new StateMapperStatic("catwalkStair"));
+		ModelLoader.setCustomStateMapper(stairTop, new StateMapperStatic("catwalkStairTop"));
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(catwalkStair), 0, new ModelResourceLocation(catwalkStair.getRegistryName(), "inventory"));
 		
 //		registerTextureVariants("catwalk/side",   "blocks/catwalk/<mat>/side/");

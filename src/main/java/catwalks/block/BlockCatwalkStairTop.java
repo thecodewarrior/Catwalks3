@@ -3,6 +3,7 @@ package catwalks.block;
 import java.util.List;
 import java.util.Random;
 
+import catwalks.block.BlockCatwalkBase.EnumCatwalkMaterial;
 import catwalks.block.extended.EnumCubeEdge;
 import catwalks.block.extended.TileExtended;
 import catwalks.register.BlockRegister;
@@ -11,25 +12,82 @@ import catwalks.util.Logs;
 import catwalks.util.WrenchChecker;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, IDecoratable {
 
 	public BlockCatwalkStairTop() {
 		super(Material.iron, "catwalkStairTop");
 		this.setTickRandomly(true);
+		setDefaultState(this.blockState.getBaseState().withProperty(BlockCatwalkBase.MATERIAL, EnumCatwalkMaterial.STEEL));
+	}
+	
+	@Override
+	protected BlockState createBlockState() {
+	    return new ExtendedBlockState(this,
+	    		new IProperty[]{ BlockCatwalkBase.MATERIAL },
+	    		new IUnlistedProperty[]{ BlockCatwalkBase.FACING, BlockCatwalkBase.TAPE, BlockCatwalkBase.LIGHTS, BlockCatwalkBase.SPEED, BlockCatwalkBase.NORTH, BlockCatwalkStair.WEST_TOP, BlockCatwalkStair.EAST_TOP}
+	    );
+	}
+	
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+	    return this.getDefaultState().withProperty(BlockCatwalkBase.MATERIAL, EnumCatwalkMaterial.values()[ meta ]);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+	    return state.getValue(BlockCatwalkBase.MATERIAL).ordinal();
+	}
+	
+	public IBlockState getExtendedState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+		IBlockState below = worldIn.getBlockState(pos.offset(EnumFacing.DOWN));
+		boolean westTop = false, eastTop = false, north = false, lights = false, tape = false, speed = false;
+		EnumFacing facing = EnumFacing.NORTH;
+		if(below.getBlock() == BlockRegister.catwalkStair) {
+			IExtendedBlockState ebelow = (IExtendedBlockState)below.getBlock().getExtendedState(below, worldIn, pos.offset(EnumFacing.DOWN));
+			
+			  facing = ebelow.getValue(BlockCatwalkBase.FACING);
+			  
+			   north = ebelow.getValue(BlockCatwalkBase.NORTH);
+			 westTop = ebelow.getValue(BlockCatwalkStair.WEST_TOP);
+			 eastTop = ebelow.getValue(BlockCatwalkStair.EAST_TOP);
+			 
+			    tape = ebelow.getValue(BlockCatwalkBase.TAPE);
+			  lights = ebelow.getValue(BlockCatwalkBase.LIGHTS);
+			   speed = ebelow.getValue(BlockCatwalkBase.SPEED);
+		}
+		
+		IExtendedBlockState estate = ((IExtendedBlockState)state)
+				.withProperty(BlockCatwalkStair.WEST_TOP, westTop)
+				.withProperty(BlockCatwalkStair.EAST_TOP, eastTop)
+				.withProperty(BlockCatwalkBase.NORTH, north)
+				.withProperty(BlockCatwalkBase.TAPE, tape)
+				.withProperty(BlockCatwalkBase.LIGHTS, lights)
+				.withProperty(BlockCatwalkBase.SPEED, speed)
+				.withProperty(BlockCatwalkBase.FACING, facing);
+		
+		return estate;
 	}
 	
 	@Override
@@ -43,8 +101,6 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		} else {
 			return false;
 		}
-		
-		IExtendedBlockState state = getBelowState(worldIn, pos);
 		
 		if(side != EnumFacing.UP ) {
 //			side = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(BlockCatwalkBase.FACING)), side);
@@ -89,8 +145,17 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
 		super.breakBlock(worldIn, pos, state);
+		
+//		IBlockState iblockstate = worldIn.getBlockState(pos.offset(EnumFacing.DOWN));
+//        Block block = iblockstate.getBlock();
+//
+//        if (block.getMaterial() != Material.air){
+//            block.dropBlockAsItem(worldIn, pos.offset(EnumFacing.DOWN), iblockstate, 0);
+
+            worldIn.setBlockState(pos.offset(EnumFacing.DOWN), Blocks.air.getDefaultState());
+//        }
+        
 		GeneralUtil.updateSurroundingCatwalkBlocks(worldIn, pos);
-		worldIn.setBlockState(pos.offset(EnumFacing.DOWN), Blocks.air.getDefaultState());
 	}
 	
 	private IExtendedBlockState getBelowState(World world, BlockPos pos) {
@@ -186,14 +251,15 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	public boolean isVisuallyOpaque() {
 		return false;
 	}
-
-	public int getRenderType() {
-        return -1;
-	}
-    
+	
     public boolean isOpaqueCube() {
         return false;
     }
+    
+    @Override
+	public EnumWorldBlockLayer getBlockLayer() {
+		return EnumWorldBlockLayer.CUTOUT_MIPPED;
+	}
     
     { /* forwarding */ }
     
@@ -217,6 +283,8 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
     }
     
     public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune) {
+    	int meta = state.getValue(BlockCatwalkBase.MATERIAL).ordinal();
+    	GeneralUtil.spawnItemStack(worldIn, pos.getX()+0.5, pos.getY()-0.5, pos.getZ()+0.5, new ItemStack(BlockRegister.catwalkStair, 1, meta));
     }
 	
 }

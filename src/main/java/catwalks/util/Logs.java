@@ -37,6 +37,11 @@ public class Logs {
         getInstance().logger.log(Level.ERROR, String.format(message, args));
     }
     
+    public static void error(Exception e, String message, Object... args) {
+        getInstance().logger.log(Level.ERROR, String.format(message, args));
+        e.printStackTrace();
+    }
+    
     public static void warn(String message, Object... args) {
         getInstance().logger.log(Level.WARN, String.format(message, args));
     }

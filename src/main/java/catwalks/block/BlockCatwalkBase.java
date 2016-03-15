@@ -72,18 +72,18 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		initColllisionBoxes();
 	}
 	
-	public static UPropertyBool BOTTOM = new UPropertyBool("bottom");
-	public static UPropertyBool TOP    = new UPropertyBool("top");
-	public static UPropertyBool NORTH  = new UPropertyBool("north");
-	public static UPropertyBool SOUTH  = new UPropertyBool("south");
-	public static UPropertyBool EAST   = new UPropertyBool("east");
-	public static UPropertyBool WEST   = new UPropertyBool("west");
+	public static final UPropertyBool BOTTOM = new UPropertyBool("bottom");
+	public static final UPropertyBool TOP    = new UPropertyBool("top");
+	public static final UPropertyBool NORTH  = new UPropertyBool("north");
+	public static final UPropertyBool SOUTH  = new UPropertyBool("south");
+	public static final UPropertyBool EAST   = new UPropertyBool("east");
+	public static final UPropertyBool WEST   = new UPropertyBool("west");
 	
-	public static UPropertyBool TAPE   = new UPropertyBool("tape");
-	public static UPropertyBool LIGHTS = new UPropertyBool("lights");
-	public static UPropertyBool SPEED  = new UPropertyBool("speed");
+	public static final UPropertyBool TAPE   = new UPropertyBool("tape");
+	public static final UPropertyBool LIGHTS = new UPropertyBool("lights");
+	public static final UPropertyBool SPEED  = new UPropertyBool("speed");
 	
-	public static UPropertyEnum<EnumFacing> FACING = UPropertyEnum.create("facing", EnumFacing.class);
+	public static final UPropertyEnum<EnumFacing> FACING = UPropertyEnum.create("facing", EnumFacing.class);
 	
 	public static Trimap<UPropertyBool, EnumFacing, Integer> sides = new Trimap<>(UPropertyBool.class, EnumFacing.class, Integer.class);
 	static int I_BOTTOM=0, I_TOP=1, I_NORTH=2, I_SOUTH=3, I_EAST=4, I_WEST=5,  I_FACING_ID=6, I_FACING_LEN=3, I_TAPE=10, I_LIGHTS=11, I_SPEED=12;
@@ -99,7 +99,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	
 	protected static int I_BASE_LEN=24;
 	
-	public static PropertyEnum<EnumCatwalkMaterial> MATERIAL = PropertyEnum.create("material", EnumCatwalkMaterial.class);
+	public static final PropertyEnum<EnumCatwalkMaterial> MATERIAL = PropertyEnum.create("material", EnumCatwalkMaterial.class);
 	
 	public static enum EnumCatwalkMaterial implements IStringSerializable {
 		STEEL, STONE, WOOD, CUSTOM;

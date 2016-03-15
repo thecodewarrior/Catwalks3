@@ -62,6 +62,8 @@ public class CommonProxy {
 				if(slotStack != null && slotStack.getItem() == stack.getItem() && ( slotStack.getItemDamage() != 0 || event.entityPlayer.capabilities.isCreativeMode)) {
 					int toTake = slotStack.getItemDamage();
 					int available = stack.getMaxDamage()-stack.getItemDamage();
+					if(event.entityPlayer.capabilities.isCreativeMode)
+						toTake = available;
 					int toput = Math.min(toTake, available);
 					
 					slotStack.setItemDamage(slotStack.getItemDamage()-toput);

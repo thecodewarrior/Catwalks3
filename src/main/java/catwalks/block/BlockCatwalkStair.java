@@ -47,7 +47,7 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	}
 	
 	public boolean checkForValidity(World worldIn, BlockPos pos) {
-		if(worldIn.getBlockState(pos.offset(EnumFacing.UP)).getBlock() != BlockRegister.multiblockPart) {
+		if(worldIn.getBlockState(pos.offset(EnumFacing.UP)).getBlock() != BlockRegister.stairTop) {
 			worldIn.setBlockState(pos, Blocks.air.getDefaultState());
 			Logs.warn("Removed invalid CatwalkStair block at (%d, %d, %d) in dim %s (%d)", pos.getX(), pos.getY(), pos.getZ(), worldIn.provider.getDimensionName(), worldIn.provider.getDimensionId());
 			return false;
@@ -88,14 +88,16 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 		
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 		
-		worldIn.setBlockState(pos.offset(EnumFacing.UP), BlockRegister.multiblockPart.getDefaultState());
+		IBlockState placeState = BlockRegister.stairTop.getDefaultState().withProperty(MATERIAL, state.getValue(MATERIAL));
+		worldIn.setBlockState(pos.offset(EnumFacing.UP), placeState);
 		GeneralUtil.updateSurroundingCatwalkBlocks(worldIn, pos.offset(EnumFacing.UP));
 	}
 	
 	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-		worldIn.setBlockState(pos.offset(EnumFacing.UP), Blocks.air.getDefaultState()); 
 		super.breakBlock(worldIn, pos, state);
+		worldIn.setBlockState(pos.offset(EnumFacing.UP), Blocks.air.getDefaultState());		
+		GeneralUtil.updateSurroundingCatwalkBlocks(worldIn, pos);
 	}
 	
 	@Override
@@ -352,11 +354,11 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 		sides.add(side.copy());
 		
 		double stepLength = 1.0/STEP_COUNT;
-		
+		side.offset = new BlockPos(0, 0, 0);
 		for (int i = 0; i < STEP_COUNT; i++) {
             side.showProperty = null;
             
-            double y = i*stepLength + stepLength/2 - 1, minZ = 1-i*stepLength, maxZ = 1-(i+1)*stepLength;
+            double y = i*stepLength + stepLength/2, minZ = 1-i*stepLength, maxZ = 1-(i+1)*stepLength;
             side.mainSide = new Quad(
             		new Vector3(0, y, minZ),
             		new Vector3(0, y, maxZ),
@@ -461,10 +463,10 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 		TileExtended tile = (TileExtended) world.getTileEntity(pos);
 		
 		EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(BlockCatwalkBase.FACING)), side);
-		if(actualDir == EnumFacing.EAST && state.getValue(BlockCatwalkBase.EAST)) {
+		if(actualDir == EnumFacing.EAST) {
 			tile.setBoolean(BlockCatwalkBase.I_EAST, value);
 		}
-		if(actualDir == EnumFacing.WEST && state.getValue(BlockCatwalkBase.WEST)) {
+		if(actualDir == EnumFacing.WEST) {
 			tile.setBoolean(BlockCatwalkBase.I_WEST, value);
 		}
 		if(side == state.getValue(BlockCatwalkBase.FACING).getOpposite()) {

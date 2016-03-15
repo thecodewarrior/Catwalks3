@@ -7,10 +7,13 @@ import com.google.common.collect.ImmutableList;
 
 import catwalks.CatwalksMod;
 import catwalks.block.BlockCatwalkBase;
+import catwalks.block.BlockCatwalkStair;
 import catwalks.block.BlockCatwalkBase.EnumCatwalkMaterial;
 import catwalks.render.BakedModelBase;
 import catwalks.render.ModelUtils;
 import catwalks.render.ModelUtils.SpritelessQuad;
+import catwalks.render.catwalk.CatwalkStairSmartModel.Model;
+import catwalks.util.Logs;
 import catwalks.render.SmartModelBase;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -28,17 +31,26 @@ public class CatwalkSmartModel extends SmartModelBase {
 
 	@Override
 	public IBakedModel newBakedModel(IExtendedBlockState state) {
-		return new Model(
-				state.getValue(BlockCatwalkBase.MATERIAL),
-        		state.getValue(BlockCatwalkBase.BOTTOM),
-        		state.getValue(BlockCatwalkBase.NORTH),
-        		state.getValue(BlockCatwalkBase.SOUTH),
-        		state.getValue(BlockCatwalkBase.EAST),
-        		state.getValue(BlockCatwalkBase.WEST),
-        		state.getValue(BlockCatwalkBase.TAPE),
-        		state.getValue(BlockCatwalkBase.LIGHTS),
-        		state.getValue(BlockCatwalkBase.SPEED)
-        	);
+		EnumCatwalkMaterial mat;
+		boolean bottom, north, south, east, west, tape, lights, speed;
+		try {
+			mat     = state.getValue(BlockCatwalkBase.MATERIAL);
+			bottom  = state.getValue(BlockCatwalkBase.BOTTOM);
+			north   = state.getValue(BlockCatwalkBase.NORTH);
+			south   = state.getValue(BlockCatwalkBase.SOUTH);
+			east    = state.getValue(BlockCatwalkBase.EAST);
+			west    = state.getValue(BlockCatwalkBase.WEST);
+			tape    = state.getValue(BlockCatwalkBase.TAPE);
+			lights  = state.getValue(BlockCatwalkBase.LIGHTS);
+			speed   = state.getValue(BlockCatwalkBase.SPEED);
+		} catch(NullPointerException e) {
+			if(state == null)
+				throw e;
+			Logs.error(e, "Extreme edge case NPE, likely a freak race condition... *shrugs*");
+			return new Model();
+		}
+		
+		return new Model(mat, bottom, north, south, east, west, tape, lights, speed);	
 	}
 
 	@Override

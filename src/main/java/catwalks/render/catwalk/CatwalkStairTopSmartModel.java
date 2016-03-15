@@ -25,7 +25,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
-public class CatwalkStairSmartModel extends SmartModelBase {
+public class CatwalkStairTopSmartModel extends SmartModelBase {
 
 	@Override
 	public TextureAtlasSprite getParticleTexture() {
@@ -35,15 +35,11 @@ public class CatwalkStairSmartModel extends SmartModelBase {
 	@Override
 	public IBakedModel newBakedModel(IExtendedBlockState state) {
 		EnumCatwalkMaterial mat;
-		boolean bottom, north, south, east, west, westtop, easttop, tape, lights, speed;
+		boolean north, westtop, easttop, tape, lights, speed;
 		EnumFacing facing;
 		try {
 			mat     = state.getValue(BlockCatwalkBase.MATERIAL);
-			bottom  = state.getValue(BlockCatwalkBase.BOTTOM);
 			north   = state.getValue(BlockCatwalkBase.NORTH);
-			south   = state.getValue(BlockCatwalkBase.SOUTH);
-			east    = state.getValue(BlockCatwalkBase.EAST);
-			west    = state.getValue(BlockCatwalkBase.WEST);
 			westtop = state.getValue(BlockCatwalkStair.WEST_TOP);
 			easttop = state.getValue(BlockCatwalkStair.EAST_TOP);
 			tape    = state.getValue(BlockCatwalkBase.TAPE);
@@ -56,7 +52,7 @@ public class CatwalkStairSmartModel extends SmartModelBase {
 			Logs.error(e, "Extreme edge case NPE, likely a freak race condition... *shrugs*");
 			return new Model();
 		}
-		return new Model(mat, bottom, north, south, east, west, westtop, easttop, tape, lights, speed, facing);
+		return new Model(mat, north, westtop, easttop, tape, lights, speed, facing);
 	}
 
 	@Override
@@ -69,12 +65,8 @@ public class CatwalkStairSmartModel extends SmartModelBase {
 		private TextureAtlasSprite texture, tapeTex, lightsTex, speedTex;
 
         private boolean north;
-        private boolean south;
-        private boolean west;
-        private boolean east;
-        private boolean down;
-//        private boolean westtop;
-//        private boolean easttop;
+        private boolean westtop;
+        private boolean easttop;
         private boolean tape, lights, speed;
 		
         private EnumFacing facing;
@@ -83,16 +75,12 @@ public class CatwalkStairSmartModel extends SmartModelBase {
             texture = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/stair/steel/base"));
 		}
 		
-		public Model(EnumCatwalkMaterial material, boolean down, boolean north, boolean south, boolean west, boolean east, boolean westtop, boolean easttop, boolean tape, boolean lights, boolean speed, EnumFacing facing) {
+		public Model(EnumCatwalkMaterial material, boolean north, boolean westtop, boolean easttop, boolean tape, boolean lights, boolean speed, EnumFacing facing) {
 			this();
 			this.north = north;
-            this.south = south;
-            this.west = west;
-            this.east = east;
-            this.down = down;
             
-//            this.westtop = westtop;
-//            this.easttop = easttop;
+            this.westtop = westtop;
+            this.easttop = easttop;
             
             this.tape = tape;
             this.lights = lights;
@@ -115,67 +103,29 @@ public class CatwalkStairSmartModel extends SmartModelBase {
 		public void genFaces() {
 			List<SpritelessQuad> rawQuads = new ArrayList<>();
 			
-			double stepLength = 1/BlockCatwalkStair.STEP_COUNT;
-			
-			for (int i = 0; i < BlockCatwalkStair.STEP_COUNT; i++) {
-	            
-	            double y = i*stepLength + stepLength/2, minZ = 1-i*stepLength, maxZ = 1-(i+1)*stepLength;
-	            float minV = 16-(i*2), maxV = minV-2;
-	            ModelUtils.putQuad(rawQuads, null,
-	            		0, y, minZ, 0, minV,
-	            		0, y, maxZ, 0, maxV,
-	            		1, y, maxZ, 8, maxV,
-	            		1, y, minZ, 8, minV
-	            	);
-			}
-			
-			if(east)
+			if(westtop)
 				ModelUtils.putQuad(rawQuads, null,
-	        		0, 0, 1, 12.5f, 8,
-	        		0, 1, 1, 12.5f, 0,
-	        		0, 1, 0, 0, 8,
-	        		0, 1, 0, 0, 8
+	        		0, 0, 1, 12.5f, 0,
+	        		0, 1, 0, 0, 0,
+	        		0, 0, 0, 0, 8,
+	        		0, 0, 0, 0, 8
 	        	);
 			
-//			if(westtop)
-//				ModelUtils.putQuad(rawQuads, null,
-//	        		0, 1, 1, 12.5f, 0,
-//	        		0, 2, 0, 0, 0,
-//	        		0, 1, 0, 0, 8,
-//	        		0, 1, 0, 0, 8
-//	        	);
-			
-			if(west)
+			if(easttop)
 				ModelUtils.putQuad(rawQuads, null,
-	        		1, 0, 1, 12.5f, 8,
-	        		1, 1, 1, 12.5f, 0,
-	        		1, 1, 0, 0, 8,
-	        		1, 1, 0, 0, 8
+	        		1, 0, 1, 12.5f, 0,
+	        		1, 1, 0, 0, 0,
+	        		1, 0, 0, 0, 8,
+	        		1, 0, 0, 0, 8
 	        	);
 			
-//			if(easttop)
-//				ModelUtils.putQuad(rawQuads, null,
-//	        		1, 1, 1, 12.5f, 0,
-//	        		1, 2, 0, 0, 0,
-//	        		1, 1, 0, 0, 8,
-//	        		1, 1, 0, 0, 8
-//	        	);
-			
-			if(south)
+			if(north)
 				ModelUtils.putQuad(rawQuads, null,
-	        		0, 0, 1, 8, 16,
-	        		0, 1, 1, 8, 8,
-	        		1, 1, 1, 16, 8,
-	        		1, 0, 1, 16, 16
+	        		0, 0, 0, 8, 16,
+	        		0, 1, 0, 8, 8,
+	        		1, 1, 0, 16, 8,
+	        		1, 0, 0, 16, 16
 	        	);
-			
-//			if(north)
-//				ModelUtils.putQuad(rawQuads, null,
-//	        		0, 1, 0, 8, 16,
-//	        		0, 2, 0, 8, 8,
-//	        		1, 2, 0, 16, 8,
-//	        		1, 1, 0, 16, 16
-//	        	);
 			
 			int rot = -GeneralUtil.getRotation(EnumFacing.NORTH, facing);
 			Matrix4 matrix = new Matrix4().translate(new Vector3(0.5,0.5,0.5)).rotate((Math.PI/2)*rot, new Vector3(0,1,0)).translate(new Vector3(-0.5,-0.5,-0.5));

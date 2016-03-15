@@ -15,6 +15,7 @@ import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
 import catwalks.render.catwalk.CatwalkSmartModel;
 import catwalks.render.catwalk.CatwalkStairSmartModel;
+import catwalks.render.catwalk.CatwalkStairTopSmartModel;
 import catwalks.shade.ccl.raytracer.RayTracer;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
@@ -46,7 +47,6 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -80,6 +80,7 @@ public class ClientProxy extends CommonProxy {
 		
 		model("catwalk", new CatwalkSmartModel());
 		model("catwalkStair", new CatwalkStairSmartModel());
+		model("catwalkStairTop", new CatwalkStairTopSmartModel());
 		
         for (Entry<ModelResourceLocation, IBakedModel> model : models.entrySet()) {
 			
@@ -223,7 +224,9 @@ public class ClientProxy extends CommonProxy {
                     }
                 }
                 
-                event.left.add("Looking at side: " + mc.objectMouseOver.sideHit.getName() );
+                
+                
+                event.left.add("Looking at side: " + mc.objectMouseOver.sideHit.getName() + " - meta: " + iblockstate.getBlock().getMetaFromState(iblockstate));
             }
 		}
 	}
