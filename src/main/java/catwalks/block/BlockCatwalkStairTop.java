@@ -40,6 +40,8 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		setDefaultState(this.blockState.getBaseState().withProperty(BlockCatwalkBase.MATERIAL, EnumCatwalkMaterial.STEEL));
 	}
 	
+	{ /* state stuffz */ }
+	
 	@Override
 	protected BlockState createBlockState() {
 	    return new ExtendedBlockState(this,
@@ -90,6 +92,34 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		return estate;
 	}
 	
+	private IExtendedBlockState getBelowState(World world, BlockPos pos) {
+		IBlockState state = world.getBlockState(pos.offset(EnumFacing.DOWN));
+		return (IExtendedBlockState) state.getBlock().getExtendedState(state, world, pos.offset(EnumFacing.DOWN));
+	}
+
+	{ /* super special stair-top stuffs */ }
+	
+	public boolean checkForValidity(World worldIn, BlockPos pos) {
+		if(worldIn.getBlockState(pos.offset(EnumFacing.DOWN)).getBlock() != BlockRegister.catwalkStair) {
+			worldIn.setBlockState(pos, Blocks.air.getDefaultState());
+			Logs.warn("Removed invalid CatwalkStairTop block at (%d, %d, %d) in dim %s (%d)", pos.getX(), pos.getY(), pos.getZ(), worldIn.provider.getDimensionName(), worldIn.provider.getDimensionId());
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public void randomTick(World worldIn, BlockPos pos, IBlockState state, Random random) {
+		checkForValidity(worldIn, pos);
+	}
+
+	@Override
+	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+		checkForValidity(worldIn, pos);
+	}
+	
+	
+
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState ourState, EntityPlayer playerIn,
 			EnumFacing side, float hitX, float hitY, float hitZ) {
@@ -112,24 +142,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		return true;
 	}
 	
-	public boolean checkForValidity(World worldIn, BlockPos pos) {
-		if(worldIn.getBlockState(pos.offset(EnumFacing.DOWN)).getBlock() != BlockRegister.catwalkStair) {
-			worldIn.setBlockState(pos, Blocks.air.getDefaultState());
-			Logs.warn("Removed invalid CatwalkStairTop block at (%d, %d, %d) in dim %s (%d)", pos.getX(), pos.getY(), pos.getZ(), worldIn.provider.getDimensionName(), worldIn.provider.getDimensionId());
-			return false;
-		}
-		return true;
-	}
-	
-	@Override
-	public void randomTick(World worldIn, BlockPos pos, IBlockState state, Random random) {
-		checkForValidity(worldIn, pos);
-	}
-	
-	@Override
-	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
-		checkForValidity(worldIn, pos);
-	}
+	{ /* forwarding */ }
 	
 	@Override
 	public boolean putDecoration(World world, BlockPos pos, String name, boolean value) {
@@ -142,6 +155,32 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		return worldIn.getBlockState(pos.offset(EnumFacing.DOWN)).getBlock().getPlayerRelativeBlockHardness(playerIn, worldIn, pos.offset(EnumFacing.DOWN));
 	}
 	
+	@Override
+	public MovingObjectPosition collisionRayTrace(World world, BlockPos pos, EntityPlayer player, Vec3 start,
+			Vec3 end) {
+		IBlockState state = world.getBlockState(pos.offset(EnumFacing.DOWN));
+		
+		if(state.getBlock() instanceof BlockBase) {
+			MovingObjectPosition mop = state.getBlock().collisionRayTrace(world, pos.offset(EnumFacing.DOWN), start, end);
+			return mop;
+		}
+		return null;
+	}
+
+	@Override
+	public void addCollisionBoxesToList(World worldIn, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
+		IBlockState below = worldIn.getBlockState(pos.offset(EnumFacing.DOWN));
+		
+		below.getBlock().addCollisionBoxesToList(worldIn, pos.offset(EnumFacing.DOWN), below, mask, list, collidingEntity);
+	}
+
+	public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune) {
+		int meta = state.getValue(BlockCatwalkBase.MATERIAL).ordinal();
+		GeneralUtil.spawnItemStack(worldIn, pos.getX()+0.5, pos.getY()-0.5, pos.getZ()+0.5, new ItemStack(BlockRegister.catwalkStair, 1, meta));
+	}
+	
+	{ /* super-special multiblock magic */ }
+
 	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
 		super.breakBlock(worldIn, pos, state);
@@ -158,10 +197,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		GeneralUtil.updateSurroundingCatwalkBlocks(worldIn, pos);
 	}
 	
-	private IExtendedBlockState getBelowState(World world, BlockPos pos) {
-		IBlockState state = world.getBlockState(pos.offset(EnumFacing.DOWN));
-		return (IExtendedBlockState) state.getBlock().getExtendedState(state, world, pos.offset(EnumFacing.DOWN));
-	}
+	{ /* ICatwalkConnect */ }
 	
 	@Override
 	public boolean hasEdge(World world, BlockPos pos, EnumCubeEdge edge) {
@@ -235,7 +271,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		return EnumSideType.SLOPE_TOP;
 	}
 	
-	{ /* non-solid stuffs */ }
+	{ /* plain old boring block stuff */ }
 	
 	@Override
 	public boolean isBlockSolid(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
@@ -260,31 +296,5 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	public EnumWorldBlockLayer getBlockLayer() {
 		return EnumWorldBlockLayer.CUTOUT_MIPPED;
 	}
-    
-    { /* forwarding */ }
-    
-	@Override
-	public MovingObjectPosition collisionRayTrace(World world, BlockPos pos, EntityPlayer player, Vec3 start,
-			Vec3 end) {
-		IBlockState state = world.getBlockState(pos.offset(EnumFacing.DOWN));
-		
-		if(state.getBlock() instanceof BlockBase) {
-			MovingObjectPosition mop = state.getBlock().collisionRayTrace(world, pos.offset(EnumFacing.DOWN), start, end);
-			return mop;
-		}
-		return null;
-	}
-	
-    @Override
-    public void addCollisionBoxesToList(World worldIn, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
-    	IBlockState below = worldIn.getBlockState(pos.offset(EnumFacing.DOWN));
-    	
-    	below.getBlock().addCollisionBoxesToList(worldIn, pos.offset(EnumFacing.DOWN), below, mask, list, collidingEntity);
-    }
-    
-    public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune) {
-    	int meta = state.getValue(BlockCatwalkBase.MATERIAL).ordinal();
-    	GeneralUtil.spawnItemStack(worldIn, pos.getX()+0.5, pos.getY()-0.5, pos.getZ()+0.5, new ItemStack(BlockRegister.catwalkStair, 1, meta));
-    }
 	
 }

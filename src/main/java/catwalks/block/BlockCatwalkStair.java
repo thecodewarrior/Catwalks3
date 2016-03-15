@@ -46,6 +46,24 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 		setTickRandomly(true);
 	}
 	
+	{ /* blockstate stuffs */ }
+	
+	@Override
+	public void addAdditionalProperties(List<IUnlistedProperty> list) {
+		list.add(EAST_TOP);
+		list.add(WEST_TOP);
+	}
+
+	@Override
+	public IExtendedBlockState addProperties(TileExtended tile, IExtendedBlockState state) {
+		return state
+				.withProperty(EAST_TOP, tile.getBoolean(I_EAST_TOP))
+				.withProperty(WEST_TOP, tile.getBoolean(I_WEST_TOP))
+		;
+	}
+
+	{ /* crazy special stair stuff */ }
+	
 	public boolean checkForValidity(World worldIn, BlockPos pos) {
 		if(worldIn.getBlockState(pos.offset(EnumFacing.UP)).getBlock() != BlockRegister.stairTop) {
 			worldIn.setBlockState(pos, Blocks.air.getDefaultState());
@@ -61,18 +79,13 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	}
 	
 	@Override
-	public void addAdditionalProperties(List<IUnlistedProperty> list) {
-		list.add(EAST_TOP);
-		list.add(WEST_TOP);
+	public EnumFacing transformAffectedSide(World world, BlockPos pos, IBlockState state, EnumFacing side) {
+		// I rotate here so that the side that's passed will be north if it's the 
+		IExtendedBlockState estate = (IExtendedBlockState)getExtendedState(state, world, pos);
+		return GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, estate.getValue(BlockCatwalkBase.FACING)), side);
 	}
 	
-	@Override
-	public IExtendedBlockState addProperties(TileExtended tile, IExtendedBlockState state) {
-		return state
-				.withProperty(EAST_TOP, tile.getBoolean(I_EAST_TOP))
-				.withProperty(WEST_TOP, tile.getBoolean(I_WEST_TOP))
-		;
-	}
+	{ /* multiblock stuffs */ }
 	
 	@Override
 	public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {
@@ -100,11 +113,7 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 		GeneralUtil.updateSurroundingCatwalkBlocks(worldIn, pos);
 	}
 	
-	@Override
-	public EnumFacing transformAffectedSide(World world, BlockPos pos, IBlockState state, EnumFacing side) {
-		IExtendedBlockState estate = (IExtendedBlockState)getExtendedState(state, world, pos);
-		return GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, estate.getValue(BlockCatwalkBase.FACING)), side);
-	}
+	{ /* collision */ }
 	
 	public Map<EnumFacing, List<CollisionBox>> collisionBoxes;
 	
@@ -264,6 +273,8 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 		}
 		return list;
 	}
+	
+	{ /* hit boxes */ }
 	
 	private Map<EnumFacing, List<LookSide>> sideLookBoxes;
 
