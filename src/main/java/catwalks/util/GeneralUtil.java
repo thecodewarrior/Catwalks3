@@ -141,6 +141,8 @@ public class GeneralUtil {
 	}
 	
 	public static int getRotation(EnumFacing from, EnumFacing to) {
+		if(from == null || to == null)
+			return 0;
 		if(from.getAxis() == Axis.Y || to.getAxis() == Axis.Y) {
 			return 0;
 		}
@@ -148,6 +150,8 @@ public class GeneralUtil {
 	}
 	
 	public static EnumFacing rotateFacing(int rotation, EnumFacing dir) {
+		if(dir == null)
+			return null;
 		if(dir.getAxis() == Axis.Y) {
 			return dir;
 		}

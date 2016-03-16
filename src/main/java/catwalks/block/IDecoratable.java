@@ -9,5 +9,5 @@ public interface IDecoratable {
 	 * @return true if decoration changed
 	 */
 	public boolean putDecoration(World world, BlockPos pos, String name, boolean value);
-	
+	public boolean hasDecoration(World world, BlockPos pos, String name);
 }

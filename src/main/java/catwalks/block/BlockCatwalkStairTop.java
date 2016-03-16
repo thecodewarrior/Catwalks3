@@ -40,6 +40,10 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		setDefaultState(this.blockState.getBaseState().withProperty(BlockCatwalkBase.MATERIAL, EnumCatwalkMaterial.STEEL));
 	}
 	
+	public void initPreRegister() {
+		setCreativeTab(null);
+	};
+	
 	{ /* state stuffz */ }
 	
 	@Override
@@ -67,17 +71,23 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		boolean westTop = false, eastTop = false, north = false, lights = false, tape = false, speed = false;
 		EnumFacing facing = EnumFacing.NORTH;
 		if(below.getBlock() == BlockRegister.catwalkStair) {
-			IExtendedBlockState ebelow = (IExtendedBlockState)below.getBlock().getExtendedState(below, worldIn, pos.offset(EnumFacing.DOWN));
-			
-			  facing = ebelow.getValue(BlockCatwalkBase.FACING);
-			  
-			   north = ebelow.getValue(BlockCatwalkBase.NORTH);
-			 westTop = ebelow.getValue(BlockCatwalkStair.WEST_TOP);
-			 eastTop = ebelow.getValue(BlockCatwalkStair.EAST_TOP);
-			 
-			    tape = ebelow.getValue(BlockCatwalkBase.TAPE);
-			  lights = ebelow.getValue(BlockCatwalkBase.LIGHTS);
-			   speed = ebelow.getValue(BlockCatwalkBase.SPEED);
+			IExtendedBlockState ebelow = null;
+			try {
+				ebelow = (IExtendedBlockState)below.getBlock().getExtendedState(below, worldIn, pos.offset(EnumFacing.DOWN));
+			} catch(NullPointerException e) {
+				Logs.error(e, "Edge case NPE, likely a freak race condition... *shrugs*");
+			}
+			if(ebelow != null) {
+				  facing = ebelow.getValue(BlockCatwalkBase.FACING);
+				  
+				   north = ebelow.getValue(BlockCatwalkBase.NORTH);
+				 westTop = ebelow.getValue(BlockCatwalkStair.WEST_TOP);
+				 eastTop = ebelow.getValue(BlockCatwalkStair.EAST_TOP);
+				 
+				    tape = ebelow.getValue(BlockCatwalkBase.TAPE);
+				  lights = ebelow.getValue(BlockCatwalkBase.LIGHTS);
+				   speed = ebelow.getValue(BlockCatwalkBase.SPEED);
+			}
 		}
 		
 		IExtendedBlockState estate = ((IExtendedBlockState)state)
@@ -148,6 +158,12 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	public boolean putDecoration(World world, BlockPos pos, String name, boolean value) {
 		pos = pos.offset(EnumFacing.DOWN);
 		return ( (IDecoratable)world.getBlockState(pos).getBlock() ).putDecoration(world, pos, name, value);
+	}
+	
+	@Override
+	public boolean hasDecoration(World world, BlockPos pos, String name) {
+		pos = pos.offset(EnumFacing.DOWN);
+		return ( (IDecoratable)world.getBlockState(pos).getBlock() ).hasDecoration(world, pos, name);
 	}
 	
 	@Override

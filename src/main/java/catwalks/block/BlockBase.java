@@ -30,12 +30,15 @@ public abstract class BlockBase extends Block {
 		setUnlocalizedName(name);
 		setRegistryName(name);
 		setCreativeTab(CatwalksMod.tab);
+		initPreRegister();
 		if(clazz == null) {
 			GameRegistry.registerBlock(this);
 		} else {
 			GameRegistry.registerBlock(this, (Class<? extends ItemBlock>)clazz);
 		}
 	}
+	
+	public void initPreRegister() {}
 	
 	@Override
 	public MovingObjectPosition collisionRayTrace(World world, BlockPos pos, Vec3 start, Vec3 end) {

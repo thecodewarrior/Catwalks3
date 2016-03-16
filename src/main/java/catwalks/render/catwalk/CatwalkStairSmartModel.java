@@ -42,8 +42,8 @@ public class CatwalkStairSmartModel extends SmartModelBase {
 			bottom  = state.getValue(BlockCatwalkBase.BOTTOM);
 			north   = state.getValue(BlockCatwalkBase.NORTH);
 			south   = state.getValue(BlockCatwalkBase.SOUTH);
-			east    = state.getValue(BlockCatwalkBase.EAST);
-			west    = state.getValue(BlockCatwalkBase.WEST);
+			east    = state.getValue(BlockCatwalkBase.WEST);
+			west    = state.getValue(BlockCatwalkBase.EAST);
 			westtop = state.getValue(BlockCatwalkStair.WEST_TOP);
 			easttop = state.getValue(BlockCatwalkStair.EAST_TOP);
 			tape    = state.getValue(BlockCatwalkBase.TAPE);
@@ -111,6 +111,7 @@ public class CatwalkStairSmartModel extends SmartModelBase {
 		}
 		
 		List<BakedQuad> quads = new ArrayList<>();
+		List<BakedQuad> nonFaceQuads = new ArrayList<>();
 		
 		public void genFaces() {
 			List<SpritelessQuad> rawQuads = new ArrayList<>();
@@ -129,57 +130,57 @@ public class CatwalkStairSmartModel extends SmartModelBase {
 	            	);
 			}
 			
+			int rot = -GeneralUtil.getRotation(EnumFacing.NORTH, facing);
+			Matrix4 matrix = new Matrix4().translate(new Vector3(0.5,0.5,0.5)).rotate((Math.PI/2)*rot, new Vector3(0,1,0)).translate(new Vector3(-0.5,-0.5,-0.5));
+			Vector3 vec = new Vector3();
+			
+			for (SpritelessQuad quad : rawQuads) {
+				matrix.apply(vec.set(quad.p1.xCoord, quad.p1.yCoord, quad.p1.zCoord));
+				quad.p1 = vec.vec3();
+				
+				matrix.apply(vec.set(quad.p2.xCoord, quad.p2.yCoord, quad.p2.zCoord));
+				quad.p2 = vec.vec3();
+				
+				matrix.apply(vec.set(quad.p3.xCoord, quad.p3.yCoord, quad.p3.zCoord));
+				quad.p3 = vec.vec3();
+				
+				matrix.apply(vec.set(quad.p4.xCoord, quad.p4.yCoord, quad.p4.zCoord));
+				quad.p4 = vec.vec3();
+			}
+			
+			ModelUtils.processQuads(rawQuads, nonFaceQuads, texture);
+	        if(  tape) ModelUtils.processQuads(rawQuads, nonFaceQuads,   tapeTex);
+	        if(lights) ModelUtils.processQuads(rawQuads, nonFaceQuads, lightsTex);
+	        if( speed) ModelUtils.processQuads(rawQuads, nonFaceQuads,  speedTex);
+			
+	        rawQuads.clear();
+	        
+			int r = GeneralUtil.getRotation(EnumFacing.NORTH, facing);
+	        
 			if(east)
-				ModelUtils.putQuad(rawQuads, null,
-	        		0, 0, 1, 12.5f, 8,
-	        		0, 1, 1, 12.5f, 0,
-	        		0, 1, 0, 0, 8,
-	        		0, 1, 0, 0, 8
-	        	);
-			
-//			if(westtop)
-//				ModelUtils.putQuad(rawQuads, null,
-//	        		0, 1, 1, 12.5f, 0,
-//	        		0, 2, 0, 0, 0,
-//	        		0, 1, 0, 0, 8,
-//	        		0, 1, 0, 0, 8
-//	        	);
-			
-			if(west)
-				ModelUtils.putQuad(rawQuads, null,
+				ModelUtils.putQuad(rawQuads, GeneralUtil.rotateFacing(r, EnumFacing.EAST), // for some reason these have to be swapped
 	        		1, 0, 1, 12.5f, 8,
 	        		1, 1, 1, 12.5f, 0,
 	        		1, 1, 0, 0, 8,
 	        		1, 1, 0, 0, 8
 	        	);
 			
-//			if(easttop)
-//				ModelUtils.putQuad(rawQuads, null,
-//	        		1, 1, 1, 12.5f, 0,
-//	        		1, 2, 0, 0, 0,
-//	        		1, 1, 0, 0, 8,
-//	        		1, 1, 0, 0, 8
-//	        	);
+			if(west)
+				ModelUtils.putQuad(rawQuads, GeneralUtil.rotateFacing(r, EnumFacing.WEST), // for some reason these have to be swapped
+	        		0, 0, 1, 12.5f, 8,
+	        		0, 1, 1, 12.5f, 0,
+	        		0, 1, 0, 0, 8,
+	        		0, 1, 0, 0, 8
+	        	);
 			
 			if(south)
-				ModelUtils.putQuad(rawQuads, null,
+				ModelUtils.putQuad(rawQuads, GeneralUtil.rotateFacing(r, EnumFacing.SOUTH),
 	        		0, 0, 1, 8, 16,
 	        		0, 1, 1, 8, 8,
 	        		1, 1, 1, 16, 8,
 	        		1, 0, 1, 16, 16
 	        	);
 			
-//			if(north)
-//				ModelUtils.putQuad(rawQuads, null,
-//	        		0, 1, 0, 8, 16,
-//	        		0, 2, 0, 8, 8,
-//	        		1, 2, 0, 16, 8,
-//	        		1, 1, 0, 16, 16
-//	        	);
-			
-			int rot = -GeneralUtil.getRotation(EnumFacing.NORTH, facing);
-			Matrix4 matrix = new Matrix4().translate(new Vector3(0.5,0.5,0.5)).rotate((Math.PI/2)*rot, new Vector3(0,1,0)).translate(new Vector3(-0.5,-0.5,-0.5));
-			Vector3 vec = new Vector3();
 			for (SpritelessQuad quad : rawQuads) {
 				matrix.apply(vec.set(quad.p1.xCoord, quad.p1.yCoord, quad.p1.zCoord));
 				quad.p1 = vec.vec3();
@@ -202,18 +203,19 @@ public class CatwalkStairSmartModel extends SmartModelBase {
 		
 		@Override
 		public List<BakedQuad> getFaceQuads(EnumFacing side) {
+			int rot = GeneralUtil.getRotation(EnumFacing.NORTH, facing);
 			List<BakedQuad> faceQuads = new ArrayList<>();
 			for (BakedQuad bakedQuad : quads) {
-				if(bakedQuad.getFace() == side) {
+				if(GeneralUtil.rotateFacing(rot, bakedQuad.getFace()) == side) {
 					faceQuads.add(bakedQuad);
 				}
 			}
-			return ImmutableList.of();
+			return faceQuads;
 		}
 
 		@Override
 		public List<BakedQuad> getGeneralQuads() {
-			return quads;
+			return nonFaceQuads;
 	    }
 
 		@Override

@@ -119,7 +119,7 @@ public class CatwalkSmartModel extends SmartModelBase {
 	        if(lights) ModelUtils.processQuads(rawQuads, quads, sideLightsTex);
 	        if( speed) ModelUtils.processQuads(rawQuads, quads,  sideSpeedTex);
 	        
-	        if(down) {
+	        if(down) { // seperate because it uses a different sprite
 	        	rawQuads.clear();
 	        	ModelUtils.putFace(rawQuads, EnumFacing.DOWN);
 	        	ModelUtils.processQuads(rawQuads, quads, bottom);

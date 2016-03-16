@@ -1,11 +1,17 @@
 tile.catwalk.steel.name=Catwalk
 tile.catwalk.wood.name=Wooden Catwalk
 tile.catwalk.stone.name=Stone Catwalk
-tile.catwalk.custom.name=Unlocalized: tile.catwalk.custom.name
+tile.catwalk.custom.name=Custom Catwalk
 
-item.decoration.lights.name=Catwalk Lights
-item.decoration.tape.name=Catwalk Decoration
-item.decoration.vine.name=Catwalk Plants
+tile.catwalkStair.steel.name=Catwalk Stair
+tile.catwalkStair.wood.name=Wooden Catwalk Stair
+tile.catwalkStair.stone.name=Stone Catwalk Stair
+tile.catwalkStair.custom.name=Custom Catwalk Stair
+
+item.decoration.lights.name=Rope Lights
+item.decoration.tape.name=Caution Tape
+item.decoration.speed.name=Speed Boost
+item.steelgrate.name=Steel Grate
 
 item.catwalktool.name=Blowtorch
 item.catwalktool.info.0=§8§oOther wrenches work

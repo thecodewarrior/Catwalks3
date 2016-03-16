@@ -22,7 +22,7 @@ public class Logs {
     public static boolean doLogging = false;
 
     private Logs() {
-        logger = LogManager.getLogger();
+        logger = LogManager.getLogger("Catwalks");
         instance = this;
     }
 

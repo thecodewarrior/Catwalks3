@@ -49,7 +49,7 @@ public class CatwalkStairTopSmartModel extends SmartModelBase {
 		} catch(NullPointerException e) {
 			if(state == null)
 				throw e;
-			Logs.error(e, "Extreme edge case NPE, likely a freak race condition... *shrugs*");
+			Logs.error(e, "Edge case NPE, likely a freak race condition... *shrugs*");
 			return new Model();
 		}
 		return new Model(mat, north, westtop, easttop, tape, lights, speed, facing);
@@ -102,9 +102,12 @@ public class CatwalkStairTopSmartModel extends SmartModelBase {
 		
 		public void genFaces() {
 			List<SpritelessQuad> rawQuads = new ArrayList<>();
+			int r = GeneralUtil.getRotation(EnumFacing.NORTH, facing);
+
+			
 			
 			if(westtop)
-				ModelUtils.putQuad(rawQuads, null,
+				ModelUtils.putQuad(rawQuads, GeneralUtil.rotateFacing(r, EnumFacing.WEST),
 	        		0, 0, 1, 12.5f, 0,
 	        		0, 1, 0, 0, 0,
 	        		0, 0, 0, 0, 8,
@@ -112,7 +115,7 @@ public class CatwalkStairTopSmartModel extends SmartModelBase {
 	        	);
 			
 			if(easttop)
-				ModelUtils.putQuad(rawQuads, null,
+				ModelUtils.putQuad(rawQuads, GeneralUtil.rotateFacing(r, EnumFacing.EAST),
 	        		1, 0, 1, 12.5f, 0,
 	        		1, 1, 0, 0, 0,
 	        		1, 0, 0, 0, 8,
@@ -120,7 +123,7 @@ public class CatwalkStairTopSmartModel extends SmartModelBase {
 	        	);
 			
 			if(north)
-				ModelUtils.putQuad(rawQuads, null,
+				ModelUtils.putQuad(rawQuads, GeneralUtil.rotateFacing(r, EnumFacing.NORTH),
 	        		0, 0, 0, 8, 16,
 	        		0, 1, 0, 8, 8,
 	        		1, 1, 0, 16, 8,
@@ -152,18 +155,19 @@ public class CatwalkStairTopSmartModel extends SmartModelBase {
 		
 		@Override
 		public List<BakedQuad> getFaceQuads(EnumFacing side) {
+			int rot = GeneralUtil.getRotation(EnumFacing.NORTH, facing);
 			List<BakedQuad> faceQuads = new ArrayList<>();
 			for (BakedQuad bakedQuad : quads) {
-				if(bakedQuad.getFace() == side) {
+				if(GeneralUtil.rotateFacing(rot, bakedQuad.getFace()) == side) {
 					faceQuads.add(bakedQuad);
 				}
 			}
-			return ImmutableList.of();
+			return faceQuads;
 		}
 
 		@Override
 		public List<BakedQuad> getGeneralQuads() {
-			return quads;
+			return ImmutableList.of();
 	    }
 
 		@Override

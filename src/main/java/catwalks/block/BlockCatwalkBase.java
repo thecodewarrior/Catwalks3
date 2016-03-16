@@ -169,6 +169,22 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		return false;
 	}
 	
+	@Override
+	public boolean hasDecoration(World world, BlockPos pos, String name) {
+		TileExtended tile = (TileExtended) world.getTileEntity(pos);
+		
+		if("lights".equals(name)) {
+			return tile.getBoolean(I_LIGHTS);
+		}
+		if("tape".equals(name)) {
+			return tile.getBoolean(I_TAPE);
+		}
+		if("speed".equals(name)) {
+			return tile.getBoolean(I_SPEED);
+		}
+		return false;
+	}
+	
 	{ /* state */ }
 	
 	@Override

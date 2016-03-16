@@ -1,5 +1,6 @@
 package catwalks;
 
+import catwalks.movement.MovementHandler;
 import catwalks.proxy.CommonProxy;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
@@ -37,6 +38,7 @@ public class CatwalksMod {
     @EventHandler
     public void init(FMLInitializationEvent event) {
     	WrenchChecker.init();
+    	MovementHandler justToLoadTheClass = MovementHandler.INSTANCE;
     }
     
     public static CreativeTabs tab = new CreativeTabs("tabCatwalks") {
