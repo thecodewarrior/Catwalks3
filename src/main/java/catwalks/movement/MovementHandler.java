@@ -8,6 +8,7 @@ import catwalks.CatwalksConfig;
 import catwalks.block.BlockCatwalk;
 import catwalks.block.IDecoratable;
 import catwalks.shade.ccl.vec.BlockCoord;
+import catwalks.shade.ccl.vec.Vector3;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -33,6 +34,7 @@ public class MovementHandler {
 	public static final MovementHandler INSTANCE = new MovementHandler();
 	
 	public AttributeModifier speedModifier;
+	public String catwalkDataId = "catwalkmod.catwalkdata";
 	
 	private MovementHandler() {
 		speedModifier =  new AttributeModifier(
@@ -43,14 +45,14 @@ public class MovementHandler {
     	MinecraftForge.EVENT_BUS.register(this);
 	}
 	
-//	private CatwalkEntityProperties getOrCreateEP(Entity entity) {
-//		CatwalkEntityProperties catwalkEP = (CatwalkEntityProperties)entity.getExtendedProperties("catwalkmod.catwalkdata");
-//		if(catwalkEP == null) {
-//			catwalkEP = new CatwalkEntityProperties();
-//			entity.registerExtendedProperties("catwalkmod.catwalkdata", catwalkEP);
-//		}
-//		return catwalkEP;
-//	}
+	private CatwalkEntityProperties getOrCreateEP(Entity entity) {
+		CatwalkEntityProperties catwalkEP = (CatwalkEntityProperties)entity.getExtendedProperties(catwalkDataId);
+		if(catwalkEP == null) {
+			catwalkEP = new CatwalkEntityProperties();
+			entity.registerExtendedProperties(catwalkDataId, catwalkEP);
+		}
+		return catwalkEP;
+	}
 	
 //	@SubscribeEvent
 //	public void onLivingUpdate(LivingUpdateEvent event) {
@@ -153,7 +155,7 @@ public class MovementHandler {
 	
 	public BlockPos getLadderPos(EntityLivingBase entity) {
 		
-		return findCollidingBlock(entity, (BlockPos pos) -> {
+		return findCollidingBlock(entity, false, (BlockPos pos) -> {
 			World w = entity.worldObj;
 			IBlockState state = w.getBlockState(pos);
 			Block b = state.getBlock();
@@ -168,17 +170,21 @@ public class MovementHandler {
 	 * @param mat
 	 * @return
 	 */
-	public BlockPos findCollidingBlock(EntityLivingBase entity, Predicate<BlockPos> mat) {
+	public BlockPos findCollidingBlock(EntityLivingBase entity, boolean onlyInside, Predicate<BlockPos> mat) {
+		return findCollidingBlock(entity, onlyInside, Vector3.zero, Vector3.zero, mat);
+	}
+	public BlockPos findCollidingBlock(EntityLivingBase entity, boolean onlyInside, Vector3 offsetMin, Vector3 offsetMax, Predicate<BlockPos> mat) {
+		
 		AxisAlignedBB bb = entity.getEntityBoundingBox();
-		double buf = 1/1024F; // so when the player is touching a full 1m cube they can climb it.
-        int mX = MathHelper.floor_double(bb.minX-buf);
-        int mY = MathHelper.floor_double(bb.minY);
-        int mZ = MathHelper.floor_double(bb.minZ-buf);
-        for (int y2 = mY; y2 < bb.maxY; y2++)
+		double buf = onlyInside ? 0 : 1/1024F; // so when the player is touching a full 1m cube they can climb it.
+        int mX = MathHelper.floor_double(bb.minX-buf + offsetMin.x);
+        int mY = MathHelper.floor_double(bb.minY     + offsetMin.y);
+        int mZ = MathHelper.floor_double(bb.minZ-buf + offsetMin.z);
+        for (int y2 = mY; y2 < bb.maxY+offsetMax.y-offsetMin.y; y2++)
         {
-            for (int x2 = mX; x2 < bb.maxX+buf; x2++)
+            for (int x2 = mX; x2 < bb.maxX+buf+offsetMax.x-offsetMin.x; x2++)
             {
-                for (int z2 = mZ; z2 < bb.maxZ+buf; z2++)
+                for (int z2 = mZ; z2 < bb.maxZ+buf+offsetMax.z-offsetMin.z; z2++)
                 {
                 	BlockPos bc = new BlockPos(x2, y2, z2);
                     if (mat.test(bc))
@@ -202,7 +208,7 @@ public class MovementHandler {
     		
     		for (EntityPlayerMP player : players) { // for each player
     			// find any catwalks
-				BlockPos speedpos = findCollidingBlock(player, (BlockPos pos) -> {
+				BlockPos speedpos = findCollidingBlock(player, true, (BlockPos pos) -> {
 					IBlockState state = player.worldObj.getBlockState(pos);
 					Block b = state.getBlock();
 					if(b instanceof IDecoratable) {
@@ -215,6 +221,25 @@ public class MovementHandler {
 				IAttributeInstance attrInstance = player.getEntityAttribute(SharedMonsterAttributes.movementSpeed);
 				AttributeModifier m = attrInstance.getModifier(speedModifier.getID());
 				
+				CatwalkEntityProperties ep = getOrCreateEP(player);
+				
+				if(speedpos == null && ep.jumpTimer > 0) {
+					speedpos = findCollidingBlock(player, true, new Vector3(0, -2, 0), new Vector3(0, 0, 0), (BlockPos pos) -> {
+						IBlockState state = player.worldObj.getBlockState(pos);
+						Block b = state.getBlock();
+						if(b instanceof IDecoratable) {
+							IDecoratable idec = (IDecoratable) b;
+							return idec.hasDecoration(player.worldObj, pos, "speed");
+						}
+						return false;
+					});
+					if(speedpos == null) { ep.jumpTimer = 0; }
+				}
+				
+				if(ep.jumpTimer > 0) {
+					ep.jumpTimer--;
+				}
+				
 				if(speedpos == null) { // if no catwalks found
 					if(m != null) { // and speed modifier is still applied
 						attrInstance.removeModifier(speedModifier); // remove it
@@ -223,6 +248,10 @@ public class MovementHandler {
 				}
 				
 				double amt = speedModifier.getAmount() * CatwalksConfig.speedPotionLevel; // roughly the same as a Swiftness I potion
+				
+				if(player.motionY > 0) {
+					ep.jumpTimer = 30;
+				}
 				
 				if(m == null || m.getAmount() != amt ) { // if modifier isn't applied or the amount has changed
 					attrInstance.removeModifier(speedModifier); // remove the modifier

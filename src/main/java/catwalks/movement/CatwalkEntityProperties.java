@@ -7,7 +7,7 @@ import net.minecraftforge.common.IExtendedEntityProperties;
 
 public class CatwalkEntityProperties implements IExtendedEntityProperties {
 
-	public int timeout;
+	public int jumpTimer;
 	public double multiplier;
 	public boolean isInList = false;
 	public boolean highSpeedLadder = false;
@@ -27,7 +27,7 @@ public class CatwalkEntityProperties implements IExtendedEntityProperties {
 
 	@Override
 	public void init(Entity entity, World world) {
-		timeout = -10;
+		jumpTimer = 0;
 		multiplier = 0;
 		lastStepX = entity.posX;
 		lastStepY = entity.posY;
