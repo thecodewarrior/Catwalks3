@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.vecmath.Vector3f;
+
 import org.lwjgl.opengl.GL11;
 
 import catwalks.CatwalksMod;
@@ -21,6 +23,7 @@ import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.texture.TextureGenerator;
 import catwalks.util.ExtendedFlatHighlightMOP;
+import catwalks.util.Logs;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -47,6 +50,8 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.TRSRTransformation;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -63,6 +68,7 @@ public class ClientProxy extends CommonProxy {
 	public void preInit() {
 		BlockRegister.initRender();
 		ItemRegister.initRender();
+		OBJLoader.instance.addDomain(CatwalksMod.MODID);
 		MinecraftForge.EVENT_BUS.register(TextureGenerator.instance);
 //		LangPlus.addMod(CatwalksMod.MODID);
 //		( (IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager() ).registerReloadListener(TextureGenerator.instance);
@@ -76,6 +82,14 @@ public class ClientProxy extends CommonProxy {
 	
 	@SubscribeEvent
     public void onModelBakeEvent(ModelBakeEvent event) {
+		
+		TRSRTransformation thirdperson = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
+                new Vector3f(0, 1.5f / 16, -2.75f / 16),
+                TRSRTransformation.quatFromYXZDegrees(new Vector3f(10, -45, 170)),
+                new Vector3f(0.375f, 0.375f, 0.375f),
+                null));
+		Logs.debug(thirdperson.toString());
+		
 		models.clear();
 		
 		model("catwalk", new CatwalkSmartModel());

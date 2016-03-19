@@ -74,19 +74,20 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 			IExtendedBlockState ebelow = null;
 			try {
 				ebelow = (IExtendedBlockState)below.getBlock().getExtendedState(below, worldIn, pos.offset(EnumFacing.DOWN));
+			
+				if(ebelow != null) {
+					  facing = ebelow.getValue(BlockCatwalkBase.FACING);
+					  
+					   north = ebelow.getValue(BlockCatwalkBase.NORTH);
+					 westTop = ebelow.getValue(BlockCatwalkStair.WEST_TOP);
+					 eastTop = ebelow.getValue(BlockCatwalkStair.EAST_TOP);
+					 
+					    tape = ebelow.getValue(BlockCatwalkBase.TAPE);
+					  lights = ebelow.getValue(BlockCatwalkBase.LIGHTS);
+					   speed = ebelow.getValue(BlockCatwalkBase.SPEED);
+				}
 			} catch(NullPointerException e) {
 				Logs.error(e, "Edge case NPE, likely a freak race condition... *shrugs*");
-			}
-			if(ebelow != null) {
-				  facing = ebelow.getValue(BlockCatwalkBase.FACING);
-				  
-				   north = ebelow.getValue(BlockCatwalkBase.NORTH);
-				 westTop = ebelow.getValue(BlockCatwalkStair.WEST_TOP);
-				 eastTop = ebelow.getValue(BlockCatwalkStair.EAST_TOP);
-				 
-				    tape = ebelow.getValue(BlockCatwalkBase.TAPE);
-				  lights = ebelow.getValue(BlockCatwalkBase.LIGHTS);
-				   speed = ebelow.getValue(BlockCatwalkBase.SPEED);
 			}
 		}
 		

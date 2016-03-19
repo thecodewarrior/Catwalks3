@@ -46,20 +46,27 @@ public class BlockRegister {
 	
 	@SideOnly(Side.CLIENT)
 	public static void initRender() {
+		Item item; String rl;
+		
 		ModelLoader.setCustomStateMapper(catwalk, new StateMapperStatic("catwalk"));
-		Item catwalkItem = Item.getItemFromBlock(catwalk);
-		ResourceLocation catwalkRL = Item.itemRegistry.getNameForObject(catwalkItem);
-		ModelLoader.setCustomModelResourceLocation(catwalkItem, 0, new ModelResourceLocation(catwalkRL.toString()+"_steel" , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(catwalkItem, 1, new ModelResourceLocation(catwalkRL.toString()+"_stone" , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(catwalkItem, 2, new ModelResourceLocation(catwalkRL.toString()+"_wood"  , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(catwalkItem, 3, new ModelResourceLocation(catwalkRL.toString()+"_custom", "inventory" ));
+		item = Item.getItemFromBlock(catwalk);
+		rl   = Item.itemRegistry.getNameForObject(item).toString();
+		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_stone" , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_custom", "inventory" ));
 		
 		ModelLoader.setCustomStateMapper(catwalkStair, new StateMapperStatic("catwalkStair"));
+		item = Item.getItemFromBlock(catwalkStair);
+		rl   = Item.itemRegistry.getNameForObject(item).toString();
+		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_stone" , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_custom", "inventory" ));
+
 		ModelLoader.setCustomStateMapper(stairTop, new StateMapperStatic("catwalkStairTop"));
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(catwalkStair), 0, new ModelResourceLocation(catwalkStair.getRegistryName(), "inventory"));
 		
-//		registerTextureVariants("catwalk/side",   "blocks/catwalk/<mat>/side/");
-//		registerTextureVariants("catwalk/bottom", "blocks/catwalk/<mat>/bottom/");
+		
 		
 		// Catwalk
 		registerTextureAllMaterials("blocks/catwalk/<mat>/side/base");
