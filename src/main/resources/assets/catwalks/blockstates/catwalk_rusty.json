@@ -6,8 +6,8 @@
   "variants": {
     "inventory": [{
 	    "textures": {
-	        "bottom": "catwalks:blocks/catwalk/stone/bottom/base",
-	        "side": "catwalks:blocks/catwalk/stone/side/base"
+	        "bottom": "catwalks:blocks/catwalk/rusty/bottom/base",
+	        "side": "catwalks:blocks/catwalk/rusty/side/base"
 	    }
     }]
   }
