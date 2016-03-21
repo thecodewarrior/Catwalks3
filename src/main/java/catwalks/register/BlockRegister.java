@@ -52,7 +52,7 @@ public class BlockRegister {
 		item = Item.getItemFromBlock(catwalk);
 		rl   = Item.itemRegistry.getNameForObject(item).toString();
 		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_stone" , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_rusty" , "inventory" ));
 		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));
 		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_custom", "inventory" ));
 		
@@ -60,7 +60,7 @@ public class BlockRegister {
 		item = Item.getItemFromBlock(catwalkStair);
 		rl   = Item.itemRegistry.getNameForObject(item).toString();
 		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_stone" , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_rusty" , "inventory" ));
 		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));
 		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_custom", "inventory" ));
 

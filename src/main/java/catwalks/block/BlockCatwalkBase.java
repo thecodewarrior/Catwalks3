@@ -102,7 +102,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	public static final PropertyEnum<EnumCatwalkMaterial> MATERIAL = PropertyEnum.create("material", EnumCatwalkMaterial.class);
 	
 	public static enum EnumCatwalkMaterial implements IStringSerializable {
-		STEEL, STONE, WOOD, CUSTOM;
+		STEEL, RUSTY, WOOD, CUSTOM;
 
 		@Override
 		public String getName() {
