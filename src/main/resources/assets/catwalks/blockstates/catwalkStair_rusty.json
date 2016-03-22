@@ -18,7 +18,7 @@
   "variants": {
     "inventory": [{
 	    "textures": {
-	        "#Material": "catwalks:blocks/stair/stone/base"
+	        "#Material": "catwalks:blocks/stair/rusty/base"
 	    }
     }]
   }
