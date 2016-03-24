@@ -23,9 +23,6 @@ public class ItemRegister {
 		speed  = new ItemDecoration("speed");
 		tool   = new ItemCatwalkTool();
 		grate  = new ItemBase("steelgrate");
-		
-		CraftingManager.getInstance().addRecipe(new RecipeDecorationRepair());
-		CraftingManager.getInstance().addRecipe(new RecipeDecorationSplit());
 	}
 	
 	@SideOnly(Side.CLIENT)
