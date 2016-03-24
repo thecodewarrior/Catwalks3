@@ -11,6 +11,9 @@ tile.catwalkStair.custom.name=Custom Catwalk Stair
 item.decoration.lights.name=Rope Lights
 item.decoration.tape.name=Caution Tape
 item.decoration.speed.name=Speed Boost
+item.decoration.uses=%d uses left
+item.decoration.combine=Can combine by placing in crafting grid
+item.decoration.split=Place alone in crafting grid to split
 item.steelgrate.name=Steel Grate
 
 item.catwalktool.name=Blowtorch

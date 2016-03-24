@@ -1,5 +1,7 @@
 package catwalks.item;
 
+import java.util.List;
+
 import catwalks.block.IDecoratable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -9,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 public class ItemDecoration extends ItemBase {
@@ -22,6 +25,13 @@ public class ItemDecoration extends ItemBase {
 		setUnlocalizedName("decoration."+name);
 	}
 	
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+		tooltip.add( StatCollector.translateToLocalFormatted("item.decoration.uses", stack.getMaxDamage() - stack.getItemDamage()) );
+		tooltip.add( StatCollector.translateToLocal("item.decoration.combine") );
+		tooltip.add( StatCollector.translateToLocal("item.decoration.split") );
+		super.addInformation(stack, playerIn, tooltip, advanced);
+	}
 	
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side,

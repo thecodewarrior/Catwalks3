@@ -77,44 +77,44 @@ public class RecipeRegister {
 		// Catwalks
 		
 		addShapedOreRecipe(true, new ItemStack(catwalk, 1, m_steel),
-				"g g",
-				" g ",
-				'g', grate);
+			"g g",
+			" g ",
+			'g', grate);
 			// rusty/steel conversion
 		addShapelessRecipe(true, new ItemStack(catwalk, 1, m_rusty),
-				new ItemStack(catwalk, 1, m_steel));
+			new ItemStack(catwalk, 1, m_steel));
 		addShapelessRecipe(true, new ItemStack(catwalk, 1, m_steel),
-				new ItemStack(catwalk, 1, m_rusty));
+			new ItemStack(catwalk, 1, m_rusty));
 		
 		addShapedOreRecipe(true, new ItemStack(catwalk, 1, m_wood),
-				"s s",
-				" p ",
-				's', stick,
-				'p', pPlateWood);
+			"s s",
+			" p ",
+			's', stick,
+			'p', pPlateWood);
 		
 		// Stairs
 		
 		addShapedOreRecipe(true, new ItemStack(stair, 1, m_steel),
-				"g  ",
-				"gg ",
-				" gg",
-				'g', grate);
+			"g  ",
+			"gg ",
+			" gg",
+			'g', grate);
 			// rusty/steel conversion
 		addShapelessRecipe(true, new ItemStack(stair, 1, m_rusty),
-				new ItemStack(stair, 1, m_steel));
+			new ItemStack(stair, 1, m_steel));
 		addShapelessRecipe(true, new ItemStack(stair, 1, m_steel),
-				new ItemStack(stair, 1, m_rusty));
+			new ItemStack(stair, 1, m_rusty));
 		
 		addShapedOreRecipe(true, new ItemStack(stair, 1, m_wood),
-				"s  ",
-				"ps ",
-				" ps",
-				's', stick,
-				'p', pPlateWood);
+			"s  ",
+			"ps ",
+			" ps",
+			's', stick,
+			'p', pPlateWood);
 	}
 	
 	
-	// below methods snagged from CoFHLib because it isn't compiled for 1.8.8
+	// below methods snagged from CoFHLib
 
 	public static void addShapelessRecipe(boolean condition, ItemStack out, Object... recipe) {
 		if (condition)
