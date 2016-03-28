@@ -12,6 +12,7 @@ import javax.vecmath.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import catwalks.CatwalksMod;
+import catwalks.block.BlockCatwalkBase;
 import catwalks.block.BlockCatwalkBase.Face;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
@@ -208,6 +209,11 @@ public class ClientProxy extends CommonProxy {
 			return;
 		
 		Minecraft mc = Minecraft.getMinecraft();
+		
+		if(CatwalkSmartModel.Model.samples > 0)
+			event.left.add("render: " + ( CatwalkSmartModel.Model.avgTime/( CatwalkSmartModel.Model.samples*1000.0 ) ));
+		if(BlockCatwalkBase.samples > 0)
+			event.left.add("state:  " + ( BlockCatwalkBase.avgTime/( BlockCatwalkBase.samples*1000.0 ) ));
 		
 		if(Minecraft.getMinecraft().thePlayer.isSneaking()) {
 			if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && mc.objectMouseOver.getBlockPos() != null)

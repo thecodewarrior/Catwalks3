@@ -7,19 +7,19 @@ import com.google.common.collect.ImmutableList;
 
 import catwalks.CatwalksMod;
 import catwalks.block.BlockCatwalkBase;
-import catwalks.block.BlockCatwalkStair;
 import catwalks.block.BlockCatwalkBase.EnumCatwalkMaterial;
 import catwalks.render.BakedModelBase;
 import catwalks.render.ModelUtils;
+import catwalks.render.ModelUtils.SpritelessConditionalQuad;
 import catwalks.render.ModelUtils.SpritelessQuad;
-import catwalks.render.catwalk.CatwalkStairSmartModel.Model;
-import catwalks.util.Logs;
 import catwalks.render.SmartModelBase;
+import catwalks.util.Logs;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 public class CatwalkSmartModel extends SmartModelBase {
@@ -31,6 +31,9 @@ public class CatwalkSmartModel extends SmartModelBase {
 
 	@Override
 	public IBakedModel newBakedModel(IExtendedBlockState state) {
+		if(!Model.initialized)
+			Model.initQuads();
+		
 		EnumCatwalkMaterial mat;
 		boolean bottom, north, south, east, west, tape, lights, speed;
 		try {
@@ -97,47 +100,63 @@ public class CatwalkSmartModel extends SmartModelBase {
             genFaces();
 		}
 		
+		public static long avgTime = 0;
+		public static int samples = 0;
+		
+		static List<SpritelessConditionalQuad> sideQuads;
+		static List<SpritelessQuad> bottomQuads;
+		public static boolean initialized = false;
+		public static void initQuads() {
+			sideQuads = new ArrayList<>();
+			bottomQuads = new ArrayList<>();
+			ModelUtils.putFace(sideQuads, EnumFacing.NORTH, 0);
+			ModelUtils.putFace(sideQuads, EnumFacing.SOUTH, 1);
+			ModelUtils.putFace(sideQuads, EnumFacing.EAST,  2);
+			ModelUtils.putFace(sideQuads, EnumFacing.WEST,  3);
+//			ModelUtils.twoFace(sideQuads, 3,
+//    			new Vec3(1, 1, 0.1),
+//            	new Vec3(1, 0, 0.1),
+//        		new Vec3(0, 0, 0.1),
+//    			new Vec3(0, 1, 0.1)
+//        	);
+        	ModelUtils.putFace(bottomQuads, EnumFacing.DOWN);
+        	initialized = true;
+		}
+		
 		List<BakedQuad> quads = new ArrayList<>();
 		
 		public void genFaces() {
-			List<SpritelessQuad> rawQuads = new ArrayList<>();
-	        if(north) {
-	        	ModelUtils.putFace(rawQuads, EnumFacing.NORTH);
-	        }
-	        if(south) {
-	        	ModelUtils.putFace(rawQuads, EnumFacing.SOUTH);
-	        }
-	        if(east) {
-	        	ModelUtils.putFace(rawQuads, EnumFacing.EAST);
-	        }
-	        if(west) {
-	        	ModelUtils.putFace(rawQuads, EnumFacing.WEST);
-	        }
-	        
-	        ModelUtils.processQuads(rawQuads, quads, side);
-	        if(  tape) ModelUtils.processQuads(rawQuads, quads,   sideTapeTex);
-	        if(lights) ModelUtils.processQuads(rawQuads, quads, sideLightsTex);
-	        if( speed) ModelUtils.processQuads(rawQuads, quads,  sideSpeedTex);
+	        ModelUtils.processConditionalQuads(sideQuads, quads, side,
+	        		north, south, east, west);
+	        if(  tape) ModelUtils.processConditionalQuads(sideQuads, quads, sideTapeTex,
+	        		north, south, east, west);
+	        if(lights) ModelUtils.processConditionalQuads(sideQuads, quads, sideLightsTex,
+	        		north, south, east, west);
+	        if( speed) ModelUtils.processConditionalQuads(sideQuads, quads, sideSpeedTex,
+	        		north, south, east, west);
 	        
 	        if(down) { // seperate because it uses a different sprite
-	        	rawQuads.clear();
-	        	ModelUtils.putFace(rawQuads, EnumFacing.DOWN);
-	        	ModelUtils.processQuads(rawQuads, quads, bottom);
-	        	if(  tape) ModelUtils.processQuads(rawQuads, quads,   bottomTapeTex);
-		        if(lights) ModelUtils.processQuads(rawQuads, quads, bottomLightsTex);
-		        if( speed) ModelUtils.processQuads(rawQuads, quads,  bottomSpeedTex);
+	        	ModelUtils.processQuads(bottomQuads, quads, bottom);
+	        	if(  tape) ModelUtils.processQuads(bottomQuads, quads,   bottomTapeTex);
+		        if(lights) ModelUtils.processQuads(bottomQuads, quads, bottomLightsTex);
+		        if( speed) ModelUtils.processQuads(bottomQuads, quads,  bottomSpeedTex);
 	        }
 		}
 		
 		@Override
 		public List<BakedQuad> getFaceQuads(EnumFacing side) {
+			long start = System.nanoTime();
 			List<BakedQuad> faceQuads = new ArrayList<>();
 			for (BakedQuad bakedQuad : quads) {
 				if(bakedQuad.getFace() == side) {
 					faceQuads.add(bakedQuad);
+					faceQuads.add(bakedQuad);
 				}
 			}
-			return faceQuads;
+			long time = System.nanoTime() - start;
+			avgTime = avgTime + time;
+			samples++;
+			return ImmutableList.of(); //; //
 		}
 
 		@Override

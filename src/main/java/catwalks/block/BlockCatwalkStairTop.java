@@ -156,6 +156,12 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	{ /* forwarding */ }
 	
 	@Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player) {
+		IBlockState state = world.getBlockState(pos.offset(EnumFacing.DOWN));
+		return state.getBlock().getPickBlock(target, world, pos.offset(EnumFacing.DOWN), player);
+	}
+	
+	@Override
 	public boolean putDecoration(World world, BlockPos pos, String name, boolean value) {
 		pos = pos.offset(EnumFacing.DOWN);
 		return ( (IDecoratable)world.getBlockState(pos).getBlock() ).putDecoration(world, pos, name, value);
