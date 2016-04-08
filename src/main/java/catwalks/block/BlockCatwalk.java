@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 
+import catwalks.Const;
 import catwalks.block.extended.EnumCubeEdge;
 import catwalks.block.extended.TileExtended;
 import catwalks.item.ItemBlockCatwalk;
@@ -93,28 +94,28 @@ public class BlockCatwalk extends BlockCatwalkBase {
 		Vector3 y = new Vector3(0, 1, 0);
 		s = side.copy();
 //		s.apply(new Matrix4().translate(center).translate(negCenter));
-		s.showProperty = NORTH; s.side = EnumFacing.NORTH;
+		s.showProperty = Const.NORTH; s.side = EnumFacing.NORTH;
 		sideLookBoxes.add(s);
 		
 		s = side.copy();
 		s.apply(new Matrix4().translate(center).rotate(-q, y).translate(negCenter));
-		s.showProperty = EAST; s.side = EnumFacing.EAST;
+		s.showProperty = Const.EAST; s.side = EnumFacing.EAST;
 		sideLookBoxes.add(s);
 		
 		s = side.copy();
 		s.apply(new Matrix4().translate(center).rotate(2*q, y).translate(negCenter));
-		s.showProperty = SOUTH; s.side = EnumFacing.SOUTH;
+		s.showProperty = Const.SOUTH; s.side = EnumFacing.SOUTH;
 		sideLookBoxes.add(s);
 		
 		s = side.copy();
 		s.apply(new Matrix4().translate(center).rotate(q, y).translate(negCenter));
-		s.showProperty = WEST; s.side = EnumFacing.WEST;
+		s.showProperty = Const.WEST; s.side = EnumFacing.WEST;
 		sideLookBoxes.add(s);
 		
 		
 		s = side.copy();
 		s.apply(new Matrix4().translate(center).rotate(-q, Vector3.axis(Axis.X)).translate(negCenter));
-		s.showProperty = BOTTOM; s.side = EnumFacing.DOWN;
+		s.showProperty = Const.BOTTOM; s.side = EnumFacing.DOWN;
 		s.showWithoutWrench = true;
 		s.wrenchSide = s.mainSide.copy();
 		s.wrenchSide.apply( new Matrix4().translate(new Vector3(0.5, 0, 0.5)).scale(new Vector3(0.5, 1, 0.5)).translate(new Vector3(-0.5, 0, -0.5)) );

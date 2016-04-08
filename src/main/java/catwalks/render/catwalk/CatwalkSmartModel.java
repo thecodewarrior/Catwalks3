@@ -5,9 +5,8 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-import catwalks.CatwalksMod;
-import catwalks.block.BlockCatwalkBase;
-import catwalks.block.BlockCatwalkBase.EnumCatwalkMaterial;
+import catwalks.Const;
+import catwalks.block.EnumCatwalkMaterial;
 import catwalks.render.BakedModelBase;
 import catwalks.render.ModelUtils;
 import catwalks.render.ModelUtils.SpritelessConditionalQuad;
@@ -37,15 +36,15 @@ public class CatwalkSmartModel extends SmartModelBase {
 		EnumCatwalkMaterial mat;
 		boolean bottom, north, south, east, west, tape, lights, speed;
 		try {
-			mat     = state.getValue(BlockCatwalkBase.MATERIAL);
-			bottom  = state.getValue(BlockCatwalkBase.BOTTOM);
-			north   = state.getValue(BlockCatwalkBase.NORTH);
-			south   = state.getValue(BlockCatwalkBase.SOUTH);
-			east    = state.getValue(BlockCatwalkBase.EAST);
-			west    = state.getValue(BlockCatwalkBase.WEST);
-			tape    = state.getValue(BlockCatwalkBase.TAPE);
-			lights  = state.getValue(BlockCatwalkBase.LIGHTS);
-			speed   = state.getValue(BlockCatwalkBase.SPEED);
+			mat     = state.getValue(Const.MATERIAL);
+			bottom  = state.getValue(Const.BOTTOM);
+			north   = state.getValue(Const.NORTH);
+			south   = state.getValue(Const.SOUTH);
+			east    = state.getValue(Const.EAST);
+			west    = state.getValue(Const.WEST);
+			tape    = state.getValue(Const.TAPE);
+			lights  = state.getValue(Const.LIGHTS);
+			speed   = state.getValue(Const.SPEED);
 		} catch(NullPointerException e) {
 			if(state == null)
 				throw e;
@@ -85,17 +84,17 @@ public class CatwalkSmartModel extends SmartModelBase {
             
             String mat = material.getName().toLowerCase();
             
-            side          = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/side/base"));
+            side          = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/catwalk/"+mat+"/side/base"));
             
-            sideTapeTex   = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/side/tape"));
-            sideLightsTex = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/side/lights"));
-            sideSpeedTex  = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/side/speed"));
+            sideTapeTex   = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/catwalk/"+mat+"/side/tape"));
+            sideLightsTex = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/catwalk/"+mat+"/side/lights"));
+            sideSpeedTex  = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/catwalk/"+mat+"/side/speed"));
 
-            bottom          = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/bottom/base"));
+            bottom          = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/catwalk/"+mat+"/bottom/base"));
 
-            bottomTapeTex   = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/bottom/tape"));
-            bottomLightsTex = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/bottom/lights"));
-            bottomSpeedTex  = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/catwalk/"+mat+"/bottom/speed"));
+            bottomTapeTex   = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/catwalk/"+mat+"/bottom/tape"));
+            bottomLightsTex = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/catwalk/"+mat+"/bottom/lights"));
+            bottomSpeedTex  = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/catwalk/"+mat+"/bottom/speed"));
             
             genFaces();
 		}

@@ -1,7 +1,7 @@
 package catwalks.texture;
 
-import catwalks.CatwalksMod;
-import catwalks.block.BlockCatwalkBase.EnumCatwalkMaterial;
+import catwalks.Const;
+import catwalks.block.EnumCatwalkMaterial;
 
 public class CatwalkVariant {
 
@@ -44,7 +44,7 @@ public class CatwalkVariant {
 	}
 	
 	public String getTextureName(String path) {
-		return CatwalksMod.MODID + ":/gen/" + textureKey() + "/" + path;
+		return Const.MODID + ":/gen/" + textureKey() + "/" + path;
 	}
 	
 	protected String textureKey() {

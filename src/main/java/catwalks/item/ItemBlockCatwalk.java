@@ -1,6 +1,6 @@
 package catwalks.item;
 
-import catwalks.block.BlockCatwalkBase.EnumCatwalkMaterial;
+import catwalks.block.EnumCatwalkMaterial;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;

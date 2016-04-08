@@ -3,11 +3,11 @@ package catwalks.register;
 import java.util.ArrayList;
 import java.util.List;
 
-import catwalks.CatwalksMod;
+import catwalks.Const;
 import catwalks.block.BlockCatwalk;
-import catwalks.block.BlockCatwalkBase.EnumCatwalkMaterial;
 import catwalks.block.BlockCatwalkStair;
 import catwalks.block.BlockCatwalkStairTop;
+import catwalks.block.EnumCatwalkMaterial;
 import catwalks.block.extended.TileExtended;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
@@ -35,7 +35,7 @@ public class BlockRegister {
 	}
 	
 	private static void registerTexture(String path) {
-		textures.add(new ResourceLocation(CatwalksMod.MODID + ":" + path));
+		textures.add(new ResourceLocation(Const.MODID + ":" + path));
 	}
 	
 	private static void registerTextureAllMaterials(String path) {
@@ -93,7 +93,7 @@ public class BlockRegister {
 		ModelResourceLocation loc;
 		
 		public StateMapperStatic(String loc) {
-			this.loc = new ModelResourceLocation(CatwalksMod.MODID + ":" + loc);
+			this.loc = new ModelResourceLocation(Const.MODID + ":" + loc);
 		}
 		
 		@Override

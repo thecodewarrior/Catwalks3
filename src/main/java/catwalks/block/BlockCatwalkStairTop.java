@@ -3,7 +3,7 @@ package catwalks.block;
 import java.util.List;
 import java.util.Random;
 
-import catwalks.block.BlockCatwalkBase.EnumCatwalkMaterial;
+import catwalks.Const;
 import catwalks.block.extended.EnumCubeEdge;
 import catwalks.block.extended.TileExtended;
 import catwalks.register.BlockRegister;
@@ -37,7 +37,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	public BlockCatwalkStairTop() {
 		super(Material.iron, "catwalkStairTop");
 		this.setTickRandomly(true);
-		setDefaultState(this.blockState.getBaseState().withProperty(BlockCatwalkBase.MATERIAL, EnumCatwalkMaterial.STEEL));
+		setDefaultState(this.blockState.getBaseState().withProperty(Const.MATERIAL, EnumCatwalkMaterial.STEEL));
 	}
 	
 	public void initPreRegister() {
@@ -49,26 +49,26 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	@Override
 	protected BlockState createBlockState() {
 	    return new ExtendedBlockState(this,
-	    		new IProperty[]{ BlockCatwalkBase.MATERIAL },
-	    		new IUnlistedProperty[]{ BlockCatwalkBase.FACING, BlockCatwalkBase.TAPE, BlockCatwalkBase.LIGHTS, BlockCatwalkBase.SPEED, BlockCatwalkBase.NORTH, BlockCatwalkStair.WEST_TOP, BlockCatwalkStair.EAST_TOP}
+	    		new IProperty[]{ Const.MATERIAL, Const.LIGHTS },
+	    		new IUnlistedProperty[]{ Const.FACING, Const.TAPE, Const.SPEED, Const.NORTH, Const.WEST_TOP, Const.EAST_TOP}
 	    );
 	}
 	
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-	    return this.getDefaultState().withProperty(BlockCatwalkBase.MATERIAL, EnumCatwalkMaterial.values()[ meta ]);
+	    return this.getDefaultState().withProperty(Const.MATERIAL, EnumCatwalkMaterial.values()[ meta & 0b0111 ]).withProperty(Const.LIGHTS, ( meta & 0b1000 ) == 1 );
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-	    return state.getValue(BlockCatwalkBase.MATERIAL).ordinal();
+	    return state.getValue(Const.MATERIAL).ordinal() | ( state.getValue(Const.LIGHTS) ? 8 : 0 );
 	}
 	
 	public IBlockState getExtendedState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
 		IBlockState below = worldIn.getBlockState(pos.offset(EnumFacing.DOWN));
-		boolean westTop = false, eastTop = false, north = false, lights = false, tape = false, speed = false;
+		boolean westTop = false, eastTop = false, north = false, tape = false, speed = false;
 		EnumFacing facing = EnumFacing.NORTH;
 		if(below.getBlock() == BlockRegister.catwalkStair) {
 			IExtendedBlockState ebelow = null;
@@ -76,15 +76,14 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 				ebelow = (IExtendedBlockState)below.getBlock().getExtendedState(below, worldIn, pos.offset(EnumFacing.DOWN));
 			
 				if(ebelow != null) {
-					  facing = ebelow.getValue(BlockCatwalkBase.FACING);
+					  facing = ebelow.getValue(Const.FACING);
 					  
-					   north = ebelow.getValue(BlockCatwalkBase.NORTH);
-					 westTop = ebelow.getValue(BlockCatwalkStair.WEST_TOP);
-					 eastTop = ebelow.getValue(BlockCatwalkStair.EAST_TOP);
+					   north = ebelow.getValue(Const.NORTH);
+					 westTop = ebelow.getValue(Const.WEST_TOP);
+					 eastTop = ebelow.getValue(Const.EAST_TOP);
 					 
-					    tape = ebelow.getValue(BlockCatwalkBase.TAPE);
-					  lights = ebelow.getValue(BlockCatwalkBase.LIGHTS);
-					   speed = ebelow.getValue(BlockCatwalkBase.SPEED);
+					    tape = ebelow.getValue(Const.TAPE);
+					   speed = ebelow.getValue(Const.SPEED);
 				}
 			} catch(NullPointerException e) {
 				Logs.error(e, "Edge case NPE, likely a freak race condition... *shrugs*");
@@ -92,13 +91,12 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		}
 		
 		IExtendedBlockState estate = ((IExtendedBlockState)state)
-				.withProperty(BlockCatwalkStair.WEST_TOP, westTop)
-				.withProperty(BlockCatwalkStair.EAST_TOP, eastTop)
-				.withProperty(BlockCatwalkBase.NORTH, north)
-				.withProperty(BlockCatwalkBase.TAPE, tape)
-				.withProperty(BlockCatwalkBase.LIGHTS, lights)
-				.withProperty(BlockCatwalkBase.SPEED, speed)
-				.withProperty(BlockCatwalkBase.FACING, facing);
+				.withProperty(Const.WEST_TOP, westTop)
+				.withProperty(Const.EAST_TOP, eastTop)
+				.withProperty(Const.NORTH, north)
+				.withProperty(Const.TAPE, tape)
+				.withProperty(Const.SPEED, speed)
+				.withProperty(Const.FACING, facing);
 		
 		return estate;
 	}
@@ -198,7 +196,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	}
 
 	public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune) {
-		int meta = state.getValue(BlockCatwalkBase.MATERIAL).ordinal();
+		int meta = state.getValue(Const.MATERIAL).ordinal();
 		GeneralUtil.spawnItemStack(worldIn, pos.getX()+0.5, pos.getY()-0.5, pos.getZ()+0.5, new ItemStack(BlockRegister.catwalkStair, 1, meta));
 	}
 	
@@ -226,12 +224,12 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	public boolean hasEdge(World world, BlockPos pos, EnumCubeEdge edge) {
 		IExtendedBlockState state = getBelowState(world, pos);
 		
-		if(state.getValue(BlockCatwalkBase.FACING) == edge.getDir1()) {
-			EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(BlockCatwalkBase.FACING)), edge.getDir2());
-			if(actualDir == EnumFacing.EAST && state.getValue(BlockCatwalkStair.EAST_TOP)) {
+		if(state.getValue(Const.FACING) == edge.getDir1()) {
+			EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), edge.getDir2());
+			if(actualDir == EnumFacing.EAST && state.getValue(Const.EAST_TOP)) {
 				return true;
 			}
-			if(actualDir == EnumFacing.WEST && state.getValue(BlockCatwalkStair.WEST_TOP)) {
+			if(actualDir == EnumFacing.WEST && state.getValue(Const.WEST_TOP)) {
 				return true;
 			}
 		}
@@ -242,15 +240,15 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	public boolean hasSide(World world, BlockPos pos, EnumFacing side) {
 		IExtendedBlockState state = getBelowState(world, pos);
 		
-		EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(BlockCatwalkBase.FACING)), side);
-		if(actualDir == EnumFacing.EAST && state.getValue(BlockCatwalkStair.EAST_TOP)) {
+		EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), side);
+		if(actualDir == EnumFacing.EAST && state.getValue(Const.EAST_TOP)) {
 			return true;
 		}
-		if(actualDir == EnumFacing.WEST && state.getValue(BlockCatwalkStair.WEST_TOP)) {
+		if(actualDir == EnumFacing.WEST && state.getValue(Const.WEST_TOP)) {
 			return true;
 		}
-		if(side == state.getValue(BlockCatwalkBase.FACING)) {
-			return state.getValue(BlockCatwalkBase.NORTH);
+		if(side == state.getValue(Const.FACING)) {
+			return state.getValue(Const.NORTH);
 		}
 		return false;
 	}
@@ -261,14 +259,14 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		
 		TileExtended tile = (TileExtended) world.getTileEntity(pos.offset(EnumFacing.DOWN));
 		
-		EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(BlockCatwalkBase.FACING)), side);
+		EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), side);
 		if(actualDir == EnumFacing.EAST) {
 			tile.setBoolean(BlockCatwalkStair.I_EAST_TOP, value);
 		}
 		if(actualDir == EnumFacing.WEST) {
 			tile.setBoolean(BlockCatwalkStair.I_WEST_TOP, value);
 		}
-		if(side == state.getValue(BlockCatwalkBase.FACING)) {
+		if(side == state.getValue(Const.FACING)) {
 			tile.setBoolean(BlockCatwalkBase.I_NORTH, value);
 		}
 	}
@@ -276,8 +274,8 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	@Override
 	public Object sideData(World world, BlockPos pos, EnumFacing side) {
 		IExtendedBlockState state = getBelowState(world, pos);
-		if(side.getAxis() != state.getValue(BlockCatwalkBase.FACING).getAxis())
-			return state.getValue(BlockCatwalkBase.FACING);
+		if(side.getAxis() != state.getValue(Const.FACING).getAxis())
+			return state.getValue(Const.FACING);
 		return null;
 	}
 	
@@ -285,10 +283,10 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	public EnumSideType sideType(World world, BlockPos pos, EnumFacing side) {
 		IExtendedBlockState state = getBelowState(world, pos);
 		
-		if(side == state.getValue(BlockCatwalkBase.FACING)) {
+		if(side == state.getValue(Const.FACING)) {
 			return EnumSideType.FULL;
 		}
-		if(side == state.getValue(BlockCatwalkBase.FACING).getOpposite()) {
+		if(side == state.getValue(Const.FACING).getOpposite()) {
 			return null;
 		}
 		return EnumSideType.SLOPE_TOP;

@@ -12,10 +12,15 @@ import javax.vecmath.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import catwalks.CatwalksMod;
+import catwalks.Const;
 import catwalks.block.BlockCatwalkBase;
 import catwalks.block.BlockCatwalkBase.Face;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
+import catwalks.render.cached.CachedSmartModel;
+import catwalks.render.cached.models.CatwalkModel;
+import catwalks.render.cached.models.StairBottomModel;
+import catwalks.render.cached.models.StairTopModel;
 import catwalks.render.catwalk.CatwalkSmartModel;
 import catwalks.render.catwalk.CatwalkStairSmartModel;
 import catwalks.render.catwalk.CatwalkStairTopSmartModel;
@@ -69,7 +74,7 @@ public class ClientProxy extends CommonProxy {
 	public void preInit() {
 		BlockRegister.initRender();
 		ItemRegister.initRender();
-		OBJLoader.instance.addDomain(CatwalksMod.MODID);
+		OBJLoader.instance.addDomain(Const.MODID);
 		MinecraftForge.EVENT_BUS.register(TextureGenerator.instance);
 //		LangPlus.addMod(CatwalksMod.MODID);
 //		( (IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager() ).registerReloadListener(TextureGenerator.instance);
@@ -78,24 +83,16 @@ public class ClientProxy extends CommonProxy {
 	Map<ModelResourceLocation, IBakedModel> models = new HashMap<>();
 	
 	private void model(String loc, IBakedModel model) {
-		models.put(new ModelResourceLocation(CatwalksMod.MODID + ":" + loc), model);
+		models.put(new ModelResourceLocation(Const.MODID + ":" + loc), model);
 	}
 	
 	@SubscribeEvent
     public void onModelBakeEvent(ModelBakeEvent event) {
-		
-		TRSRTransformation thirdperson = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
-                new Vector3f(0, 1.5f / 16, -2.75f / 16),
-                TRSRTransformation.quatFromYXZDegrees(new Vector3f(10, -45, 170)),
-                new Vector3f(0.375f, 0.375f, 0.375f),
-                null));
-		Logs.debug(thirdperson.toString());
-		
 		models.clear();
 		
-		model("catwalk", new CatwalkSmartModel());
-		model("catwalkStair", new CatwalkStairSmartModel());
-		model("catwalkStairTop", new CatwalkStairTopSmartModel());
+		model("catwalk", new CachedSmartModel(new CatwalkModel()));
+		model("catwalkStair", new CachedSmartModel(new StairBottomModel()));
+		model("catwalkStairTop", new CachedSmartModel(new StairTopModel()));
 		
         for (Entry<ModelResourceLocation, IBakedModel> model : models.entrySet()) {
 			

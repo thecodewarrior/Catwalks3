@@ -5,10 +5,9 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-import catwalks.CatwalksMod;
-import catwalks.block.BlockCatwalkBase;
-import catwalks.block.BlockCatwalkBase.EnumCatwalkMaterial;
+import catwalks.Const;
 import catwalks.block.BlockCatwalkStair;
+import catwalks.block.EnumCatwalkMaterial;
 import catwalks.block.property.UPropertyBool;
 import catwalks.render.BakedModelBase;
 import catwalks.render.ModelUtils;
@@ -38,18 +37,18 @@ public class CatwalkStairSmartModel extends SmartModelBase {
 		boolean bottom, north, south, east, west, westtop, easttop, tape, lights, speed;
 		EnumFacing facing;
 		try {
-			mat     = state.getValue(BlockCatwalkBase.MATERIAL);
-			bottom  = state.getValue(BlockCatwalkBase.BOTTOM);
-			north   = state.getValue(BlockCatwalkBase.NORTH);
-			south   = state.getValue(BlockCatwalkBase.SOUTH);
-			east    = state.getValue(BlockCatwalkBase.WEST);
-			west    = state.getValue(BlockCatwalkBase.EAST);
-			westtop = state.getValue(BlockCatwalkStair.WEST_TOP);
-			easttop = state.getValue(BlockCatwalkStair.EAST_TOP);
-			tape    = state.getValue(BlockCatwalkBase.TAPE);
-			lights  = state.getValue(BlockCatwalkBase.LIGHTS);
-			speed   = state.getValue(BlockCatwalkBase.SPEED);
-			facing  = state.getValue(BlockCatwalkBase.FACING);
+			mat     = state.getValue(Const.MATERIAL);
+			bottom  = state.getValue(Const.BOTTOM);
+			north   = state.getValue(Const.NORTH);
+			south   = state.getValue(Const.SOUTH);
+			east    = state.getValue(Const.WEST);
+			west    = state.getValue(Const.EAST);
+			westtop = state.getValue(Const.WEST_TOP);
+			easttop = state.getValue(Const.EAST_TOP);
+			tape    = state.getValue(Const.TAPE);
+			lights  = state.getValue(Const.LIGHTS);
+			speed   = state.getValue(Const.SPEED);
+			facing  = state.getValue(Const.FACING);
 		} catch(NullPointerException e) {
 			if(state == null)
 				throw e;
@@ -80,7 +79,7 @@ public class CatwalkStairSmartModel extends SmartModelBase {
         private EnumFacing facing;
         
 		public Model() {
-            texture = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/stair/steel/base"));
+            texture = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/stair/steel/base"));
 		}
 		
 		public Model(EnumCatwalkMaterial material, boolean down, boolean north, boolean south, boolean west, boolean east, boolean westtop, boolean easttop, boolean tape, boolean lights, boolean speed, EnumFacing facing) {
@@ -101,11 +100,11 @@ public class CatwalkStairSmartModel extends SmartModelBase {
             this.facing = facing;
             String mat = material.getName().toLowerCase();
             
-            texture = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/stair/"+mat+"/base"));
+            texture = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/stair/"+mat+"/base"));
             
-            tapeTex   = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/stair/"+mat+"/tape"));
-            lightsTex = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/stair/"+mat+"/lights"));
-            speedTex  = ModelUtils.getSprite( new ResourceLocation(CatwalksMod.MODID + ":blocks/stair/"+mat+"/speed"));
+            tapeTex   = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/stair/"+mat+"/tape"));
+            lightsTex = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/stair/"+mat+"/lights"));
+            speedTex  = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/stair/"+mat+"/speed"));
             
             genFaces();
 		}
