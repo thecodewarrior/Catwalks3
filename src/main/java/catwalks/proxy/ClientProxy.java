@@ -7,13 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.vecmath.Vector3f;
-
 import org.lwjgl.opengl.GL11;
 
 import catwalks.CatwalksMod;
 import catwalks.Const;
-import catwalks.block.BlockCatwalkBase;
 import catwalks.block.BlockCatwalkBase.Face;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
@@ -21,15 +18,10 @@ import catwalks.render.cached.CachedSmartModel;
 import catwalks.render.cached.models.CatwalkModel;
 import catwalks.render.cached.models.StairBottomModel;
 import catwalks.render.cached.models.StairTopModel;
-import catwalks.render.catwalk.CatwalkSmartModel;
-import catwalks.render.catwalk.CatwalkStairSmartModel;
-import catwalks.render.catwalk.CatwalkStairTopSmartModel;
 import catwalks.shade.ccl.raytracer.RayTracer;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
-import catwalks.texture.TextureGenerator;
 import catwalks.util.ExtendedFlatHighlightMOP;
-import catwalks.util.Logs;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -56,7 +48,6 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.TRSRTransformation;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -75,9 +66,6 @@ public class ClientProxy extends CommonProxy {
 		BlockRegister.initRender();
 		ItemRegister.initRender();
 		OBJLoader.instance.addDomain(Const.MODID);
-		MinecraftForge.EVENT_BUS.register(TextureGenerator.instance);
-//		LangPlus.addMod(CatwalksMod.MODID);
-//		( (IReloadableResourceManager)Minecraft.getMinecraft().getResourceManager() ).registerReloadListener(TextureGenerator.instance);
 	}
 	
 	Map<ModelResourceLocation, IBakedModel> models = new HashMap<>();
@@ -116,8 +104,6 @@ public class ClientProxy extends CommonProxy {
 			
 			if(texture == null) {
 				map.registerSprite(tex);
-//				texture = ModelLoader.defaultTextureGetter().apply(tex);
-//				map.setTextureEntry(tex.toString(), texture);
 			}
 		}
 
@@ -206,11 +192,6 @@ public class ClientProxy extends CommonProxy {
 			return;
 		
 		Minecraft mc = Minecraft.getMinecraft();
-		
-		if(CatwalkSmartModel.Model.samples > 0)
-			event.left.add("render: " + ( CatwalkSmartModel.Model.avgTime/( CatwalkSmartModel.Model.samples*1000.0 ) ));
-		if(BlockCatwalkBase.samples > 0)
-			event.left.add("state:  " + ( BlockCatwalkBase.avgTime/( BlockCatwalkBase.samples*1000.0 ) ));
 		
 		if(Minecraft.getMinecraft().thePlayer.isSneaking()) {
 			if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && mc.objectMouseOver.getBlockPos() != null)

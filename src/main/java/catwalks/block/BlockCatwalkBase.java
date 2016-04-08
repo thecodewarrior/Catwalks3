@@ -163,12 +163,8 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	
 	{ /* state */ }
 	
-	public static long avgTime = 0;
-	public static int samples = 0;
-	
 	@Override
 	public IBlockState getExtendedState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-		long start = System.nanoTime();
 		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
 		
 		boolean pass = tile != null;
@@ -186,10 +182,6 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		if(tile != null) {
 			estate = addProperties(tile, estate);
 		}
-		
-		long time = System.nanoTime() - start;
-		avgTime = avgTime + time;
-		samples++;
 		
 		return estate;
 	}
