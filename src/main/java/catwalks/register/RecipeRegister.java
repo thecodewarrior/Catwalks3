@@ -21,8 +21,10 @@ public class RecipeRegister {
 			lights = ItemRegister.lights,
 			speed = ItemRegister.speed,
 			grate = ItemRegister.grate,
+			blowtorch = ItemRegister.tool,
 			paper = Items.paper,
-			sugar = Items.sugar;
+			sugar = Items.sugar,
+			flintNsteel = Items.flint_and_steel;
 		Block
 			catwalk = BlockRegister.catwalk,
 			stair = BlockRegister.catwalkStair,
@@ -39,6 +41,13 @@ public class RecipeRegister {
 		CraftingManager.getInstance().addRecipe(new RecipeDecorationSplit());
 		
 		// Items
+		
+		addShapedOreRecipe(true, new ItemStack(blowtorch),
+			"  f",
+			" i ",
+			"i  ",
+			'i', iron,
+			'f', flintNsteel);
 		
 		addShapedOreRecipe(true, new ItemStack(grate, 16),
 			"i i",

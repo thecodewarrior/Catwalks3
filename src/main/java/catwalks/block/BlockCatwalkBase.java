@@ -206,6 +206,12 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	    return new ExtendedBlockState(this, listedProperties, unlistedProperties.toArray(new IUnlistedProperty[0]));
 	}
 
+	@Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player) {
+		// TODO Auto-generated method stub
+		return super.getPickBlock(target, world, pos, player);
+	}
+	
 	{ /* rendering */ }
 	
 	@Override
@@ -312,6 +318,11 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	
 	public abstract void initColllisionBoxes();
 	public abstract List<CollisionBox> getCollisionBoxes(IExtendedBlockState state, World world, BlockPos pos);
+	
+	@Override
+	public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state) {
+		return new AxisAlignedBB(pos, pos);
+	}
 	
 	@Override
 	public void addCollisionBoxesToList(World world, BlockPos pos, IBlockState rawState, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {

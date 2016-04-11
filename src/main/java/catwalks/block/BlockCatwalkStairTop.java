@@ -68,7 +68,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	
 	public IBlockState getExtendedState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
 		IBlockState below = worldIn.getBlockState(pos.offset(EnumFacing.DOWN));
-		boolean westTop = false, eastTop = false, north = false, tape = false, speed = false;
+		boolean westTop = false, eastTop = false, north = false, tape = false, speed = false, lights = false;
 		EnumFacing facing = EnumFacing.NORTH;
 		if(below.getBlock() == BlockRegister.catwalkStair) {
 			IExtendedBlockState ebelow = null;
@@ -88,9 +88,11 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 			} catch(NullPointerException e) {
 				Logs.error(e, "Edge case NPE, likely a freak race condition... *shrugs*");
 			}
+			lights = below.getValue(Const.LIGHTS);
 		}
 		
-		IExtendedBlockState estate = ((IExtendedBlockState)state)
+		IExtendedBlockState estate = ((IExtendedBlockState)state
+				.withProperty(Const.LIGHTS, lights))
 				.withProperty(Const.WEST_TOP, westTop)
 				.withProperty(Const.EAST_TOP, eastTop)
 				.withProperty(Const.NORTH, north)

@@ -1,6 +1,7 @@
 package catwalks.render.cached.models;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import catwalks.Const;
@@ -18,7 +19,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import scala.actors.threadpool.Arrays;
 
 public class StairBottomModel extends SimpleModel {
 
