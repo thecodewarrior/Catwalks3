@@ -121,7 +121,9 @@ public class CachedSmartModel implements ISmartBlockModel {
 	public boolean isBuiltInRenderer() { return false; }
 
 	@Override
-	public TextureAtlasSprite getParticleTexture() { return null; }
+	public TextureAtlasSprite getParticleTexture() {
+		throw new UnsupportedOperationException("getParticleTexture() shouldn't be called on ISmartBlockModels! Report to caller, not a Catwalks 3 error");
+	}
 
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms() { return null; }
