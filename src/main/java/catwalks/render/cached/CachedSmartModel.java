@@ -8,14 +8,17 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 
+import catwalks.render.ModelUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.ISmartBlockModel;
 
+@SuppressWarnings("deprecation")
 public class CachedSmartModel implements ISmartBlockModel {
 
 	LoadingCache<List<Object>, IBakedModel> modelCache;
@@ -27,7 +30,7 @@ public class CachedSmartModel implements ISmartBlockModel {
 
 			@Override
 			public IBakedModel load(List<Object> key) throws Exception {
-				return new BakedModelCache(model.getQuads(key));
+				return new BakedModelCache(model.getQuads(key), model.getParticleSprite(key));
 			}
 			
 		});
@@ -44,15 +47,17 @@ public class CachedSmartModel implements ISmartBlockModel {
 	}
 	
 	public static class BakedModelCache implements IBakedModel {
-
+		
 		public static final IBakedModel NULL = new BakedModelCache(
-			ImmutableList.of()
+			ImmutableList.of(), ModelUtils.getSprite( TextureMap.LOCATION_MISSING_TEXTURE )
 		);
 		
 		List<List<BakedQuad>> quads;
+		TextureAtlasSprite particleTexture;
 		
-		public BakedModelCache(List<List<BakedQuad>> quads) {
+		public BakedModelCache(List<List<BakedQuad>> quads, TextureAtlasSprite particleTexture) {
 			this.quads = quads;
+			this.particleTexture = particleTexture;
 		}
 		
 		@Override

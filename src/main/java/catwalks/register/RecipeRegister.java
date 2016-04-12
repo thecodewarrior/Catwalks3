@@ -1,5 +1,8 @@
 package catwalks.register;
 
+import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
+
+import catwalks.Const;
 import catwalks.item.crafting.RecipeDecorationRepair;
 import catwalks.item.crafting.RecipeDecorationSplit;
 import net.minecraft.block.Block;
@@ -9,13 +12,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class RecipeRegister {
 
 	public static void register() {
 		
-		int m_steel = 0, m_rusty = 1, m_wood = 2, m_custom = 3;
+		RecipeSorter.register(Const.MODID + ":decorationCombine",  RecipeDecorationRepair.class, SHAPELESS, "after:minecraft:shapeless");
+		RecipeSorter.register(Const.MODID + ":decorationSplit",    RecipeDecorationSplit.class,  SHAPELESS, "after:" + Const.MODID + ":decorationCombine");
+		
+		int m_steel = 0, m_rusty = 1, m_wood = 2;//, m_custom = 3;
 		Item
 			tape = ItemRegister.tape,
 			lights = ItemRegister.lights,

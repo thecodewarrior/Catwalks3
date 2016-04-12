@@ -27,7 +27,7 @@ public class RayTracer
     private Vector3 s_vec = new Vector3();
     private double s_dist;
     private int s_side;
-    private IndexedCuboid6 c_cuboid;
+	private IndexedCuboid6 c_cuboid;
 
     private static ThreadLocal<RayTracer> t_inst = new ThreadLocal<RayTracer>();
 

@@ -1,10 +1,10 @@
 package catwalks.shade.ccl.vec;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TransformationList extends Transformation
 {

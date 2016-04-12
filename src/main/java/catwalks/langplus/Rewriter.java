@@ -1,6 +1,7 @@
 package catwalks.langplus;
 
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A Rewriter does a global substitution in the strings passed to its

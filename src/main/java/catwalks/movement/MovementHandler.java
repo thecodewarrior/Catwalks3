@@ -1,13 +1,10 @@
 package catwalks.movement;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import catwalks.CatwalksConfig;
-import catwalks.block.BlockCatwalk;
 import catwalks.block.IDecoratable;
-import catwalks.shade.ccl.vec.BlockCoord;
 import catwalks.shade.ccl.vec.Vector3;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -16,7 +13,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
@@ -24,7 +20,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;

@@ -1,10 +1,7 @@
 package catwalks.item;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class EntityItemDecoration extends EntityItem {

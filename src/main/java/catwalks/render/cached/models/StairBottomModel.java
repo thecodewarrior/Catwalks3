@@ -22,7 +22,6 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 
 public class StairBottomModel extends SimpleModel {
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Object> getKey(IBlockState rawstate) {
 		IExtendedBlockState state = (IExtendedBlockState) rawstate;

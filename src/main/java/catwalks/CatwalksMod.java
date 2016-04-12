@@ -40,7 +40,7 @@ public class CatwalksMod {
     @EventHandler
     public void init(FMLInitializationEvent event) {
     	WrenchChecker.init();
-    	MovementHandler justToLoadTheClass = MovementHandler.INSTANCE;
+		MovementHandler.INSTANCE.getClass(); // just to load the class
     }
     
     public static CreativeTabs tab = new CreativeTabs("tabCatwalks") {

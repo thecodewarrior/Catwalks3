@@ -2,22 +2,15 @@ package catwalks.proxy;
 
 import java.util.List;
 
-import catwalks.block.BlockCatwalkBase;
 import catwalks.item.ItemDecoration;
-import catwalks.register.BlockRegister;
 import catwalks.shade.ccl.raytracer.RayTracer;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 

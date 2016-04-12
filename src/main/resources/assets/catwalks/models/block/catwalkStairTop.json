@@ -1,7 +1,7 @@
 {
     "parent": "block/cube_all",
     "textures": {
-        "all": "catwalks:blocks/catwalkStairTop"
+        "all": "minecraft:blocks/stone"
     }
 }
 

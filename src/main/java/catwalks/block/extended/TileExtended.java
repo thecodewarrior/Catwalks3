@@ -3,12 +3,10 @@ package catwalks.block.extended;
 import java.util.BitSet;
 
 import catwalks.util.GeneralUtil;
-import io.netty.buffer.Unpooled;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;

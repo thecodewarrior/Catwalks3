@@ -1,7 +1,6 @@
 package catwalks.block;
 
 import catwalks.block.extended.EnumCubeEdge;
-import catwalks.util.Logs;
 import net.minecraft.block.Block;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;

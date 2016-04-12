@@ -1,12 +1,12 @@
 package catwalks.shade.ccl.vec;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Translation extends Transformation {
     public Vector3 vec;

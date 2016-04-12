@@ -1,19 +1,15 @@
 package catwalks.render.cached;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 
-import catwalks.util.Logs;
+import catwalks.render.ModelUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.EnumFacing;
 
 public abstract class SimpleModel {
@@ -34,6 +30,10 @@ public abstract class SimpleModel {
 			quads.add(ImmutableList.copyOf(sideQuads));
 		}
 		return ImmutableList.copyOf(quads);
+	}
+	
+	public TextureAtlasSprite getParticleSprite(List<Object> key) {
+		return ModelUtils.getSprite( TextureMap.LOCATION_MISSING_TEXTURE );
 	}
 	
 	public abstract List<Object> getKey(IBlockState state);
