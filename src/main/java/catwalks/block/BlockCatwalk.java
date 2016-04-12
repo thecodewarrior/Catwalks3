@@ -43,7 +43,7 @@ public class BlockCatwalk extends BlockCatwalkBase {
 	
 	@Override
 	public void setSide(World world, BlockPos pos, EnumFacing side, boolean value) {
-		if(side.getAxis() == Axis.Y)
+		if(side == EnumFacing.UP)
 			return;
 		TileExtended tile = (TileExtended) world.getTileEntity(pos);
 		tile.setBoolean(sides.getC(side), value);

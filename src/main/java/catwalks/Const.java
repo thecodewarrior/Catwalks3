@@ -23,6 +23,11 @@ public class Const {
 	public static final PropertyBool LIGHTS = PropertyBool.create("lights");
 	public static final UPropertyBool SPEED  = new UPropertyBool("speed");
 	
+	public static final UPropertyBool NORTH_LADDER_EXT  = new UPropertyBool("north_ladder_ext");
+	public static final UPropertyBool SOUTH_LADDER_EXT  = new UPropertyBool("south_ladder_ext");
+	public static final UPropertyBool EAST_LADDER_EXT   = new UPropertyBool("east_ladder_ext");
+	public static final UPropertyBool WEST_LADDER_EXT   = new UPropertyBool("west_ladder_ext");
+	
 	public static final UPropertyEnum<EnumFacing> FACING = UPropertyEnum.create("facing", EnumFacing.class);
 	public static final PropertyEnum<EnumCatwalkMaterial> MATERIAL = PropertyEnum.create("material", EnumCatwalkMaterial.class);
 	public static final String MODID = CatwalksMod.MODID;

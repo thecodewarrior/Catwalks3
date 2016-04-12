@@ -16,6 +16,7 @@ import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
 import catwalks.render.cached.CachedSmartModel;
 import catwalks.render.cached.models.CatwalkModel;
+import catwalks.render.cached.models.LadderModel;
 import catwalks.render.cached.models.StairBottomModel;
 import catwalks.render.cached.models.StairTopModel;
 import catwalks.shade.ccl.raytracer.RayTracer;
@@ -80,6 +81,7 @@ public class ClientProxy extends CommonProxy {
 		model("catwalk", new CachedSmartModel(new CatwalkModel()));
 		model("catwalkStair", new CachedSmartModel(new StairBottomModel()));
 		model("catwalkStairTop", new CachedSmartModel(new StairTopModel()));
+		model("cagedLadder", new CachedSmartModel(new LadderModel()));
 		
         for (Entry<ModelResourceLocation, IBakedModel> model : models.entrySet()) {
 			

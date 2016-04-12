@@ -92,6 +92,25 @@ public class ModelUtils {
 		quads.add(quad( condition, v4, v3, v2, v1 ));
 	}
     
+    public static void twoFace(List<SpritelessConditionalQuad> quads, EnumFacing side, int condition,
+    		double x1, double y1, double z1, double u1, double v1,
+    		double x2, double y2, double z2, double u2, double v2,
+    		double x3, double y3, double z3, double u3, double v3,
+    		double x4, double y4, double z4, double u4, double v4) {
+    	quads.add(new SpritelessConditionalQuad(condition,
+    			new Vec3(x1,y1,z1), (float)u1*16, (float)v1*16,
+    			new Vec3(x2,y2,z2), (float)u2*16, (float)v2*16,
+    			new Vec3(x3,y3,z3), (float)u3*16, (float)v3*16,
+    			new Vec3(x4,y4,z4), (float)u4*16, (float)v4*16,
+    		side));
+    	quads.add(new SpritelessConditionalQuad(condition,
+    			new Vec3(x4,y4,z4), (float)u4*16, (float)v4*16,
+    			new Vec3(x3,y3,z3), (float)u3*16, (float)v3*16,
+    			new Vec3(x2,y2,z2), (float)u2*16, (float)v2*16,
+    			new Vec3(x1,y1,z1), (float)u1*16, (float)v1*16,
+    		side));
+	}
+    
     public static SpritelessConditionalQuad quad(int condition, Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4) {
         Vec3 normal = v1.subtract(v2).crossProduct(v3.subtract(v2));
         EnumFacing side = LightUtil.toSide((float) normal.xCoord, (float) normal.yCoord, (float) normal.zCoord);

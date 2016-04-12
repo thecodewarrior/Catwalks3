@@ -38,7 +38,7 @@ public class CatwalkModel extends SimpleModel {
 
 	@Override
 	protected List<BakedQuad> generateQuads(List<Object> list) {
-int i = 0;
+		int i = 0;
 		
 		EnumCatwalkMaterial material = (EnumCatwalkMaterial) list.get(i++);
 		boolean down   = (boolean) list.get(i++),

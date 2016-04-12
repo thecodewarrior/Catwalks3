@@ -8,6 +8,7 @@ import catwalks.block.BlockCatwalk;
 import catwalks.block.BlockCatwalkStair;
 import catwalks.block.BlockCatwalkStairTop;
 import catwalks.block.EnumCatwalkMaterial;
+import catwalks.block.extended.BlockCagedLadder;
 import catwalks.block.extended.TileExtended;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
@@ -26,12 +27,14 @@ public class BlockRegister {
 	public static BlockCatwalk catwalk;
 	public static BlockCatwalkStair catwalkStair;
 	public static BlockCatwalkStairTop stairTop;
+	public static BlockCagedLadder cagedLadder;
 	
 	public static void register() {
 		GameRegistry.registerTileEntity(TileExtended.class, "tileExtended");
 		catwalk = new BlockCatwalk();
 		catwalkStair = new BlockCatwalkStair();
 		stairTop = new BlockCatwalkStairTop();
+		cagedLadder = new BlockCagedLadder();
 	}
 	
 	private static void registerTexture(String path) {
@@ -66,7 +69,7 @@ public class BlockRegister {
 
 		ModelLoader.setCustomStateMapper(stairTop, new StateMapperStatic("catwalkStairTop"));
 		
-		
+		ModelLoader.setCustomStateMapper(cagedLadder, new StateMapperStatic("cagedLadder"));
 		
 		// Catwalk
 		registerTextureAllMaterials("blocks/catwalk/<mat>/side/base");
@@ -84,6 +87,12 @@ public class BlockRegister {
 		registerTextureAllMaterials("blocks/stair/<mat>/tape");
 		registerTextureAllMaterials("blocks/stair/<mat>/lights");
 		registerTextureAllMaterials("blocks/stair/<mat>/speed");
+		
+		// Ladder
+		registerTextureAllMaterials("blocks/ladder/<mat>/base");
+		registerTextureAllMaterials("blocks/ladder/<mat>/tape");
+		registerTextureAllMaterials("blocks/ladder/<mat>/lights");
+		registerTextureAllMaterials("blocks/ladder/<mat>/speed");
 		
 	}
 	
