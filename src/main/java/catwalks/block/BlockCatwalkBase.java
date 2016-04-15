@@ -186,6 +186,24 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		return estate;
 	}
 	
+	public IExtendedBlockState getBasicExtendedState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
+		
+		boolean pass = tile != null;
+		
+		IExtendedBlockState estate = ((IExtendedBlockState)state)
+				.withProperty(Const.BOTTOM, pass && tile.getBoolean(I_BOTTOM))
+				.withProperty(Const.NORTH,  pass && tile.getBoolean(I_NORTH) )
+				.withProperty(Const.SOUTH,  pass && tile.getBoolean(I_SOUTH) )
+				.withProperty(Const.EAST,   pass && tile.getBoolean(I_EAST)  )
+				.withProperty(Const.WEST,   pass && tile.getBoolean(I_WEST)  )
+				.withProperty(Const.TAPE,   pass && tile.getBoolean(I_TAPE)  )
+				.withProperty(Const.SPEED,  pass && tile.getBoolean(I_SPEED) )
+				.withProperty(Const.FACING, pass ? EnumFacing.VALUES[tile.getNumber(I_FACING_ID, I_FACING_LEN)] : EnumFacing.UP);
+		
+		return estate;
+	}
+	
 	public IExtendedBlockState addProperties(TileExtended tile, @Nonnull IExtendedBlockState state) {
 		return state;
 	}
@@ -231,7 +249,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	
 	@Override
 	public EnumWorldBlockLayer getBlockLayer() {
-		return EnumWorldBlockLayer.CUTOUT_MIPPED;
+		return EnumWorldBlockLayer.CUTOUT;
 	}
 	
 	{ /* placing/breaking */ }

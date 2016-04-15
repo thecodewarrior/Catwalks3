@@ -104,8 +104,8 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	
 	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+		worldIn.setBlockState(pos.offset(EnumFacing.UP), Blocks.air.getDefaultState(), 6);
 		super.breakBlock(worldIn, pos, state);
-		worldIn.setBlockState(pos.offset(EnumFacing.UP), Blocks.air.getDefaultState());		
 		GeneralUtil.updateSurroundingCatwalkBlocks(worldIn, pos);
 	}
 	
@@ -435,17 +435,16 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 
 	@Override
 	public boolean hasEdge(World world, BlockPos pos, CubeEdge edge) {
-		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
-		if(state.getValue(Const.FACING) == edge.dir1) {
-			EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), edge.dir2);
-			if(actualDir == EnumFacing.EAST && state.getValue(Const.EAST_TOP)) {
-				return true;
-			}
-			if(actualDir == EnumFacing.WEST && state.getValue(Const.WEST_TOP)) {
-				return true;
-			}
+		if(edge.dir1 == EnumFacing.DOWN || edge.dir2 == EnumFacing.DOWN) {
+			return false;
 		}
-		return false;
+		
+		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		if(edge.dir1 == state.getValue(Const.FACING) || edge.dir2 == state.getValue(Const.FACING)) {
+			return false;
+		}
+		
+		return super.hasEdge(world, pos, edge);
 	}
 	
 	@Override

@@ -97,7 +97,8 @@ public class BlockCagedLadder extends BlockCatwalkBase {
 		EnumFacing facing = ladderState.getValue(Const.FACING);
 		EnumFacing offsetSide = GeneralUtil.rotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, facing), virtualSide);
 		
-		if(!ladderState.getValue(Const.BOTTOM) || ladderState.getValue(Const.sideProperties.get(virtualSide)))
+		if(!(ladderState.getValue(Const.BOTTOM) || world.getBlockState(pos.offset(EnumFacing.DOWN)).getBlock() == this)
+			|| ladderState.getValue(Const.sideProperties.get(virtualSide)))
 			return false;
 		
 		BlockPos next = pos.offset(offsetSide);
@@ -172,12 +173,15 @@ public class BlockCagedLadder extends BlockCatwalkBase {
 	@Override
 	public boolean hasEdge(World world, BlockPos pos, CubeEdge edge) {
 		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		edge.dir1 = GeneralUtil.rotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), edge.dir1);
+		edge.dir2 = GeneralUtil.rotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), edge.dir2);
 		return state.getValue(sides.getA(edge.dir1)) || (edge.dir2.getAxis() != Axis.Y && state.getValue(sides.getA(edge.dir2)) );
 	}
 	
 	@Override
 	public boolean hasSide(World world, BlockPos pos, EnumFacing side) {
 		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		side = GeneralUtil.rotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), side);
 		return (side.getAxis() != Axis.Y && state.getValue(sides.getA(side)) );
 	}
 	
@@ -185,6 +189,9 @@ public class BlockCagedLadder extends BlockCatwalkBase {
 	public void setSide(World world, BlockPos pos, EnumFacing side, boolean value) {
 		if(side == EnumFacing.UP)
 			return;
+		IExtendedBlockState state = (IExtendedBlockState) getBasicExtendedState(world.getBlockState(pos), world, pos);
+		side = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), side);
+		
 		TileExtended tile = (TileExtended) world.getTileEntity(pos);
 		tile.setBoolean(sides.getC(side), value);
 	}
