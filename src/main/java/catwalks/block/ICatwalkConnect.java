@@ -1,6 +1,6 @@
 package catwalks.block;
 
-import catwalks.block.extended.EnumCubeEdge;
+import catwalks.block.extended.CubeEdge;
 import net.minecraft.block.Block;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -9,32 +9,34 @@ import net.minecraft.world.World;
 public interface ICatwalkConnect {
 	
 	/**
-	 * Returns true if the side of the block currently exists [ side is expected to be horizontal ]
+	 * Returns true if the side of the block currently exists
 	 */
 	public boolean hasSide(World world, BlockPos pos, EnumFacing side);
 	
 	/**
-	 * Returns true if one of the existing side's edges  [ side is expected to be horizontal ]
+	 * Returns true if one of the existing side's edges
 	 */
-	public boolean hasEdge(World world, BlockPos pos, EnumCubeEdge edge);
+	public default boolean hasEdge(World world, BlockPos pos, CubeEdge edge) {
+		return hasSide(world, pos, edge.dir1) != hasSide(world, pos, edge.dir2);
+	}
 	
 	/**
-	 * Sets the side's state [ side is expected to be horizontal ]
+	 * Sets the side's state
 	 */
 	public void setSide(World world, BlockPos pos, EnumFacing side, boolean value);
 	
 	/**
-	 * Returns the type of the specified side [ side is expected to be horizontal ]
+	 * Returns the type of the specified side
 	 */
 	public EnumSideType sideType(World world, BlockPos pos, EnumFacing side);
 	
 	/**
-	 * Returns additional data for the side [ side is expected to be horizontal ]
+	 * Returns additional data for the side
 	 */
 	public Object sideData(World world, BlockPos pos, EnumFacing side);
 	
 	/**
-	 * Update the supplied side based on the surrounding blocks [ side is expected to be horizontal ]
+	 * Update the supplied side based on the surrounding blocks
 	 */
 	public default void updateSide(World world, BlockPos pos, EnumFacing side) {
 		BlockPos aPos = pos.offset(side);

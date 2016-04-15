@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 
 import catwalks.Const;
-import catwalks.block.extended.EnumCubeEdge;
+import catwalks.block.extended.CubeEdge;
 import catwalks.block.extended.TileExtended;
 import catwalks.item.ItemBlockCatwalk;
 import catwalks.register.BlockRegister;
@@ -434,10 +434,10 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	{ /* ICatwalkConnect */ }
 
 	@Override
-	public boolean hasEdge(World world, BlockPos pos, EnumCubeEdge edge) {
+	public boolean hasEdge(World world, BlockPos pos, CubeEdge edge) {
 		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
-		if(state.getValue(Const.FACING) == edge.getDir1()) {
-			EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), edge.getDir2());
+		if(state.getValue(Const.FACING) == edge.dir1) {
+			EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), edge.dir2);
 			if(actualDir == EnumFacing.EAST && state.getValue(Const.EAST_TOP)) {
 				return true;
 			}

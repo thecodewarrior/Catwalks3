@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import catwalks.Const;
-import catwalks.block.extended.EnumCubeEdge;
+import catwalks.block.extended.CubeEdge;
 import catwalks.block.extended.TileExtended;
 import catwalks.register.BlockRegister;
 import catwalks.util.GeneralUtil;
@@ -223,11 +223,11 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	{ /* ICatwalkConnect */ }
 	
 	@Override
-	public boolean hasEdge(World world, BlockPos pos, EnumCubeEdge edge) {
+	public boolean hasEdge(World world, BlockPos pos, CubeEdge edge) {
 		IExtendedBlockState state = getBelowState(world, pos);
 		
-		if(state.getValue(Const.FACING) == edge.getDir1()) {
-			EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), edge.getDir2());
+		if(state.getValue(Const.FACING) == edge.dir1) {
+			EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), edge.dir2);
 			if(actualDir == EnumFacing.EAST && state.getValue(Const.EAST_TOP)) {
 				return true;
 			}

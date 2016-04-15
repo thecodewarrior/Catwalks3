@@ -3,8 +3,10 @@ package catwalks.util;
 import java.util.BitSet;
 import java.util.Random;
 
+import catwalks.Const;
 import catwalks.block.BlockCatwalkBase.Tri;
 import catwalks.block.ICatwalkConnect;
+import catwalks.shade.ccl.vec.Cuboid6;
 import catwalks.shade.ccl.vec.Vector3;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
@@ -13,6 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 public class GeneralUtil {
@@ -130,7 +133,7 @@ public class GeneralUtil {
 		if(state.getBlock() instanceof ICatwalkConnect) {
 			isCW = true;
 		}
-		for (EnumFacing direction : EnumFacing.HORIZONTALS) {
+		for (EnumFacing direction : EnumFacing.VALUES) {
 			if(world.getBlockState(pos.offset(direction)).getBlock() instanceof ICatwalkConnect) {
 				(  (ICatwalkConnect)world.getBlockState(pos.offset(direction)).getBlock()  ).updateSide(world, pos.offset(direction), direction.getOpposite());
 			}
@@ -155,19 +158,92 @@ public class GeneralUtil {
 		if(dir.getAxis() == Axis.Y) {
 			return dir;
 		}
-		int i = (dir.getHorizontalIndex() + rotation )%EnumFacing.HORIZONTALS.length;
+		int i = (dir.getHorizontalIndex() + rotation ) % EnumFacing.HORIZONTALS.length;
 		if( i < 0 )
 			i += EnumFacing.HORIZONTALS.length;
 		return EnumFacing.HORIZONTALS[i];
 	}
 	
 	public static EnumFacing derotateFacing(int rotation, EnumFacing dir) {
-		if(dir.getAxis() == Axis.Y) {
-			return dir;
+		return rotateFacing(-rotation, dir);
+	}
+	
+	public static Vec3 rotateVectorCenter(int rotation, Vec3 vec) {
+		return rotateVector(rotation, vec.add(Const.VEC_ANTICENTER)).add(Const.VEC_CENTER);
+	}
+	
+	public static void rotateVectorCenter(int rotation, Vector3 vec) {
+		vec.add(Vector3.anticenter);
+		rotateVector(rotation, vec);
+		vec.add(Vector3.center);
+	}
+	
+	public static Vec3 rotateVector(int rotation, Vec3 vec) {
+		Vec3 out;
+		int i = rotation % EnumFacing.HORIZONTALS.length;
+		if(i < 0)
+			i = 4+i;
+		switch (i) {
+		case 0:
+			out = new Vec3(vec.xCoord, vec.yCoord, vec.zCoord);
+			break;
+		case 1:
+			out = new Vec3(-vec.zCoord, vec.yCoord, vec.xCoord);
+			break;
+		case 2:
+			out = new Vec3(-vec.xCoord, vec.yCoord, -vec.zCoord);
+			break;
+		case 3:
+			out = new Vec3(vec.zCoord, vec.yCoord, -vec.xCoord);
+			break;
+		default:
+			out = vec;
+			break;
 		}
-		int i = (dir.getHorizontalIndex() - rotation )%EnumFacing.HORIZONTALS.length;
-		if( i < 0 )
-			i += EnumFacing.HORIZONTALS.length;
-		return EnumFacing.HORIZONTALS[i];
+		
+		return out;
+	}
+	
+	public static void rotateVector(int rotation, Vector3 vec) {
+		int i = rotation % EnumFacing.HORIZONTALS.length;
+		if(i < 0)
+			i = 4+i;
+		double tmp = 0;
+		switch (i) {
+		case 0:
+			break;
+		case 1:
+			tmp = vec.x;
+			vec.x = -vec.z;
+			vec.z = tmp;
+			break;
+		case 2:
+			vec.x = -vec.x;
+			vec.z = -vec.z;
+			break;
+		case 3:
+			tmp = vec.x;
+			vec.x = vec.z;
+			vec.z = -tmp;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public static void rotateCuboid(int rotation, Cuboid6 cub) {
+		int i = rotation % EnumFacing.HORIZONTALS.length;
+		
+		rotateVector(rotation, cub.min);
+		rotateVector(rotation, cub.max);
+		cub.resolve();
+	}
+	
+	public static void rotateCuboidCenter(int rotation, Cuboid6 cub) {
+		int i = rotation % EnumFacing.HORIZONTALS.length;
+		
+		rotateVectorCenter(rotation, cub.min);
+		rotateVectorCenter(rotation, cub.max);
+		cub.resolve();
 	}
 }

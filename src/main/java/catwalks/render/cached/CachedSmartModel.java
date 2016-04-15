@@ -95,7 +95,7 @@ public class CachedSmartModel implements ISmartBlockModel {
 
 		@Override
 		public TextureAtlasSprite getParticleTexture() {
-			return null;
+			return particleTexture;
 		}
 
 		@Override
@@ -121,7 +121,7 @@ public class CachedSmartModel implements ISmartBlockModel {
 	public boolean isBuiltInRenderer() { return false; }
 
 	@Override
-	public TextureAtlasSprite getParticleTexture() { return null; }
+	public TextureAtlasSprite getParticleTexture() { return ModelUtils.getSprite( TextureMap.LOCATION_MISSING_TEXTURE ); }
 
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms() { return null; }

@@ -182,4 +182,26 @@ public class Cuboid6 implements Copyable<Cuboid6>
         }
         return this;
     }
+    
+    public void resolve() {
+    	double tmp = 0;
+    	
+    	if(min.x > max.x) {
+    		tmp = max.x;
+    		max.x = min.x;
+    		min.x = tmp;
+    	}
+    	
+    	if(min.y > max.y) {
+    		tmp = max.y;
+    		max.y = min.y;
+    		min.y = tmp;
+    	}
+    	
+    	if(min.z > max.z) {
+    		tmp = max.z;
+    		max.z = min.z;
+    		min.z = tmp;
+    	}
+    }
 }
