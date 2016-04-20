@@ -226,9 +226,6 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	public boolean hasEdge(World world, BlockPos pos, CubeEdge edge) {
 		if(!checkForValidity(world, pos))
 			return false;
-		if(edge.dir1 == EnumFacing.UP || edge.dir2 == EnumFacing.UP) {
-			return false;
-		}
 		
 		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
 		
@@ -236,6 +233,10 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 			return true;
 		if(GeneralUtil.checkEdge(EnumFacing.UP, state.getValue(Const.FACING), edge) && state.getValue(Const.NORTH))
 			return true;
+		
+		if(edge.dir1 == EnumFacing.UP || edge.dir2 == EnumFacing.UP) {
+			return false;
+		}
 		
 		if(edge.dir1 == state.getValue(Const.FACING).getOpposite() || edge.dir2 == state.getValue(Const.FACING).getOpposite()) {
 			return false;

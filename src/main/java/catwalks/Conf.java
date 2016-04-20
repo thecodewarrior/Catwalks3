@@ -39,13 +39,13 @@ public class Conf {
     {
     	Property prop;
     	
-    	prop = conf.get(CATEGORY_GENERAL, "Catwalk Speed Multiplier", 1).setRequiresMcRestart(false);
+    	prop = conf.get(CATEGORY_GENERAL, "Catwalk Speed Potion Level", 1).setRequiresMcRestart(false);
     	prop.comment = "The speed boost on catwalks will apply a speed boost equivalent to Speed N";
     	catwalkSpeed = prop.getInt();
     	
-    	prop = conf.get(CATEGORY_GENERAL, "Ladder Speed Multiplier", 2).setRequiresMcRestart(false);
+    	prop = conf.get(CATEGORY_GENERAL, "Ladder Speed Multiplier", 1.5).setRequiresMcRestart(false);
     	prop.comment = "Caged ladders will be N times as fast as normal ladders";
-    	ladderSpeed = prop.getInt();
+    	ladderSpeed = (float)prop.getDouble();
 
         if (conf.hasChanged() == true)
         {

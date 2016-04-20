@@ -146,10 +146,27 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		EnumFacing facing = ladderState.getValue(Const.FACING);
 		EnumFacing offsetSide = GeneralUtil.rotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, facing), virtualSide);
 		
-		if(ladderState.getValue(Const.sideProperties.get(virtualSide)) ) // if we have the side we shouldn't have the landing
+		BlockPos down = pos.offset(EnumFacing.DOWN);
+		BlockPos next = pos.offset(offsetSide);
+		BlockPos nextdown = next.offset(EnumFacing.DOWN);
+		
+		if(ladderState.getValue(Const.sideProperties.get(virtualSide)) ) {
+			if(world.getBlockState(down).getBlock() instanceof ICatwalkConnect && world.getBlockState(down).getBlock() != this) {
+					// if we have the side and there's a connectable block below us and...
+				ICatwalkConnect icc = (ICatwalkConnect) world.getBlockState(down).getBlock();
+				CubeEdge edge = new CubeEdge(offsetSide, EnumFacing.UP);
+				if( icc.edgeType(world, down, edge) == EnumEdgeType.FULL && // if there is a full edge
+					icc.hasEdge(world, down, edge) && // and it exists (duh)
+					!icc.hasSide(world, down, EnumFacing.UP) // and there isn't a top to block it
+				  ) {
+					return true;
+				}
+			}
 			return false;
+		}
 		
 		if(!ladderState.getValue(Const.BOTTOM)) {
+			
 			if(world.getBlockState(pos.offset(EnumFacing.DOWN)).getBlock() == this) {
 				BlockPos below = pos.offset(EnumFacing.DOWN);
 				IBlockState state = world.getBlockState(below);
@@ -165,12 +182,10 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 			}
 		}
 		
-		BlockPos next = pos.offset(offsetSide);
-		BlockPos nextdown = next.offset(EnumFacing.DOWN);
-		
 		if(isTransp(world, next) && isSideSolid(world, nextdown, EnumFacing.UP)) {
 			return true;
 		}
+		
 		if(world.getBlockState(next).getBlock() instanceof ICatwalkConnect) {
 			ICatwalkConnect icc = (ICatwalkConnect) world.getBlockState(next).getBlock();
 			CubeEdge edge = new CubeEdge(offsetSide.getOpposite(), EnumFacing.DOWN);
@@ -192,11 +207,26 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		if(!ladderState.getValue(Const.sideProperties.get(virtualSide))) // if we don't have a side we shouldn't have a landing
 			return false;
 		
+		BlockPos up = pos.offset(EnumFacing.UP);
 		BlockPos next = pos.offset(offsetSide);
 		BlockPos nextup = next.offset(EnumFacing.UP);
 		
 		if(isTransp(world, nextup) && isSideSolid(world, next, EnumFacing.UP))
 			return true;
+		
+		if(world.getBlockState(up).getBlock() instanceof ICatwalkConnect) {
+				// if we have the side and there's a connectable block above us and...
+			ICatwalkConnect icc = (ICatwalkConnect) world.getBlockState(up).getBlock();
+			if(icc.hasSide(world, up, EnumFacing.DOWN)) // if the block above has a side above, don't put them.
+				return false; 
+			CubeEdge edge = new CubeEdge(offsetSide, EnumFacing.DOWN);
+			boolean downA = icc.hasSide(world, up, EnumFacing.DOWN);
+			if(  icc.edgeType(world, up, edge) == EnumEdgeType.FULL && // if there is a full edge
+				 icc.hasEdge(world, up, edge)// and it exists (duh)
+			  ) {
+				return true;
+			}
+		}
 		
 		if(world.getBlockState(nextup).getBlock() instanceof ICatwalkConnect) {
 			ICatwalkConnect icc = (ICatwalkConnect) world.getBlockState(nextup).getBlock();

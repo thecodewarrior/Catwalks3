@@ -200,11 +200,17 @@ public class ClientProxy extends CommonProxy {
 		
 		Minecraft mc = Minecraft.getMinecraft();
 		EntityPlayer player = mc.thePlayer;
+		if(player.isSneaking()) {
+			event.left.add(9, String.format("Motion: actual %.5f / %.5f / %.5f",
+					player.posX - player.lastTickPosX,
+					player.posY - player.lastTickPosY,
+					player.posZ - player.lastTickPosZ));
+		} else {
+			event.left.add(9, String.format("Motion: fields %.5f / %.5f / %.5f",
+					player.motionX, player.motionY, player.motionZ));
+		}
 		
-		event.left.add(9, String.format("Motion: %.5f / %.5f / %.5f",
-				player.posX - player.lastTickPosX,
-				player.posY - player.lastTickPosY,
-				player.posZ - player.lastTickPosZ));
+		event.left.add(String.format("Move: forward %.5f, strafe %.5f", player.moveForward, player.moveStrafing));
 		/*
 		for(IAttributeInstance instance : player.getAttributeMap().getAllAttributes()) {
 			if(instance instanceof ModifiableAttributeInstance) {
