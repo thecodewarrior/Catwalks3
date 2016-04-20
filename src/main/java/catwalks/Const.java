@@ -8,6 +8,7 @@ import catwalks.block.property.UPropertyBool;
 import catwalks.block.property.UPropertyEnum;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 
@@ -39,6 +40,11 @@ public class Const {
 	public static final UPropertyBool EAST_LADDER_EXT   = new UPropertyBool("east_ladder_ext");
 	public static final UPropertyBool WEST_LADDER_EXT   = new UPropertyBool("west_ladder_ext");
 	
+	public static final UPropertyBool NORTH_LADDER_EXT_TOP  = new UPropertyBool("north_ladder_ext_top");
+	public static final UPropertyBool SOUTH_LADDER_EXT_TOP  = new UPropertyBool("south_ladder_ext_top");
+	public static final UPropertyBool EAST_LADDER_EXT_TOP   = new UPropertyBool("east_ladder_ext_top");
+	public static final UPropertyBool WEST_LADDER_EXT_TOP   = new UPropertyBool("west_ladder_ext_top");
+	
 	public static final UPropertyBool NE_LADDER_EXT  = new UPropertyBool("northeast_ladder_ext");
 	public static final UPropertyBool NW_LADDER_EXT  = new UPropertyBool("northwest_ladder_ext");
 	public static final UPropertyBool SE_LADDER_EXT  = new UPropertyBool("southeast_ladder_ext");
@@ -60,4 +66,6 @@ public class Const {
 		sideProperties.put(EnumFacing.EAST, EAST);
 		sideProperties.put(EnumFacing.WEST, WEST);
 	}
+
+	public static boolean developmentEnvironment = (Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment");
 }

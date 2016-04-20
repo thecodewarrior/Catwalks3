@@ -40,6 +40,11 @@ public class BlockCatwalk extends BlockCatwalkBase {
 	}
 	
 	@Override
+	public EnumEdgeType edgeType(World world, BlockPos pos, CubeEdge edge) {
+		return EnumEdgeType.FULL;
+	}
+	
+	@Override
 	public boolean hasSide(World world, BlockPos pos, EnumFacing side) {
 		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
 		return state.getUnlistedProperties().containsKey(Const.sideProperties.get(side)) && state.getValue(Const.sideProperties.get(side));

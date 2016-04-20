@@ -6,6 +6,7 @@ import java.util.Random;
 import catwalks.Const;
 import catwalks.block.BlockCatwalkBase.Tri;
 import catwalks.block.ICatwalkConnect;
+import catwalks.block.extended.CubeEdge;
 import catwalks.shade.ccl.vec.Cuboid6;
 import catwalks.shade.ccl.vec.Vector3;
 import net.minecraft.block.state.IBlockState;
@@ -17,9 +18,15 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.IExtendedBlockState;
 
 public class GeneralUtil {
 	private static final Random RANDOM = new Random();
+	
+	public static IExtendedBlockState getExtended(World worldIn, BlockPos pos) {
+		IBlockState state = worldIn.getBlockState(pos);
+		return (IExtendedBlockState) state.getBlock().getExtendedState(state, worldIn, pos);
+	}
 	
 	public static void spawnItemStack(World worldIn, double x, double y, double z, ItemStack stack)
     {
@@ -51,6 +58,14 @@ public class GeneralUtil {
             worldIn.spawnEntityInWorld(entityitem);
         }
     }
+	
+	public static boolean checkEdge(EnumFacing a, EnumFacing b, CubeEdge edge) {
+		if(a == edge.dir1 && b == edge.dir2)
+			return true;
+		if(a == edge.dir2 && b == edge.dir1)
+			return true;
+		return false;
+	}
 	
 	public static BitSet getSet(int value, int offset) {
 		BitSet bits = new BitSet();

@@ -435,16 +435,21 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 
 	@Override
 	public boolean hasEdge(World world, BlockPos pos, CubeEdge edge) {
-		if(edge.dir1 == EnumFacing.DOWN || edge.dir2 == EnumFacing.DOWN) {
-			return false;
-		}
-		
 		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		
+		if(GeneralUtil.checkEdge(EnumFacing.DOWN, state.getValue(Const.FACING).getOpposite(), edge) && !state.getValue(Const.SOUTH))
+			return true;
+		
 		if(edge.dir1 == state.getValue(Const.FACING) || edge.dir2 == state.getValue(Const.FACING)) {
 			return false;
 		}
 		
 		return super.hasEdge(world, pos, edge);
+	}
+	
+	@Override
+	public EnumEdgeType edgeType(World world, BlockPos pos, CubeEdge edge) {
+		return EnumEdgeType.FULL;
 	}
 	
 	@Override

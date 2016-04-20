@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 
 import com.google.common.collect.Lists;
 
-import catwalks.CatwalksMod;
+import catwalks.Conf;
 import catwalks.Const;
 import catwalks.block.extended.BlockExtended;
 import catwalks.block.extended.TileExtended;
@@ -209,9 +209,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public void addAdditionalProperties(List<IUnlistedProperty> list) {
-		
-	}
+	public void addAdditionalProperties(List<IUnlistedProperty> list) {}
 	
 	@Override
 	@SuppressWarnings("rawtypes")
@@ -353,7 +351,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		IBlockState plainState = world.getBlockState(pos);
         IExtendedBlockState state = (IExtendedBlockState) getExtendedState(plainState, world, pos);
 		
-        if(CatwalksMod.developmentEnvironment) initColllisionBoxes();
+        if(Const.developmentEnvironment) initColllisionBoxes();
 		List<CollisionBox> boxes = getCollisionBoxes(state, world, pos);
 		
 		if(boxes == null) {
@@ -389,7 +387,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			start = new Vector3(startRaw).sub(blockPosVec),
 			end   = new Vector3(  endRaw).sub(blockPosVec);
 		
-		if(CatwalksMod.developmentEnvironment) initSides();
+		if(Const.developmentEnvironment) initSides();
 		List<LookSide> sides = lookSides(state, world, pos);
 		if(sides == null) {
 			return null;
@@ -426,7 +424,8 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 					if(distanceSq < 4.1 && distanceSq > 3.9) {
 						distanceSq = distanceSq -1 +1;
 					}
-					ClientProxy.hits.add(new Tuple<Vector3, Double>(vec.copy().add(blockPosVec).add(new Vector3(side.offset)), Math.sqrt( distanceSq )));
+					if(Const.developmentEnvironment)
+						ClientProxy.hits.add(new Tuple<Vector3, Double>(vec.copy().add(blockPosVec).add(new Vector3(side.offset)), Math.sqrt( distanceSq )));
 					if(distanceSq < smallestDistanceSq) {
 						hitSide = side;
 						hitVector = vec.copy().add(blockPosVec);
@@ -518,15 +517,17 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		}
 		
 		public void apply(Matrix4 matrix) {
-			mainSide.apply(matrix);
-			wrenchSide.apply(matrix);
+			if(mainSide != null)
+				mainSide.apply(matrix);
+			if(wrenchSide != null)
+				wrenchSide.apply(matrix);
 		}
 		
 		public LookSide copy() {
 			LookSide side = new LookSide();
 			
-			side.mainSide   = mainSide.copy();
-			side.wrenchSide = wrenchSide.copy();
+			side.mainSide   = mainSide == null ? null : mainSide.copy();
+			side.wrenchSide = wrenchSide == null ? null : wrenchSide.copy();
 			side.showProperty = showProperty;
 			side.showWithoutWrench = showWithoutWrench;
 			side.side = this.side;

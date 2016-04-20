@@ -21,6 +21,13 @@ public interface ICatwalkConnect {
 	}
 	
 	/**
+	 * Get edge type of specified edge, can return regardless of whether said edge exists.
+	 * 
+	 * Often this is fixed for a block type, but that isn't guaranteed.
+	 */
+	public EnumEdgeType edgeType(World world, BlockPos pos, CubeEdge edge);
+	
+	/**
 	 * Sets the side's state
 	 */
 	public void setSide(World world, BlockPos pos, EnumFacing side, boolean value);
@@ -62,4 +69,7 @@ public interface ICatwalkConnect {
 		FULL, LADDER, SLOPE_BOTTOM, SLOPE_TOP;
 	}
 	
+	public static enum EnumEdgeType {
+		FULL, LADDER
+	}
 }

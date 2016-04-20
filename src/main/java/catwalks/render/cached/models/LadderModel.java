@@ -38,6 +38,10 @@ public class LadderModel extends SimpleModel {
 				state.getValue(Const.SOUTH_LADDER_EXT),
 				state.getValue(Const.EAST_LADDER_EXT),
 				state.getValue(Const.WEST_LADDER_EXT),
+				state.getValue(Const.NORTH_LADDER_EXT_TOP),
+				state.getValue(Const.SOUTH_LADDER_EXT_TOP),
+				state.getValue(Const.EAST_LADDER_EXT_TOP),
+				state.getValue(Const.WEST_LADDER_EXT_TOP),
 				state.getValue(Const.NE_LADDER_EXT),
 				state.getValue(Const.NW_LADDER_EXT),
 				state.getValue(Const.SE_LADDER_EXT),
@@ -55,22 +59,26 @@ public class LadderModel extends SimpleModel {
 		EnumCatwalkMaterial material = (EnumCatwalkMaterial) list.get(i++);
 		EnumFacing facing = (EnumFacing) list.get(i++);
 		
-		boolean down      = (boolean) list.get(i++),
-				north     = (boolean) list.get(i++),
-				south     = (boolean) list.get(i++),
-				east      = (boolean) list.get(i++),
-				west      = (boolean) list.get(i++),
-				north_ext = (boolean) list.get(i++),
-				south_ext = (boolean) list.get(i++),
-				east_ext  = (boolean) list.get(i++),
-				west_ext  = (boolean) list.get(i++),
-				ne_ext    = (boolean) list.get(i++),
-				nw_ext    = (boolean) list.get(i++),
-				se_ext    = (boolean) list.get(i++),
-				sw_ext    = (boolean) list.get(i++),
-				tape      = (boolean) list.get(i++),
-				lights    = (boolean) list.get(i++),
-				speed     = (boolean) list.get(i++);
+		boolean down          = (boolean) list.get(i++),
+				north         = (boolean) list.get(i++),
+				south         = (boolean) list.get(i++),
+				east          = (boolean) list.get(i++),
+				west          = (boolean) list.get(i++),
+				north_ext     = (boolean) list.get(i++),
+				south_ext     = (boolean) list.get(i++),
+				east_ext      = (boolean) list.get(i++),
+				west_ext      = (boolean) list.get(i++),
+				north_ext_top = (boolean) list.get(i++),
+				south_ext_top = (boolean) list.get(i++),
+				east_ext_top  = (boolean) list.get(i++),
+				west_ext_top  = (boolean) list.get(i++),
+				ne_ext        = (boolean) list.get(i++),
+				nw_ext        = (boolean) list.get(i++),
+				se_ext        = (boolean) list.get(i++),
+				sw_ext        = (boolean) list.get(i++),
+				tape          = (boolean) list.get(i++),
+				lights        = (boolean) list.get(i++),
+				speed         = (boolean) list.get(i++);
 		
         String mat = material.getName().toLowerCase();
 		
@@ -157,6 +165,38 @@ public class LadderModel extends SimpleModel {
 			0, 0, 1, 0,  .5
 		);
 		
+		//north top landing
+		ModelUtils.twoFace(quads, EnumFacing.UP, cond++,
+			0, 1, 0,  0,     0,
+			p, 1, p,  ptx,   ptx,
+			P, 1, p, .5-ptx, ptx,
+			1, 1, 0, .5,     0
+		);
+		
+		//south top landing
+		ModelUtils.twoFace(quads, EnumFacing.UP, cond++,
+			0, 1, 1,  0,     .5,
+			p, 1, P,  ptx,   .5-ptx,
+			P, 1, P, .5-ptx, .5-ptx,
+			1, 1, 1, .5,     .5
+		);
+		
+		//east top landing
+		ModelUtils.twoFace(quads, EnumFacing.UP, cond++,
+			1, 1, 0, .5,      0,
+			P, 1, p, .5-ptx,  ptx,
+			P, 1, P, .5-ptx, .5-ptx,
+			1, 1, 1, .5,     .5
+		);
+		
+		//west top landing
+		ModelUtils.twoFace(quads, EnumFacing.UP, cond++,
+			0, 1, 0, 0,  0,
+			p, 1, p, ptx, ptx,
+			p, 1, P, ptx, .5-ptx,
+			0, 1, 1, 0,  .5
+		);
+		
 		//north-east connection
 		ModelUtils.twoFace(quads, null, cond++,
 			1, 0, 0, .5+ptx, .5,
@@ -199,14 +239,33 @@ public class LadderModel extends SimpleModel {
 		
 		List<BakedQuad> finalQuads = new ArrayList<>();
     	
-    	ModelUtils.processConditionalQuads(quads, finalQuads, baseTex,
-        		down, north, south, east, west, north_ext, south_ext, east_ext, west_ext, ne_ext, nw_ext, se_ext, sw_ext);
-        if(  tape) ModelUtils.processConditionalQuads(quads, finalQuads, tapeTex,
-        		down, north, south, east, west, north_ext, south_ext, east_ext, west_ext, ne_ext, nw_ext, se_ext, sw_ext);
-        if(lights) ModelUtils.processConditionalQuads(quads, finalQuads, lightsTex,
-        		down, north, south, east, west, north_ext, south_ext, east_ext, west_ext, ne_ext, nw_ext, se_ext, sw_ext);
-        if( speed) ModelUtils.processConditionalQuads(quads, finalQuads, speedTex,
-        		down, north, south, east, west, north_ext, south_ext, east_ext, west_ext, ne_ext, nw_ext, se_ext, sw_ext);
+		boolean[] conditions = new boolean[] {
+				down,
+				north,
+				south,
+				east,
+				west,
+				
+				north_ext,
+				south_ext,
+				east_ext,
+				west_ext,
+				
+				north_ext_top,
+				south_ext_top,
+				east_ext_top,
+				west_ext_top,
+				
+				ne_ext,
+				nw_ext,
+				se_ext,
+				sw_ext
+		};
+		
+    	ModelUtils.processConditionalQuads(quads, finalQuads, baseTex, conditions);
+        if(  tape) ModelUtils.processConditionalQuads(quads, finalQuads, tapeTex,   conditions);
+        if(lights) ModelUtils.processConditionalQuads(quads, finalQuads, lightsTex, conditions);
+        if( speed) ModelUtils.processConditionalQuads(quads, finalQuads, speedTex,  conditions);
 		
 		return finalQuads;
 	}

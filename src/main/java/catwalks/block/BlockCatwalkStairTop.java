@@ -231,11 +231,22 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		}
 		
 		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		
+		if(GeneralUtil.checkEdge(EnumFacing.DOWN, state.getValue(Const.FACING), edge) && !state.getValue(Const.NORTH))
+			return true;
+		if(GeneralUtil.checkEdge(EnumFacing.UP, state.getValue(Const.FACING), edge) && state.getValue(Const.NORTH))
+			return true;
+		
 		if(edge.dir1 == state.getValue(Const.FACING).getOpposite() || edge.dir2 == state.getValue(Const.FACING).getOpposite()) {
 			return false;
 		}
 		
 		return ICatwalkConnect.super.hasEdge(world, pos, edge);
+	}
+	
+	@Override
+	public EnumEdgeType edgeType(World world, BlockPos pos, CubeEdge edge) {
+		return EnumEdgeType.FULL;
 	}
 	
 	@Override
