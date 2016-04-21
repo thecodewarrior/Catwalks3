@@ -69,54 +69,60 @@ public class MovementHandler {
 		double climbSpeedMultiplier = Double.NEGATIVE_INFINITY;
 		double fallSpeedMultiplier = Double.POSITIVE_INFINITY;
 		double horizontalSpeedMultiplier = Double.POSITIVE_INFINITY;
-		boolean foundBlock = false;
 		
 		for(BlockPos pos : eachTouching(event.entityLiving, false, new Vector3(0,0,0), new Vector3(0,0,0)) ) {
 			Block block = world.getBlockState(pos).getBlock();
-			if( block instanceof ICustomLadder && ((ICustomLadder) block).shouldApply(world, pos, entity)) {
-				climbSpeedMultiplier = Math.max(climbSpeedMultiplier, ((ICustomLadder) block).climbSpeed(world, pos) );
-				fallSpeedMultiplier  = Math.min(fallSpeedMultiplier, ((ICustomLadder) block).fallSpeed(world, pos) );
-				horizontalSpeedMultiplier = Math.min(horizontalSpeedMultiplier, ((ICustomLadder) block).horizontalSpeed(world, pos) );
-				foundBlock = true;
+			if( block instanceof ICustomLadder) {
+				ICustomLadder icl = (ICustomLadder) block;
+//				&& ((ICustomLadder) block).shouldApply(world, pos, entity)
+				if(icl.shouldApplyClimbing(world, pos, entity))
+					climbSpeedMultiplier = Math.max(climbSpeedMultiplier, ((ICustomLadder) block).climbSpeed(world, pos, entity) );
+				
+				if(icl.shouldApplyFalling(world, pos, entity))
+					fallSpeedMultiplier  = Math.min(fallSpeedMultiplier, ((ICustomLadder) block).fallSpeed(world, pos, entity) );
+				horizontalSpeedMultiplier = Math.min(horizontalSpeedMultiplier, ((ICustomLadder) block).horizontalSpeed(world, pos, entity) );
 			}
 		}
 		
-		if(!foundBlock) {
+		if(Double.isInfinite(climbSpeedMultiplier)) {
 			if(entity.motionY > 0.2 & ep.lastTickLadderSpeed > 0) {
 				entity.motionY = 0.2;
 				ep.lastTickLadderSpeed = -1;
 			}
-			return;
 		}
 		
 		double horizontalSpeed = 0.15 * horizontalSpeedMultiplier;
 		double fallSpeed = 0.15 * fallSpeedMultiplier;
 		double climbSpeed = 0.2 * climbSpeedMultiplier;
 		
-		if(ep.lastTickLadderSpeed > climbSpeedMultiplier) {
-			entity.motionY = climbSpeed;
-		}
-		
-		ep.lastTickLadderSpeed = climbSpeedMultiplier;
-		
-        entity.motionX = MathHelper.clamp_double(entity.motionX, -horizontalSpeed, horizontalSpeed);
+		entity.motionX = MathHelper.clamp_double(entity.motionX, -horizontalSpeed, horizontalSpeed);
         entity.motionZ = MathHelper.clamp_double(entity.motionZ, -horizontalSpeed, horizontalSpeed);
-        
-        entity.fallDistance = 0.0F;
+		
+        if(Double.isFinite(fallSpeedMultiplier)) { // slow down the player if a fall speed was found
+        	entity.fallDistance = 0.0F;
 
-        if (entity.motionY < -fallSpeed)
-        {
-            entity.motionY = -fallSpeed;
-        }
-
-        if (entity.isSneaking() && entity.motionY < 0.0D)
-        {
-            entity.motionY = 0.0D;
+            if (entity.motionY < -fallSpeed)
+            {
+                entity.motionY = -fallSpeed;
+            }
+            
+            if (entity.isSneaking() && entity.motionY < 0.0D)
+            {
+                entity.motionY = 0.0D;
+            }
         }
         
-        if (entity.isCollidedHorizontally && entity.motionY <= climbSpeed)
-        {
-            entity.motionY = climbSpeed;
+        if(Double.isFinite(climbSpeedMultiplier)) { // do climbing stuff if a climb speed was found
+			if(ep.lastTickLadderSpeed > climbSpeedMultiplier) {
+				entity.motionY = climbSpeed;
+			}
+		
+			ep.lastTickLadderSpeed = climbSpeedMultiplier;
+			
+	        if (entity.isCollidedHorizontally && entity.motionY <= climbSpeed)
+	        {
+	            entity.motionY = climbSpeed;
+	        }
         }
 	}
 	

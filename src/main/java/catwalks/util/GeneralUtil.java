@@ -13,6 +13,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -58,6 +59,34 @@ public class GeneralUtil {
             worldIn.spawnEntityInWorld(entityitem);
         }
     }
+	
+	// private so it doesn't conflict with the method when autocompleting.
+	private static final double APPROX_EQ_ACC = 1/10_000f;
+	
+	public static boolean approxEq(double a, double b) {
+		return
+				a <= b+APPROX_EQ_ACC &&
+				a >= b-APPROX_EQ_ACC;
+	}
+	
+	public static double getAABBSide(AxisAlignedBB aabb, EnumFacing side) {
+		switch (side) {
+		case UP:
+			return aabb.maxY;
+		case DOWN:
+			return aabb.minY;
+		case NORTH:
+			return aabb.minZ;
+		case SOUTH:
+			return aabb.maxZ;
+		case WEST:
+			return aabb.minX;
+		case EAST:
+			return aabb.maxX;
+		default:
+			return 0;
+		}
+	}
 	
 	public static boolean checkEdge(EnumFacing a, EnumFacing b, CubeEdge edge) {
 		if(a == edge.dir1 && b == edge.dir2)

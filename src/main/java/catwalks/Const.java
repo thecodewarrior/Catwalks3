@@ -18,6 +18,7 @@ public class Const {
 	public static final UPropertyBool CONST_FALSE = new UPropertyBool("dummyConstFalse");
 	
 	public static final UPropertyBool IS_TOP = new UPropertyBool("istop");
+	public static final UPropertyBool IS_BOTTOM = new UPropertyBool("isbottom");
 	
 	public static final UPropertyBool BOTTOM = new UPropertyBool("bottom");
 	public static final UPropertyBool TOP    = new UPropertyBool("top");
