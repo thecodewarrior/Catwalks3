@@ -445,6 +445,7 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		List<LookSide> sides = new ArrayList<>();
 		
 		double p = 1/16f, P = 1-p, m = 0.5;
+		double sm = 3*p; // the distance for the small hit boxes
 		
 		LookSide side = new LookSide();
 		
@@ -476,10 +477,10 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		);
 		
 		side.wrenchSide = new Quad(
-			new Vector3(m-p, 0, p),
-			new Vector3(m-p, 1, p),
-			new Vector3(m+p, 1, p),
-			new Vector3(m+p, 0, p)
+			new Vector3(m-sm, 0, p),
+			new Vector3(m-sm, 1, p),
+			new Vector3(m+sm, 1, p),
+			new Vector3(m+sm, 0, p)
 		);
 		
 		side.showProperty = Const.NORTH;
@@ -496,10 +497,10 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		);
 		
 		side.wrenchSide = new Quad(
-			new Vector3(m-p, 0, P),
-			new Vector3(m-p, 1, P),
-			new Vector3(m+p, 1, P),
-			new Vector3(m+p, 0, P)
+			new Vector3(m-sm, 0, P),
+			new Vector3(m-sm, 1, P),
+			new Vector3(m+sm, 1, P),
+			new Vector3(m+sm, 0, P)
 		);
 		
 		side.showProperty = Const.SOUTH;
@@ -546,10 +547,10 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		
 		// Top
 		side.mainSide = new Quad(
-			new Vector3(m-3*p, 1, m-3*p),
-			new Vector3(m-3*p, 1, m+3*p),
-			new Vector3(m+3*p, 1, m+3*p),
-			new Vector3(m+3*p, 1, m-3*p)
+			new Vector3(m-sm, 1, m-sm),
+			new Vector3(m-sm, 1, m+sm),
+			new Vector3(m+sm, 1, m+sm),
+			new Vector3(m+sm, 1, m-sm)
 		);
 		
 		side.wrenchSide = null;
