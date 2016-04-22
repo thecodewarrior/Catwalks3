@@ -330,59 +330,60 @@ public class ClientProxy extends CommonProxy {
 			}
 		}
 		
-		mc.mcProfiler.endStartSection("hitDist");
+//		mc.mcProfiler.endStartSection("hitDist");
+//		
+//		if(Minecraft.getMinecraft().gameSettings.showDebugInfo && rootPlayer.isSneaking()) {
+//		
+//			if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+//			
+//				
+//                if(hits.isEmpty()) {
+//                	Vector3 vec = new Vector3(mc.objectMouseOver.hitVec);
+//                	Vector3 eyepos = new Vector3(RayTracer.getStartVec(rootPlayer));
+//                	hits.add(new Tuple<Vector3, Double>(vec, vec.copy().sub(eyepos).mag()));
+//                }
+//				
+//		        GlStateManager.enableTexture2D();
+//				
+//				RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+//				hits.sort(new Comparator<Tuple<Vector3, Double>>() {
+//					@Override
+//					public int compare(Tuple<Vector3, Double> o1, Tuple<Vector3, Double> o2) {
+//						if(o1.getSecond() < o2.getSecond())
+//							return 1;
+//						if(o1.getSecond() == o2.getSecond())
+//							return 0;
+//						if(o1.getSecond() > o2.getSecond())
+//							return -1;
+//						return 0;
+//					}
+//				});
+//				int height = 9;
+//				int i = 0;
+//				if(mc.objectMouseOver.sideHit == EnumFacing.UP) {
+//					height = -9;
+//					i = 1;
+//				}
+//				for (Tuple<Vector3, Double> tuple : hits) {
+//					Vector3 v = tuple.getFirst();
+//					GlStateManager.pushMatrix();
+//					GlStateManager.translate(v.x, v.y, v.z);
+//					GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+//					GlStateManager.rotate(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
+//					GlStateManager.scale(0.007, 0.007, 0.007);
+//					GlStateManager.rotate(180, 0, 0, 1);
+//					GlStateManager.translate(5, i*height, 0);
+//					
+//					mc.fontRendererObj.drawString(String.format("%.6f", tuple.getSecond() ), 0, 0, 0xFFFFFF);
+//					
+//					GlStateManager.popMatrix();
+//					i++;
+//				}
+//				
+//            	hits.clear();
+//			}
+//		}
 		
-		if(Minecraft.getMinecraft().gameSettings.showDebugInfo && rootPlayer.isSneaking()) {
-		
-			if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-			
-				
-                if(hits.isEmpty()) {
-                	Vector3 vec = new Vector3(mc.objectMouseOver.hitVec);
-                	Vector3 eyepos = new Vector3(RayTracer.getStartVec(rootPlayer));
-                	hits.add(new Tuple<Vector3, Double>(vec, vec.copy().sub(eyepos).mag()));
-                }
-				
-		        GlStateManager.enableTexture2D();
-				
-				RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-				hits.sort(new Comparator<Tuple<Vector3, Double>>() {
-					@Override
-					public int compare(Tuple<Vector3, Double> o1, Tuple<Vector3, Double> o2) {
-						if(o1.getSecond() < o2.getSecond())
-							return 1;
-						if(o1.getSecond() == o2.getSecond())
-							return 0;
-						if(o1.getSecond() > o2.getSecond())
-							return -1;
-						return 0;
-					}
-				});
-				int height = 9;
-				int i = 0;
-				if(mc.objectMouseOver.sideHit == EnumFacing.UP) {
-					height = -9;
-					i = 1;
-				}
-				for (Tuple<Vector3, Double> tuple : hits) {
-					Vector3 v = tuple.getFirst();
-					GlStateManager.pushMatrix();
-					GlStateManager.translate(v.x, v.y, v.z);
-					GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-					GlStateManager.rotate(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-					GlStateManager.scale(0.007, 0.007, 0.007);
-					GlStateManager.rotate(180, 0, 0, 1);
-					GlStateManager.translate(5, i*height, 0);
-					
-					mc.fontRendererObj.drawString(String.format("%.6f", tuple.getSecond() ), 0, 0, 0xFFFFFF);
-					
-					GlStateManager.popMatrix();
-					i++;
-				}
-				
-            	hits.clear();
-			}
-		}
 		mc.mcProfiler.endSection();
 		
 		GlStateManager.depthMask(true);
