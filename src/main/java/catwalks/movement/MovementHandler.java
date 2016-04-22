@@ -7,7 +7,6 @@ import java.util.function.Predicate;
 
 import catwalks.Conf;
 import catwalks.block.IDecoratable;
-import catwalks.block.extended.ICustomLadder;
 import catwalks.shade.ccl.vec.Vector3;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -59,71 +58,18 @@ public class MovementHandler {
 	@SubscribeEvent
 	public void playerUpdate(LivingUpdateEvent event) {
 		if(!( event.entity instanceof EntityPlayer )) {
-			return;
+			return; 
+			// only apply it to players to reduce lag
+			// players are the only ones who can use it anyway because mob AI doesn't know what to do with them
 		}
+		
 		EntityPlayer entity = (EntityPlayer) event.entity;
 		CatwalkEntityProperties ep = getOrCreateEP(entity);
+		// add fields to CatwalkEntityProperties to store information on the player
+		// this isn't saved, so only use it for temporary storage
 		
 		World world = entity.worldObj;
 		
-		double climbSpeedMultiplier = Double.NEGATIVE_INFINITY;
-		double fallSpeedMultiplier = Double.POSITIVE_INFINITY;
-		double horizontalSpeedMultiplier = Double.POSITIVE_INFINITY;
-		
-		for(BlockPos pos : eachTouching(event.entityLiving, false, new Vector3(0,0,0), new Vector3(0,0,0)) ) {
-			Block block = world.getBlockState(pos).getBlock();
-			if( block instanceof ICustomLadder) {
-				ICustomLadder icl = (ICustomLadder) block;
-//				&& ((ICustomLadder) block).shouldApply(world, pos, entity)
-				if(icl.shouldApplyClimbing(world, pos, entity))
-					climbSpeedMultiplier = Math.max(climbSpeedMultiplier, ((ICustomLadder) block).climbSpeed(world, pos, entity) );
-				
-				if(icl.shouldApplyFalling(world, pos, entity))
-					fallSpeedMultiplier  = Math.min(fallSpeedMultiplier, ((ICustomLadder) block).fallSpeed(world, pos, entity) );
-				horizontalSpeedMultiplier = Math.min(horizontalSpeedMultiplier, ((ICustomLadder) block).horizontalSpeed(world, pos, entity) );
-			}
-		}
-		
-		if(Double.isInfinite(climbSpeedMultiplier)) {
-			if(entity.motionY > 0.2 & ep.lastTickLadderSpeed > 0) {
-				entity.motionY = 0.2;
-				ep.lastTickLadderSpeed = -1;
-			}
-		}
-		
-		double horizontalSpeed = 0.15 * horizontalSpeedMultiplier;
-		double fallSpeed = 0.15 * fallSpeedMultiplier;
-		double climbSpeed = 0.2 * climbSpeedMultiplier;
-		
-		entity.motionX = MathHelper.clamp_double(entity.motionX, -horizontalSpeed, horizontalSpeed);
-        entity.motionZ = MathHelper.clamp_double(entity.motionZ, -horizontalSpeed, horizontalSpeed);
-		
-        if(Double.isFinite(fallSpeedMultiplier)) { // slow down the player if a fall speed was found
-        	entity.fallDistance = 0.0F;
-
-            if (entity.motionY < -fallSpeed)
-            {
-                entity.motionY = -fallSpeed;
-            }
-            
-            if (entity.isSneaking() && entity.motionY < 0.0D)
-            {
-                entity.motionY = 0.0D;
-            }
-        }
-        
-        if(Double.isFinite(climbSpeedMultiplier)) { // do climbing stuff if a climb speed was found
-			if(ep.lastTickLadderSpeed > climbSpeedMultiplier) {
-				entity.motionY = climbSpeed;
-			}
-		
-			ep.lastTickLadderSpeed = climbSpeedMultiplier;
-			
-	        if (entity.isCollidedHorizontally && entity.motionY <= climbSpeed)
-	        {
-	            entity.motionY = climbSpeed;
-	        }
-        }
 	}
 	
 	/**

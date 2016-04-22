@@ -8,15 +8,11 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 
-import catwalks.Conf;
 import catwalks.Const;
 import catwalks.block.BlockCatwalkBase;
 import catwalks.block.ICatwalkConnect;
-import catwalks.block.property.UPropertyBool;
 import catwalks.item.ItemBlockCatwalk;
-import catwalks.shade.ccl.math.MathHelper;
 import catwalks.shade.ccl.vec.Cuboid6;
-import catwalks.shade.ccl.vec.CuboidCoord;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.GeneralUtil;
 import catwalks.util.Logs;
@@ -24,10 +20,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -42,100 +38,14 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 	}
 	
 	@Override
-	public double climbSpeed(World world, BlockPos pos, EntityLivingBase entity) {
-		IExtendedBlockState state = GeneralUtil.getExtended(world, pos);
-		
-		return state.getValue(Const.SPEED) ? Conf.ladderSpeed : 1;
-	}
-
-	@Override
-	public double fallSpeed(World world, BlockPos pos, EntityLivingBase entity) {
-		IExtendedBlockState state = GeneralUtil.getExtended(world, pos);
-
-		return state.getValue(Const.SPEED) ? Conf.ladderSpeed : 1;
-	}
-	
-	@Override
-	public boolean shouldApplyFalling(World world, BlockPos pos, EntityLivingBase entity) {
-		return  Math.floor(entity.posX) == pos.getX() &&
-				Math.floor(entity.posY) == pos.getY() &&
-				Math.floor(entity.posZ) == pos.getZ();
-	}
-
-	@Override
-	public boolean shouldApplyClimbing(World world, BlockPos pos, EntityLivingBase entity) {
-		
-		AxisAlignedBB playerAABB = entity.getEntityBoundingBox();
-		AxisAlignedBB blockAABB  = new AxisAlignedBB(
-				getBlockBoundsMinX(), getBlockBoundsMinY(), getBlockBoundsMinZ(),
-				getBlockBoundsMaxX(), getBlockBoundsMaxY(), getBlockBoundsMaxZ())
-				.offset(pos.getX(), pos.getY(), pos.getZ());
-		
-		if(	!playerAABB.intersectsWith(blockAABB)) // if the player isn't even in the block entirely, don't bother with all the complex slow stuff
-			return false;
-		
-		IExtendedBlockState state = GeneralUtil.getExtended(world, pos);
-		
-		int rot = GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING));
-		UPropertyBool northProp = Const.sideProperties.get(GeneralUtil.derotateFacing(rot, EnumFacing.NORTH));
-		UPropertyBool southProp = Const.sideProperties.get(GeneralUtil.derotateFacing(rot, EnumFacing.SOUTH));
-		UPropertyBool  eastProp = Const.sideProperties.get(GeneralUtil.derotateFacing(rot, EnumFacing.EAST ));
-		UPropertyBool  westProp = Const.sideProperties.get(GeneralUtil.derotateFacing(rot, EnumFacing.WEST ));
-		
-		
-		boolean // check which sides are equal, meaning that the player is pusing up against that side, and we might should apply our values based on that
-			north = GeneralUtil.approxEq(GeneralUtil.getAABBSide(playerAABB, EnumFacing.NORTH), getBlockBoundsMinZ() + pos.getZ()),
-			south = GeneralUtil.approxEq(GeneralUtil.getAABBSide(playerAABB, EnumFacing.SOUTH), getBlockBoundsMaxZ() + pos.getZ()),
-			east  = GeneralUtil.approxEq(GeneralUtil.getAABBSide(playerAABB, EnumFacing.EAST ), getBlockBoundsMaxX() + pos.getX()),
-			west  = GeneralUtil.approxEq(GeneralUtil.getAABBSide(playerAABB, EnumFacing.WEST ), getBlockBoundsMinX() + pos.getX());
-		
-		if(!state.getValue(Const.IS_BOTTOM)) { // if there is a ladder below us
-			BlockPos downPos = pos.offset(EnumFacing.DOWN);
-			IExtendedBlockState below = GeneralUtil.getExtended(world, downPos);
-			
-			// for each side, if this is the bottom side before an opening, don't consider it the player can get out without climbing back up
-			if(north && state.getValue(northProp) && !below.getValue(northProp))
-				north = false;
-			if(south && state.getValue(southProp) && !below.getValue(southProp))
-				south = false;
-			if(east  && state.getValue(eastProp ) && !below.getValue(eastProp ))
-				east  = false;
-			if(west  && state.getValue(westProp ) && !below.getValue(westProp ))
-				west  = false;
-		}
-		
-		// for each side that should still be considered, if the side isn't open the player is climbing some other object and we shouldn't consider it
-		if(north && !state.getValue(northProp))
-			north = false;
-		if(south && !state.getValue(southProp))
-			south = false;
-		if(east  && !state.getValue(eastProp ))
-			east  = false;
-		if(west  && !state.getValue(westProp ))
-			west  = false;
-		
-		if( !(north || south || east || west) ) // if we shouldn't consider any side, don't consider this block
-			return false;
-		
+	public boolean isLadder(IBlockAccess world, BlockPos pos, EntityLivingBase entity) {
 		return true;
 	}
-	
-	@Override
-	public double horizontalSpeed(World world, BlockPos pos, EntityLivingBase entity) {
-		return 1;
-	}
-	
 
 	@Override
 	public boolean canGiveSpeedBoost(World world, BlockPos pos) {
 		return false;
 	}
-	
-	
-//	@Override
-//	public boolean isLadder(IBlockAccess world, BlockPos pos, EntityLivingBase entity) {
-//		return true;
-//	}
 	
 	@Override
 	public EnumFacing transformAffectedSide(World world, BlockPos pos, IBlockState state, EnumFacing side) {
