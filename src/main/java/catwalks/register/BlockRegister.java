@@ -70,6 +70,12 @@ public class BlockRegister {
 		ModelLoader.setCustomStateMapper(stairTop, new StateMapperStatic("catwalkStairTop"));
 		
 		ModelLoader.setCustomStateMapper(cagedLadder, new StateMapperStatic("cagedLadder"));
+		item = Item.getItemFromBlock(cagedLadder);
+		rl   = Item.itemRegistry.getNameForObject(item).toString();
+		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_rusty" , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_custom", "inventory" ));
 		
 		// Catwalk
 		registerTextureAllMaterials("blocks/catwalk/<mat>/side/base");

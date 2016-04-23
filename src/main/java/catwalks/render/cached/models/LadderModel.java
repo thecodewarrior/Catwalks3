@@ -1,6 +1,7 @@
 package catwalks.render.cached.models;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import catwalks.Const;
@@ -10,15 +11,12 @@ import catwalks.render.ModelUtils.SpritelessConditionalQuad;
 import catwalks.render.ModelUtils.SpritelessQuad;
 import catwalks.render.cached.SimpleModel;
 import catwalks.util.GeneralUtil;
-import catwalks.util.Logs;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import scala.actors.threadpool.Arrays;
 
 public class LadderModel extends SimpleModel {
 
