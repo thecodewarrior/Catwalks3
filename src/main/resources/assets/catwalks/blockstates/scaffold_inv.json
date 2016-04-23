@@ -1,0 +1,34 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"model": "cube_column"
+	},
+	"variants": {
+		"material": {
+			"steel": {
+				"textures": {
+					"end": "catwalks:blocks/scaffold/steel/top",
+					"side": "catwalks:blocks/scaffold/steel/side"
+				}
+			},
+			"rusty": {
+				"textures": {
+					"end": "catwalks:blocks/scaffold/rusty/top",
+					"side": "catwalks:blocks/scaffold/rusty/side"
+				}
+			},
+			"wood": {
+				"textures": {
+					"end": "catwalks:blocks/scaffold/wood/top",
+					"side": "catwalks:blocks/scaffold/wood/side"
+				}
+			},
+			"custom": {
+				"textures": {
+					"end": "catwalks:blocks/scaffold/custom/top",
+					"side": "catwalks:blocks/scaffold/custom/side"
+				}
+			}
+		}
+	}
+}

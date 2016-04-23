@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class CommonProxy {
 	public void preInit() {}
+	public void reloadConfigs() {}
 	
 	public EntityPlayer getPlayerLooking(Vec3 start, Vec3 end) {
 		EntityPlayer player = null;

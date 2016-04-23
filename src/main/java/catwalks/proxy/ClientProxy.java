@@ -74,6 +74,11 @@ public class ClientProxy extends CommonProxy {
 		OBJLoader.instance.addDomain(Const.MODID);
 	}
 	
+	public void reloadConfigs() {
+		if(Minecraft.getMinecraft().renderGlobal != null)
+			Minecraft.getMinecraft().renderGlobal.loadRenderers();
+	}
+	
 	Map<ModelResourceLocation, IBakedModel> models = new HashMap<>();
 	
 	private void model(String loc, IBakedModel model) {

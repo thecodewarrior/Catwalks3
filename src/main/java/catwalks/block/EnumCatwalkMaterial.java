@@ -7,6 +7,6 @@ public enum EnumCatwalkMaterial implements IStringSerializable {
 
 	@Override
 	public String getName() {
-		return this.name();
+		return this.name().toLowerCase();
 	}
 }

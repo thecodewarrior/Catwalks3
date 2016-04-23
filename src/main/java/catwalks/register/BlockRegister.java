@@ -7,6 +7,7 @@ import catwalks.Const;
 import catwalks.block.BlockCatwalk;
 import catwalks.block.BlockCatwalkStair;
 import catwalks.block.BlockCatwalkStairTop;
+import catwalks.block.BlockScaffolding;
 import catwalks.block.EnumCatwalkMaterial;
 import catwalks.block.extended.BlockCagedLadder;
 import catwalks.block.extended.TileExtended;
@@ -28,6 +29,7 @@ public class BlockRegister {
 	public static BlockCatwalkStair catwalkStair;
 	public static BlockCatwalkStairTop stairTop;
 	public static BlockCagedLadder cagedLadder;
+	public static BlockScaffolding scaffold;
 	
 	public static void register() {
 		GameRegistry.registerTileEntity(TileExtended.class, "tileExtended");
@@ -35,6 +37,7 @@ public class BlockRegister {
 		catwalkStair = new BlockCatwalkStair();
 		stairTop = new BlockCatwalkStairTop();
 		cagedLadder = new BlockCagedLadder();
+		scaffold = new BlockScaffolding();
 	}
 	
 	private static void registerTexture(String path) {
@@ -50,6 +53,13 @@ public class BlockRegister {
 	@SideOnly(Side.CLIENT)
 	public static void initRender() {
 		Item item; String rl;
+		
+		item = Item.getItemFromBlock(scaffold);
+		rl   = Item.itemRegistry.getNameForObject(item).toString();
+		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_inv", "material=steel"  ));
+		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_inv", "material=rusty"  ));
+		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_inv", "material=wood"   ));
+		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_inv", "material=custom" ));
 		
 		ModelLoader.setCustomStateMapper(catwalk, new StateMapperStatic("catwalk"));
 		item = Item.getItemFromBlock(catwalk);

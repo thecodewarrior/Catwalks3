@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class BlockBase extends Block {
+public class BlockBase extends Block {
 
 	
 	public BlockBase(Material material, String name) {
@@ -46,6 +46,8 @@ public abstract class BlockBase extends Block {
 		return mop;
     }
 	
-	public abstract MovingObjectPosition collisionRayTrace(World world, BlockPos pos, EntityPlayer player, Vec3 start, Vec3 end);
+	public MovingObjectPosition collisionRayTrace(World world, BlockPos pos, EntityPlayer player, Vec3 start, Vec3 end) {
+		return super.collisionRayTrace(world, pos, start, end);
+	}
 	
 }
