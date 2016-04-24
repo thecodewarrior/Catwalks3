@@ -35,7 +35,9 @@ public class RecipeRegister {
 		Block
 			catwalk = BlockRegister.catwalk,
 			stair = BlockRegister.catwalkStair,
-			pPlateWood = Blocks.wooden_pressure_plate;
+			ladder = BlockRegister.cagedLadder,
+			pPlateWood = Blocks.wooden_pressure_plate,
+			vladder = Blocks.ladder;
 		String
 			iron = "ingotIron",
 			slimeball = "slimeball",
@@ -127,6 +129,23 @@ public class RecipeRegister {
 			" ps",
 			's', stick,
 			'p', pPlateWood);
+		
+		// Ladders
+		
+		addShapedOreRecipe(true, new ItemStack(ladder, 1, m_steel),
+			"glg",
+			'g', grate,
+			'l', vladder);
+			// rusty/steel conversion
+		addShapelessRecipe(true, new ItemStack(ladder, 1, m_rusty),
+			new ItemStack(ladder, 1, m_steel));
+		addShapelessRecipe(true, new ItemStack(ladder, 1, m_steel),
+			new ItemStack(ladder, 1, m_rusty));
+		
+		addShapedOreRecipe(true, new ItemStack(ladder, 1, m_wood),
+			"sls",
+			's', stick,
+			'l', vladder);
 	}
 	
 	
