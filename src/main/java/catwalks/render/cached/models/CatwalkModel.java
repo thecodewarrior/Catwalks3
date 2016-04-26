@@ -7,7 +7,6 @@ import java.util.List;
 import catwalks.Const;
 import catwalks.block.EnumCatwalkMaterial;
 import catwalks.render.ModelUtils;
-import catwalks.render.ModelUtils.SpritelessConditionalQuad;
 import catwalks.render.ModelUtils.SpritelessQuad;
 import catwalks.render.cached.SimpleModel;
 import net.minecraft.block.state.IBlockState;
@@ -44,8 +43,8 @@ public class CatwalkModel extends SimpleModel {
 		boolean down   = (boolean) list.get(i++),
 				north  = (boolean) list.get(i++),
 				south  = (boolean) list.get(i++),
-				west   = (boolean) list.get(i++),
 				east   = (boolean) list.get(i++),
+				west   = (boolean) list.get(i++),
 				tape   = (boolean) list.get(i++),
 				lights = (boolean) list.get(i++),
 				speed  = (boolean) list.get(i++);
@@ -65,7 +64,7 @@ public class CatwalkModel extends SimpleModel {
         	bottomLightsTex = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/catwalk/"+mat+"/bottom/lights")),
         	bottomSpeedTex  = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/catwalk/"+mat+"/bottom/speed"));
 		
-		List<SpritelessConditionalQuad> sideQuads;
+		List<SpritelessQuad> sideQuads;
 		List<SpritelessQuad> bottomQuads;
 		
 		sideQuads = new ArrayList<>();
@@ -74,7 +73,7 @@ public class CatwalkModel extends SimpleModel {
 		ModelUtils.putFace(sideQuads, EnumFacing.SOUTH, 1);
 		ModelUtils.putFace(sideQuads, EnumFacing.EAST,  2);
 		ModelUtils.putFace(sideQuads, EnumFacing.WEST,  3);
-    	ModelUtils.putFace(bottomQuads, EnumFacing.DOWN);
+    	ModelUtils.putFace(bottomQuads, EnumFacing.DOWN, -1);
     	
     	List<BakedQuad> quads = new ArrayList<>();
     	
@@ -88,10 +87,10 @@ public class CatwalkModel extends SimpleModel {
         		north, south, east, west);
         
         if(down) { // seperate because it uses a different sprite
-        	ModelUtils.processQuads(bottomQuads, quads, bottom);
-        	if(  tape) ModelUtils.processQuads(bottomQuads, quads,   bottomTapeTex);
-	        if(lights) ModelUtils.processQuads(bottomQuads, quads, bottomLightsTex);
-	        if( speed) ModelUtils.processQuads(bottomQuads, quads,  bottomSpeedTex);
+        	ModelUtils.processConditionalQuads(bottomQuads, quads, bottom);
+        	if(  tape) ModelUtils.processConditionalQuads(bottomQuads, quads,   bottomTapeTex);
+	        if(lights) ModelUtils.processConditionalQuads(bottomQuads, quads, bottomLightsTex);
+	        if( speed) ModelUtils.processConditionalQuads(bottomQuads, quads,  bottomSpeedTex);
         }
 		return quads;
 	}

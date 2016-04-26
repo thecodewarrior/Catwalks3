@@ -79,48 +79,6 @@ public class ClientProxy extends CommonProxy {
 			Minecraft.getMinecraft().renderGlobal.loadRenderers();
 	}
 	
-	Map<ModelResourceLocation, IBakedModel> models = new HashMap<>();
-	
-	private void model(String loc, IBakedModel model) {
-		models.put(new ModelResourceLocation(Const.MODID + ":" + loc), model);
-	}
-	
-	@SubscribeEvent
-    public void onModelBakeEvent(ModelBakeEvent event) {
-		models.clear();
-		
-		model("catwalk", new CachedSmartModel(new CatwalkModel()));
-		model("catwalkStair", new CachedSmartModel(new StairBottomModel()));
-		model("catwalkStairTop", new CachedSmartModel(new StairTopModel()));
-		model("cagedLadder", new CachedSmartModel(new LadderModel()));
-		
-        for (Entry<ModelResourceLocation, IBakedModel> model : models.entrySet()) {
-			
-        	Object object =  event.modelRegistry.getObject(model.getKey());
-            if (object != null) {
-                event.modelRegistry.putObject(model.getKey(), model.getValue());
-            }
-        	
-		}
-    }
-	
-	@SubscribeEvent
-    public void textureStitch(TextureStitchEvent.Pre event) {
-		
-		TextureMap map = event.map;
-		
-		for(ResourceLocation tex : BlockRegister.textures) {
-			
-			map.getTextureExtry(tex.toString());
-			TextureAtlasSprite texture = map.getTextureExtry(tex.toString());
-			
-			if(texture == null) {
-				map.registerSprite(tex);
-			}
-		}
-
-    }
-	
 	@SubscribeEvent
 	public void highlight(DrawBlockHighlightEvent event) {
 		BlockPos pos = event.target.getBlockPos();

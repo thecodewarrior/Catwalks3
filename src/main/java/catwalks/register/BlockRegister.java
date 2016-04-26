@@ -1,7 +1,6 @@
 package catwalks.register;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Supplier;
 
 import catwalks.Const;
 import catwalks.block.BlockCatwalk;
@@ -11,11 +10,17 @@ import catwalks.block.BlockScaffolding;
 import catwalks.block.EnumCatwalkMaterial;
 import catwalks.block.extended.BlockCagedLadder;
 import catwalks.block.extended.TileExtended;
+import catwalks.render.ModelHandler;
+import catwalks.render.cached.CachedSmartModel;
+import catwalks.render.cached.models.CatwalkModel;
+import catwalks.render.cached.models.LadderModel;
+import catwalks.render.cached.models.StairBottomModel;
+import catwalks.render.cached.models.StairTopModel;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -23,7 +28,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockRegister {
 
-	public static List<ResourceLocation> textures = new ArrayList<>();
 	
 	public static BlockCatwalk catwalk;
 	public static BlockCatwalkStair catwalkStair;
@@ -40,52 +44,27 @@ public class BlockRegister {
 		scaffold = new BlockScaffolding();
 	}
 	
-	private static void registerTexture(String path) {
-		textures.add(new ResourceLocation(Const.MODID + ":" + path));
-	}
-	
 	private static void registerTextureAllMaterials(String path) {
 		for (EnumCatwalkMaterial mat : EnumCatwalkMaterial.values()) {
-			registerTexture(path.replace("<mat>", mat.getName().toLowerCase()));
+			ModelHandler.INSTANCE.registerTexture(path.replace("<mat>", mat.getName().toLowerCase()));
 		}
 	}
 	
 	@SideOnly(Side.CLIENT)
 	public static void initRender() {
-		Item item; String rl;
 		
-		item = Item.getItemFromBlock(scaffold);
-		rl   = Item.itemRegistry.getNameForObject(item).toString();
-		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_inv", "material=steel"  ));
-		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_inv", "material=rusty"  ));
-		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_inv", "material=wood"   ));
-		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_inv", "material=custom" ));
+		ModelHandler.INSTANCE.registerModel("catwalk",          () -> new CachedSmartModel(new CatwalkModel()) );
+		ModelHandler.INSTANCE.registerModel("catwalkStair",     () -> new CachedSmartModel(new StairBottomModel()));
+		ModelHandler.INSTANCE.registerModel("catwalkStairTop",  () -> new CachedSmartModel(new StairTopModel()));
 		
-		ModelLoader.setCustomStateMapper(catwalk, new StateMapperStatic("catwalk"));
-		item = Item.getItemFromBlock(catwalk);
-		rl   = Item.itemRegistry.getNameForObject(item).toString();
-		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_rusty" , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_custom", "inventory" ));
-		
-		ModelLoader.setCustomStateMapper(catwalkStair, new StateMapperStatic("catwalkStair"));
-		item = Item.getItemFromBlock(catwalkStair);
-		rl   = Item.itemRegistry.getNameForObject(item).toString();
-		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_rusty" , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_custom", "inventory" ));
+		ModelHandler.INSTANCE.registerModel("cagedLadder",      new Supplier<IBakedModel>() {
 
-		ModelLoader.setCustomStateMapper(stairTop, new StateMapperStatic("catwalkStairTop"));
-		
-		ModelLoader.setCustomStateMapper(cagedLadder, new StateMapperStatic("cagedLadder"));
-		item = Item.getItemFromBlock(cagedLadder);
-		rl   = Item.itemRegistry.getNameForObject(item).toString();
-		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_rusty" , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_custom", "inventory" ));
+			@Override
+			public IBakedModel get() {
+				return new CachedSmartModel(new LadderModel());
+			}
+			
+		}); // still possible like this, but it's clunky.
 		
 		// Catwalk
 		registerTextureAllMaterials("blocks/catwalk/<mat>/side/base");
@@ -110,21 +89,40 @@ public class BlockRegister {
 		registerTextureAllMaterials("blocks/ladder/<mat>/lights");
 		registerTextureAllMaterials("blocks/ladder/<mat>/speed");
 		
-	}
-	
-	
-	public static class StateMapperStatic extends StateMapperBase {
+		
+		Item item; String rl;
+		
+		item = Item.getItemFromBlock(scaffold);
+		rl   = Item.itemRegistry.getNameForObject(item).toString();
+		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_inv", "material=steel"  ));
+		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_inv", "material=rusty"  ));
+		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_inv", "material=wood"   ));
+		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_inv", "material=custom" ));
+		
+		ModelHandler.setStaticMap(catwalk, "catwalk");
+		item = Item.getItemFromBlock(catwalk);
+		rl   = Item.itemRegistry.getNameForObject(item).toString();
+		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_rusty" , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_custom", "inventory" ));
+		
+		ModelHandler.setStaticMap(catwalkStair, "catwalkStair");
+		item = Item.getItemFromBlock(catwalkStair);
+		rl   = Item.itemRegistry.getNameForObject(item).toString();
+		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_rusty" , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_custom", "inventory" ));
 
-		ModelResourceLocation loc;
-		
-		public StateMapperStatic(String loc) {
-			this.loc = new ModelResourceLocation(Const.MODID + ":" + loc);
-		}
-		
-		@Override
-		protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-			return loc;
-		}
-		
+		ModelHandler.setStaticMap(stairTop, "catwalkStairTop");
+
+		ModelHandler.setStaticMap(cagedLadder, "cagedLadder");
+		item = Item.getItemFromBlock(cagedLadder);
+		rl   = Item.itemRegistry.getNameForObject(item).toString();
+		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_rusty" , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));
+		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_custom", "inventory" ));
 	}
 }

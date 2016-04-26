@@ -9,8 +9,6 @@ import catwalks.block.EnumCatwalkMaterial;
 import catwalks.render.ModelUtils;
 import catwalks.render.ModelUtils.SpritelessQuad;
 import catwalks.render.cached.SimpleModel;
-import catwalks.shade.ccl.vec.Matrix4;
-import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.GeneralUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -52,7 +50,7 @@ public class StairTopModel extends SimpleModel {
 				speed   = (boolean) list.get(i++);
 		EnumFacing facing = (EnumFacing) list.get(i++);
 		
-		int r = GeneralUtil.getRotation(EnumFacing.NORTH, facing);
+		int rot = GeneralUtil.getRotation(EnumFacing.NORTH, facing);
 		
 		String mat = material.getName().toLowerCase();
         
@@ -62,50 +60,38 @@ public class StairTopModel extends SimpleModel {
         TextureAtlasSprite lightsTex = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/stair/"+mat+"/lights"));
         TextureAtlasSprite speedTex  = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/stair/"+mat+"/speed"));
 		
-        if(westtop)
-			ModelUtils.putQuad(quads, GeneralUtil.rotateFacing(r, EnumFacing.WEST),
-        		0, 0, 1, 12.5f, 0,
-        		0, 1, 0, 0, 0,
-        		0, 0, 0, 0, 8,
-        		0, 0, 0, 0, 8
-        	);
+		ModelUtils.doubleQuad(quads, GeneralUtil.rotateFacing(rot, EnumFacing.WEST), 0,
+    		0, 0, 1, 12.5f/16f, 0,
+    		0, 1, 0, 0,         0,
+    		0, 0, 0, 0,        .5,
+    		0, 0, 0, 0,        .5
+    	);
+	
+		ModelUtils.doubleQuad(quads, GeneralUtil.rotateFacing(rot, EnumFacing.EAST), 1,
+    		1, 0, 1, 12.5f/16f, 0,
+    		1, 1, 0, 0,         0,
+    		1, 0, 0, 0,        .5,
+    		1, 0, 0, 0,        .5
+    	);
+	
+		ModelUtils.doubleQuad(quads, GeneralUtil.rotateFacing(rot, EnumFacing.NORTH), 2,
+    		0, 0, 0, .5,  1,
+    		0, 1, 0, .5, .5,
+    		1, 1, 0,  1, .5,
+    		1, 0, 0,  1,  1
+    	);
 		
-		if(easttop)
-			ModelUtils.putQuad(quads, GeneralUtil.rotateFacing(r, EnumFacing.EAST),
-        		1, 0, 1, 12.5f, 0,
-        		1, 1, 0, 0, 0,
-        		1, 0, 0, 0, 8,
-        		1, 0, 0, 0, 8
-        	);
-		
-		if(north)
-			ModelUtils.putQuad(quads, GeneralUtil.rotateFacing(r, EnumFacing.NORTH),
-        		0, 0, 0, 8, 16,
-        		0, 1, 0, 8, 8,
-        		1, 1, 0, 16, 8,
-        		1, 0, 0, 16, 16
-        	);
-        
-		Matrix4 matrix = new Matrix4().translate(new Vector3(0.5,0.5,0.5)).rotate((Math.PI/2)*-r, new Vector3(0,1,0)).translate(new Vector3(-0.5,-0.5,-0.5));
-		Vector3 vec = new Vector3();
 		for (SpritelessQuad quad : quads) {
-			matrix.apply(vec.set(quad.p1.xCoord, quad.p1.yCoord, quad.p1.zCoord));
-			quad.p1 = vec.vec3();
-			
-			matrix.apply(vec.set(quad.p2.xCoord, quad.p2.yCoord, quad.p2.zCoord));
-			quad.p2 = vec.vec3();
-			
-			matrix.apply(vec.set(quad.p3.xCoord, quad.p3.yCoord, quad.p3.zCoord));
-			quad.p3 = vec.vec3();
-			
-			matrix.apply(vec.set(quad.p4.xCoord, quad.p4.yCoord, quad.p4.zCoord));
-			quad.p4 = vec.vec3();
+			quad.p1 = GeneralUtil.rotateVectorCenter(rot, quad.p1);
+			quad.p2 = GeneralUtil.rotateVectorCenter(rot, quad.p2);
+			quad.p3 = GeneralUtil.rotateVectorCenter(rot, quad.p3);
+			quad.p4 = GeneralUtil.rotateVectorCenter(rot, quad.p4);
 		}
 		
-		ModelUtils.processQuads(quads, output, texture);
-        if(  tape) ModelUtils.processQuads(quads, output,   tapeTex);
-        if(lights) ModelUtils.processQuads(quads, output, lightsTex);
-        if( speed) ModelUtils.processQuads(quads, output,  speedTex);
+		ModelUtils.processConditionalQuads(quads, output, texture, westtop, easttop, north);
+        if(  tape) ModelUtils.processConditionalQuads(quads, output,   tapeTex, westtop, easttop, north);
+        if(lights) ModelUtils.processConditionalQuads(quads, output, lightsTex, westtop, easttop, north);
+        if( speed) ModelUtils.processConditionalQuads(quads, output,  speedTex, westtop, easttop, north);
 		
 		return output;
 	}
