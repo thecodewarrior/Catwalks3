@@ -6,6 +6,11 @@ import catwalks.Conf;
 import catwalks.Const;
 import catwalks.item.ItemBlockScaffold;
 import catwalks.register.ItemRegister;
+import catwalks.shade.ccl.raytracer.RayTracer;
+import catwalks.util.ExtendUtils;
+import catwalks.util.GeneralUtil;
+import catwalks.util.Logs;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
@@ -16,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -25,13 +31,36 @@ public class BlockScaffolding extends BlockBase {
 		
 	public BlockScaffolding() {
 		super(Material.iron, "scaffold", ItemBlockScaffold.class);
-		setHardness(0.04f);
+		setHardness(0.1f);
+	}
+	
+	@Override
+	public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) {
+		MovingObjectPosition hit = RayTracer.retrace(playerIn);
+		if(hit == null) { // don't want to NPE
+			Logs.error("Hit was null in Scaffold onBlockClicked at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
+			return;
+		}
+		
+		if(playerIn.isSneaking() && playerIn.getCurrentEquippedItem() != null && playerIn.getCurrentEquippedItem().getItem() == Item.getItemFromBlock(this)) {
+			BlockPos retractPos = ExtendUtils.getRetractPos(worldIn, pos, hit.sideHit, worldIn.getBlockState(pos));
+			if(retractPos != null) {
+				ItemStack stack = getDrops(worldIn, retractPos, worldIn.getBlockState(retractPos), 0).get(0);
+				worldIn.playAuxSFX(2001, pos, Block.getStateId(worldIn.getBlockState(retractPos)));
+				worldIn.setBlockToAir(retractPos);
+				playerIn.inventory.addItemStackToInventory(stack);
+				if(stack.stackSize > 0) {
+					BlockPos spawnPos = retractPos.offset(hit.sideHit);
+					GeneralUtil.spawnItemStack(worldIn, spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), stack);
+				}
+			}
+		}
 	}
 	
 	@Override
 	public float getBlockHardness(World worldIn, BlockPos pos) {
 		IBlockState state = worldIn.getBlockState(pos);
-		return state.getValue(Const.MATERIAL) == EnumCatwalkMaterial.WOOD ? 0 : this.blockHardness;
+		return state.getValue(Const.MATERIAL) == EnumCatwalkMaterial.WOOD ? 0 : 0.1f;//this.blockHardness;
 	}
 	
 	@Override

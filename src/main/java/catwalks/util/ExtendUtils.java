@@ -55,6 +55,33 @@ public class ExtendUtils {
 				sideClicked
 			); // if no position was found return the origional info
 	}
+	
+	public static BlockPos getRetractPos(World world, BlockPos posClicked, EnumFacing sideClicked, IBlockState testingState) {
+		
+		IBlockState state = world.getBlockState(posClicked);
+		IBlockState nextState = world.getBlockState(posClicked.offset(sideClicked.getOpposite()));
+		
+		if(!state.equals(testingState) || !nextState.equals(testingState)) // if we don't have a >1 block chain of blocks don't even try
+			return null;
+		
+		EnumFacing searchDirection = sideClicked.getOpposite();
+		BetterMutableBlockPos testingPos = new BetterMutableBlockPos();
+		testingPos.set(posClicked);
+		
+		for(int i = 1; i < 32; i++) { // 32 block search range, starting from 1 because otherwise it'll go 33 blocks
+			testingPos.offset(searchDirection); // offset the block we're testing for if the block can be placed
+			
+			state = world.getBlockState(testingPos);
+			
+			if(!state.equals(testingState)) { // if we find a block that isn't the one we're retracting, back up and break out of the loop
+				testingPos.offset(searchDirection.getOpposite());
+				break;
+			}
+			
+		}
+		
+		return testingPos;
+	}
 
 	public static class BetterMutableBlockPos extends BlockPos {
 
