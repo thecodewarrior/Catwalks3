@@ -122,7 +122,7 @@ public class CachedSmartModel implements ISmartBlockModel {
 
 	@Override
 	public TextureAtlasSprite getParticleTexture() {
-		throw new UnsupportedOperationException("getParticleTexture() shouldn't be called on ISmartBlockModels! Report to caller, not a Catwalks 3 error");
+		return ModelUtils.getSprite( TextureMap.LOCATION_MISSING_TEXTURE );
 	}
 
 	@Override
