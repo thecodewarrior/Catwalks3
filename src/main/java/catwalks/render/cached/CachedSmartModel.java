@@ -48,8 +48,8 @@ public class CachedSmartModel implements ISmartBlockModel {
 	
 	public static class BakedModelCache implements IBakedModel {
 		
-		public static final IBakedModel NULL = new BakedModelCache(
-			ImmutableList.of(), ModelUtils.getSprite( TextureMap.LOCATION_MISSING_TEXTURE )
+		public static IBakedModel NULL = new BakedModelCache(
+			ImmutableList.of(), null
 		);
 		
 		List<List<BakedQuad>> quads;
@@ -95,7 +95,9 @@ public class CachedSmartModel implements ISmartBlockModel {
 
 		@Override
 		public TextureAtlasSprite getParticleTexture() {
-			return null;
+			if(particleTexture == null) 
+				return ModelUtils.getSprite( TextureMap.LOCATION_MISSING_TEXTURE );
+			return particleTexture;
 		}
 
 		@Override
