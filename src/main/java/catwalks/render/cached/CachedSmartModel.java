@@ -9,6 +9,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 
 import catwalks.render.ModelUtils;
+import catwalks.util.Logs;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -95,8 +96,10 @@ public class CachedSmartModel implements ISmartBlockModel {
 
 		@Override
 		public TextureAtlasSprite getParticleTexture() {
-			if(particleTexture == null) 
-				return ModelUtils.getSprite( TextureMap.LOCATION_MISSING_TEXTURE );
+//			Logs.log("GetTex Simple");
+			if(particleTexture == null) {
+				return ModelUtils.getSprite( null );
+			}
 			return particleTexture;
 		}
 
@@ -124,7 +127,8 @@ public class CachedSmartModel implements ISmartBlockModel {
 
 	@Override
 	public TextureAtlasSprite getParticleTexture() {
-		return ModelUtils.getSprite( TextureMap.LOCATION_MISSING_TEXTURE );
+//		Logs.log("GetTex smart");
+		return ModelUtils.getSprite( null );
 	}
 
 	@Override

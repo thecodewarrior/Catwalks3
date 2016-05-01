@@ -72,7 +72,7 @@ public class ModelUtils {
 	
 	public static TextureAtlasSprite getSprite(ResourceLocation location) {
 		TextureMap map = Minecraft.getMinecraft().getTextureMapBlocks();
-		return map.getAtlasSprite(location.toString());
+		return map.getAtlasSprite(location == null ? null : location.toString());
 	}
 	
     public static int[] vertexToInts(double x, double y, double z, float u, float v, TextureAtlasSprite sprite) {
