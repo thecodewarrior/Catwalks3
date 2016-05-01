@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class BlockBase extends Block {
+public class BlockBase extends Block {
 
 	
 	public BlockBase(Material material, String name) {
@@ -42,17 +42,12 @@ public abstract class BlockBase extends Block {
 	
 	@Override
 	public MovingObjectPosition collisionRayTrace(World world, BlockPos pos, Vec3 start, Vec3 end) {
-		return collisionRayTrace(world, pos, CatwalksMod.proxy.getPlayerLooking(start, end), start, end);
+		MovingObjectPosition mop = collisionRayTrace(world, pos, CatwalksMod.proxy.getPlayerLooking(start, end), start, end);
+		return mop;
     }
 	
-	public abstract MovingObjectPosition collisionRayTrace(World world, BlockPos pos, EntityPlayer player, Vec3 start, Vec3 end);
-    
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void onBlockHighlight(DrawBlockHighlightEvent event) {
-        if (event.target.typeOfHit == MovingObjectType.BLOCK && event.player.worldObj.getBlockState(event.target.getBlockPos()).getBlock() == this)
-            RayTracer.retraceBlock(event.player.worldObj, event.player, event.target.getBlockPos());
-    }
-    
+	public MovingObjectPosition collisionRayTrace(World world, BlockPos pos, EntityPlayer player, Vec3 start, Vec3 end) {
+		return super.collisionRayTrace(world, pos, start, end);
+	}
 	
 }

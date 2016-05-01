@@ -8,7 +8,6 @@ import catwalks.register.RecipeRegister;
 import catwalks.util.WrenchChecker;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -18,12 +17,11 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = CatwalksMod.MODID, version = CatwalksMod.VERSION)
+@Mod(modid = CatwalksMod.MODID, version = CatwalksMod.VERSION,
+	guiFactory = "catwalks.gui.CatwalksModConfGuiFactory")
 public class CatwalksMod {
 	public static final String MODID = "catwalks";
     public static final String VERSION = "0.1.1";
-    
-    public static boolean developmentEnvironment = (Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment");
     
     @SidedProxy(serverSide="catwalks.proxy.CommonProxy", clientSide="catwalks.proxy.ClientProxy")
     public static CommonProxy proxy;
@@ -33,6 +31,7 @@ public class CatwalksMod {
     	BlockRegister.register();
     	ItemRegister.register();
     	RecipeRegister.register();
+    	Conf.loadConfigsFromFile(event.getSuggestedConfigurationFile());
     	MinecraftForge.EVENT_BUS.register(proxy);
     	proxy.preInit();
     }

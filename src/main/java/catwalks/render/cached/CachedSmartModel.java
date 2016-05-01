@@ -96,10 +96,13 @@ public class CachedSmartModel implements ISmartBlockModel {
 
 		@Override
 		public TextureAtlasSprite getParticleTexture() {
+<<<<<<< HEAD
 //			Logs.log("GetTex Simple");
 			if(particleTexture == null) {
 				return ModelUtils.getSprite( null );
 			}
+=======
+>>>>>>> Scaffolds
 			return particleTexture;
 		}
 
@@ -126,10 +129,14 @@ public class CachedSmartModel implements ISmartBlockModel {
 	public boolean isBuiltInRenderer() { return false; }
 
 	@Override
+<<<<<<< HEAD
 	public TextureAtlasSprite getParticleTexture() {
 //		Logs.log("GetTex smart");
 		return ModelUtils.getSprite( null );
 	}
+=======
+	public TextureAtlasSprite getParticleTexture() { return ModelUtils.getSprite( TextureMap.LOCATION_MISSING_TEXTURE ); }
+>>>>>>> Scaffolds
 
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms() { return null; }

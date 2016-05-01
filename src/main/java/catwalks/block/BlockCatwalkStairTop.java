@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import catwalks.Const;
-import catwalks.block.extended.EnumCubeEdge;
+import catwalks.block.extended.CubeEdge;
 import catwalks.block.extended.TileExtended;
 import catwalks.register.BlockRegister;
 import catwalks.util.GeneralUtil;
@@ -223,23 +223,37 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	{ /* ICatwalkConnect */ }
 	
 	@Override
-	public boolean hasEdge(World world, BlockPos pos, EnumCubeEdge edge) {
-		IExtendedBlockState state = getBelowState(world, pos);
+	public boolean hasEdge(World world, BlockPos pos, CubeEdge edge) {
+		if(!checkForValidity(world, pos))
+			return false;
 		
-		if(state.getValue(Const.FACING) == edge.getDir1()) {
-			EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), edge.getDir2());
-			if(actualDir == EnumFacing.EAST && state.getValue(Const.EAST_TOP)) {
-				return true;
-			}
-			if(actualDir == EnumFacing.WEST && state.getValue(Const.WEST_TOP)) {
-				return true;
-			}
+		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		
+		if(GeneralUtil.checkEdge(EnumFacing.DOWN, state.getValue(Const.FACING), edge) && !state.getValue(Const.NORTH))
+			return true;
+		if(GeneralUtil.checkEdge(EnumFacing.UP, state.getValue(Const.FACING), edge) && state.getValue(Const.NORTH))
+			return true;
+		
+		if(edge.dir1 == EnumFacing.UP || edge.dir2 == EnumFacing.UP) {
+			return false;
 		}
-		return false;
+		
+		if(edge.dir1 == state.getValue(Const.FACING).getOpposite() || edge.dir2 == state.getValue(Const.FACING).getOpposite()) {
+			return false;
+		}
+		
+		return ICatwalkConnect.super.hasEdge(world, pos, edge);
+	}
+	
+	@Override
+	public EnumEdgeType edgeType(World world, BlockPos pos, CubeEdge edge) {
+		return EnumEdgeType.FULL;
 	}
 	
 	@Override
 	public boolean hasSide(World world, BlockPos pos, EnumFacing side) {
+		if(!checkForValidity(world, pos))
+			return false;
 		IExtendedBlockState state = getBelowState(world, pos);
 		
 		EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), side);
@@ -257,6 +271,8 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	
 	@Override
 	public void setSide(World world, BlockPos pos, EnumFacing side, boolean value) {
+		if(!checkForValidity(world, pos))
+			return;
 		IExtendedBlockState state = getBelowState(world, pos);
 		
 		TileExtended tile = (TileExtended) world.getTileEntity(pos.offset(EnumFacing.DOWN));
@@ -275,6 +291,8 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	
 	@Override
 	public Object sideData(World world, BlockPos pos, EnumFacing side) {
+		if(!checkForValidity(world, pos))
+			return null;
 		IExtendedBlockState state = getBelowState(world, pos);
 		if(side.getAxis() != state.getValue(Const.FACING).getAxis())
 			return state.getValue(Const.FACING);
@@ -283,6 +301,8 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	
 	@Override
 	public EnumSideType sideType(World world, BlockPos pos, EnumFacing side) {
+		if(!checkForValidity(world, pos))
+			return EnumSideType.FULL;
 		IExtendedBlockState state = getBelowState(world, pos);
 		
 		if(side == state.getValue(Const.FACING)) {

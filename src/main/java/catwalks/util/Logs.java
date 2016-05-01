@@ -4,7 +4,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import catwalks.CatwalksMod;
+import catwalks.Const;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
@@ -18,7 +18,7 @@ public class Logs {
     public static long prevTicks = -1;
     private Logger logger;
 
-    public static boolean debugMode = CatwalksMod.developmentEnvironment;
+    public static boolean debugMode = Const.developmentEnvironment;
     public static boolean doLogging = false;
 
     private Logs() {

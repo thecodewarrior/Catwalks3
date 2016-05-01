@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 
 import catwalks.Const;
-import catwalks.block.extended.EnumCubeEdge;
+import catwalks.block.extended.CubeEdge;
 import catwalks.block.extended.TileExtended;
 import catwalks.item.ItemBlockCatwalk;
 import catwalks.register.BlockRegister;
@@ -104,8 +104,8 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	
 	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+		worldIn.setBlockState(pos.offset(EnumFacing.UP), Blocks.air.getDefaultState(), 6);
 		super.breakBlock(worldIn, pos, state);
-		worldIn.setBlockState(pos.offset(EnumFacing.UP), Blocks.air.getDefaultState());		
 		GeneralUtil.updateSurroundingCatwalkBlocks(worldIn, pos);
 	}
 	
@@ -434,18 +434,22 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	{ /* ICatwalkConnect */ }
 
 	@Override
-	public boolean hasEdge(World world, BlockPos pos, EnumCubeEdge edge) {
+	public boolean hasEdge(World world, BlockPos pos, CubeEdge edge) {
 		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
-		if(state.getValue(Const.FACING) == edge.getDir1()) {
-			EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), edge.getDir2());
-			if(actualDir == EnumFacing.EAST && state.getValue(Const.EAST_TOP)) {
-				return true;
-			}
-			if(actualDir == EnumFacing.WEST && state.getValue(Const.WEST_TOP)) {
-				return true;
-			}
+		
+		if(GeneralUtil.checkEdge(EnumFacing.DOWN, state.getValue(Const.FACING).getOpposite(), edge) && !state.getValue(Const.SOUTH))
+			return true;
+		
+		if(edge.dir1 == state.getValue(Const.FACING) || edge.dir2 == state.getValue(Const.FACING)) {
+			return false;
 		}
-		return false;
+		
+		return super.hasEdge(world, pos, edge);
+	}
+	
+	@Override
+	public EnumEdgeType edgeType(World world, BlockPos pos, CubeEdge edge) {
+		return EnumEdgeType.FULL;
 	}
 	
 	@Override

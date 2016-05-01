@@ -35,7 +35,10 @@ public class RecipeRegister {
 		Block
 			catwalk = BlockRegister.catwalk,
 			stair = BlockRegister.catwalkStair,
-			pPlateWood = Blocks.wooden_pressure_plate;
+			ladder = BlockRegister.cagedLadder,
+			scaffold = BlockRegister.scaffold,
+			pPlateWood = Blocks.wooden_pressure_plate,
+			vladder = Blocks.ladder;
 		String
 			iron = "ingotIron",
 			slimeball = "slimeball",
@@ -125,6 +128,42 @@ public class RecipeRegister {
 			"s  ",
 			"ps ",
 			" ps",
+			's', stick,
+			'p', pPlateWood);
+		
+		// Ladders
+		
+		addShapedOreRecipe(true, new ItemStack(ladder, 1, m_steel),
+			"glg",
+			'g', grate,
+			'l', vladder);
+			// rusty/steel conversion
+		addShapelessRecipe(true, new ItemStack(ladder, 1, m_rusty),
+			new ItemStack(ladder, 1, m_steel));
+		addShapelessRecipe(true, new ItemStack(ladder, 1, m_steel),
+			new ItemStack(ladder, 1, m_rusty));
+		
+		addShapedOreRecipe(true, new ItemStack(ladder, 1, m_wood),
+			"sls",
+			's', stick,
+			'l', vladder);
+		
+		// Ladders
+		
+		addShapedOreRecipe(true, new ItemStack(scaffold, 4, m_steel),
+			"gg",
+			"gg",
+			'g', grate);
+			// rusty/steel conversion
+		addShapelessRecipe(true, new ItemStack(scaffold, 1, m_rusty),
+			new ItemStack(scaffold, 1, m_steel));
+		addShapelessRecipe(true, new ItemStack(scaffold, 1, m_steel),
+			new ItemStack(scaffold, 1, m_rusty));
+		
+		addShapedOreRecipe(true, new ItemStack(scaffold, 8, m_wood),
+			" p ",
+			"s s",
+			" p ",
 			's', stick,
 			'p', pPlateWood);
 	}

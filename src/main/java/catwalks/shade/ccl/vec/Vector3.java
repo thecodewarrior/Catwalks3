@@ -23,6 +23,7 @@ public class Vector3 implements Copyable<Vector3>
     public static Vector3 zero = new Vector3();
     public static Vector3 one = new Vector3(1, 1, 1);
     public static Vector3 center = new Vector3(0.5, 0.5, 0.5);
+    public static Vector3 anticenter = new Vector3(-0.5, -0.5, -0.5);
 
     public double x;
     public double y;

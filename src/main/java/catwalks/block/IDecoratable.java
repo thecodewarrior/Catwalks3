@@ -10,4 +10,7 @@ public interface IDecoratable {
 	 */
 	public boolean putDecoration(World world, BlockPos pos, String name, boolean value);
 	public boolean hasDecoration(World world, BlockPos pos, String name);
+	public default boolean canGiveSpeedBoost(World world, BlockPos pos) {
+		return true;
+	}
 }

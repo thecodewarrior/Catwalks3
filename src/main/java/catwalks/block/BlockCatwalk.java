@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 
 import catwalks.Const;
-import catwalks.block.extended.EnumCubeEdge;
+import catwalks.block.extended.CubeEdge;
 import catwalks.block.extended.TileExtended;
 import catwalks.item.ItemBlockCatwalk;
 import catwalks.shade.ccl.vec.Cuboid6;
@@ -30,20 +30,29 @@ public class BlockCatwalk extends BlockCatwalkBase {
 	}
 	
 	@Override
-	public boolean hasEdge(World world, BlockPos pos, EnumCubeEdge edge) {
+	public boolean hasEdge(World world, BlockPos pos, CubeEdge edge) {
 		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
-		return state.getValue(sides.getA(edge.getDir1())) || (edge.getDir2().getAxis() != Axis.Y && state.getValue(sides.getA(edge.getDir2())) );
+		return 
+				(   state.getUnlistedProperties().containsKey(Const.sideProperties.get(edge.dir1)) && state.getValue(Const.sideProperties.get(edge.dir1))   )
+						!=
+				(   state.getUnlistedProperties().containsKey(Const.sideProperties.get(edge.dir2)) && state.getValue(Const.sideProperties.get(edge.dir2))   )
+		;
+	}
+	
+	@Override
+	public EnumEdgeType edgeType(World world, BlockPos pos, CubeEdge edge) {
+		return EnumEdgeType.FULL;
 	}
 	
 	@Override
 	public boolean hasSide(World world, BlockPos pos, EnumFacing side) {
 		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
-		return (side.getAxis() != Axis.Y && state.getValue(sides.getA(side)) );
+		return state.getUnlistedProperties().containsKey(Const.sideProperties.get(side)) && state.getValue(Const.sideProperties.get(side));
 	}
 	
 	@Override
 	public void setSide(World world, BlockPos pos, EnumFacing side, boolean value) {
-		if(side.getAxis() == Axis.Y)
+		if(side == EnumFacing.UP)
 			return;
 		TileExtended tile = (TileExtended) world.getTileEntity(pos);
 		tile.setBoolean(sides.getC(side), value);

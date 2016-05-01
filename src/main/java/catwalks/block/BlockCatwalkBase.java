@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 
 import com.google.common.collect.Lists;
 
-import catwalks.CatwalksMod;
+import catwalks.Conf;
 import catwalks.Const;
 import catwalks.block.extended.BlockExtended;
 import catwalks.block.extended.TileExtended;
@@ -186,14 +186,30 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		return estate;
 	}
 	
+	public IExtendedBlockState getBasicExtendedState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
+		
+		boolean pass = tile != null;
+		
+		IExtendedBlockState estate = ((IExtendedBlockState)state)
+				.withProperty(Const.BOTTOM, pass && tile.getBoolean(I_BOTTOM))
+				.withProperty(Const.NORTH,  pass && tile.getBoolean(I_NORTH) )
+				.withProperty(Const.SOUTH,  pass && tile.getBoolean(I_SOUTH) )
+				.withProperty(Const.EAST,   pass && tile.getBoolean(I_EAST)  )
+				.withProperty(Const.WEST,   pass && tile.getBoolean(I_WEST)  )
+				.withProperty(Const.TAPE,   pass && tile.getBoolean(I_TAPE)  )
+				.withProperty(Const.SPEED,  pass && tile.getBoolean(I_SPEED) )
+				.withProperty(Const.FACING, pass ? EnumFacing.VALUES[tile.getNumber(I_FACING_ID, I_FACING_LEN)] : EnumFacing.UP);
+		
+		return estate;
+	}
+	
 	public IExtendedBlockState addProperties(TileExtended tile, @Nonnull IExtendedBlockState state) {
 		return state;
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public void addAdditionalProperties(List<IUnlistedProperty> list) {
-		
-	}
+	public void addAdditionalProperties(List<IUnlistedProperty> list) {}
 	
 	@Override
 	@SuppressWarnings("rawtypes")
@@ -231,7 +247,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	
 	@Override
 	public EnumWorldBlockLayer getBlockLayer() {
-		return EnumWorldBlockLayer.CUTOUT_MIPPED;
+		return EnumWorldBlockLayer.CUTOUT;
 	}
 	
 	{ /* placing/breaking */ }
@@ -335,7 +351,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		IBlockState plainState = world.getBlockState(pos);
         IExtendedBlockState state = (IExtendedBlockState) getExtendedState(plainState, world, pos);
 		
-        if(CatwalksMod.developmentEnvironment) initColllisionBoxes();
+        if(Const.developmentEnvironment) initColllisionBoxes();
 		List<CollisionBox> boxes = getCollisionBoxes(state, world, pos);
 		
 		if(boxes == null) {
@@ -371,7 +387,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			start = new Vector3(startRaw).sub(blockPosVec),
 			end   = new Vector3(  endRaw).sub(blockPosVec);
 		
-		if(CatwalksMod.developmentEnvironment) initSides();
+		if(Const.developmentEnvironment) initSides();
 		List<LookSide> sides = lookSides(state, world, pos);
 		if(sides == null) {
 			return null;
@@ -383,7 +399,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		ClientProxy.hits.clear();
 		for (LookSide side : sides) {
 			Face quad = null;
-			if(side.showProperty == null || state.getValue(side.showProperty)) {
+			if(side.showProperty == null || side.showProperty == Const.CONST_TRUE || (side.showProperty != Const.CONST_FALSE && state.getValue(side.showProperty))) {
 				quad = side.mainSide;
 			} else if(side.showWithoutWrench || hasWrench) {
 				quad = side.wrenchSide;
@@ -408,7 +424,8 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 					if(distanceSq < 4.1 && distanceSq > 3.9) {
 						distanceSq = distanceSq -1 +1;
 					}
-					ClientProxy.hits.add(new Tuple<Vector3, Double>(vec.copy().add(blockPosVec).add(new Vector3(side.offset)), Math.sqrt( distanceSq )));
+					if(Const.developmentEnvironment)
+						ClientProxy.hits.add(new Tuple<Vector3, Double>(vec.copy().add(blockPosVec).add(new Vector3(side.offset)), Math.sqrt( distanceSq )));
 					if(distanceSq < smallestDistanceSq) {
 						hitSide = side;
 						hitVector = vec.copy().add(blockPosVec);
@@ -431,7 +448,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		
 		Face quad = null;
 		
-		if(hitSide.showProperty == null || state.getValue(hitSide.showProperty)) {
+		if(hitSide.showProperty == null || hitSide.showProperty == Const.CONST_TRUE || (hitSide.showProperty != Const.CONST_FALSE && state.getValue(hitSide.showProperty))) {
 			quad = hitSide.mainSide;
 		} else if(hitSide.showWithoutWrench || hasWrench) {
 			quad = hitSide.wrenchSide;
@@ -500,15 +517,17 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		}
 		
 		public void apply(Matrix4 matrix) {
-			mainSide.apply(matrix);
-			wrenchSide.apply(matrix);
+			if(mainSide != null)
+				mainSide.apply(matrix);
+			if(wrenchSide != null)
+				wrenchSide.apply(matrix);
 		}
 		
 		public LookSide copy() {
 			LookSide side = new LookSide();
 			
-			side.mainSide   = mainSide.copy();
-			side.wrenchSide = wrenchSide.copy();
+			side.mainSide   = mainSide == null ? null : mainSide.copy();
+			side.wrenchSide = wrenchSide == null ? null : wrenchSide.copy();
 			side.showProperty = showProperty;
 			side.showWithoutWrench = showWithoutWrench;
 			side.side = this.side;
@@ -525,6 +544,8 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	
 	public abstract static class Face implements Copyable<Face> {
 		public abstract void apply(Matrix4 matrix);
+		public abstract void rotate(int rotation);
+		public abstract void rotateCenter(int rotation);
 		public abstract Tri[] tris();
 		public abstract Vector3[] points();
 	}
@@ -544,6 +565,20 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			v2.apply(matix);
 			v3.apply(matix);
 			v4.apply(matix);
+		}
+		
+		public void rotate(int rotation) {
+			GeneralUtil.rotateVector(rotation, v1);
+			GeneralUtil.rotateVector(rotation, v2);
+			GeneralUtil.rotateVector(rotation, v3);
+			GeneralUtil.rotateVector(rotation, v4);
+		}
+		
+		public void rotateCenter(int rotation) {
+			GeneralUtil.rotateVectorCenter(rotation, v1);
+			GeneralUtil.rotateVectorCenter(rotation, v2);
+			GeneralUtil.rotateVectorCenter(rotation, v3);
+			GeneralUtil.rotateVectorCenter(rotation, v4);
 		}
 		
 		public Quad copy() {
@@ -582,6 +617,18 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			v1.apply(matix);
 			v2.apply(matix);
 			v3.apply(matix);
+		}
+		
+		public void rotate(int rotation) {
+			GeneralUtil.rotateVector(rotation, v1);
+			GeneralUtil.rotateVector(rotation, v2);
+			GeneralUtil.rotateVector(rotation, v3);
+		}
+		
+		public void rotateCenter(int rotation) {
+			GeneralUtil.rotateVectorCenter(rotation, v1);
+			GeneralUtil.rotateVectorCenter(rotation, v2);
+			GeneralUtil.rotateVectorCenter(rotation, v3);
 		}
 		
 		public Tri copy() {

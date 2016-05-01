@@ -9,13 +9,15 @@ import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
-import catwalks.CatwalksMod;
+import catwalks.Conf;
 import catwalks.Const;
 import catwalks.block.BlockCatwalkBase.Face;
+import catwalks.movement.MovementHandler;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
 import catwalks.render.cached.CachedSmartModel;
 import catwalks.render.cached.models.CatwalkModel;
+import catwalks.render.cached.models.LadderModel;
 import catwalks.render.cached.models.StairBottomModel;
 import catwalks.render.cached.models.StairTopModel;
 import catwalks.shade.ccl.raytracer.RayTracer;
@@ -34,6 +36,9 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -49,6 +54,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -64,49 +70,14 @@ public class ClientProxy extends CommonProxy {
 	public void preInit() {
 		BlockRegister.initRender();
 		ItemRegister.initRender();
+		MinecraftForge.EVENT_BUS.register(new Conf());
 		OBJLoader.instance.addDomain(Const.MODID);
 	}
 	
-	Map<ModelResourceLocation, IBakedModel> models = new HashMap<>();
-	
-	private void model(String loc, IBakedModel model) {
-		models.put(new ModelResourceLocation(Const.MODID + ":" + loc), model);
+	public void reloadConfigs() {
+		if(Minecraft.getMinecraft().renderGlobal != null)
+			Minecraft.getMinecraft().renderGlobal.loadRenderers();
 	}
-	
-	@SubscribeEvent
-    public void onModelBakeEvent(ModelBakeEvent event) {
-		models.clear();
-		
-		model("catwalk", new CachedSmartModel(new CatwalkModel()));
-		model("catwalkStair", new CachedSmartModel(new StairBottomModel()));
-		model("catwalkStairTop", new CachedSmartModel(new StairTopModel()));
-		
-        for (Entry<ModelResourceLocation, IBakedModel> model : models.entrySet()) {
-			
-        	Object object =  event.modelRegistry.getObject(model.getKey());
-            if (object != null) {
-                event.modelRegistry.putObject(model.getKey(), model.getValue());
-            }
-        	
-		}
-    }
-	
-	@SubscribeEvent
-    public void textureStitch(TextureStitchEvent.Pre event) {
-		
-		TextureMap map = event.map;
-		
-		for(ResourceLocation tex : BlockRegister.textures) {
-			
-			map.getTextureExtry(tex.toString());
-			TextureAtlasSprite texture = map.getTextureExtry(tex.toString());
-			
-			if(texture == null) {
-				map.registerSprite(tex);
-			}
-		}
-
-    }
 	
 	@SubscribeEvent
 	public void highlight(DrawBlockHighlightEvent event) {
@@ -184,15 +155,67 @@ public class ClientProxy extends CommonProxy {
 	
 	@SubscribeEvent
 	public void debugText(RenderGameOverlayEvent.Text event) {
-		if(!CatwalksMod.developmentEnvironment)
+		if(!Const.developmentEnvironment)
 			return;
 		
 		if(!Minecraft.getMinecraft().gameSettings.showDebugInfo)
 			return;
 		
 		Minecraft mc = Minecraft.getMinecraft();
+		EntityPlayer player = mc.thePlayer;
+		if(player.isSneaking()) {
+			event.left.add(9, String.format("Motion: actual %.5f / %.5f / %.5f",
+					player.posX - player.lastTickPosX,
+					player.posY - player.lastTickPosY,
+					player.posZ - player.lastTickPosZ));
+		} else {
+			event.left.add(9, String.format("Motion: fields %.5f / %.5f / %.5f",
+					player.motionX, player.motionY, player.motionZ));
+		}
 		
-		if(Minecraft.getMinecraft().thePlayer.isSneaking()) {
+		event.left.add(String.format("Move: forward %.5f, strafe %.5f", player.moveForward, player.moveStrafing));
+		/*
+		for(IAttributeInstance instance : player.getAttributeMap().getAllAttributes()) {
+			if(instance instanceof ModifiableAttributeInstance) {
+				ModifiableAttributeInstance modInstance = (ModifiableAttributeInstance)instance;
+				
+				if(modInstance.func_111122_c().size() > 0)
+					event.left.add(String.format("%.3f", modInstance.getBaseValue()));
+				
+				double x = modInstance.getBaseValue();
+				if(modInstance.getModifiersByOperation(0).size() > 0) {
+					event.left.add(String.format("    %.3f | op0 => x+a+b", x));
+					for (AttributeModifier mod : modInstance.getModifiersByOperation(0)) {
+						event.left.add(String.format("  + %.3f = %.3f | %s", mod.getAmount(), mod.getName()));
+						x += mod.getAmount();
+					}
+				}
+				
+				double v = 1;
+				if(modInstance.getModifiersByOperation(1).size() > 0) {
+					event.left.add(String.format( "    %.3f | op1 => x*(1+a+b)", v));
+					for (AttributeModifier mod : modInstance.getModifiersByOperation(1)) {
+						event.left.add(String.format("  + %.3f | %s", mod.getAmount(), mod.getName()));
+						v += mod.getAmount();
+					}
+					event.left.add(String.format("x = %.3f * %.3f", x, v));
+					x = x * v;
+				}
+				
+				if(modInstance.getModifiersByOperation(2).size() > 0) {
+					event.left.add(String.format( "    %.3f | op1 => x*(1+a+b)", x));
+					for (AttributeModifier mod : modInstance.getModifiersByOperation(2)) {
+						event.left.add(String.format("  * %.3f + 1 | %s", mod.getAmount(), mod.getName()));
+						x = x * (1+mod.getAmount());
+					}
+				}
+				
+				if(modInstance.func_111122_c().size() > 0)
+					event.left.add(String.format("%.3f => %.3f  %s", modInstance.getBaseValue(), x, modInstance.getAttributeValue() == x ? "Y" : "N - " + modInstance.getAttributeValue()));
+			}
+		} /**/
+		
+		if(player.isSneaking()) {
 			if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && mc.objectMouseOver.getBlockPos() != null)
             {
                 BlockPos blockpos = mc.objectMouseOver.getBlockPos();
@@ -232,7 +255,7 @@ public class ClientProxy extends CommonProxy {
 	@SubscribeEvent
 	public void worldRender(RenderWorldLastEvent event)
 	{
-		if(!CatwalksMod.developmentEnvironment)
+		if(!Const.developmentEnvironment)
 			return;
 		
 		Minecraft mc = Minecraft.getMinecraft();
