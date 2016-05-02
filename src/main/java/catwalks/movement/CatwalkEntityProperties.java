@@ -3,7 +3,6 @@ package catwalks.movement;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraftforge.common.IExtendedEntityProperties;
 
 public class CatwalkEntityProperties implements IExtendedEntityProperties {
 

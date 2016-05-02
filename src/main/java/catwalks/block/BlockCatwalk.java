@@ -15,10 +15,10 @@ import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.AABBUtils;
 import net.minecraft.block.material.Material;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 

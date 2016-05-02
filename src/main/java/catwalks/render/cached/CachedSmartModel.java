@@ -96,13 +96,10 @@ public class CachedSmartModel implements ISmartBlockModel {
 
 		@Override
 		public TextureAtlasSprite getParticleTexture() {
-<<<<<<< HEAD
 //			Logs.log("GetTex Simple");
 			if(particleTexture == null) {
 				return ModelUtils.getSprite( null );
 			}
-=======
->>>>>>> Scaffolds
 			return particleTexture;
 		}
 

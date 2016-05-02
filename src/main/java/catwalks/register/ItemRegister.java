@@ -3,7 +3,7 @@ package catwalks.register;
 import catwalks.item.ItemBase;
 import catwalks.item.ItemCatwalkTool;
 import catwalks.item.ItemDecoration;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

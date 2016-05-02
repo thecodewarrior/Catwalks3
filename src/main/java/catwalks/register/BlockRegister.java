@@ -2,7 +2,6 @@ package catwalks.register;
 
 import java.util.function.Supplier;
 
-import catwalks.Const;
 import catwalks.block.BlockCatwalk;
 import catwalks.block.BlockCatwalkStair;
 import catwalks.block.BlockCatwalkStairTop;
@@ -16,10 +15,8 @@ import catwalks.render.cached.models.CatwalkModel;
 import catwalks.render.cached.models.LadderModel;
 import catwalks.render.cached.models.StairBottomModel;
 import catwalks.render.cached.models.StairTopModel;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;

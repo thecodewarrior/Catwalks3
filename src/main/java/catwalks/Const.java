@@ -10,7 +10,6 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
 
 public class Const {
 	
