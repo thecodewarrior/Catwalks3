@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
+
 import catwalks.Conf;
 import catwalks.Const;
 import catwalks.block.BlockCatwalkBase.Face;
@@ -14,12 +16,14 @@ import catwalks.register.ItemRegister;
 import catwalks.shade.ccl.raytracer.RayTracer;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
-import catwalks.util.ExtendedFlatHighlightMOP;
+import catwalks.util.CustomFaceRayTraceResult;
+import catwalks.util.GeneralUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,6 +31,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -38,7 +44,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientProxy extends CommonProxy {
 	
-	public EntityPlayer getPlayerLooking(Vec3 start, Vec3 end) {
+	public EntityPlayer getPlayerLooking(Vec3d start, Vec3d end) {
 		return Minecraft.getMinecraft().thePlayer;
 	}
 	
@@ -48,7 +54,7 @@ public class ClientProxy extends CommonProxy {
 		BlockRegister.initRender();
 		ItemRegister.initRender();
 		MinecraftForge.EVENT_BUS.register(new Conf());
-		OBJLoader.instance.addDomain(Const.MODID);
+		OBJLoader.INSTANCE.addDomain(Const.MODID);
 	}
 	
 	public void reloadConfigs() {
@@ -58,12 +64,12 @@ public class ClientProxy extends CommonProxy {
 	
 	@SubscribeEvent
 	public void highlight(DrawBlockHighlightEvent event) {
-		BlockPos pos = event.target.getBlockPos();
+		BlockPos pos = event.getTarget().getBlockPos();
 		
-		if(event.target instanceof ExtendedFlatHighlightMOP) {
+		if(event.getTarget() instanceof CustomFaceRayTraceResult) {
 			event.setCanceled(true);
 			
-			ExtendedFlatHighlightMOP mop = (ExtendedFlatHighlightMOP) event.target;
+			CustomFaceRayTraceResult mop = (CustomFaceRayTraceResult) event.getTarget();
 			
 			GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
@@ -73,27 +79,27 @@ public class ClientProxy extends CommonProxy {
             GlStateManager.depthMask(false);
             GlStateManager.pushMatrix();
             
-            double d0 = event.player.lastTickPosX + (event.player.posX - event.player.lastTickPosX) * (double)event.partialTicks;
-            double d1 = event.player.lastTickPosY + (event.player.posY - event.player.lastTickPosY) * (double)event.partialTicks;
-            double d2 = event.player.lastTickPosZ + (event.player.posZ - event.player.lastTickPosZ) * (double)event.partialTicks;
+            double d0 = event.getPlayer().lastTickPosX + (event.getPlayer().posX - event.getPlayer().lastTickPosX) * (double)event.getPartialTicks();
+            double d1 = event.getPlayer().lastTickPosY + (event.getPlayer().posY - event.getPlayer().lastTickPosY) * (double)event.getPartialTicks();
+            double d2 = event.getPlayer().lastTickPosZ + (event.getPlayer().posZ - event.getPlayer().lastTickPosZ) * (double)event.getPartialTicks();
             
             GlStateManager.translate(pos.getX()-d0, pos.getY()-d1, pos.getZ()-d2);
             
             Tessellator tessellator = Tessellator.getInstance();
-            WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+            VertexBuffer worldrenderer = tessellator.getBuffer();
             
             worldrenderer.begin(1, DefaultVertexFormats.POSITION);
             
             Face q = mop.quad.copy();
             Vector3[] points = q.points();
             
-            Matrix4 matrix = new Matrix4();
-            matrix.translate(Vector3.center.copy().multiply(-1));
-            
-            if(!Minecraft.getMinecraft().theWorld.isSideSolid(event.target.getBlockPos().offset(event.target.sideHit), event.target.sideHit.getOpposite()))
-            	matrix.scale(new Vector3(1.002, 1.002, 1.002));
-            matrix.translate(Vector3.center);
-            q.apply(matrix);
+            if(!Minecraft.getMinecraft().theWorld.isSideSolid(event.getTarget().getBlockPos().offset(event.getTarget().sideHit), event.getTarget().sideHit.getOpposite())) {
+            	Matrix4 matrix = new Matrix4();
+                matrix.translate(Vector3.center.copy().multiply(-1));
+                matrix.scale(new Vector3(1.002, 1.002, 1.002));
+                matrix.translate(Vector3.center);
+                q.apply(matrix);
+            }
             
             Vector3 prev = null;
             
@@ -141,59 +147,19 @@ public class ClientProxy extends CommonProxy {
 		Minecraft mc = Minecraft.getMinecraft();
 		EntityPlayer player = mc.thePlayer;
 		if(player.isSneaking()) {
-			event.left.add(9, String.format("Motion: actual %.5f / %.5f / %.5f",
+			event.getLeft().add(9, String.format("Motion: actual %.5f / %.5f / %.5f",
 					player.posX - player.lastTickPosX,
 					player.posY - player.lastTickPosY,
 					player.posZ - player.lastTickPosZ));
 		} else {
-			event.left.add(9, String.format("Motion: fields %.5f / %.5f / %.5f",
+			event.getLeft().add(9, String.format("Motion: fields %.5f / %.5f / %.5f",
 					player.motionX, player.motionY, player.motionZ));
 		}
 		
-		event.left.add(String.format("Move: forward %.5f, strafe %.5f", player.moveForward, player.moveStrafing));
-		/*
-		for(IAttributeInstance instance : player.getAttributeMap().getAllAttributes()) {
-			if(instance instanceof ModifiableAttributeInstance) {
-				ModifiableAttributeInstance modInstance = (ModifiableAttributeInstance)instance;
-				
-				if(modInstance.func_111122_c().size() > 0)
-					event.left.add(String.format("%.3f", modInstance.getBaseValue()));
-				
-				double x = modInstance.getBaseValue();
-				if(modInstance.getModifiersByOperation(0).size() > 0) {
-					event.left.add(String.format("    %.3f | op0 => x+a+b", x));
-					for (AttributeModifier mod : modInstance.getModifiersByOperation(0)) {
-						event.left.add(String.format("  + %.3f = %.3f | %s", mod.getAmount(), mod.getName()));
-						x += mod.getAmount();
-					}
-				}
-				
-				double v = 1;
-				if(modInstance.getModifiersByOperation(1).size() > 0) {
-					event.left.add(String.format( "    %.3f | op1 => x*(1+a+b)", v));
-					for (AttributeModifier mod : modInstance.getModifiersByOperation(1)) {
-						event.left.add(String.format("  + %.3f | %s", mod.getAmount(), mod.getName()));
-						v += mod.getAmount();
-					}
-					event.left.add(String.format("x = %.3f * %.3f", x, v));
-					x = x * v;
-				}
-				
-				if(modInstance.getModifiersByOperation(2).size() > 0) {
-					event.left.add(String.format( "    %.3f | op1 => x*(1+a+b)", x));
-					for (AttributeModifier mod : modInstance.getModifiersByOperation(2)) {
-						event.left.add(String.format("  * %.3f + 1 | %s", mod.getAmount(), mod.getName()));
-						x = x * (1+mod.getAmount());
-					}
-				}
-				
-				if(modInstance.func_111122_c().size() > 0)
-					event.left.add(String.format("%.3f => %.3f  %s", modInstance.getBaseValue(), x, modInstance.getAttributeValue() == x ? "Y" : "N - " + modInstance.getAttributeValue()));
-			}
-		} /**/
+		event.getLeft().add(String.format("Move: forward %.5f, strafe %.5f", player.moveForward, player.moveStrafing));
 		
 		if(player.isSneaking()) {
-			if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && mc.objectMouseOver.getBlockPos() != null)
+			if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK && mc.objectMouseOver.getBlockPos() != null)
             {
                 BlockPos blockpos = mc.objectMouseOver.getBlockPos();
                 IBlockState iblockstate = mc.theWorld.getBlockState(blockpos);
@@ -210,20 +176,20 @@ public class ClientProxy extends CommonProxy {
 
                         if (value == Boolean.TRUE)
                         {
-                            s = EnumChatFormatting.GREEN + "" + EnumChatFormatting.ITALIC + s;
+                            s = ChatFormatting.GREEN + "" + ChatFormatting.ITALIC + s;
                         }
                         else if (value == Boolean.FALSE)
                         {
-                            s = EnumChatFormatting.RED + "" +  EnumChatFormatting.ITALIC + s;
+                            s = ChatFormatting.RED + "" +  ChatFormatting.ITALIC + s;
                         }
 
-                        event.right.add(EnumChatFormatting.ITALIC + entry.getName() + ": " + s);
+                        event.getRight().add(ChatFormatting.ITALIC + entry.getName() + ": " + s);
                     }
                 }
                 
                 
                 
-                event.left.add("Looking at side: " + mc.objectMouseOver.sideHit.getName() + " - meta: " + iblockstate.getBlock().getMetaFromState(iblockstate));
+                event.getLeft().add("Looking at side: " + mc.objectMouseOver.sideHit.getName() + " - meta: " + iblockstate.getBlock().getMetaFromState(iblockstate));
             }
 		}
 	}
@@ -250,9 +216,9 @@ public class ClientProxy extends CommonProxy {
 		GlStateManager.pushMatrix();
 		
 		EntityPlayer rootPlayer = Minecraft.getMinecraft().thePlayer;
-		double x = rootPlayer.lastTickPosX + (rootPlayer.posX - rootPlayer.lastTickPosX) * event.partialTicks;
-        double y = rootPlayer.lastTickPosY + (rootPlayer.posY - rootPlayer.lastTickPosY) * event.partialTicks;
-        double z = rootPlayer.lastTickPosZ + (rootPlayer.posZ - rootPlayer.lastTickPosZ) * event.partialTicks;
+		double x = rootPlayer.lastTickPosX + (rootPlayer.posX - rootPlayer.lastTickPosX) * event.getPartialTicks();
+        double y = rootPlayer.lastTickPosY + (rootPlayer.posY - rootPlayer.lastTickPosY) * event.getPartialTicks();
+        double z = rootPlayer.lastTickPosZ + (rootPlayer.posZ - rootPlayer.lastTickPosZ) * event.getPartialTicks();
         GlStateManager.translate(-x, -y, -z);
 		
 		mc.mcProfiler.startSection("blockBBs");
@@ -263,18 +229,30 @@ public class ClientProxy extends CommonProxy {
 			double d = 0.0020000000949949026D;
 	        AxisAlignedBB searchBB = mc.thePlayer.getEntityBoundingBox().expand(2,2,2);
 	        
-			List<AxisAlignedBB> aabbs = mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, searchBB);
+			List<AxisAlignedBB> aabbs = mc.theWorld.getCollisionBoxes(mc.thePlayer, searchBB);
 			
 			for (AxisAlignedBB bb : aabbs) {
 				RenderGlobal.drawOutlinedBoundingBox(bb.expand(d, d, d), 127, 255, 127, 255);
 			}
+			
+			// desired move vec
+			
+			Vec3d p1 = new Vec3d(x, y+1, z);
+			Vec3d p2 = p1.add(GeneralUtil.getDesiredMoveVector(rootPlayer));
+			
+			Tessellator tessellator = Tessellator.getInstance();
+	        VertexBuffer vertexbuffer = tessellator.getBuffer();
+	        vertexbuffer.begin(3, DefaultVertexFormats.POSITION_COLOR);
+	        vertexbuffer.pos(p1.xCoord, p1.yCoord, p1.zCoord).color(127, 127, 255, 255).endVertex();
+	        vertexbuffer.pos(p2.xCoord, p2.yCoord, p2.zCoord).color(127, 127, 255, 255).endVertex();
+	        tessellator.draw();
 		}
 		
 		mc.mcProfiler.endStartSection("hitDist");
 		
 		if(Minecraft.getMinecraft().gameSettings.showDebugInfo && rootPlayer.isSneaking()) {
 		
-			if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+			if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK) {
 			
 				
                 if(hits.isEmpty()) {

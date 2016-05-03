@@ -62,7 +62,7 @@ public class ModelHandler {
 		}
 		
         for (Entry<ModelResourceLocation, IBakedModel> model : modelsToInsert.entrySet()) {
-        	event.modelRegistry.putObject(model.getKey(), model.getValue());
+        	event.getModelRegistry().putObject(model.getKey(), model.getValue());
 		}
     }
 	
@@ -73,7 +73,7 @@ public class ModelHandler {
 	@SubscribeEvent
     public void textureStitch(TextureStitchEvent.Pre event) {
 		
-		TextureMap map = event.map;
+		TextureMap map = event.getMap();
 		
 		for(ResourceLocation tex : textures) {
 			

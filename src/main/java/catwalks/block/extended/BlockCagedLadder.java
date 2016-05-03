@@ -26,6 +26,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -33,10 +34,8 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder {
 
 	public BlockCagedLadder() {
-		super(Material.iron, "cagedLadder", ItemBlockCatwalk.class);
+		super(Material.IRON, "cagedLadder", (c) -> new ItemBlockCatwalk(c));
 		setHardness(1.5f);
-		float p = 1/16f, P = 1-p;
-		setBlockBounds(p, 0, p, P, 1, P);
 	}
 	
 	@Override
@@ -63,10 +62,12 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 	@Override
 	public boolean shouldApplyClimbing(World world, BlockPos pos, EntityLivingBase entity) {
 		
+		if(entity.moveForward == 0 && entity.moveStrafing == 0)
+			return false;
+		
 		AxisAlignedBB playerAABB = entity.getEntityBoundingBox();
-		AxisAlignedBB blockAABB  = new AxisAlignedBB(
-				getBlockBoundsMinX(), getBlockBoundsMinY(), getBlockBoundsMinZ(),
-				getBlockBoundsMaxX(), getBlockBoundsMaxY(), getBlockBoundsMaxZ())
+		float p = 1/16f, P = 1-p;
+		AxisAlignedBB blockAABB  = new AxisAlignedBB(p, 0, p, P, 1, P)
 				.offset(pos.getX(), pos.getY(), pos.getZ());
 		
 		if(	!playerAABB.intersectsWith(blockAABB)) // if the player isn't even in the block entirely, don't bother with all the complex slow stuff
@@ -82,16 +83,16 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		
 		
 		boolean // check which sides are equal, meaning that the player is pusing up against that side, and we might should apply our values based on that
-			north = GeneralUtil.approxEq(GeneralUtil.getAABBSide(playerAABB, EnumFacing.NORTH), getBlockBoundsMinZ() + pos.getZ()),
-			south = GeneralUtil.approxEq(GeneralUtil.getAABBSide(playerAABB, EnumFacing.SOUTH), getBlockBoundsMaxZ() + pos.getZ()),
-			east  = GeneralUtil.approxEq(GeneralUtil.getAABBSide(playerAABB, EnumFacing.EAST ), getBlockBoundsMaxX() + pos.getX()),
-			west  = GeneralUtil.approxEq(GeneralUtil.getAABBSide(playerAABB, EnumFacing.WEST ), getBlockBoundsMinX() + pos.getX());
+			north = GeneralUtil.approxEq(playerAABB.minZ, blockAABB.minZ),
+			south = GeneralUtil.approxEq(playerAABB.maxZ, blockAABB.maxZ),
+			east  = GeneralUtil.approxEq(playerAABB.maxZ, blockAABB.maxX),
+			west  = GeneralUtil.approxEq(playerAABB.minZ, blockAABB.minX);
 		
 		if(!state.getValue(Const.IS_BOTTOM)) { // if there is a ladder below us
 			BlockPos downPos = pos.offset(EnumFacing.DOWN);
 			IExtendedBlockState below = GeneralUtil.getExtended(world, downPos);
 			
-			// for each side, if this is the bottom side before an opening, don't consider it the player can get out without climbing back up
+			// for each side, if this is the bottom side before an opening, don't consider it so the player can get out without climbing back up
 			if(north && state.getValue(northProp) && !below.getValue(northProp))
 				north = false;
 			if(south && state.getValue(southProp) && !below.getValue(southProp))
@@ -112,10 +113,32 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		if(west  && !state.getValue(westProp ))
 			west  = false;
 		
+		Vec3d desiredMoveVec = GeneralUtil.getDesiredMoveVector(entity);
+		double deadAngle = 10; // the player has to be pushing on the side by more than 10º in order for the ladder to effect the player
+		
+		if(north && isSidePushingInDeadZone(desiredMoveVec, EnumFacing.NORTH, deadAngle))
+			north = false;
+		if(south && isSidePushingInDeadZone(desiredMoveVec, EnumFacing.SOUTH, deadAngle))
+			south = false;
+		if(east && isSidePushingInDeadZone(desiredMoveVec, EnumFacing.EAST, deadAngle))
+			east = false;
+		if(west && isSidePushingInDeadZone(desiredMoveVec, EnumFacing.WEST, deadAngle))
+			west = false;
+		
 		if( !(north || south || east || west) ) // if we shouldn't consider any side, don't consider this block
 			return false;
 		
 		return true;
+	}
+	
+	public static boolean isSidePushingInDeadZone(Vec3d desiredMoveVec, EnumFacing side, double deadAngle) {
+		Vec3d inwardVec = new Vec3d(-side.getFrontOffsetX(), 0, -side.getFrontOffsetZ());
+		// minAngle is from 0 (directly away from face) to 90 (parallel to face) to 180 (directly into the face)
+		double minAngle = Math.toDegrees( Math.acos(inwardVec.dotProduct(desiredMoveVec) / (inwardVec.lengthVector() * desiredMoveVec.lengthVector())) );
+		
+		if(minAngle > 90 && minAngle < 90+deadAngle)
+			return true;
+		return false;
 	}
 	
 	@Override
@@ -142,6 +165,7 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		return GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, estate.getValue(Const.FACING)), side);
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void addAdditionalProperties(List<IUnlistedProperty> list) {
 		list.add(Const.NORTH_LADDER_EXT);
@@ -290,7 +314,6 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 			if(icc.hasSide(world, up, EnumFacing.DOWN)) // if the block above has a side above, don't put them.
 				return false; 
 			CubeEdge edge = new CubeEdge(offsetSide, EnumFacing.DOWN);
-			boolean downA = icc.hasSide(world, up, EnumFacing.DOWN);
 			if(  icc.edgeType(world, up, edge) == EnumEdgeType.FULL && // if there is a full edge
 				 icc.hasEdge(world, up, edge)// and it exists (duh)
 			  ) {
@@ -360,11 +383,11 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 	}
 	
 	private boolean isTransp(World world, BlockPos pos) {
-		return !world.getBlockState(pos).getBlock().isFullBlock();
+		return !world.getBlockState(pos).getBlock().isFullBlock(world.getBlockState(pos));
 	}
 	
 	private boolean isSideSolid(World world, BlockPos pos, EnumFacing side) {
-		return world.getBlockState(pos).getBlock().isSideSolid(world, pos, side);
+		return world.getBlockState(pos).getBlock().isSideSolid(world.getBlockState(pos), world, pos, side);
 	}
 	
 	{ /* ICatwalkConnect */ }
@@ -496,11 +519,11 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		EnumFacing facing = state.getValue(Const.FACING);
 		List<CollisionBox> list = collisionBoxes.get(facing);
 		if(list == null) {
-			Logs.warn("Tried to get collision boxes for invalid facing value! %s at (%d, %d, %d) in dim %s (%d)",
-					facing.toString().toUpperCase(), pos.getX(), pos.getY(), pos.getZ(), world.provider.getDimensionName(), world.provider.getDimensionId());
-			world.setBlockState(pos, Blocks.air.getDefaultState());
-			Logs.warn("Removed invalid CatwalkStair block at (%d, %d, %d) in dim %s (%d)",
-					pos.getX(), pos.getY(), pos.getZ(), world.provider.getDimensionName(), world.provider.getDimensionId());
+			Logs.warn("Tried to get collision boxes for invalid facing value! %s at (%d, %d, %d) in dim %d",
+					facing.toString().toUpperCase(), pos.getX(), pos.getY(), pos.getZ(), world.provider.getDimensionType().getName(), world.provider.getDimension());
+			world.setBlockState(pos, Blocks.AIR.getDefaultState());
+			Logs.warn("Removed invalid CatwalkStair block at (%d, %d, %d) in dim %d",
+					pos.getX(), pos.getY(), pos.getZ(), world.provider.getDimensionType().getName(), world.provider.getDimension());
 			list = collisionBoxes.get(EnumFacing.NORTH);
 		}
 		return list;

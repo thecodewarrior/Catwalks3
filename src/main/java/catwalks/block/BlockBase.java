@@ -1,11 +1,16 @@
 package catwalks.block;
 
+import java.lang.reflect.Constructor;
+import java.util.function.Function;
+
 import catwalks.CatwalksMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -18,29 +23,30 @@ public class BlockBase extends Block {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public BlockBase(Material materialIn, String name, Class<?> clazz) {
+	public BlockBase(Material materialIn, String name, Function<Block, ItemBlock> item) {
 		super(materialIn);
 		setUnlocalizedName(name);
 		setRegistryName(name);
 		setCreativeTab(CatwalksMod.tab);
 		initPreRegister();
-		if(clazz == null) {
-			GameRegistry.registerBlock(this);
+		GameRegistry.register(this);
+		if(item == null) {
+			GameRegistry.register(new ItemBlock(this).setRegistryName(getRegistryName()));
 		} else {
-			GameRegistry.registerBlock(this, (Class<? extends ItemBlock>)clazz);
+			GameRegistry.register(item.apply(this).setRegistryName(getRegistryName()));
 		}
 	}
 	
 	public void initPreRegister() {}
 	
 	@Override
-	public MovingObjectPosition collisionRayTrace(World world, BlockPos pos, Vec3d start, Vec3d end) {
-		MovingObjectPosition mop = collisionRayTrace(world, pos, CatwalksMod.proxy.getPlayerLooking(start, end), start, end);
-		return mop;
+	public RayTraceResult collisionRayTrace(IBlockState blockState, World worldIn, BlockPos pos, Vec3d start,
+			Vec3d end) {
+		return collisionRayTrace(blockState, worldIn, pos, CatwalksMod.proxy.getPlayerLooking(start, end), start, end);
     }
 	
-	public MovingObjectPosition collisionRayTrace(World world, BlockPos pos, EntityPlayer player, Vec3d start, Vec3d end) {
-		return super.collisionRayTrace(world, pos, start, end);
+	public RayTraceResult collisionRayTrace(IBlockState state, World world, BlockPos pos, EntityPlayer player, Vec3d start, Vec3d end) {
+		return super.collisionRayTrace(state, world, pos, start, end);
 	}
 	
 }

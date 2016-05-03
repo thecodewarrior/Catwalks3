@@ -1,6 +1,6 @@
 package catwalks.shade.ccl.util;
 
-import net.minecraft.util.StatCollector;
+import net.minecraft.client.resources.I18n;
 
 public class LangProxy
 {
@@ -11,10 +11,10 @@ public class LangProxy
     }
 
     public String translate(String key) {
-        return StatCollector.translateToLocal(namespace+key);
+        return I18n.format(namespace+key);
     }
 
     public String format(String key, Object... params) {
-        return StatCollector.translateToLocalFormatted(namespace+key, params);
+        return I18n.format(namespace+key, params);
     }
 }

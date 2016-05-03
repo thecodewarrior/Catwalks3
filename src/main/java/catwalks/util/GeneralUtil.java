@@ -10,6 +10,7 @@ import catwalks.block.extended.CubeEdge;
 import catwalks.shade.ccl.vec.Cuboid6;
 import catwalks.shade.ccl.vec.Vector3;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,6 +18,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
@@ -26,6 +29,15 @@ public class GeneralUtil {
 	public static IExtendedBlockState getExtended(World worldIn, BlockPos pos) {
 		IBlockState state = worldIn.getBlockState(pos);
 		return (IExtendedBlockState) state.getBlock().getExtendedState(state, worldIn, pos);
+	}
+
+	public static void markForUpdate(World world, BlockPos pos) {
+		IBlockState state = world.getBlockState(pos);
+		world.notifyBlockUpdate(pos, state, state, 8);
+	}
+	
+	public static String getWorldPosLogInfo(World world, BlockPos pos) {
+		return String.format("(%d, %d, %d) in dim %s (%d)", pos.getX(), pos.getY(), pos.getZ(), world.provider.getDimensionType().getName(), world.provider.getDimension());
 	}
 	
 	public static void spawnItemStack(World worldIn, double x, double y, double z, ItemStack stack)
@@ -114,6 +126,19 @@ public class GeneralUtil {
 			value += bits.get(i) ? (1 << i) : 0;
 		}
 		return value;
+	}
+	
+
+	public static Vec3d getDesiredMoveVector(EntityLivingBase entity) {
+		
+		float f = MathHelper.cos(-entity.rotationYawHead * 0.017453292F - (float)Math.PI);
+        float f1 = MathHelper.sin(-entity.rotationYawHead * 0.017453292F - (float)Math.PI);
+        Vec3d look = new Vec3d(-f1, 0, -f);
+		
+		Vec3d forwardVec = new Vec3d(look.xCoord, 0, look.zCoord).normalize().scale(entity.moveForward);
+		Vec3d straifVec = new Vec3d(look.zCoord, 0, -look.xCoord).normalize().scale(entity.moveStrafing);
+		
+		return forwardVec.add(straifVec).normalize();
 	}
 	
 	public static final float SMALL_NUM = 0.00000001f;
@@ -211,7 +236,7 @@ public class GeneralUtil {
 		return rotateFacing(-rotation, dir);
 	}
 	
-	public static Vec3 rotateVectorCenter(int rotation, Vec3 vec) {
+	public static Vec3d rotateVectorCenter(int rotation, Vec3d vec) {
 		return rotateVector(rotation, vec.add(Const.VEC_ANTICENTER)).add(Const.VEC_CENTER);
 	}
 	
@@ -221,23 +246,23 @@ public class GeneralUtil {
 		vec.add(Vector3.center);
 	}
 	
-	public static Vec3 rotateVector(int rotation, Vec3 vec) {
-		Vec3 out;
+	public static Vec3d rotateVector(int rotation, Vec3d vec) {
+		Vec3d out;
 		int i = rotation % EnumFacing.HORIZONTALS.length;
 		if(i < 0)
 			i = 4+i;
 		switch (i) {
 		case 0:
-			out = new Vec3(vec.xCoord, vec.yCoord, vec.zCoord);
+			out = new Vec3d(vec.xCoord, vec.yCoord, vec.zCoord);
 			break;
 		case 1:
-			out = new Vec3(-vec.zCoord, vec.yCoord, vec.xCoord);
+			out = new Vec3d(-vec.zCoord, vec.yCoord, vec.xCoord);
 			break;
 		case 2:
-			out = new Vec3(-vec.xCoord, vec.yCoord, -vec.zCoord);
+			out = new Vec3d(-vec.xCoord, vec.yCoord, -vec.zCoord);
 			break;
 		case 3:
-			out = new Vec3(vec.zCoord, vec.yCoord, -vec.xCoord);
+			out = new Vec3d(vec.zCoord, vec.yCoord, -vec.xCoord);
 			break;
 		default:
 			out = vec;
@@ -289,4 +314,5 @@ public class GeneralUtil {
 		rotateVectorCenter(rotation, cub.max);
 		cub.resolve();
 	}
+
 }

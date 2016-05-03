@@ -37,7 +37,7 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	public static final int I_EAST_TOP = I_BASE_LEN+1, I_WEST_TOP = I_BASE_LEN+2;
 	public static final double STEP_COUNT = 4;
 	public BlockCatwalkStair() {
-		super(Material.iron, "catwalkStair", ItemBlockCatwalk.class);
+		super(Material.IRON, "catwalkStair", (c) -> new ItemBlockCatwalk(c));
 		setHardness(1.5f);
 		setTickRandomly(true);
 	}
@@ -62,8 +62,8 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	
 	public boolean checkForValidity(World worldIn, BlockPos pos) {
 		if(worldIn.getBlockState(pos.offset(EnumFacing.UP)).getBlock() != BlockRegister.stairTop) {
-			worldIn.setBlockState(pos, Blocks.air.getDefaultState());
-			Logs.warn("Removed invalid CatwalkStair block at (%d, %d, %d) in dim %s (%d)", pos.getX(), pos.getY(), pos.getZ(), worldIn.provider.getDimensionName(), worldIn.provider.getDimensionId());
+			worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
+			Logs.warn("Removed invalid CatwalkStair block at %s", GeneralUtil.getWorldPosLogInfo(worldIn, pos));
 			return false;
 		}
 		return true;
@@ -104,7 +104,7 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	
 	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-		worldIn.setBlockState(pos.offset(EnumFacing.UP), Blocks.air.getDefaultState(), 6);
+		worldIn.setBlockState(pos.offset(EnumFacing.UP), Blocks.AIR.getDefaultState(), 6);
 		super.breakBlock(worldIn, pos, state);
 		GeneralUtil.updateSurroundingCatwalkBlocks(worldIn, pos);
 	}
@@ -260,11 +260,10 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 		EnumFacing facing = state.getValue(Const.FACING);
 		List<CollisionBox> list = collisionBoxes.get(facing);
 		if(list == null) {
-			Logs.warn("Tried to get collision boxes for invalid facing value! %s at (%d, %d, %d) in dim %s (%d)",
-					facing.toString().toUpperCase(), pos.getX(), pos.getY(), pos.getZ(), world.provider.getDimensionName(), world.provider.getDimensionId());
-			world.setBlockState(pos, Blocks.air.getDefaultState());
-			Logs.warn("Removed invalid CatwalkStair block at (%d, %d, %d) in dim %s (%d)",
-					pos.getX(), pos.getY(), pos.getZ(), world.provider.getDimensionName(), world.provider.getDimensionId());
+			Logs.warn("Tried to get collision boxes for invalid facing value! %s at %s",
+					facing.toString().toUpperCase(), GeneralUtil.getWorldPosLogInfo(world, pos));
+			world.setBlockState(pos, Blocks.AIR.getDefaultState());
+			Logs.warn("Removed invalid CatwalkStair block at %s", GeneralUtil.getWorldPosLogInfo(world, pos));
 			list = collisionBoxes.get(EnumFacing.NORTH);
 		}
 		return list;

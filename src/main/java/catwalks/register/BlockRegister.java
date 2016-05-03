@@ -90,7 +90,7 @@ public class BlockRegister {
 		Item item; String rl;
 		
 		item = Item.getItemFromBlock(scaffold);
-		rl   = Item.itemRegistry.getNameForObject(item).toString();
+		rl   = Item.REGISTRY.getNameForObject(item).toString();
 		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_inv", "material=steel"  ));
 		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_inv", "material=rusty"  ));
 		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_inv", "material=wood"   ));
@@ -98,7 +98,7 @@ public class BlockRegister {
 		
 		ModelHandler.setStaticMap(catwalk, "catwalk");
 		item = Item.getItemFromBlock(catwalk);
-		rl   = Item.itemRegistry.getNameForObject(item).toString();
+		rl   = Item.REGISTRY.getNameForObject(item).toString();
 		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
 		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_rusty" , "inventory" ));
 		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));
@@ -106,7 +106,7 @@ public class BlockRegister {
 		
 		ModelHandler.setStaticMap(catwalkStair, "catwalkStair");
 		item = Item.getItemFromBlock(catwalkStair);
-		rl   = Item.itemRegistry.getNameForObject(item).toString();
+		rl   = Item.REGISTRY.getNameForObject(item).toString();
 		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
 		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_rusty" , "inventory" ));
 		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));
@@ -116,7 +116,7 @@ public class BlockRegister {
 
 		ModelHandler.setStaticMap(cagedLadder, "cagedLadder");
 		item = Item.getItemFromBlock(cagedLadder);
-		rl   = Item.itemRegistry.getNameForObject(item).toString();
+		rl   = Item.REGISTRY.getNameForObject(item).toString();
 		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
 		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_rusty" , "inventory" ));
 		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));

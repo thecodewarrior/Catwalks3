@@ -94,12 +94,17 @@ public class ModelUtils {
 		public SpritelessQuad down() {
 			return setSide(EnumFacing.DOWN);
 		}
-
+		
+		public SpritelessQuad nocull() {
+			return setSide(null);
+		}
+		
 	    public BakedQuad bakedQuad(TextureAtlasSprite sprite) {
-	        Vec3d normal = p1.subtract(p2).crossProduct(p3.subtract(p2));
+	        Vec3d normal = p1.subtract(p2).crossProduct(p3.subtract(p2)).normalize().scale(-1);
 
 	        UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
 	        builder.setTexture(sprite);
+	        builder.setQuadOrientation(side);
 	        putVertex(builder, normal, p1.xCoord, p1.yCoord, p1.zCoord, u1, v1, sprite);
 	        putVertex(builder, normal, p2.xCoord, p2.yCoord, p2.zCoord, u2, v2, sprite);
 	        putVertex(builder, normal, p3.xCoord, p3.yCoord, p3.zCoord, u3, v3, sprite);
@@ -108,10 +113,11 @@ public class ModelUtils {
 	    }
 	    
 	    public BakedQuad backBakedQuad(TextureAtlasSprite sprite) {
-	        Vec3d normal = p1.subtract(p2).crossProduct(p3.subtract(p2)).scale(-1);
+	        Vec3d normal = p1.subtract(p2).crossProduct(p3.subtract(p2)).normalize();
 
 	        UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
 	        builder.setTexture(sprite);
+	        builder.setQuadOrientation(side);
 	        putVertex(builder, normal, p4.xCoord, p4.yCoord, p4.zCoord, u4, v4, sprite);
 	        putVertex(builder, normal, p3.xCoord, p3.yCoord, p3.zCoord, u3, v3, sprite);
 	        putVertex(builder, normal, p2.xCoord, p2.yCoord, p2.zCoord, u2, v2, sprite);
@@ -156,6 +162,12 @@ public class ModelUtils {
 		return map.getAtlasSprite(location == null ? null : location.toString());
 	}
 
+	public static int conditionCounter = 0;
+	public static void resetConditionCounter() {
+		conditionCounter = 0;
+	}
+	public static void sameCondition() { conditionCounter--; }
+	
 	/**
 	 * Creates a quad and adds it to the list, UV values span the entire sprite
 	 * @param quads The list of quads to add to
@@ -171,6 +183,7 @@ public class ModelUtils {
 			v3.xCoord, v3.yCoord, v3.zCoord, 1, 1,
 			v4.xCoord, v4.yCoord, v4.zCoord, 0, 1
 		);
+		
 		quads.add(quad);
 		return quad;
 	}
@@ -185,11 +198,11 @@ public class ModelUtils {
 			double x3, double y3, double z3, double u3, double v3,
 			double x4, double y4, double z4, double u4, double v4) {
 
-		SpritelessQuad quad = new SpritelessQuad(
-			new Vec3d(x1,y1,z1), (float)u1*16, (float)v1*16,
-			new Vec3d(x2,y2,z2), (float)u2*16, (float)v2*16,
-			new Vec3d(x3,y3,z3), (float)u3*16, (float)v3*16,
-			new Vec3d(x4,y4,z4), (float)u4*16, (float)v4*16
+		SpritelessQuad quad = createQuad(
+			x1, y1, z1, u1, v1,
+			x2, y2, z2, u2, v2,
+			x3, y3, z3, u3, v3,
+			x4, y4, z4, u4, v4
 		);
 		
 		quads.add(quad);
@@ -212,11 +225,11 @@ public class ModelUtils {
 			double x3, double y3, double z3, double u3, double v3,
 			double x4, double y4, double z4, double u4, double v4) {
 		
-		SpritelessQuad quad = new SpritelessQuad(
-			new Vec3d(x1,y1,z1), (float)(u1/texSize)*16, (float)(v1/texSize)*16,
-			new Vec3d(x2,y2,z2), (float)(u2/texSize)*16, (float)(v2/texSize)*16,
-			new Vec3d(x3,y3,z3), (float)(u3/texSize)*16, (float)(v3/texSize)*16,
-			new Vec3d(x4,y4,z4), (float)(u4/texSize)*16, (float)(v4/texSize)*16
+		SpritelessQuad quad = createQuad(
+			x1, y1, z1, u1/texSize, v1/texSize,
+			x2, y2, z2, u2/texSize, v2/texSize,
+			x3, y3, z3, u3/texSize, v3/texSize,
+			x4, y4, z4, u4/texSize, v4/texSize
 		);
 		
 		quads.add(quad);
@@ -233,12 +246,17 @@ public class ModelUtils {
 			double x3, double y3, double z3, double u3, double v3,
 			double x4, double y4, double z4, double u4, double v4) {
 
-		return new SpritelessQuad(
+		SpritelessQuad quad = new SpritelessQuad(
 			new Vec3d(x1,y1,z1), (float)u1*16, (float)v1*16,
 			new Vec3d(x2,y2,z2), (float)u2*16, (float)v2*16,
 			new Vec3d(x3,y3,z3), (float)u3*16, (float)v3*16,
 			new Vec3d(x4,y4,z4), (float)u4*16, (float)v4*16
 		);
+		
+		if(conditionCounter >= 0)
+			quad.condition(conditionCounter++);
+		
+		return quad;
 	}
 
 	/**
@@ -265,57 +283,52 @@ public class ModelUtils {
 	 * @param facing Side of block to generate side for
 	 * @param condition Condition ID for sides
 	 */
-	public static void putFace(List<SpritelessQuad> quads, EnumFacing facing, int condition) {
+	public static SpritelessQuad putFace(List<SpritelessQuad> quads, EnumFacing facing, int condition) {
 
 		switch(facing) {
 		case DOWN:
-			fullSpriteQuad(quads,
+			return fullSpriteQuad(quads,
 				new Vec3d(0, 0, 0),
 				new Vec3d(1, 0, 0),
 				new Vec3d(1, 0, 1),
 				new Vec3d(0, 0, 1)
 			).down().condition(condition);
-			break;
 		case UP:
-			fullSpriteQuad(quads,
+			return fullSpriteQuad(quads,
 				new Vec3d(0, 1, 0),
 				new Vec3d(1, 1, 0),
 				new Vec3d(1, 1, 1),
 				new Vec3d(0, 1, 1)
 			).up().condition(condition);
-			break;
 		case NORTH:
-			fullSpriteQuad(quads,
+			return fullSpriteQuad(quads,
 				new Vec3d(0, 1, 0),
 				new Vec3d(1, 1, 0),
 				new Vec3d(1, 0, 0),
 				new Vec3d(0, 0, 0)
 			).north().condition(condition);
-			break;
 		case SOUTH:
-			fullSpriteQuad(quads,
+			return fullSpriteQuad(quads,
 				new Vec3d(1, 1, 1),
 				new Vec3d(0, 1, 1),
 				new Vec3d(0, 0, 1),
 				new Vec3d(1, 0, 1)
 			).south().condition(condition);
-			break;
 		case EAST:
-			fullSpriteQuad(quads,
+			return fullSpriteQuad(quads,
 				new Vec3d(1, 1, 0),
 				new Vec3d(1, 1, 1),
 				new Vec3d(1, 0, 1),
 				new Vec3d(1, 0, 0)
 			).east().condition(condition);
-			break;
 		case WEST:
-			fullSpriteQuad(quads,
+			return fullSpriteQuad(quads,
 				new Vec3d(0, 1, 1),
 				new Vec3d(0, 1, 0),
 				new Vec3d(0, 0, 0),
 				new Vec3d(0, 0, 1)
 			).west().condition(condition);
-			break;
 		}
+		return null;
 	}
 }

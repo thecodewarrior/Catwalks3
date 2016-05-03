@@ -4,9 +4,14 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
+
 import catwalks.Const;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class Logs {
@@ -66,10 +71,10 @@ public class Logs {
     }
 
     public static void message(EntityPlayer player, String message, Object... args) {
-        player.addChatComponentMessage(new ChatComponentText(String.format(message, args)));
+        player.addChatComponentMessage(new TextComponentString(String.format(message, args)));
     }
 
     public static void warn(EntityPlayer player, String message, Object... args) {
-        player.addChatComponentMessage(new ChatComponentText(String.format(message, args)).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)));
+        player.addChatComponentMessage(new TextComponentString(String.format(message, args)).setStyle(new Style().setColor(TextFormatting.RED)));
     }
 }

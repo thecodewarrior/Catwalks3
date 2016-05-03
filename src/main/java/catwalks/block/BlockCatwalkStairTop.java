@@ -13,15 +13,20 @@ import catwalks.util.WrenchChecker;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
@@ -31,7 +36,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, IDecoratable {
 
 	public BlockCatwalkStairTop() {
-		super(Material.iron, "catwalkStairTop");
+		super(Material.IRON, "catwalkStairTop");
 		this.setTickRandomly(true);
 		setDefaultState(this.blockState.getBaseState().withProperty(Const.MATERIAL, EnumCatwalkMaterial.STEEL));
 	}
@@ -43,7 +48,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	{ /* state stuffz */ }
 	
 	@Override
-	protected BlockState createBlockState() {
+	protected BlockStateContainer createBlockState() {
 	    return new ExtendedBlockState(this,
 	    		new IProperty[]{ Const.MATERIAL, Const.LIGHTS },
 	    		new IUnlistedProperty[]{ Const.FACING, Const.TAPE, Const.SPEED, Const.NORTH, Const.WEST_TOP, Const.EAST_TOP}
@@ -62,6 +67,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	    return state.getValue(Const.MATERIAL).ordinal() | ( state.getValue(Const.LIGHTS) ? 8 : 0 );
 	}
 	
+	@Override
 	public IBlockState getExtendedState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
 		IBlockState below = worldIn.getBlockState(pos.offset(EnumFacing.DOWN));
 		boolean westTop = false, eastTop = false, north = false, tape = false, speed = false, lights = false;
@@ -108,8 +114,8 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	
 	public boolean checkForValidity(World worldIn, BlockPos pos) {
 		if(worldIn.getBlockState(pos.offset(EnumFacing.DOWN)).getBlock() != BlockRegister.catwalkStair) {
-			worldIn.setBlockState(pos, Blocks.air.getDefaultState());
-			Logs.warn("Removed invalid CatwalkStairTop block at (%d, %d, %d) in dim %s (%d)", pos.getX(), pos.getY(), pos.getZ(), worldIn.provider.getDimensionName(), worldIn.provider.getDimensionId());
+			worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
+			Logs.warn("Removed invalid CatwalkStairTop block at %s", GeneralUtil.getWorldPosLogInfo(worldIn, pos));
 			return false;
 		}
 		return true;
@@ -125,36 +131,28 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		checkForValidity(worldIn, pos);
 	}
 	
-	
-
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState ourState, EntityPlayer playerIn,
-			EnumFacing side, float hitX, float hitY, float hitZ) {
-		if( playerIn.inventory.getCurrentItem() != null) {
-			if(!WrenchChecker.isAWrench( playerIn.inventory.getCurrentItem().getItem() ))
-				return false;
-			if(playerIn.inventory.getCurrentItem().getItem() instanceof ItemBlock)
-				return false;
-		} else {
-			return false;
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+			EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+		
+		if( heldItem != null && WrenchChecker.isAWrench( heldItem.getItem() )) {
+			if(side != EnumFacing.UP ) {
+//				side = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(BlockCatwalkBase.FACING)), side);
+				boolean hasSide = hasSide(worldIn, pos, side);
+				setSide(worldIn, pos, side, !hasSide);
+				return true;
+			}
 		}
 		
-		if(side != EnumFacing.UP ) {
-//			side = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(BlockCatwalkBase.FACING)), side);
-			boolean hasSide = hasSide(worldIn, pos, side);
-			setSide(worldIn, pos, side, !hasSide);
-			return true;
-		}
-		
-		return true;
+		return false;
 	}
 	
 	{ /* forwarding */ }
 	
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player) {
-		IBlockState state = world.getBlockState(pos.offset(EnumFacing.DOWN));
-		return state.getBlock().getPickBlock(target, world, pos.offset(EnumFacing.DOWN), player);
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+		IBlockState statebelow = world.getBlockState(pos.offset(EnumFacing.DOWN));
+		return state.getBlock().getPickBlock(statebelow, target, world, pos.offset(EnumFacing.DOWN), player);
 	}
 	
 	@Override
@@ -170,27 +168,29 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	}
 	
 	@Override
-	public float getPlayerRelativeBlockHardness(EntityPlayer playerIn, World worldIn, BlockPos pos) {
-		return worldIn.getBlockState(pos.offset(EnumFacing.DOWN)).getBlock().getPlayerRelativeBlockHardness(playerIn, worldIn, pos.offset(EnumFacing.DOWN));
+	public float getPlayerRelativeBlockHardness(IBlockState state, EntityPlayer playerIn, World worldIn, BlockPos pos) {
+		IBlockState statebelow = worldIn.getBlockState(pos.offset(EnumFacing.DOWN));
+		return statebelow.getBlock().getPlayerRelativeBlockHardness(statebelow, playerIn, worldIn, pos.offset(EnumFacing.DOWN));
 	}
 	
 	@Override
-	public MovingObjectPosition collisionRayTrace(World world, BlockPos pos, EntityPlayer player, Vec3 start,
-			Vec3 end) {
-		IBlockState state = world.getBlockState(pos.offset(EnumFacing.DOWN));
+	public RayTraceResult collisionRayTrace(IBlockState blockState, World worldIn, BlockPos pos, Vec3d start,
+			Vec3d end) {
+		IBlockState statebelow = worldIn.getBlockState(pos.offset(EnumFacing.DOWN));
 		
-		if(state.getBlock() instanceof BlockBase) {
-			MovingObjectPosition mop = state.getBlock().collisionRayTrace(world, pos.offset(EnumFacing.DOWN), start, end);
+		if(statebelow.getBlock() instanceof BlockBase) {
+			RayTraceResult mop = statebelow.getBlock().collisionRayTrace(statebelow, worldIn, pos.offset(EnumFacing.DOWN), start, end);
 			return mop;
 		}
 		return null;
 	}
 
 	@Override
-	public void addCollisionBoxesToList(World worldIn, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
+	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox,
+			List<AxisAlignedBB> collidingBoxes, Entity entityIn) {
 		IBlockState below = worldIn.getBlockState(pos.offset(EnumFacing.DOWN));
 		
-		below.getBlock().addCollisionBoxesToList(worldIn, pos.offset(EnumFacing.DOWN), below, mask, list, collidingEntity);
+		below.getBlock().addCollisionBoxToList(below, worldIn, pos.offset(EnumFacing.DOWN), entityBox, collidingBoxes, entityIn);
 	}
 
 	public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune) {
@@ -210,7 +210,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 //        if (block.getMaterial() != Material.air){
 //            block.dropBlockAsItem(worldIn, pos.offset(EnumFacing.DOWN), iblockstate, 0);
 
-            worldIn.setBlockState(pos.offset(EnumFacing.DOWN), Blocks.air.getDefaultState());
+            worldIn.setBlockState(pos.offset(EnumFacing.DOWN), Blocks.AIR.getDefaultState());
 //        }
         
 		GeneralUtil.updateSurroundingCatwalkBlocks(worldIn, pos);
@@ -318,7 +318,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	}
 	
 	@Override
-	public boolean isFullCube() {
+	public boolean isFullCube(IBlockState state) {
 		return false;
 	}
 	
@@ -327,13 +327,14 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		return false;
 	}
 	
-    public boolean isOpaqueCube() {
+	@Override
+    public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
     
     @Override
-	public EnumWorldBlockLayer getBlockLayer() {
-		return EnumWorldBlockLayer.CUTOUT_MIPPED;
+	public BlockRenderLayer getBlockLayer() {
+		return BlockRenderLayer.CUTOUT_MIPPED;
 	}
 	
 }

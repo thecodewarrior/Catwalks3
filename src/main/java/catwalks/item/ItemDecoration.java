@@ -4,12 +4,15 @@ import java.util.List;
 
 import catwalks.block.IDecoratable;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -26,19 +29,19 @@ public class ItemDecoration extends ItemBase {
 	
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-		tooltip.add( StatCollector.translateToLocalFormatted("item.decoration.uses", stack.getMaxDamage() - stack.getItemDamage()) );
-		tooltip.add( StatCollector.translateToLocal("item.decoration.combine") );
-		tooltip.add( StatCollector.translateToLocal("item.decoration.split") );
+		tooltip.add( I18n.format("item.decoration.uses", stack.getMaxDamage() - stack.getItemDamage()) );
+		tooltip.add( I18n.format("item.decoration.combine") );
+		tooltip.add( I18n.format("item.decoration.split") );
 		super.addInformation(stack, playerIn, tooltip, advanced);
 	}
 	
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side,
-			float hitX, float hitY, float hitZ) {
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
+			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		
 		if( (  stack.getItemDamage() == this.getMaxDamage(stack) && !playerIn.isSneaking()  ) || (  stack.getItemDamage() == 0 && playerIn.isSneaking()  )
 				&& !playerIn.capabilities.isCreativeMode) {
-			return false;
+			return EnumActionResult.FAIL;
 		}
 		
 		IBlockState state = worldIn.getBlockState(pos);
@@ -46,10 +49,11 @@ public class ItemDecoration extends ItemBase {
 		if(state.getBlock() instanceof IDecoratable) {
 			if( ((IDecoratable) state.getBlock()).putDecoration(worldIn, pos, name, !playerIn.isSneaking()) ) {
 				stack.damageItem(playerIn.isSneaking() ? -1 : 1, playerIn);
+				return EnumActionResult.SUCCESS;
 			}
 		}
 		
-		return false;
+		return EnumActionResult.PASS;
 	}
 	
 	public void damageItem(ItemStack stack, int amount, EntityLivingBase entityIn) {

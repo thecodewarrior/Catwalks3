@@ -28,18 +28,13 @@ public class EntityItemDecoration extends EntityItem {
     {
     	super.onUpdate();
     	
-        ItemStack stack = this.getDataWatcher().getWatchableObjectItemStack(10);
-        if (stack != null && stack.getItem() != null && stack.getItem().onEntityItemUpdate(this)) return;
-        if(this.getEntityItem() != null)
-        {
-            boolean flag = (int)this.prevPosX != (int)this.posX || (int)this.prevPosY != (int)this.posY || (int)this.prevPosZ != (int)this.posZ;
+        boolean flag = (int)this.prevPosX != (int)this.posX || (int)this.prevPosY != (int)this.posY || (int)this.prevPosZ != (int)this.posZ;
 
-            if (flag || this.ticksExisted % 25 == 0)
+        if (flag || this.ticksExisted % 25 == 0)
+        {
+            if (!this.worldObj.isRemote)
             {
-                if (!this.worldObj.isRemote)
-                {
-                    this.combineDecorationsNearby();
-                }
+                this.combineDecorationsNearby();
             }
         }
     }

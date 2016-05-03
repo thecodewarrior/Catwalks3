@@ -25,7 +25,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 public class BlockCatwalk extends BlockCatwalkBase {
 	
 	public BlockCatwalk() {
-		super(Material.iron, "catwalk", ItemBlockCatwalk.class);
+		super(Material.IRON, "catwalk", (c) -> new ItemBlockCatwalk(c));
 		setHardness(1.5f);
 	}
 	

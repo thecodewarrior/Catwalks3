@@ -6,12 +6,32 @@ import java.util.Map;
 import catwalks.block.EnumCatwalkMaterial;
 import catwalks.block.property.UPropertyBool;
 import catwalks.block.property.UPropertyEnum;
+import catwalks.movement.capability.ICWEntityData;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 
 public class Const {
+	
+	{ /* DRYing constants */ }
+	
+	public static boolean developmentEnvironment = (Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment");
+	public static final String MODID = CatwalksMod.MODID;
+	
+	public static final Vec3d VEC_CENTER = new Vec3d(0.5, 0.5, 0.5);
+	public static final Vec3d VEC_ANTICENTER = new Vec3d(-0.5, -0.5, -0.5);
+	
+	public static final ResourceLocation ENTITY_DATA_CAPABILITY_LOC = new ResourceLocation(MODID, "entityData");
+	
+	@CapabilityInject(ICWEntityData.class)
+	public static Capability<ICWEntityData> CW_ENTITY_DATA_CAPABILITY = null;
+	
+	{ /* properties */ }
 	
 	public static final UPropertyBool CONST_TRUE = new UPropertyBool("dummyConstTrue");
 	public static final UPropertyBool CONST_FALSE = new UPropertyBool("dummyConstFalse");
@@ -52,10 +72,6 @@ public class Const {
 	
 	public static final UPropertyEnum<EnumFacing> FACING = UPropertyEnum.create("facing", EnumFacing.class);
 	public static final PropertyEnum<EnumCatwalkMaterial> MATERIAL = PropertyEnum.create("material", EnumCatwalkMaterial.class);
-	public static final String MODID = CatwalksMod.MODID;
-	
-	public static final Vec3 VEC_CENTER = new Vec3(0.5, 0.5, 0.5);
-	public static final Vec3 VEC_ANTICENTER = new Vec3(-0.5, -0.5, -0.5);
 	
 	static {
 		sideProperties.put(EnumFacing.UP, TOP);
@@ -66,6 +82,4 @@ public class Const {
 		sideProperties.put(EnumFacing.EAST, EAST);
 		sideProperties.put(EnumFacing.WEST, WEST);
 	}
-
-	public static boolean developmentEnvironment = (Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment");
 }

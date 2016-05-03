@@ -29,16 +29,16 @@ public class RecipeRegister {
 			speed = ItemRegister.speed,
 			grate = ItemRegister.grate,
 			blowtorch = ItemRegister.tool,
-			paper = Items.paper,
-			sugar = Items.sugar,
-			flintNsteel = Items.flint_and_steel;
+			paper = Items.PAPER,
+			sugar = Items.SUGAR,
+			flintNsteel = Items.FLINT_AND_STEEL;
 		Block
 			catwalk = BlockRegister.catwalk,
 			stair = BlockRegister.catwalkStair,
 			ladder = BlockRegister.cagedLadder,
 			scaffold = BlockRegister.scaffold,
-			pPlateWood = Blocks.wooden_pressure_plate,
-			vladder = Blocks.ladder;
+			pPlateWood = Blocks.WOODEN_PRESSURE_PLATE,
+			vladder = Blocks.LADDER;
 		String
 			iron = "ingotIron",
 			slimeball = "slimeball",

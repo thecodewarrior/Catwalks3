@@ -7,6 +7,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -25,15 +26,15 @@ public class TileExtended extends TileEntity {
 	}
 	
 	public void setBoolean(int id, boolean bool) {
-		int oldLight = worldObj.getBlockState(pos).getBlock().getLightValue(worldObj, pos);
+		int oldLight = worldObj.getBlockState(pos).getBlock().getLightValue(worldObj.getBlockState(pos), worldObj, pos);
 		
 		if(id < 0) return;
 		
 		meta.set(id, bool);
 		
-		this.worldObj.markBlockForUpdate(pos);
+		GeneralUtil.markForUpdate(worldObj, pos);
 		
-		if(worldObj.getBlockState(pos).getBlock().getLightValue(worldObj, pos) != oldLight)
+		if(worldObj.getBlockState(pos).getBlock().getLightValue(worldObj.getBlockState(pos), worldObj, pos) != oldLight)
 			this.worldObj.checkLight(pos);
 		this.markDirty();
 	}
@@ -70,16 +71,16 @@ public class TileExtended extends TileEntity {
 	
 	@Override
 	@SuppressWarnings("rawtypes")
-	public Packet getDescriptionPacket() {
+	public Packet<?> getDescriptionPacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		writeToNBT(tag);
-		return new S35PacketUpdateTileEntity(pos, 0, tag);
+		return new SPacketUpdateTileEntity(pos, 0, tag);
 	}
 	
 	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 		readFromNBT(pkt.getNbtCompound());
-		this.worldObj.markBlockForUpdate(pos);
+		GeneralUtil.markForUpdate(worldObj, pos);
 	}
 	
 	@Override

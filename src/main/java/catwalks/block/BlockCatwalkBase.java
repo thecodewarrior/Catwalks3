@@ -3,6 +3,7 @@ package catwalks.block;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 
@@ -15,17 +16,18 @@ import catwalks.block.property.UPropertyBool;
 import catwalks.proxy.ClientProxy;
 import catwalks.register.ItemRegister;
 import catwalks.shade.ccl.util.Copyable;
-import catwalks.shade.ccl.vec.BlockCoord;
 import catwalks.shade.ccl.vec.Cuboid6;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
-import catwalks.util.ExtendedFlatHighlightMOP;
+import catwalks.util.CustomFaceRayTraceResult;
 import catwalks.util.GeneralUtil;
 import catwalks.util.Logs;
 import catwalks.util.Trimap;
 import catwalks.util.WrenchChecker;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -34,10 +36,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
@@ -53,8 +60,8 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		init();
 	}
 	
-	public BlockCatwalkBase(Material materialIn, String name, Class<?> clazz) {
-		super(materialIn, name, clazz);
+	public BlockCatwalkBase(Material materialIn, String name, Function<Block, ItemBlock> item) {
+		super(materialIn, name, item);
 		init();
 	}
 	
@@ -81,10 +88,10 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-			EnumFacing side, float hitX, float hitY, float hitZ) {
+			EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		
-		if( playerIn.inventory.getCurrentItem() != null) {
-			if(!WrenchChecker.isAWrench( playerIn.inventory.getCurrentItem().getItem() ))
+		if( heldItem != null) {
+			if(!WrenchChecker.isAWrench( heldItem.getItem() ))
 				return false;
 			if(playerIn.inventory.getCurrentItem().getItem() instanceof ItemBlock)
 				return false;
@@ -99,11 +106,11 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			int id = sides.getC(side);
 			tile.setBoolean(id, !tile.getBoolean(id));
 			tile.markDirty();
-			worldIn.markBlockForUpdate(pos);
+			GeneralUtil.markForUpdate(worldIn, pos);
 			return true;
 		}
 		
-		return super.onBlockActivated(worldIn, pos, state, playerIn, side, hitX, hitY, hitZ);
+		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem, side, hitX, hitY, hitZ);
 	}
 	
 	public EnumFacing transformAffectedSide(World world, BlockPos pos, IBlockState state, EnumFacing side) {	
@@ -208,7 +215,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	
 	@Override
 	@SuppressWarnings("rawtypes")
-	protected BlockState createBlockState() {
+	protected BlockStateContainer createBlockState() {
 		IProperty[] listedProperties = new IProperty[] { Const.MATERIAL, Const.LIGHTS };
 	    List<IUnlistedProperty> unlistedProperties = new ArrayList<IUnlistedProperty>();
 	    unlistedProperties.addAll(Lists.asList(Const.BOTTOM, new IUnlistedProperty[] { Const.NORTH, Const.SOUTH, Const.WEST, Const.EAST, Const.FACING, Const.TAPE, Const.SPEED }));
@@ -216,33 +223,27 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	    
 	    return new ExtendedBlockState(this, listedProperties, unlistedProperties.toArray(new IUnlistedProperty[0]));
 	}
-
-	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player) {
-		// TODO Auto-generated method stub
-		return super.getPickBlock(target, world, pos, player);
-	}
 	
 	{ /* rendering */ }
 	
 	@Override
-	public int getLightValue(IBlockAccess world, BlockPos pos) {
-		return world.getBlockState(pos).getValue(Const.LIGHTS) ? 15 : 0;
+	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+		return state.getValue(Const.LIGHTS) ? 15 : 0;
 	}
 
 	@Override
-	public boolean isOpaqueCube() {
+	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
 	
 	@Override
-	public boolean isFullCube() {
+	public boolean isFullCube(IBlockState state) {
 		return false;
 	}
 	
 	@Override
-	public EnumWorldBlockLayer getBlockLayer() {
-		return EnumWorldBlockLayer.CUTOUT;
+	public BlockRenderLayer getBlockLayer() {
+		return BlockRenderLayer.CUTOUT;
 	}
 	
 	{ /* placing/breaking */ }
@@ -331,17 +332,11 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	public abstract List<CollisionBox> getCollisionBoxes(IExtendedBlockState state, World world, BlockPos pos);
 	
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state) {
-		return new AxisAlignedBB(pos, pos);
-	}
-	
-	@Override
-	public void addCollisionBoxesToList(World world, BlockPos pos, IBlockState rawState, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
+	public void addCollisionBoxToList(IBlockState blockState, World world, BlockPos pos, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
 		
 		AxisAlignedBB originMask = mask.offset(-pos.getX(), -pos.getY(), -pos.getZ());
 		
 		boolean eNull = collidingEntity == null;
-		
 		
 		IBlockState plainState = world.getBlockState(pos);
         IExtendedBlockState state = (IExtendedBlockState) getExtendedState(plainState, world, pos);
@@ -371,11 +366,9 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	public abstract List<LookSide> lookSides(IExtendedBlockState state, World world, BlockPos pos);
 	
 	@Override
-	public MovingObjectPosition collisionRayTrace(World world, BlockPos pos, EntityPlayer player, Vec3 startRaw, Vec3 endRaw) {
+	public RayTraceResult collisionRayTrace(IBlockState baseState, World world, BlockPos pos, EntityPlayer player, Vec3d startRaw, Vec3d endRaw) {
 		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
 		boolean hasWrench = player.inventory.getCurrentItem() != null && WrenchChecker.isAWrench(player.inventory.getCurrentItem().getItem());
-		
-		BlockCoord hitPos = new BlockCoord(pos);
 		
 		Vector3
 			blockPosVec = new Vector3(pos),
@@ -449,15 +442,13 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			quad = hitSide.wrenchSide;
 		}
 		
-		hitPos.x += hitSide.offset.getX();
-		hitPos.y += hitSide.offset.getY();
-		hitPos.z += hitSide.offset.getZ();
+		BlockPos actualPos = pos.add(hitSide.offset.getX(), hitSide.offset.getY(), hitSide.offset.getZ());
 		
-		ExtendedFlatHighlightMOP mop = new ExtendedFlatHighlightMOP(quad, hitVector,
-						( hitSide.side == null ? EnumFacing.UP : hitSide.side ).ordinal(),
-						hitPos, null,
-						Math.sqrt(smallestDistanceSq)
-				) ;
+		CustomFaceRayTraceResult mop = new CustomFaceRayTraceResult(
+					hitVector.vec3(),
+					hitSide.side == null ? EnumFacing.UP : hitSide.side,
+					actualPos
+				).face(quad) ;
 
 		
 		

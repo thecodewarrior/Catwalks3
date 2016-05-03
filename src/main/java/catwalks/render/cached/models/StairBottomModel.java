@@ -65,12 +65,12 @@ public class StairBottomModel extends SimpleModel {
             
             double y = i*stepLength + stepLength/2, minZ = 1-i*stepLength, maxZ = 1-(i+1)*stepLength;
             float minV = 16-(i*2), maxV = minV-2;
-            ModelUtils.doubleQuad(quads, null, -1,
+            ModelUtils.quad(quads,
             		0, y, minZ,  0, minV/16f,
             		0, y, maxZ,  0, maxV/16f,
             		1, y, maxZ, .5, maxV/16f,
             		1, y, minZ, .5, minV/16f
-            	);
+            	).nocull().condition(-1).showBackface();
 		}
 		
 		for (SpritelessQuad quad : quads) {
@@ -89,26 +89,28 @@ public class StairBottomModel extends SimpleModel {
         
 		int r = GeneralUtil.getRotation(EnumFacing.NORTH, facing);
         
-		ModelUtils.doubleQuad(quads, GeneralUtil.rotateFacing(r, EnumFacing.EAST), 0,
+		ModelUtils.resetConditionCounter();
+		
+		ModelUtils.quad(quads,
     		1, 0, 1, 12.5f/16f, .5,
     		1, 1, 1, 12.5f/16f, 0,
     		1, 1, 0, 0, .5,
     		1, 1, 0, 0, .5
-    	);
+    	).setSide(GeneralUtil.rotateFacing(r, EnumFacing.EAST)).showBackface();
 		
-		ModelUtils.doubleQuad(quads, GeneralUtil.rotateFacing(r, EnumFacing.WEST), 1,
+		ModelUtils.quad(quads,
     		0, 0, 1, 12.5f/16f, .5,
     		0, 1, 1, 12.5f/16f, 0,
     		0, 1, 0, 0, .5,
     		0, 1, 0, 0, .5
-    	);
+    	).setSide(GeneralUtil.rotateFacing(r, EnumFacing.WEST)).showBackface();
 		
-		ModelUtils.doubleQuad(quads, GeneralUtil.rotateFacing(r, EnumFacing.SOUTH), 2,
+		ModelUtils.quad(quads,
     		0, 0, 1, .5,  1,
     		0, 1, 1, .5, .5,
     		1, 1, 1,  1, .5,
     		1, 0, 1,  1,  1
-    	);
+    	).setSide(GeneralUtil.rotateFacing(r, EnumFacing.SOUTH)).showBackface();
 		
 		for (SpritelessQuad quad : quads) {
 			quad.p1 = GeneralUtil.rotateVectorCenter(rot, quad.p1);

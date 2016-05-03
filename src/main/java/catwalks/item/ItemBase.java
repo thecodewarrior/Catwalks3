@@ -3,6 +3,7 @@ package catwalks.item;
 import java.util.List;
 
 import catwalks.CatwalksMod;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,10 +26,10 @@ public class ItemBase extends Item{
 		
 		while(true) {
 			
-			if(!StatCollector.canTranslate(unloc+i))
+			if(!I18n.hasKey(unloc+i))
 				break;
 			
-			tooltip.add(StatCollector.translateToLocal(unloc+i));
+			tooltip.add(I18n.format(unloc+i));
 			i += 1;
 		}
 		

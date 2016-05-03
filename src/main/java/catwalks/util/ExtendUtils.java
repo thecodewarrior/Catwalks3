@@ -42,7 +42,7 @@ public class ExtendUtils {
 						world.canBlockBePlaced(testingState.getBlock(), testingPos, false, placeSide, (Entity)null, stack)
 					) { // if the block can be placed here, return the appropriate information
 				return new Tuple<BlockPos, EnumFacing>(
-						testingPos.offset(placeSide.getOpposite()).getImmutable(),	// offset it back one because that's the block that it'll be placed against
+						testingPos.offset(placeSide.getOpposite()).toImmutable(),	// offset it back one because that's the block that it'll be placed against
 						placeSide
 					);
 			} else { // if the block is something else, break, as we shouldn't continue searching
@@ -155,7 +155,7 @@ public class ExtendUtils {
 		}
 
 		@Override
-		public BlockPos getImmutable() {
+		public BlockPos toImmutable() {
 			return new BlockPos(this);
 		}
 

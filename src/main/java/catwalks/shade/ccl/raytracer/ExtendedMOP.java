@@ -4,9 +4,9 @@ import catwalks.shade.ccl.vec.BlockCoord;
 import catwalks.shade.ccl.vec.Vector3;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.RayTraceResult;
 
-public class ExtendedMOP extends MovingObjectPosition implements Comparable<ExtendedMOP>
+public class ExtendedMOP extends RayTraceResult implements Comparable<ExtendedMOP>
 {
     /**
      * The square distance from the start of the raytrace.

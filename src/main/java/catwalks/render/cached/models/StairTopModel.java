@@ -60,26 +60,28 @@ public class StairTopModel extends SimpleModel {
         TextureAtlasSprite lightsTex = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/stair/"+mat+"/lights"));
         TextureAtlasSprite speedTex  = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/stair/"+mat+"/speed"));
 		
-		ModelUtils.doubleQuad(quads, GeneralUtil.rotateFacing(rot, EnumFacing.WEST), 0,
+        ModelUtils.resetConditionCounter();
+        
+		ModelUtils.quad(quads,
     		0, 0, 1, 12.5f/16f, 0,
     		0, 1, 0, 0,         0,
     		0, 0, 0, 0,        .5,
     		0, 0, 0, 0,        .5
-    	);
+    	).setSide(GeneralUtil.rotateFacing(rot, EnumFacing.WEST)).showBackface();
 	
-		ModelUtils.doubleQuad(quads, GeneralUtil.rotateFacing(rot, EnumFacing.EAST), 1,
+		ModelUtils.quad(quads,
     		1, 0, 1, 12.5f/16f, 0,
     		1, 1, 0, 0,         0,
     		1, 0, 0, 0,        .5,
     		1, 0, 0, 0,        .5
-    	);
+    	).setSide(GeneralUtil.rotateFacing(rot, EnumFacing.EAST)).showBackface();
 	
-		ModelUtils.doubleQuad(quads, GeneralUtil.rotateFacing(rot, EnumFacing.NORTH), 2,
+		ModelUtils.quad(quads,
     		0, 0, 0, .5,  1,
     		0, 1, 0, .5, .5,
     		1, 1, 0,  1, .5,
     		1, 0, 0,  1,  1
-    	);
+    	).setSide(GeneralUtil.rotateFacing(rot, EnumFacing.NORTH)).showBackface();
 		
 		for (SpritelessQuad quad : quads) {
 			quad.p1 = GeneralUtil.rotateVectorCenter(rot, quad.p1);

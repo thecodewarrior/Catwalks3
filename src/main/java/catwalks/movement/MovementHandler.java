@@ -6,8 +6,12 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 import catwalks.Conf;
+import catwalks.Const;
 import catwalks.block.IDecoratable;
 import catwalks.block.extended.ICustomLadder;
+import catwalks.movement.capability.CWEntityDataProvider;
+import catwalks.movement.capability.ICWEntityData;
+import catwalks.movement.capability.ICWEntityData.CWEntityData;
 import catwalks.shade.ccl.vec.Vector3;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -18,16 +22,23 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerList;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.server.FMLServerHandler;
 
 public class MovementHandler {
 
@@ -45,24 +56,38 @@ public class MovementHandler {
 	
 	private MovementHandler() {
     	MinecraftForge.EVENT_BUS.register(this);
+    	
+    	CapabilityManager.INSTANCE.register(ICWEntityData.class, new Capability.IStorage<ICWEntityData>() {
+            @Override
+            public NBTBase writeNBT(Capability<ICWEntityData> capability, ICWEntityData instance, EnumFacing side) { return null; }
+
+            @Override
+            public void readNBT(Capability<ICWEntityData> capability, ICWEntityData instance, EnumFacing side, NBTBase nbt) {}
+        }, () -> {
+            throw new UnsupportedOperationException();
+        });
+    	
 	}
 	
-	private CatwalkEntityProperties getOrCreateEP(Entity entity) {
-		CatwalkEntityProperties catwalkEP = (CatwalkEntityProperties)entity.getExtendedProperties(catwalkDataId);
-		if(catwalkEP == null) {
-			catwalkEP = new CatwalkEntityProperties();
-			entity.registerExtendedProperties(catwalkDataId, catwalkEP);
+	@SubscribeEvent
+	public void attachCapability(AttachCapabilitiesEvent.Entity event) {
+		if(event.getEntity() instanceof EntityPlayer) {
+			event.addCapability(Const.ENTITY_DATA_CAPABILITY_LOC, new CWEntityDataProvider());
 		}
-		return catwalkEP;
+	}
+	
+	private CWEntityData getEntityData(Entity entity) {
+		CWEntityData data = (CWEntityData) entity.getCapability(Const.CW_ENTITY_DATA_CAPABILITY, null);
+		return data;
 	}
 	
 	@SubscribeEvent
 	public void playerUpdate(LivingUpdateEvent event) {
-		if(!( event.entity instanceof EntityPlayer )) {
+		if(!( event.getEntity() instanceof EntityPlayer )) {
 			return;
 		}
-		EntityPlayer entity = (EntityPlayer) event.entity;
-		CatwalkEntityProperties ep = getOrCreateEP(entity);
+		EntityPlayer entity = (EntityPlayer) event.getEntity();
+		CWEntityData ep = getEntityData(entity);
 		
 		World world = entity.worldObj;
 		
@@ -70,7 +95,7 @@ public class MovementHandler {
 		double fallSpeedMultiplier = Double.POSITIVE_INFINITY;
 		double horizontalSpeedMultiplier = Double.POSITIVE_INFINITY;
 		
-		for(BlockPos pos : eachTouching(event.entityLiving, false, new Vector3(0,0,0), new Vector3(0,0,0)) ) {
+		for(BlockPos pos : eachTouching(event.getEntityLiving(), false, new Vector3(0,0,0), new Vector3(0,0,0)) ) {
 			Block block = world.getBlockState(pos).getBlock();
 			if( block instanceof ICustomLadder) {
 				ICustomLadder icl = (ICustomLadder) block;
@@ -190,12 +215,17 @@ public class MovementHandler {
 	
 	@SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent event) {		
+		if(1==1) return;
     	if( event.phase == Phase.END) {
-    		List<EntityPlayerMP> players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
+    		MinecraftServer server = FMLServerHandler.instance().getServer();
+    		if(server == null)
+    			return;
+    		PlayerList list = server.getPlayerList();
+    		List<EntityPlayerMP> players = list.getPlayerList();
     		
     		if(Conf.catwalkSpeed == 0) {
     			for (EntityPlayerMP player : players) {
-    				IAttributeInstance attrInstance = player.getEntityAttribute(SharedMonsterAttributes.movementSpeed);
+    				IAttributeInstance attrInstance = player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
     				AttributeModifier m = attrInstance.getModifier(speedModifierUUID);
     				if(m != null)
     					attrInstance.removeModifier(m);
@@ -224,10 +254,10 @@ public class MovementHandler {
 					return false;
 				});
 				
-				IAttributeInstance attrInstance = player.getEntityAttribute(SharedMonsterAttributes.movementSpeed);
+				IAttributeInstance attrInstance = player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
 				AttributeModifier m = attrInstance.getModifier(speedModifierUUID);
 				
-				CatwalkEntityProperties ep = getOrCreateEP(player);
+				CWEntityData ep = getEntityData(player);
 				
 				if(speedpos == null && ep.jumpTimer > 0) {
 					speedpos = findCollidingBlock(player, true, new Vector3(0, -2, 0), new Vector3(0, 0, 0), (BlockPos pos) -> {

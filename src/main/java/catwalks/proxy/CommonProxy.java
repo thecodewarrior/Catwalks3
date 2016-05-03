@@ -8,22 +8,23 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.server.FMLServerHandler;
 
 public class CommonProxy {
 	public void preInit() {}
 	public void reloadConfigs() {}
 	
-	public EntityPlayer getPlayerLooking(Vec3 start, Vec3 end) {
+	public EntityPlayer getPlayerLooking(Vec3d start, Vec3d end) {
 		EntityPlayer player = null;
-		List<EntityPlayerMP> players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
+		List<EntityPlayerMP> players = FMLServerHandler.instance().getServer().getPlayerList().getPlayerList();
 		
 		for (final EntityPlayerMP p : players) { // for each player
-			Vec3 lookStart = RayTracer.getStartVec(p);
-			Vec3 lookEnd   = RayTracer.getEndVec(p);
+			Vec3d lookStart = RayTracer.getStartVec(p);
+			Vec3d lookEnd   = RayTracer.getEndVec(p);
 			double lookDistance = RayTracer.getBlockReachDistance(p);
 			
 			double dStart  = lookStart.distanceTo(start);
@@ -42,20 +43,20 @@ public class CommonProxy {
 	
 	@SubscribeEvent
 	public void itemPickup(EntityItemPickupEvent event) {
-		ItemStack stack = event.item.getEntityItem();
-		if(event.entityPlayer == null) {
+		ItemStack stack = event.getItem().getEntityItem();
+		if(event.getEntityPlayer() == null) {
 			return;
 		}
-		InventoryPlayer inv = event.entityPlayer.inventory;
+		InventoryPlayer inv = event.getEntityPlayer().inventory;
 		boolean changed = false;
 
 		if(stack != null && stack.getItem() instanceof ItemDecoration) {
 			for (int i = 0; i < inv.getSizeInventory(); i++) {
 				ItemStack slotStack = inv.getStackInSlot(i);
-				if(slotStack != null && slotStack.getItem() == stack.getItem() && ( slotStack.getItemDamage() != 0 || event.entityPlayer.capabilities.isCreativeMode)) {
+				if(slotStack != null && slotStack.getItem() == stack.getItem() && ( slotStack.getItemDamage() != 0 || event.getEntityPlayer().capabilities.isCreativeMode)) {
 					int toTake = slotStack.getItemDamage();
 					int available = stack.getMaxDamage()-stack.getItemDamage();
-					if(event.entityPlayer.capabilities.isCreativeMode)
+					if(event.getEntityPlayer().capabilities.isCreativeMode)
 						toTake = available;
 					int toput = Math.min(toTake, available);
 					
@@ -69,7 +70,7 @@ public class CommonProxy {
 			
 			if(changed) {
 				event.setResult(Result.ALLOW);
-				event.entityPlayer.inventoryContainer.detectAndSendChanges();
+				event.getEntityPlayer().inventoryContainer.detectAndSendChanges();
 			}
 		}
 		

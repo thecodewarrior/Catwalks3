@@ -69,11 +69,11 @@ public class CatwalkModel extends SimpleModel {
 		
 		sideQuads = new ArrayList<>();
 		bottomQuads = new ArrayList<>();
-		ModelUtils.putFace(sideQuads, EnumFacing.NORTH, 0);
-		ModelUtils.putFace(sideQuads, EnumFacing.SOUTH, 1);
-		ModelUtils.putFace(sideQuads, EnumFacing.EAST,  2);
-		ModelUtils.putFace(sideQuads, EnumFacing.WEST,  3);
-    	ModelUtils.putFace(bottomQuads, EnumFacing.DOWN, -1);
+		ModelUtils.putFace(sideQuads, EnumFacing.NORTH, 0).showBackface();
+		ModelUtils.putFace(sideQuads, EnumFacing.SOUTH, 1).showBackface();
+		ModelUtils.putFace(sideQuads, EnumFacing.EAST,  2).showBackface();
+		ModelUtils.putFace(sideQuads, EnumFacing.WEST,  3).showBackface();
+    	ModelUtils.putFace(bottomQuads, EnumFacing.DOWN, -1).showBackface();
     	
     	List<BakedQuad> quads = new ArrayList<>();
     	

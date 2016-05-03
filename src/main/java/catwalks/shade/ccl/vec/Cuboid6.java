@@ -6,7 +6,7 @@ import java.math.RoundingMode;
 
 import catwalks.shade.ccl.util.Copyable;
 import net.minecraft.block.Block;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 
 public class Cuboid6 implements Copyable<Cuboid6>
 {
@@ -40,7 +40,7 @@ public class Cuboid6 implements Copyable<Cuboid6>
     }
 
     public AxisAlignedBB aabb() {
-        return AxisAlignedBB.fromBounds(min.x, min.y, min.z, max.x, max.y, max.z);
+        return new AxisAlignedBB(min.x, min.y, min.z, max.x, max.y, max.z);
     }
 
     public Cuboid6 copy() {
@@ -83,10 +83,6 @@ public class Cuboid6 implements Copyable<Cuboid6>
         min.sub(vec);
         max.add(vec);
         return this;
-    }
-
-    public void setBlockBounds(Block block) {
-        block.setBlockBounds((float) min.x, (float) min.y, (float) min.z, (float) max.x, (float) max.y, (float) max.z);
     }
 
     public boolean intersects(Cuboid6 b) {

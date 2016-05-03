@@ -89,143 +89,148 @@ public class LadderModel extends SimpleModel {
 		
 		List<SpritelessQuad> quads;
 		quads = new ArrayList<>();
-		int cond = 0;
+
 		double p  = 1/16f, P  = 1-p;
 		double ptx = 1/32f, Ptx = 1-ptx;
-//		double p2 = 2/16f, P2 = 1-p2;
+		
+		ModelUtils.resetConditionCounter();
 		
 		// bottom
-		ModelUtils.doubleQuad(quads, EnumFacing.DOWN, cond++,
+		ModelUtils.quad(quads,
 			p, 0, p,  ptx,    ptx,
 			p, 0, P,  ptx,   .5-ptx,
 			P, 0, P, .5-ptx, .5-ptx,
 			P, 0, p, .5-ptx,  ptx
-		);
+		).down();
 		//north ( ladder )
-		ModelUtils.doubleQuad(quads, null, cond++,
+		ModelUtils.quad(quads,
 			p, 0, p, .5+ptx,  1,
 			p, 1, p, .5+ptx, .5,
 			P, 1, p,  1-ptx, .5,
 			P, 0, p,  1-ptx,  1
-		);
+		).nocull();
 		//south
-		ModelUtils.doubleQuad(quads, null, cond++,
+		ModelUtils.quad(quads,
 			p, 0, P,  ptx,    1,
 			p, 1, P,  ptx,   .5,
 			P, 1, P, .5-ptx, .5,
 			P, 0, P, .5-ptx,  1
-		);
+		).nocull();
 		//east
-		ModelUtils.doubleQuad(quads, null, cond++,
+		ModelUtils.quad(quads,
 			P, 0, p, .5-ptx,  1,
 			P, 1, p, .5-ptx, .5,
 			P, 1, P,  ptx,   .5,
 			P, 0, P,  ptx,    1
-		);
+		).nocull();
 		//west
-		ModelUtils.doubleQuad(quads, null, cond++,
+		ModelUtils.quad(quads,
 			p, 0, p,  ptx,    1,
 			p, 1, p,  ptx,   .5,
 			p, 1, P, .5-ptx, .5,
 			p, 0, P, .5-ptx,  1
-		);
+		).nocull();
 		
 		//north landing
-		ModelUtils.doubleQuad(quads, EnumFacing.DOWN, cond++,
+		ModelUtils.quad(quads,
 			0, 0, 0,  0,     0,
 			p, 0, p,  ptx,   ptx,
 			P, 0, p, .5-ptx, ptx,
 			1, 0, 0, .5,     0
-		);
+		).down();
 		
 		//south landing
-		ModelUtils.doubleQuad(quads, EnumFacing.DOWN, cond++,
+		ModelUtils.quad(quads,
 			0, 0, 1,  0,     .5,
 			p, 0, P,  ptx,   .5-ptx,
 			P, 0, P, .5-ptx, .5-ptx,
 			1, 0, 1, .5,     .5
-		);
+		).down();
 		
 		//east landing
-		ModelUtils.doubleQuad(quads, EnumFacing.DOWN, cond++,
+		ModelUtils.quad(quads,
 			1, 0, 0, .5,      0,
 			P, 0, p, .5-ptx,  ptx,
 			P, 0, P, .5-ptx, .5-ptx,
 			1, 0, 1, .5,     .5
-		);
+		).down();
 		
 		//west landing
-		ModelUtils.doubleQuad(quads, EnumFacing.DOWN, cond++,
+		ModelUtils.quad(quads,
 			0, 0, 0, 0,  0,
 			p, 0, p, ptx, ptx,
 			p, 0, P, ptx, .5-ptx,
 			0, 0, 1, 0,  .5
-		);
+		).down();
 		
 		//north top landing
-		ModelUtils.doubleQuad(quads, EnumFacing.UP, cond++,
+		ModelUtils.quad(quads,
 			0, 1, 0,  0,     0,
 			p, 1, p,  ptx,   ptx,
 			P, 1, p, .5-ptx, ptx,
 			1, 1, 0, .5,     0
-		);
+		).up();
 		
 		//south top landing
-		ModelUtils.doubleQuad(quads, EnumFacing.UP, cond++,
+		ModelUtils.quad(quads,
 			0, 1, 1,  0,     .5,
 			p, 1, P,  ptx,   .5-ptx,
 			P, 1, P, .5-ptx, .5-ptx,
 			1, 1, 1, .5,     .5
-		);
+		).up();
 		
 		//east top landing
-		ModelUtils.doubleQuad(quads, EnumFacing.UP, cond++,
+		ModelUtils.quad(quads,
 			1, 1, 0, .5,      0,
 			P, 1, p, .5-ptx,  ptx,
 			P, 1, P, .5-ptx, .5-ptx,
 			1, 1, 1, .5,     .5
-		);
+		).up();
 		
 		//west top landing
-		ModelUtils.doubleQuad(quads, EnumFacing.UP, cond++,
+		ModelUtils.quad(quads,
 			0, 1, 0, 0,  0,
 			p, 1, p, ptx, ptx,
 			p, 1, P, ptx, .5-ptx,
 			0, 1, 1, 0,  .5
-		);
+		).up();
 		
 		//north-east connection
-		ModelUtils.doubleQuad(quads, null, cond++,
+		ModelUtils.quad(quads,
 			1, 0, 0, .5+ptx, .5,
 			P, 0, p, .5,     .5,
 			P, 1, p, .5,     0,
 			1, 1, 0, .5+ptx, 0
-		);
+		).nocull();
 		
 		//north-west connection
-		ModelUtils.doubleQuad(quads, null, cond++,
+		ModelUtils.quad(quads,
 			0, 0, 0, .5+ptx, .5,
 			p, 0, p, .5,     .5,
 			p, 1, p, .5,     0,
 			0, 1, 0, .5+ptx, 0
-		);
+		).nocull();
 		
 		//south-east connection
-		ModelUtils.doubleQuad(quads, null, cond++,
+		ModelUtils.quad(quads,
 			1, 0, 1, .5+ptx, .5,
 			P, 0, P, .5,     .5,
 			P, 1, P, .5,     0,
 			1, 1, 1, .5+ptx, 0
-		);
+		).nocull();
 		
 		//south-west connection
-		ModelUtils.doubleQuad(quads, null, cond++,
+		ModelUtils.quad(quads,
 			0, 0, 1, .5+ptx, .5,
 			p, 0, P, .5,     .5,
 			p, 1, P, .5,     0,
 			0, 1, 1, .5+ptx, 0
-		);
+		).nocull();
 
+		for (SpritelessQuad quad : quads) {
+			quad.showBackface();
+		}
+		
 		int rot = GeneralUtil.getRotation(EnumFacing.NORTH, facing);
 		for (SpritelessQuad quad : quads) {
 			quad.p1 = GeneralUtil.rotateVectorCenter(rot, quad.p1);

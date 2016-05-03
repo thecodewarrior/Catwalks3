@@ -21,7 +21,7 @@ public class Conf {
 	@SubscribeEvent
     public void onConfigChangedEvent(OnConfigChangedEvent event)
     {
-        if (Const.MODID.equals(event.modID))
+        if (Const.MODID.equals(event.getModID()))
         {
             loadConfigs(config);
         }
@@ -41,15 +41,15 @@ public class Conf {
     	Property prop;
     	
     	prop = conf.get(CATEGORY_GENERAL, "Catwalk Speed Potion Level", 1).setRequiresMcRestart(false);
-    	prop.comment = "The speed boost on catwalks will apply a speed boost equivalent to Speed N";
+    	prop.setComment("The speed boost on catwalks will apply a speed boost equivalent to Speed N");
     	catwalkSpeed = prop.getInt();
     	
     	prop = conf.get(CATEGORY_GENERAL, "Ladder Speed Multiplier", 1.5).setRequiresMcRestart(false);
-    	prop.comment = "Caged ladders will be N times as fast as normal ladders";
+    	prop.setComment("Caged ladders will be N times as fast as normal ladders");
     	ladderSpeed = (float)prop.getDouble();
     	
     	prop = conf.get(CATEGORY_GENERAL, "Show Scaffold Inside Faces", false).setRequiresMcRestart(false);
-    	prop.comment = "Whether the faces of scaffolds should show if they are next to another scaffold";
+    	prop.setComment("Whether the faces of scaffolds should show if they are next to another scaffold");
     	showScaffoldInsideFaces = (boolean)prop.getBoolean();
 
         if (conf.hasChanged() == true)
