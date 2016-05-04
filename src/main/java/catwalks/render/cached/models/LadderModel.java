@@ -118,10 +118,10 @@ public class LadderModel extends SimpleModel {
 		).nocull();
 		//east
 		ModelUtils.quad(quads,
-			P, 0, p, .5-ptx,  1,
-			P, 1, p, .5-ptx, .5,
-			P, 1, P,  ptx,   .5,
-			P, 0, P,  ptx,    1
+			P, 0, p,    ptx,  1,
+			P, 1, p,    ptx, .5,
+			P, 1, P, .5-ptx, .5,
+			P, 0, P, .5-ptx,  1
 		).nocull();
 		//west
 		ModelUtils.quad(quads,

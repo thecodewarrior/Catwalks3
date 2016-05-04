@@ -2,6 +2,9 @@ package catwalks.register;
 
 import java.util.function.Supplier;
 
+import javax.vecmath.Vector3f;
+
+import catwalks.Const;
 import catwalks.block.BlockCatwalk;
 import catwalks.block.BlockCatwalkStair;
 import catwalks.block.BlockCatwalkStairTop;
@@ -15,10 +18,12 @@ import catwalks.render.cached.models.CatwalkModel;
 import catwalks.render.cached.models.LadderModel;
 import catwalks.render.cached.models.StairBottomModel;
 import catwalks.render.cached.models.StairTopModel;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -65,7 +70,7 @@ public class BlockRegister {
 		
 		// Catwalk
 		registerTextureAllMaterials("blocks/catwalk/<mat>/side/base");
-		registerTextureAllMaterials("blocks/catwalk/<mat>/side/tape");
+		registerTextureAllMaterials("blocks/catwalk/<mat>/side/tape"); 
 		registerTextureAllMaterials("blocks/catwalk/<mat>/side/lights");
 		registerTextureAllMaterials("blocks/catwalk/<mat>/side/speed");
 		
@@ -86,40 +91,23 @@ public class BlockRegister {
 		registerTextureAllMaterials("blocks/ladder/<mat>/lights");
 		registerTextureAllMaterials("blocks/ladder/<mat>/speed");
 		
+		registerMaterialModels(scaffold, null);
+		registerMaterialModels(catwalk,      "catwalk");
+		registerMaterialModels(catwalkStair, "catwalkStair");
+		registerMaterialModels(cagedLadder,  "cagedLadder");
 		
-		Item item; String rl;
-		
-		item = Item.getItemFromBlock(scaffold);
-		rl   = Item.REGISTRY.getNameForObject(item).toString();
-		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_inv", "material=steel"  ));
-		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_inv", "material=rusty"  ));
-		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_inv", "material=wood"   ));
-		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_inv", "material=custom" ));
-		
-		ModelHandler.setStaticMap(catwalk, "catwalk");
-		item = Item.getItemFromBlock(catwalk);
-		rl   = Item.REGISTRY.getNameForObject(item).toString();
-		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_rusty" , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_custom", "inventory" ));
-		
-		ModelHandler.setStaticMap(catwalkStair, "catwalkStair");
-		item = Item.getItemFromBlock(catwalkStair);
-		rl   = Item.REGISTRY.getNameForObject(item).toString();
-		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_rusty" , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_custom", "inventory" ));
-
 		ModelHandler.setStaticMap(stairTop, "catwalkStairTop");
-
-		ModelHandler.setStaticMap(cagedLadder, "cagedLadder");
-		item = Item.getItemFromBlock(cagedLadder);
-		rl   = Item.REGISTRY.getNameForObject(item).toString();
-		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl+"_steel" , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl+"_rusty" , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl+"_wood"  , "inventory" ));
-		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl+"_custom", "inventory" ));
+	}
+	
+	public static void registerMaterialModels(Block block, String modelName) {
+		if(modelName != null)
+			ModelHandler.setStaticMap(block, modelName);
+		Item item = Item.getItemFromBlock(block);
+		
+		String rl = String.format("%s:%s.inv", Const.MODID, modelName == null ? Item.REGISTRY.getNameForObject(item).getResourcePath() : modelName);
+		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl, "material=steel"  ));
+		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl, "material=rusty"  ));
+		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl, "material=wood"   ));
+		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl, "material=custom" ));
 	}
 }

@@ -21,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 	guiFactory = "catwalks.gui.CatwalksModConfGuiFactory")
 public class CatwalksMod {
 	public static final String MODID = "catwalks";
-    public static final String VERSION = "0.1.1";
+    public static final String VERSION = "0.2.0";
     
     @SidedProxy(serverSide="catwalks.proxy.CommonProxy", clientSide="catwalks.proxy.ClientProxy")
     public static CommonProxy proxy;

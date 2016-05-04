@@ -29,6 +29,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -333,7 +334,8 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	
 	@Override
 	public void addCollisionBoxToList(IBlockState blockState, World world, BlockPos pos, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
-		
+		if(collidingEntity == null)
+			return;
 		AxisAlignedBB originMask = mask.offset(-pos.getX(), -pos.getY(), -pos.getZ());
 		
 		boolean eNull = collidingEntity == null;

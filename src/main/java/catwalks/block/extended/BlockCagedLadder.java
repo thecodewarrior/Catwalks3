@@ -85,8 +85,8 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		boolean // check which sides are equal, meaning that the player is pusing up against that side, and we might should apply our values based on that
 			north = GeneralUtil.approxEq(playerAABB.minZ, blockAABB.minZ),
 			south = GeneralUtil.approxEq(playerAABB.maxZ, blockAABB.maxZ),
-			east  = GeneralUtil.approxEq(playerAABB.maxZ, blockAABB.maxX),
-			west  = GeneralUtil.approxEq(playerAABB.minZ, blockAABB.minX);
+			east  = GeneralUtil.approxEq(playerAABB.maxX, blockAABB.maxX),
+			west  = GeneralUtil.approxEq(playerAABB.minX, blockAABB.minX);
 		
 		if(!state.getValue(Const.IS_BOTTOM)) { // if there is a ladder below us
 			BlockPos downPos = pos.offset(EnumFacing.DOWN);
