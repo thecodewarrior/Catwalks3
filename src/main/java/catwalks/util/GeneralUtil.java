@@ -20,15 +20,15 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
 
 public class GeneralUtil {
 	private static final Random RANDOM = new Random();
 	
-	public static IExtendedBlockState getExtended(World worldIn, BlockPos pos) {
+	public static IBlockState getActualState(IBlockAccess worldIn, BlockPos pos) {
 		IBlockState state = worldIn.getBlockState(pos);
-		return (IExtendedBlockState) state.getBlock().getExtendedState(state, worldIn, pos);
+		return state.getBlock().getActualState(state, worldIn, pos);
 	}
 
 	public static void markForUpdate(World world, BlockPos pos) {

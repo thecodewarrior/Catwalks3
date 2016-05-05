@@ -15,6 +15,7 @@ import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.AABBUtils;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -31,11 +32,11 @@ public class BlockCatwalk extends BlockCatwalkBase {
 	
 	@Override
 	public boolean hasEdge(World world, BlockPos pos, CubeEdge edge) {
-		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
+		IBlockState state = getActualState(world.getBlockState(pos), world, pos);
 		return 
-				(   state.getUnlistedProperties().containsKey(Const.sideProperties.get(edge.dir1)) && state.getValue(Const.sideProperties.get(edge.dir1))   )
+				(   state.getProperties().containsKey(Const.sideProperties.get(edge.dir1)) && state.getValue(Const.sideProperties.get(edge.dir1))   )
 						!=
-				(   state.getUnlistedProperties().containsKey(Const.sideProperties.get(edge.dir2)) && state.getValue(Const.sideProperties.get(edge.dir2))   )
+				(   state.getProperties().containsKey(Const.sideProperties.get(edge.dir2)) && state.getValue(Const.sideProperties.get(edge.dir2))   )
 		;
 	}
 	
@@ -46,8 +47,8 @@ public class BlockCatwalk extends BlockCatwalkBase {
 	
 	@Override
 	public boolean hasSide(World world, BlockPos pos, EnumFacing side) {
-		IExtendedBlockState state = (IExtendedBlockState) getExtendedState(world.getBlockState(pos), world, pos);
-		return state.getUnlistedProperties().containsKey(Const.sideProperties.get(side)) && state.getValue(Const.sideProperties.get(side));
+		IBlockState state = getActualState(world.getBlockState(pos), world, pos);
+		return state.getProperties().containsKey(Const.sideProperties.get(side)) && state.getValue(Const.sideProperties.get(side));
 	}
 	
 	@Override
@@ -132,7 +133,7 @@ public class BlockCatwalk extends BlockCatwalkBase {
 	}
 	
 	@Override
-	public List<LookSide> lookSides(IExtendedBlockState state, World world, BlockPos pos) {
+	public List<LookSide> lookSides(IBlockState state, World world, BlockPos pos) {
 		return sideLookBoxes;
 	}
 	
@@ -181,7 +182,7 @@ public class BlockCatwalk extends BlockCatwalkBase {
 	}
 	
 	@Override
-	public List<CollisionBox> getCollisionBoxes(IExtendedBlockState state, World world, BlockPos pos) {
+	public List<CollisionBox> getCollisionBoxes(IBlockState state, World world, BlockPos pos) {
 		return collisionBoxes;
 	}
 }

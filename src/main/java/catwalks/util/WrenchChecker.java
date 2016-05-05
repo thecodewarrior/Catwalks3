@@ -40,7 +40,7 @@ public class WrenchChecker {
             try {
                 wrenchClasses.add(Class.forName(className));
             } catch (ClassNotFoundException e) {
-                Logs.log("Failed to load wrench class " + className + " (this is not an error)");
+                Logs.debug("Failed to load wrench class " + className + " (this is not an error)");
             }
         }
     }
