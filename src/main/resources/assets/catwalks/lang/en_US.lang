@@ -18,3 +18,6 @@ item.steelgrate.name=Steel Grate
 
 item.catwalktool.name=Blowtorch
 item.catwalktool.info.0=§8§oOther wrenches work
+
+gui.jei.crafting.decorationMerge=Combine
+gui.jei.crafting.decorationSplit=Split

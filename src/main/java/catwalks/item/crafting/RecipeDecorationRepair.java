@@ -9,32 +9,33 @@ import net.minecraft.world.World;
 
 public class RecipeDecorationRepair implements IRecipe {
 
+	Item targetItem;
+	
+	public Item getTargetItem() {
+		return targetItem;
+	}
+	
+	public RecipeDecorationRepair(Item item) {
+		targetItem = item;
+	}
+	
 	/**
      * Used to check if a recipe matches current crafting inventory
      */
     public boolean matches(InventoryCrafting inv, World worldIn) {
-        Item item = null;
-        boolean multiple = false;
+        int count = 0;
         
         for (int i = 0; i < inv.getSizeInventory(); ++i) {
             ItemStack itemstack = inv.getStackInSlot(i);
 
             if (itemstack != null) {
-            	if(itemstack.getItem() instanceof ItemDecoration) {
-            		if(item == null) {
-            			item = itemstack.getItem();
-            		} else if(itemstack.getItem() != item) {
-            			return false;
-            		} else {
-            			multiple = true;
-            		}
-            	} else {
+            	if(itemstack.getItem() != targetItem)
             		return false;
-            	}
+            	count++;
             }
         }
-
-        return multiple;
+        
+        return count > 1;
     }
 
     /**
@@ -48,14 +49,14 @@ public class RecipeDecorationRepair implements IRecipe {
             ItemStack itemstack = inv.getStackInSlot(i);
 
             if (itemstack != null) {
-            	if(itemstack.getItem() instanceof ItemDecoration) {
+            	if(itemstack.getItem() == targetItem) {
             		if(stack == null) {
             			stack = itemstack.copy();
-            		} else if(itemstack.getItem() == stack.getItem()) {
-            			int needed = stack.getItemDamage();
-            			int available = itemstack.getMaxDamage() - itemstack.getItemDamage();
-            			int toTake = needed > available ? available : needed;
-            			stack.setItemDamage(stack.getItemDamage() - toTake);
+            		} else {
+            			int usesNeeded = stack.getItemDamage();
+            			int usesAvailable = itemstack.getMaxDamage() - itemstack.getItemDamage();
+            			int usesToTake = usesNeeded > usesAvailable ? usesAvailable : usesNeeded;
+            			stack.setItemDamage(stack.getItemDamage() - usesToTake);
             		}
             	}
             }
@@ -84,17 +85,19 @@ public class RecipeDecorationRepair implements IRecipe {
             ItemStack itemstack = inv.getStackInSlot(i);
 
             if (itemstack != null) {
-            	if(itemstack.getItem() instanceof ItemDecoration) {
+            	if(itemstack.getItem() == targetItem) {
             		if(stack == null) {
             			stack = itemstack.copy();
-            		} else if(itemstack.getItem() == stack.getItem()) {
-            			int needed = stack.getItemDamage();
-            			int available = itemstack.getMaxDamage() - itemstack.getItemDamage();
-            			int toTake = needed > available ? available : needed;
-            			stack.setItemDamage(stack.getItemDamage() - toTake);
-            			if(needed < available) {
+            		} else {
+            			int usesNeeded = stack.getItemDamage();
+            			int usesAvailable = itemstack.getMaxDamage() - itemstack.getItemDamage();
+            			int usesToTake = usesNeeded > usesAvailable ? usesAvailable : usesNeeded;
+            			
+            			stack.setItemDamage(stack.getItemDamage() - usesToTake);
+            			
+            			if(usesNeeded < usesAvailable) {
             				itemstack = itemstack.copy();
-            				itemstack.setItemDamage(itemstack.getItemDamage()+needed);
+            				itemstack.setItemDamage(itemstack.getItemDamage()+usesNeeded);
             				aitemstack[i] = itemstack;
             			}
             		}

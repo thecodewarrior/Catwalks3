@@ -19,8 +19,8 @@ public class RecipeRegister {
 
 	public static void register() {
 		
-		RecipeSorter.register(Const.MODID + ":decorationCombine",  RecipeDecorationRepair.class, SHAPELESS, "after:minecraft:shapeless");
-		RecipeSorter.register(Const.MODID + ":decorationSplit",    RecipeDecorationSplit.class,  SHAPELESS, "after:" + Const.MODID + ":decorationCombine");
+		RecipeSorter.register(Const.MODID + ":decorationCombine",  RecipeDecorationRepair.class, SHAPELESS, "before:minecraft:repair");
+		RecipeSorter.register(Const.MODID + ":decorationSplit",    RecipeDecorationSplit.class,  SHAPELESS, "after:minecraft:shapeless");
 		
 		int m_steel = 0, m_rusty = 1, m_wood = 2;//, m_custom = 3;
 		Item
@@ -47,8 +47,12 @@ public class RecipeRegister {
 			stick = "stickWood";
 		
 		
-		CraftingManager.getInstance().addRecipe(new RecipeDecorationRepair());
-		CraftingManager.getInstance().addRecipe(new RecipeDecorationSplit());
+		CraftingManager.getInstance().addRecipe(new RecipeDecorationRepair(ItemRegister.lights));
+		CraftingManager.getInstance().addRecipe(new RecipeDecorationRepair(ItemRegister.speed ));
+		CraftingManager.getInstance().addRecipe(new RecipeDecorationRepair(ItemRegister.tape  ));
+		CraftingManager.getInstance().addRecipe(new RecipeDecorationSplit (ItemRegister.lights));
+		CraftingManager.getInstance().addRecipe(new RecipeDecorationSplit (ItemRegister.speed ));
+		CraftingManager.getInstance().addRecipe(new RecipeDecorationSplit (ItemRegister.tape  ));
 		
 		// Items
 		
