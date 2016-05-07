@@ -10,6 +10,7 @@ public class ItemCatwalkTool extends ItemBase {
 	public ItemCatwalkTool() {
 		super("tool");
 		setUnlocalizedName("catwalktool");
+		setMaxStackSize(1);
 	}
 	
 	@Override
