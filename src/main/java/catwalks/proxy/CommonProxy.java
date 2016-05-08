@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
@@ -17,6 +18,10 @@ import net.minecraftforge.fml.server.FMLServerHandler;
 public class CommonProxy {
 	public void preInit() {}
 	public void reloadConfigs() {}
+	
+	public MinecraftServer getServer() {
+		return FMLServerHandler.instance().getServer();
+	}
 	
 	public EntityPlayer getPlayerLooking(Vec3d start, Vec3d end) {
 		EntityPlayer player = null;

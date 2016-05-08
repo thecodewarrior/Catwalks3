@@ -133,7 +133,7 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
         for (int i = 0; i < STEP_COUNT; i++) {
         	CollisionBox box = new CollisionBox();
             
-            box.enableProperty = Const.BOTTOM;
+            box.enableProperty = Const.CONST_TRUE;
             
             box.normal = cuboid.copy();
             box.sneak  = cuboid.copy();

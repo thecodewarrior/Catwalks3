@@ -1,6 +1,7 @@
 package catwalks.util;
 
 import java.util.BitSet;
+import java.util.List;
 import java.util.Random;
 
 import catwalks.Const;
@@ -10,6 +11,7 @@ import catwalks.block.extended.CubeEdge;
 import catwalks.shade.ccl.vec.Cuboid6;
 import catwalks.shade.ccl.vec.Vector3;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -97,6 +99,40 @@ public class GeneralUtil {
 		default:
 			return 0;
 		}
+	}
+	
+	public static Vec3d simulateEntityMove(Entity entity, Vec3d movement) {
+		
+		double x = movement.xCoord, y = movement.yCoord, z = movement.zCoord;
+		
+		List<AxisAlignedBB> collisionBoxes = entity.worldObj.getCollisionBoxes(entity, entity.getEntityBoundingBox().addCoord(x, y, z));
+        AxisAlignedBB entityBox = entity.getEntityBoundingBox();
+        int i = 0;
+
+        for (int j = collisionBoxes.size(); i < j; ++i)
+        {
+            y = ((AxisAlignedBB)collisionBoxes.get(i)).calculateYOffset(entityBox, y);
+        }
+
+        entityBox = entityBox.offset(0.0D, y, 0.0D);
+        int j4 = 0;
+
+        for (int k = collisionBoxes.size(); j4 < k; ++j4)
+        {
+            x = ((AxisAlignedBB)collisionBoxes.get(j4)).calculateXOffset(entityBox, x);
+        }
+
+        entityBox = entityBox.offset(x, 0.0D, 0.0D);
+        j4 = 0;
+
+        for (int k4 = collisionBoxes.size(); j4 < k4; ++j4)
+        {
+            z = ((AxisAlignedBB)collisionBoxes.get(j4)).calculateZOffset(entityBox, z);
+        }
+
+        entityBox = entityBox.offset(0.0D, 0.0D, z);
+        
+        return new Vec3d(x, y, z);
 	}
 	
 	public static boolean checkEdge(EnumFacing a, EnumFacing b, CubeEdge edge) {

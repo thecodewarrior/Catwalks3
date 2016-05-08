@@ -62,9 +62,6 @@ public class Const {
 	
 	public static final UPropertyBool UNLISTED_FLUFF_PROPERTY = new UPropertyBool("UNLISTED_FLUFF");
 	
-	public static final UPropertyBool UCONST_TRUE = new UPropertyBool("unlistedDummyConstTrue");
-	public static final UPropertyBool UCONST_FALSE = new UPropertyBool("unlistedDummyConstFalse");
-	
 	public static final UPropertyBool NORTH_LADDER_EXT  = new UPropertyBool("north_ladder_ext");
 	public static final UPropertyBool SOUTH_LADDER_EXT  = new UPropertyBool("south_ladder_ext");
 	public static final UPropertyBool EAST_LADDER_EXT   = new UPropertyBool("east_ladder_ext");

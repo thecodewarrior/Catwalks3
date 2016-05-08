@@ -363,7 +363,10 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		}
 		
     	for (CollisionBox box : boxes) {
-    		if(!state.getValue(box.enableProperty))
+    		boolean const_true  = box.enableProperty == Const.CONST_TRUE;
+    		boolean const_false = box.enableProperty == Const.CONST_FALSE;
+    		
+    		if(!const_true && ( const_false || !state.getValue(box.enableProperty) ))
     			continue;
 			Cuboid6 cuboid = (eNull || !collidingEntity.isSneaking()) ? box.normal : box.sneak;
 			

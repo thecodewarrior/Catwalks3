@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+import catwalks.CatwalksMod;
 import catwalks.Conf;
 import catwalks.Const;
 import catwalks.block.IDecoratable;
@@ -35,6 +36,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -69,6 +72,14 @@ public class MovementHandler {
     	
 	}
 	
+	public void setPlayerNerdPoleMove(EntityPlayer player, double amount, int moveTicks) {
+		CWEntityData data = getEntityData(player);
+		data.nerdPoleMoveHeight = amount;
+		data.nerdPoleOrigionalY = player.posY;
+		data.nerdPoleTicks = moveTicks;
+		data.nerdPoleTicksPassed = 0;
+	}
+	
 	@SubscribeEvent
 	public void attachCapability(AttachCapabilitiesEvent.Entity event) {
 		if(event.getEntity() instanceof EntityPlayer) {
@@ -88,6 +99,32 @@ public class MovementHandler {
 		}
 		EntityPlayer entity = (EntityPlayer) event.getEntity();
 		CWEntityData ep = getEntityData(entity);
+		
+		updateNerdPoleMovement(event, entity, ep);
+		updateLadder(event, entity, ep);
+//		updateSpeed(event);
+	}
+	
+	public void updateNerdPoleMovement(LivingUpdateEvent event, EntityPlayer entity, CWEntityData ep) {
+		if(ep.nerdPoleTicksPassed == ep.nerdPoleTicks)
+			return;
+		double amountToMove = ep.nerdPoleMoveHeight / ep.nerdPoleTicks;
+		if(ep.nerdPoleTicksPassed == ep.nerdPoleTicks-1)
+			amountToMove = ( ep.nerdPoleOrigionalY+ep.nerdPoleMoveHeight ) - entity.posY;
+		
+		entity.moveEntity(0, amountToMove, 0);
+		
+		ep.nerdPoleTicksPassed++;
+//		double amountToMove = ep.nerdPoleOrigionalY
+//		
+//		double playerExtrapolatedOrigionalY = ep.nerdPoleTicksPassed == 0 ? entity.posY : (ep.nerdPoleTargetY - entity.posY) * ( ep.nerdPoleTicks/(double)ep.nerdPoleTicksPassed );
+//		double amountToMove = playerExtrapolatedOrigionalY / ep.nerdPoleTicks;
+//		ep.nerdPoleTicksPassed++;
+//		entity.moveEntity(0, amountToMove, 0);
+	}
+	
+	public void updateLadder(LivingUpdateEvent event, EntityPlayer entity, CWEntityData ep) {
+		
 		
 		World world = entity.worldObj;
 		
@@ -214,91 +251,87 @@ public class MovementHandler {
 	}
 	
 	@SubscribeEvent
-    public void onServerTick(TickEvent.ServerTickEvent event) {		
-		if(1==1) return;
-    	if( event.phase == Phase.END) {
-    		MinecraftServer server = FMLServerHandler.instance().getServer();
-    		if(server == null)
-    			return;
-    		PlayerList list = server.getPlayerList();
-    		List<EntityPlayerMP> players = list.getPlayerList();
-    		
-    		if(Conf.catwalkSpeed == 0) {
-    			for (EntityPlayerMP player : players) {
-    				IAttributeInstance attrInstance = player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
-    				AttributeModifier m = attrInstance.getModifier(speedModifierUUID);
-    				if(m != null)
-    					attrInstance.removeModifier(m);
-    			}
-    			currentSpeedLevel = 0;
-    			return;
-    		}
-    		
-    		if(Conf.catwalkSpeed != currentSpeedLevel) {
-    			speedModifier = new AttributeModifier(speedModifierUUID, speedModifierID, speedModifierBaseValue * Conf.catwalkSpeed, 2);
-    			speedModifier.setSaved(false);
-    			currentSpeedLevel = Conf.catwalkSpeed;
-    		}
-    		
-    		
-    		
-    		for (EntityPlayerMP player : players) { // for each player
-    			// find any catwalks
-				BlockPos speedpos = findCollidingBlock(player, true, (BlockPos pos) -> {
+	public void updateSpeed(TickEvent.ServerTickEvent event) {
+		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+		if(server == null)
+			return;
+		PlayerList list = server.getPlayerList();
+		List<EntityPlayerMP> players = list.getPlayerList();
+		
+		if(Conf.catwalkSpeed == 0) {
+			for (EntityPlayerMP player : players) {
+				IAttributeInstance attrInstance = player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+				AttributeModifier m = attrInstance.getModifier(speedModifierUUID);
+				if(m != null)
+					attrInstance.removeModifier(m);
+			}
+			currentSpeedLevel = 0;
+			return;
+		}
+		
+		if(Conf.catwalkSpeed != currentSpeedLevel) {
+			speedModifier = new AttributeModifier(speedModifierUUID, speedModifierID, speedModifierBaseValue * Conf.catwalkSpeed, 2);
+			speedModifier.setSaved(false);
+			currentSpeedLevel = Conf.catwalkSpeed;
+		}
+		
+		
+		
+		for (EntityPlayerMP player : players) { // for each player
+			// find any catwalks
+			BlockPos speedpos = findCollidingBlock(player, true, (BlockPos pos) -> {
+				IBlockState state = player.worldObj.getBlockState(pos);
+				Block b = state.getBlock();
+				if(b instanceof IDecoratable) {
+					IDecoratable idec = (IDecoratable) b;
+					return idec.canGiveSpeedBoost(player.worldObj, pos) && idec.hasDecoration(player.worldObj, pos, "speed");
+				}
+				return false;
+			});
+			
+			IAttributeInstance attrInstance = player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+			AttributeModifier m = attrInstance.getModifier(speedModifierUUID);
+			
+			CWEntityData ep = getEntityData(player);
+			
+			if(speedpos == null && ep.jumpTimer > 0) {
+				speedpos = findCollidingBlock(player, true, new Vector3(0, -2, 0), new Vector3(0, 0, 0), (BlockPos pos) -> {
 					IBlockState state = player.worldObj.getBlockState(pos);
 					Block b = state.getBlock();
 					if(b instanceof IDecoratable) {
 						IDecoratable idec = (IDecoratable) b;
-						return idec.canGiveSpeedBoost(player.worldObj, pos) && idec.hasDecoration(player.worldObj, pos, "speed");
+						if(idec.canGiveSpeedBoost(player.worldObj, pos))
+							return idec.hasDecoration(player.worldObj, pos, "speed");
 					}
 					return false;
 				});
-				
-				IAttributeInstance attrInstance = player.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
-				AttributeModifier m = attrInstance.getModifier(speedModifierUUID);
-				
-				CWEntityData ep = getEntityData(player);
-				
-				if(speedpos == null && ep.jumpTimer > 0) {
-					speedpos = findCollidingBlock(player, true, new Vector3(0, -2, 0), new Vector3(0, 0, 0), (BlockPos pos) -> {
-						IBlockState state = player.worldObj.getBlockState(pos);
-						Block b = state.getBlock();
-						if(b instanceof IDecoratable) {
-							IDecoratable idec = (IDecoratable) b;
-							if(idec.canGiveSpeedBoost(player.worldObj, pos))
-								return idec.hasDecoration(player.worldObj, pos, "speed");
-						}
-						return false;
-					});
-					if(speedpos == null) { ep.jumpTimer = 0; }
+				if(speedpos == null) { ep.jumpTimer = 0; }
+			}
+			
+			if(ep.jumpTimer > 0) {
+				ep.jumpTimer--;
+			}
+			
+			if(speedpos == null) { // if no blocks found
+				if(m != null) { // and speed modifier is still applied
+					attrInstance.removeModifier(m); // remove it
 				}
-				
-				if(ep.jumpTimer > 0) {
-					ep.jumpTimer--;
-				}
-				
-				if(speedpos == null) { // if no blocks found
-					if(m != null) { // and speed modifier is still applied
-						attrInstance.removeModifier(m); // remove it
-					}
-					continue;
-				}
-								
-				if(player.motionY > 0) {
-					ep.jumpTimer = 30;
-				}
-				
-				if(m != speedModifier && m != null) {
-					attrInstance.removeModifier(m);
-					m = null;
-				}
-				
-				if(m == null) { // if modifier isn't applied or the amount has changed
-					attrInstance.applyModifier(speedModifier); // re-apply it
-				}
-			} // end for
-    		
-    	}
+				continue;
+			}
+							
+			if(player.motionY > 0) {
+				ep.jumpTimer = 30;
+			}
+			
+			if(m != speedModifier && m != null) {
+				attrInstance.removeModifier(m);
+				m = null;
+			}
+			
+			if(m == null) { // if modifier isn't applied or the amount has changed
+				attrInstance.applyModifier(speedModifier); // re-apply it
+			}
+		} // end for
 	}
 	
 }
