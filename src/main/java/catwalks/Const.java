@@ -2,6 +2,7 @@ package catwalks;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Random;
 
 import catwalks.block.EnumCatwalkMaterial;
 import catwalks.block.property.UPropertyBool;
@@ -20,6 +21,8 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 public class Const {
 	
 	{ /* DRYing constants */ }
+	
+	public static Random RAND = new Random();
 	
 	public static boolean developmentEnvironment = (Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment");
 	public static final String MODID = CatwalksMod.MODID;

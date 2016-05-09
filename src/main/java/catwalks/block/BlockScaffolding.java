@@ -183,12 +183,12 @@ public class BlockScaffolding extends BlockBase implements ICustomLadder {
 	
 	@Override
 	public boolean shouldApplyClimbing(World world, BlockPos pos, EntityLivingBase entity) {
-		return entity.moveForward != 0 || entity.moveStrafing != 0;
+		return ( entity.moveForward != 0 || entity.moveStrafing != 0 ) && world.getBlockState(pos).getValue(Const.MATERIAL) == EnumCatwalkMaterial.WOOD;
 	}
 
 	@Override
 	public boolean shouldApplyFalling(World world, BlockPos pos, EntityLivingBase entity) {
-		return true;
+		return world.getBlockState(pos).getValue(Const.MATERIAL) == EnumCatwalkMaterial.WOOD;
 	}
 
 	@Override
@@ -203,6 +203,6 @@ public class BlockScaffolding extends BlockBase implements ICustomLadder {
 
 	@Override
 	public double horizontalSpeed(World world, BlockPos pos, EntityLivingBase entity) {
-		return 1/0.15;
+		return Double.POSITIVE_INFINITY;
 	}
 }

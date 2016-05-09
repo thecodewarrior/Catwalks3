@@ -18,6 +18,9 @@ item.steelgrate.name=Steel Grate
 
 item.catwalktool.name=Blowtorch
 item.catwalktool.info.0=§8§oOther wrenches work
+item.ladderGrabber.name=Ladder Grabber
+item.ladderGrabber.troll.name=Laddey Grabbey
+item.ladderGrabber.troll.info=Normally Ladder Grabber, but you're §cs§bp§de§ac§9i§ea§6l.
 
 gui.jei.crafting.decorationMerge=Combine
 gui.jei.crafting.decorationSplit=Split

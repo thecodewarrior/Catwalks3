@@ -3,6 +3,7 @@ package catwalks.item;
 import java.util.List;
 
 import catwalks.CatwalksMod;
+import catwalks.register.ItemRegister;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -16,6 +17,7 @@ public class ItemBase extends Item{
 		setUnlocalizedName(name);
 		this.name = name;
 		GameRegistry.registerItem(this, name);
+		ItemRegister.renderRegsiterItems.add(this);
 		setCreativeTab(CatwalksMod.tab);
 	}
 	
@@ -35,4 +37,6 @@ public class ItemBase extends Item{
 		
 		super.addInformation(stack, playerIn, tooltip, advanced);
 	}
+	
+	public String[] getCustomRenderVariants() { return null; }
 }

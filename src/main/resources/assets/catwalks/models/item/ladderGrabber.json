@@ -1,0 +1,6 @@
+{
+    "parent": "catwalks:item/standard_item",
+    "textures": { 
+        "layer0": "catwalks:items/ladderGrabber"
+    }
+}

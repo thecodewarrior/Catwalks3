@@ -13,9 +13,11 @@ import catwalks.block.extended.ICustomLadder;
 import catwalks.movement.capability.CWEntityDataProvider;
 import catwalks.movement.capability.ICWEntityData;
 import catwalks.movement.capability.ICWEntityData.CWEntityData;
+import catwalks.register.ItemRegister;
 import catwalks.shade.ccl.vec.Vector3;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -23,6 +25,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
@@ -153,13 +156,24 @@ public class MovementHandler {
 			}
 		}
 		
+		boolean hasActiveLadderGrabber = false;
+        
+        hasActiveLadderGrabber = hasActiveLadderGrabber || checkActiveLadderGrabber(entity.getHeldItemOffhand());
+        for(int i = 0; i < 9; i++) {
+            hasActiveLadderGrabber = hasActiveLadderGrabber || checkActiveLadderGrabber(entity.inventory.mainInventory[i]);
+        }
+        
+        if(hasActiveLadderGrabber && entity.isOnLadder() && entity.motionY < 0) {
+        	entity.motionY = 0;
+        }
+		
 		double horizontalSpeed = 0.15 * horizontalSpeedMultiplier;
 		double fallSpeed = 0.15 * fallSpeedMultiplier;
 		double climbSpeed = 0.2 * climbSpeedMultiplier;
 		
 		entity.motionX = MathHelper.clamp_double(entity.motionX, -horizontalSpeed, horizontalSpeed);
         entity.motionZ = MathHelper.clamp_double(entity.motionZ, -horizontalSpeed, horizontalSpeed);
-		
+        
         if(Double.isFinite(fallSpeedMultiplier)) { // slow down the player if a fall speed was found
         	entity.fallDistance = 0.0F;
 
@@ -168,7 +182,7 @@ public class MovementHandler {
                 entity.motionY = -fallSpeed;
             }
             
-            if (entity.isSneaking() && entity.motionY < 0.0D)
+            if (( entity.isSneaking() || hasActiveLadderGrabber ) && entity.motionY < 0.0D)
             {
                 entity.motionY = 0.0D;
             }
@@ -186,6 +200,14 @@ public class MovementHandler {
 	            entity.motionY = climbSpeed;
 	        }
         }
+	}
+	
+	public boolean checkActiveLadderGrabber(ItemStack stack) {
+		if(stack == null)
+			return false;
+		if(stack.getItem() == ItemRegister.ladderGrabber && stack.getMetadata() != 0)
+			return true;
+		return false;
 	}
 	
 	/**

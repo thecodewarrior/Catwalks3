@@ -9,6 +9,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class Conf {
 	
+	public static boolean shouldHaveLaddeyGrabbey = Const.RAND.nextDouble() <= ( 5 / 100.0 ); // 5% chance
+	
 	public static float ladderSpeed  = 2;
 	public static int catwalkSpeed = 1;
 	public static boolean showScaffoldInsideFaces = false;
