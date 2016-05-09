@@ -11,6 +11,7 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
@@ -33,49 +34,53 @@ public class Const {
 	
 	{ /* not render-only properties */ }
 	
-	public static final PropertyBool IS_TOP    = PropertyBool.create("istop");
-	public static final PropertyBool IS_BOTTOM = PropertyBool.create("isbottom");
+	{	/* normal blockstate properties*/	}
 	
-	public static final PropertyBool BOTTOM = PropertyBool.create("bottom");
-	public static final PropertyBool TOP    = PropertyBool.create("top");
-	public static final PropertyBool NORTH  = PropertyBool.create("north");
-	public static final PropertyBool SOUTH  = PropertyBool.create("south");
-	public static final PropertyBool EAST   = PropertyBool.create("east");
-	public static final PropertyBool WEST   = PropertyBool.create("west");
-	
-	public static final Map<EnumFacing, PropertyBool> sideProperties = new EnumMap<EnumFacing, PropertyBool>(EnumFacing.class);
-	
-	public static final PropertyBool EAST_TOP = PropertyBool.create("easttop");
-	public static final PropertyBool WEST_TOP = PropertyBool.create("westtop");
-	
-	public static final PropertyBool TAPE   = PropertyBool.create("tape");
-	public static final PropertyBool LIGHTS = PropertyBool.create("lights");
-	public static final PropertyBool SPEED  = PropertyBool.create("speed");
-	
-	public static final PropertyEnum<EnumFacing> FACING = PropertyEnum.create("facing", EnumFacing.class);
 	public static final PropertyEnum<EnumCatwalkMaterial> MATERIAL = PropertyEnum.create("material", EnumCatwalkMaterial.class);
+	public static final PropertyBool LIGHTS = PropertyBool.create("lights");
 	
-	public static final PropertyBool CONST_TRUE = PropertyBool.create("dummyConstTrue");
-	public static final PropertyBool CONST_FALSE = PropertyBool.create("dummyConstFalse");
+	
+	public static final UPropertyBool IS_TOP    = UPropertyBool.create("istop");
+	public static final UPropertyBool IS_BOTTOM = UPropertyBool.create("isbottom");
+	
+	public static final UPropertyBool BOTTOM = UPropertyBool.create("bottom");
+	public static final UPropertyBool TOP    = UPropertyBool.create("top");
+	public static final UPropertyBool NORTH  = UPropertyBool.create("north");
+	public static final UPropertyBool SOUTH  = UPropertyBool.create("south");
+	public static final UPropertyBool EAST   = UPropertyBool.create("east");
+	public static final UPropertyBool WEST   = UPropertyBool.create("west");
+	
+	public static final Map<EnumFacing, UPropertyBool> sideProperties = new EnumMap<EnumFacing, UPropertyBool>(EnumFacing.class);
+	
+	public static final UPropertyBool EAST_TOP = UPropertyBool.create("easttop");
+	public static final UPropertyBool WEST_TOP = UPropertyBool.create("westtop");
+	
+	public static final UPropertyBool TAPE   = UPropertyBool.create("tape");
+	public static final UPropertyBool SPEED  = UPropertyBool.create("speed");
+	
+	public static final UPropertyEnum<EnumFacing> FACING = UPropertyEnum.create("facing", EnumFacing.class, (v) -> v.getAxis() != Axis.Y);
+	
+	public static final UPropertyBool CONST_TRUE = UPropertyBool.create("dummyConstTrue");
+	public static final UPropertyBool CONST_FALSE = UPropertyBool.create("dummyConstFalse");
 	
 	{ /* render-only properties (unlisted properties) */ }
 	
-	public static final UPropertyBool UNLISTED_FLUFF_PROPERTY = new UPropertyBool("UNLISTED_FLUFF");
+	public static final UPropertyBool UNLISTED_FLUFF_PROPERTY = UPropertyBool.create("UNLISTED_FLUFF");
 	
-	public static final UPropertyBool NORTH_LADDER_EXT  = new UPropertyBool("north_ladder_ext");
-	public static final UPropertyBool SOUTH_LADDER_EXT  = new UPropertyBool("south_ladder_ext");
-	public static final UPropertyBool EAST_LADDER_EXT   = new UPropertyBool("east_ladder_ext");
-	public static final UPropertyBool WEST_LADDER_EXT   = new UPropertyBool("west_ladder_ext");
+	public static final UPropertyBool NORTH_LADDER_EXT  = UPropertyBool.create("north_ladder_ext");
+	public static final UPropertyBool SOUTH_LADDER_EXT  = UPropertyBool.create("south_ladder_ext");
+	public static final UPropertyBool EAST_LADDER_EXT   = UPropertyBool.create("east_ladder_ext");
+	public static final UPropertyBool WEST_LADDER_EXT   = UPropertyBool.create("west_ladder_ext");
 	
-	public static final UPropertyBool NORTH_LADDER_EXT_TOP  = new UPropertyBool("north_ladder_ext_top");
-	public static final UPropertyBool SOUTH_LADDER_EXT_TOP  = new UPropertyBool("south_ladder_ext_top");
-	public static final UPropertyBool EAST_LADDER_EXT_TOP   = new UPropertyBool("east_ladder_ext_top");
-	public static final UPropertyBool WEST_LADDER_EXT_TOP   = new UPropertyBool("west_ladder_ext_top");
+	public static final UPropertyBool NORTH_LADDER_EXT_TOP  = UPropertyBool.create("north_ladder_ext_top");
+	public static final UPropertyBool SOUTH_LADDER_EXT_TOP  = UPropertyBool.create("south_ladder_ext_top");
+	public static final UPropertyBool EAST_LADDER_EXT_TOP   = UPropertyBool.create("east_ladder_ext_top");
+	public static final UPropertyBool WEST_LADDER_EXT_TOP   = UPropertyBool.create("west_ladder_ext_top");
 	
-	public static final UPropertyBool NE_LADDER_EXT  = new UPropertyBool("northeast_ladder_ext");
-	public static final UPropertyBool NW_LADDER_EXT  = new UPropertyBool("northwest_ladder_ext");
-	public static final UPropertyBool SE_LADDER_EXT  = new UPropertyBool("southeast_ladder_ext");
-	public static final UPropertyBool SW_LADDER_EXT  = new UPropertyBool("southwest_ladder_ext");
+	public static final UPropertyBool NE_LADDER_EXT  = UPropertyBool.create("northeast_ladder_ext");
+	public static final UPropertyBool NW_LADDER_EXT  = UPropertyBool.create("northwest_ladder_ext");
+	public static final UPropertyBool SE_LADDER_EXT  = UPropertyBool.create("southeast_ladder_ext");
+	public static final UPropertyBool SW_LADDER_EXT  = UPropertyBool.create("southwest_ladder_ext");
 	
 	static {
 		sideProperties.put(EnumFacing.UP, TOP);

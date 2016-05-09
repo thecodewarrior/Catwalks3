@@ -50,8 +50,8 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	@Override
 	protected BlockStateContainer createBlockState() {
 	    return new ExtendedBlockState(this,
-	    		new IProperty[]{ Const.MATERIAL, Const.LIGHTS, Const.FACING, Const.TAPE, Const.SPEED, Const.NORTH, Const.WEST_TOP, Const.EAST_TOP},
-	    		new IUnlistedProperty[] { Const.UNLISTED_FLUFF_PROPERTY }
+	    		new IProperty[]{ Const.MATERIAL, Const.LIGHTS},
+	    		new IUnlistedProperty[] { Const.FACING, Const.TAPE, Const.SPEED, Const.NORTH, Const.WEST_TOP, Const.EAST_TOP }
 	    );
 	}
 	
@@ -68,8 +68,9 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	}
 	
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-		IBlockState below = getBelowState(worldIn, pos);
+	public IExtendedBlockState getExtendedState(IBlockState rawstate, IBlockAccess worldIn, BlockPos pos) {
+		IExtendedBlockState state = (IExtendedBlockState)rawstate;
+		IExtendedBlockState below = getBelowState(worldIn, pos);
 		boolean westTop = false, eastTop = false, north = false, tape = false, speed = false, lights = false;
 		EnumFacing facing = EnumFacing.NORTH;
 		if(below.getBlock() == BlockRegister.catwalkStair) {
@@ -84,18 +85,18 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 			 lights = below.getValue(Const.LIGHTS);
 		}
 		
-		return state
-				.withProperty(Const.LIGHTS, lights)
+		return (IExtendedBlockState) state
 				.withProperty(Const.WEST_TOP, westTop)
 				.withProperty(Const.EAST_TOP, eastTop)
 				.withProperty(Const.NORTH, north)
 				.withProperty(Const.TAPE, tape)
 				.withProperty(Const.SPEED, speed)
-				.withProperty(Const.FACING, facing);
+				.withProperty(Const.FACING, facing)
+				.withProperty(Const.LIGHTS, lights);
 	}
 	
-	private IBlockState getBelowState(IBlockAccess world, BlockPos pos) {
-		return GeneralUtil.getActualState(world, pos.offset(EnumFacing.DOWN));
+	private IExtendedBlockState getBelowState(IBlockAccess world, BlockPos pos) {
+		return GeneralUtil.getTileState(world, pos.offset(EnumFacing.DOWN));
 	}
 
 	{ /* super special stair-top stuffs */ }
@@ -237,7 +238,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	public boolean hasSide(World world, BlockPos pos, EnumFacing side) {
 		if(!checkForValidity(world, pos))
 			return false;
-		IBlockState state = getBelowState(world, pos);
+		IExtendedBlockState state = getBelowState(world, pos);
 		
 		EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), side);
 		if(actualDir == EnumFacing.EAST && state.getValue(Const.EAST_TOP)) {
@@ -256,7 +257,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	public void setSide(World world, BlockPos pos, EnumFacing side, boolean value) {
 		if(!checkForValidity(world, pos))
 			return;
-		IBlockState state = getBelowState(world, pos);
+		IExtendedBlockState state = getBelowState(world, pos);
 		
 		TileExtended tile = (TileExtended) world.getTileEntity(pos.offset(EnumFacing.DOWN));
 		
@@ -276,7 +277,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	public Object sideData(World world, BlockPos pos, EnumFacing side) {
 		if(!checkForValidity(world, pos))
 			return null;
-		IBlockState state = getBelowState(world, pos);
+		IExtendedBlockState state = getBelowState(world, pos);
 		if(side.getAxis() != state.getValue(Const.FACING).getAxis())
 			return state.getValue(Const.FACING);
 		return null;
@@ -286,7 +287,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	public EnumSideType sideType(World world, BlockPos pos, EnumFacing side) {
 		if(!checkForValidity(world, pos))
 			return EnumSideType.FULL;
-		IBlockState state = getBelowState(world, pos);
+		IExtendedBlockState state = getBelowState(world, pos);
 		
 		if(side == state.getValue(Const.FACING)) {
 			return EnumSideType.FULL;

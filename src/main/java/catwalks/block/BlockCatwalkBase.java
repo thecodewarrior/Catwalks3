@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableList;
 
 import catwalks.Const;
 import catwalks.block.extended.BlockExtended;
+import catwalks.block.extended.ITileStateProvider;
 import catwalks.block.extended.TileExtended;
 import catwalks.block.property.UPropertyBool;
 import catwalks.proxy.ClientProxy;
@@ -54,7 +55,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalkConnect, IDecoratable {
+public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalkConnect, IDecoratable, ITileStateProvider {
 	
 	public BlockCatwalkBase(Material material, String name) {
 		super(material, name);
@@ -73,7 +74,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		initColllisionBoxes();
 	}
 	
-	public static Trimap<PropertyBool, EnumFacing, Integer> sides = new Trimap<>(PropertyBool.class, EnumFacing.class, Integer.class);
+	public static Trimap<UPropertyBool, EnumFacing, Integer> sides = new Trimap<>(UPropertyBool.class, EnumFacing.class, Integer.class);
 	static int I_BOTTOM=0, I_TOP=1, I_NORTH=2, I_SOUTH=3, I_EAST=4, I_WEST=5,  I_FACING_ID=6, I_FACING_LEN=3, I_TAPE=10, I_SPEED=12; // lights was 11
 
 	static {
@@ -171,7 +172,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		
 		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
 		
-		IExtendedBlockState estate = (IExtendedBlockState)state;
+		IExtendedBlockState estate = getTileState(state, worldIn, pos);
 		
 		if(tile != null) {
 			estate = setRenderProperties(tile, estate);
@@ -181,9 +182,11 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	}
 	
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+	public IExtendedBlockState getTileState(IBlockState rawstate, IBlockAccess worldIn, BlockPos pos) {
 		
 		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
+		
+		IExtendedBlockState state = (IExtendedBlockState)rawstate;
 		
 		if(tile == null)
 			return state;
@@ -207,12 +210,12 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		return state;
 	}
 	
-	public IBlockState setFunctionalProperties(TileExtended tile, @Nonnull IBlockState state) {
+	public IExtendedBlockState setFunctionalProperties(TileExtended tile, @Nonnull IExtendedBlockState state) {
 		return state;
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public void addFunctionalProperties(List<IProperty> list) {}
+	public void addFunctionalProperties(List<IUnlistedProperty> list) {}
 	
 	@SuppressWarnings("rawtypes")
 	public void addRenderOnlyProperties(List<IUnlistedProperty> list) {};
@@ -220,20 +223,16 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	@Override
 	@SuppressWarnings("rawtypes")
 	protected BlockStateContainer createBlockState() {
-		List<IProperty> listedProperties = new ArrayList<>();
-		listedProperties.addAll(Arrays.asList( new IProperty[] {
-				Const.MATERIAL, Const.FACING, Const.LIGHTS, Const.TAPE, Const.SPEED,
+		List<IUnlistedProperty> unlistedProperties = new ArrayList<>();
+		unlistedProperties.addAll(Arrays.asList( new IUnlistedProperty[] {
+				Const.FACING, Const.TAPE, Const.SPEED,
 				Const.BOTTOM, Const.TOP, Const.NORTH, Const.SOUTH, Const.WEST, Const.EAST
 		} ));
-		addFunctionalProperties(listedProperties);
+		addFunctionalProperties(unlistedProperties);
 
-		List<IUnlistedProperty> unlistedProperties = new ArrayList<>();
 		addRenderOnlyProperties(unlistedProperties);
-	    
-		if(unlistedProperties.size() == 0) // if there aren't any unlisted properties it'll return normal blockstates, which breaks all the things
-			unlistedProperties.add( Const.UNLISTED_FLUFF_PROPERTY );
 		
-	    ExtendedBlockState state = new ExtendedBlockState(this, listedProperties.toArray(new IProperty[0]), unlistedProperties.toArray(new IUnlistedProperty[0]));
+	    ExtendedBlockState state = new ExtendedBlockState(this, new IProperty[] {Const.MATERIAL, Const.LIGHTS}, unlistedProperties.toArray(new IUnlistedProperty[0]));
 	    
 	    return state;
 	}
@@ -265,7 +264,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	@Override
 	public void breakBlock(World worldIn, BlockPos pos, IBlockState rawState) {
 		
-		IBlockState state = getActualState(rawState, worldIn, pos);
+		IExtendedBlockState state = getTileState(rawState, worldIn, pos);
 		List<ItemStack> drops = new ArrayList<>();
 		if(state.getValue(Const.TAPE)) {
 			drops.add(new ItemStack(ItemRegister.tape, 1, ItemRegister.tape.getMaxDamage() - 1));
@@ -353,7 +352,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		
 		boolean eNull = collidingEntity == null;
 		
-		IBlockState state = getActualState(world.getBlockState(pos), world, pos);
+		IExtendedBlockState state = getTileState(world.getBlockState(pos), world, pos);
 		
         if(Const.developmentEnvironment) initColllisionBoxes();
 		List<CollisionBox> boxes = getCollisionBoxes(state, world, pos);
@@ -384,7 +383,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	
 	@Override
 	public RayTraceResult collisionRayTrace(IBlockState baseState, World world, BlockPos pos, EntityPlayer player, Vec3d startRaw, Vec3d endRaw) {
-		IBlockState state = getActualState(world.getBlockState(pos), world, pos);
+		IExtendedBlockState state = getTileState(world.getBlockState(pos), world, pos);
 		boolean hasWrench = player.inventory.getCurrentItem() != null && WrenchChecker.isAWrench(player.inventory.getCurrentItem().getItem());
 		
 		Vector3
@@ -477,7 +476,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	public static class CollisionBox {
 		
 		public Cuboid6 normal, sneak;
-		public PropertyBool enableProperty;
+		public UPropertyBool enableProperty;
 		
 		public void apply(Matrix4 matrix) {
 			normal.apply(matrix);
@@ -501,7 +500,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	
 	public static class LookSide {
 		public Face mainSide, wrenchSide;
-		public PropertyBool showProperty;
+		public UPropertyBool showProperty;
 		public boolean showWithoutWrench;
 		public EnumFacing side;
 		public BlockPos offset;
@@ -510,7 +509,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			this.offset = new BlockPos(0,0,0);
 		}
 		
-		public LookSide(Quad mainSide, Quad wrenchSide, EnumFacing side, PropertyBool showProperty, boolean showWithoutWrench) {
+		public LookSide(Quad mainSide, Quad wrenchSide, EnumFacing side, UPropertyBool showProperty, boolean showWithoutWrench) {
 			this.mainSide = mainSide;
 			this.wrenchSide = wrenchSide;
 			this.showProperty = showProperty;

@@ -32,7 +32,7 @@ public class BlockCatwalk extends BlockCatwalkBase {
 	
 	@Override
 	public boolean hasEdge(World world, BlockPos pos, CubeEdge edge) {
-		IBlockState state = getActualState(world.getBlockState(pos), world, pos);
+		IExtendedBlockState state = getTileState(world.getBlockState(pos), world, pos);
 		return 
 				(   state.getProperties().containsKey(Const.sideProperties.get(edge.dir1)) && state.getValue(Const.sideProperties.get(edge.dir1))   )
 						!=
@@ -47,7 +47,7 @@ public class BlockCatwalk extends BlockCatwalkBase {
 	
 	@Override
 	public boolean hasSide(World world, BlockPos pos, EnumFacing side) {
-		IBlockState state = getActualState(world.getBlockState(pos), world, pos);
+		IExtendedBlockState state = getTileState(world.getBlockState(pos), world, pos);
 		return state.getProperties().containsKey(Const.sideProperties.get(side)) && state.getValue(Const.sideProperties.get(side));
 	}
 	

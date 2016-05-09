@@ -4,6 +4,7 @@ import java.util.List;
 
 import catwalks.Conf;
 import catwalks.Const;
+import catwalks.block.extended.ICustomLadder;
 import catwalks.item.ItemBlockScaffold;
 import catwalks.register.ItemRegister;
 import catwalks.shade.ccl.raytracer.RayTracer;
@@ -15,6 +16,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -29,7 +31,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockScaffolding extends BlockBase {
+public class BlockScaffolding extends BlockBase implements ICustomLadder {
 		
 	public BlockScaffolding() {
 		super(Material.IRON, "scaffold", (c) -> new ItemBlockScaffold(c));
@@ -176,4 +178,31 @@ public class BlockScaffolding extends BlockBase {
 			return super.shouldSideBeRendered(state, worldIn, pos, side);
         return worldIn.getBlockState(pos.offset(side)).getBlock() == this ? false : super.shouldSideBeRendered(state, worldIn, pos, side);
     }
+
+	{ /* ladder */ }
+	
+	@Override
+	public boolean shouldApplyClimbing(World world, BlockPos pos, EntityLivingBase entity) {
+		return entity.moveForward != 0 || entity.moveStrafing != 0;
+	}
+
+	@Override
+	public boolean shouldApplyFalling(World world, BlockPos pos, EntityLivingBase entity) {
+		return true;
+	}
+
+	@Override
+	public double climbSpeed(World world, BlockPos pos, EntityLivingBase entity) {
+		return 1;
+	}
+
+	@Override
+	public double fallSpeed(World world, BlockPos pos, EntityLivingBase entity) {
+		return 1;
+	}
+
+	@Override
+	public double horizontalSpeed(World world, BlockPos pos, EntityLivingBase entity) {
+		return 1/0.15;
+	}
 }

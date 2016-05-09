@@ -8,6 +8,7 @@ import catwalks.Const;
 import catwalks.block.BlockCatwalkBase.Tri;
 import catwalks.block.ICatwalkConnect;
 import catwalks.block.extended.CubeEdge;
+import catwalks.block.extended.ITileStateProvider;
 import catwalks.shade.ccl.vec.Cuboid6;
 import catwalks.shade.ccl.vec.Vector3;
 import net.minecraft.block.state.IBlockState;
@@ -24,13 +25,22 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.IExtendedBlockState;
 
 public class GeneralUtil {
 	private static final Random RANDOM = new Random();
 	
-	public static IBlockState getActualState(IBlockAccess worldIn, BlockPos pos) {
+	public static IExtendedBlockState getTileState(IBlockAccess worldIn, BlockPos pos) {
 		IBlockState state = worldIn.getBlockState(pos);
-		return state.getBlock().getActualState(state, worldIn, pos);
+		
+		if(!( state.getBlock() instanceof ITileStateProvider )) {
+			if(worldIn instanceof World)
+				Logs.error("%s is not a ITileStateProvider!!! [ located at %s ]", state.getBlock().getClass().getName(), getWorldPosLogInfo((World)worldIn, pos));
+			else
+				Logs.error("%s is not a ITileStateProvider!!! [ located at %d %d %d ]", state.getBlock().getClass().getName(), pos.getX(), pos.getY(), pos.getZ());
+		}
+		
+		return ( (ITileStateProvider)state.getBlock() ).getTileState(state, worldIn, pos);
 	}
 
 	public static void markForUpdate(World world, BlockPos pos) {

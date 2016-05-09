@@ -132,7 +132,7 @@ public class MovementHandler {
 		double fallSpeedMultiplier = Double.POSITIVE_INFINITY;
 		double horizontalSpeedMultiplier = Double.POSITIVE_INFINITY;
 		
-		for(BlockPos pos : eachTouching(event.getEntityLiving(), false, new Vector3(0,0,0), new Vector3(0,0,0)) ) {
+		for(BlockPos pos : eachTouching(event.getEntityLiving(), true, new Vector3(0,0,0), new Vector3(0,0,0)) ) {
 			Block block = world.getBlockState(pos).getBlock();
 			if( block instanceof ICustomLadder) {
 				ICustomLadder icl = (ICustomLadder) block;

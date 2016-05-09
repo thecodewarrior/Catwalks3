@@ -5,7 +5,11 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 public class UPropertyBool implements IUnlistedProperty<Boolean> {
 	private final String name;
 
-    public UPropertyBool(String name) {
+	public static UPropertyBool create(String name) {
+		return new UPropertyBool(name);
+	}
+	
+    private UPropertyBool(String name) {
         this.name = name;
     }
 

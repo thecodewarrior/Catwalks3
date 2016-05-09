@@ -12,14 +12,13 @@ import catwalks.Conf;
 import catwalks.Const;
 import catwalks.block.BlockCatwalkBase;
 import catwalks.block.ICatwalkConnect;
+import catwalks.block.property.UPropertyBool;
 import catwalks.item.ItemBlockCatwalk;
 import catwalks.shade.ccl.vec.Cuboid6;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.GeneralUtil;
 import catwalks.util.Logs;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
@@ -41,14 +40,14 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 	
 	@Override
 	public double climbSpeed(World world, BlockPos pos, EntityLivingBase entity) {
-		IBlockState state = GeneralUtil.getActualState(world, pos);
+		IExtendedBlockState state = GeneralUtil.getTileState(world, pos);
 		
 		return state.getValue(Const.SPEED) ? Conf.ladderSpeed : 1;
 	}
 
 	@Override
 	public double fallSpeed(World world, BlockPos pos, EntityLivingBase entity) {
-		IBlockState state = GeneralUtil.getActualState(world, pos);
+		IExtendedBlockState state = GeneralUtil.getTileState(world, pos);
 
 		return state.getValue(Const.SPEED) ? Conf.ladderSpeed : 1;
 	}
@@ -74,13 +73,13 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		if(	!playerAABB.intersectsWith(blockAABB)) // if the player isn't even in the block entirely, don't bother with all the complex slow stuff
 			return false;
 		
-		IBlockState state = GeneralUtil.getActualState(world, pos);
+		IExtendedBlockState state = GeneralUtil.getTileState(world, pos);
 		
 		int rot = GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING));
-		PropertyBool northProp = Const.sideProperties.get(GeneralUtil.derotateFacing(rot, EnumFacing.NORTH));
-		PropertyBool southProp = Const.sideProperties.get(GeneralUtil.derotateFacing(rot, EnumFacing.SOUTH));
-		PropertyBool  eastProp = Const.sideProperties.get(GeneralUtil.derotateFacing(rot, EnumFacing.EAST ));
-		PropertyBool  westProp = Const.sideProperties.get(GeneralUtil.derotateFacing(rot, EnumFacing.WEST ));
+		UPropertyBool northProp = Const.sideProperties.get(GeneralUtil.derotateFacing(rot, EnumFacing.NORTH));
+		UPropertyBool southProp = Const.sideProperties.get(GeneralUtil.derotateFacing(rot, EnumFacing.SOUTH));
+		UPropertyBool  eastProp = Const.sideProperties.get(GeneralUtil.derotateFacing(rot, EnumFacing.EAST ));
+		UPropertyBool  westProp = Const.sideProperties.get(GeneralUtil.derotateFacing(rot, EnumFacing.WEST ));
 		
 		
 		boolean // check which sides are equal, meaning that the player is pusing up against that side, and we might should apply our values based on that
@@ -91,7 +90,7 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		
 		if(!state.getValue(Const.IS_BOTTOM)) { // if there is a ladder below us
 			BlockPos downPos = pos.offset(EnumFacing.DOWN);
-			IBlockState below = GeneralUtil.getActualState(world, downPos);
+			IExtendedBlockState below = GeneralUtil.getTileState(world, downPos);
 			
 			// for each side, if this is the bottom side before an opening, don't consider it so the player can get out without climbing back up
 			if(north && state.getValue(northProp) && !below.getValue(northProp))
@@ -162,14 +161,14 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 	@Override
 	public EnumFacing transformAffectedSide(World world, BlockPos pos, IBlockState state, EnumFacing side) {
 		// I rotate here so the actual side is turned into the "virtual" side
-		IBlockState estate = getActualState(state, world, pos);
+		IExtendedBlockState estate = getTileState(state, world, pos);
 		return GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, estate.getValue(Const.FACING)), side);
 	}
 	
 	
 	@SuppressWarnings("rawtypes")
 	@Override
-	public void addFunctionalProperties(List<IProperty> list) {
+	public void addFunctionalProperties(List<IUnlistedProperty> list) {
 		list.add(Const.IS_TOP);
 		list.add(Const.IS_BOTTOM);
 	}
@@ -194,7 +193,7 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 	}
 
 	@Override
-	public IBlockState setFunctionalProperties(TileExtended tile, IBlockState state) {
+	public IExtendedBlockState setFunctionalProperties(TileExtended tile, IExtendedBlockState state) {
 		BlockPos pos = tile.getPos();
 		World world = tile.getWorld();
 		
@@ -272,7 +271,7 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 			
 			if(world.getBlockState(down).getBlock() == this) {
 				BlockPos below = pos.offset(EnumFacing.DOWN);
-				IBlockState state = GeneralUtil.getActualState(world, below);
+				IExtendedBlockState state = GeneralUtil.getTileState(world, below);
 				
 				EnumFacing belowFacing = state.getValue(Const.FACING);
 				EnumFacing belowVirtualSide = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, belowFacing), offsetSide);
@@ -402,7 +401,7 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 	
 	@Override
 	public boolean hasEdge(World world, BlockPos pos, CubeEdge edge) {
-		IBlockState state = GeneralUtil.getActualState(world, pos);
+		IExtendedBlockState state = GeneralUtil.getTileState(world, pos);
 		edge.dir1 = GeneralUtil.rotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), edge.dir1);
 		edge.dir2 = GeneralUtil.rotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), edge.dir2);
 		return state.getValue(sides.getA(edge.dir1)) || (edge.dir2.getAxis() != Axis.Y && state.getValue(sides.getA(edge.dir2)) );
@@ -415,7 +414,7 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 	
 	@Override
 	public boolean hasSide(World world, BlockPos pos, EnumFacing side) {
-		IBlockState state = GeneralUtil.getActualState(world, pos);
+		IExtendedBlockState state = GeneralUtil.getTileState(world, pos);
 		side = GeneralUtil.rotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), side);
 		return (side.getAxis() != Axis.Y && state.getValue(sides.getA(side)) );
 	}
@@ -424,7 +423,7 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 	public void setSide(World world, BlockPos pos, EnumFacing side, boolean value) {
 		if(side == EnumFacing.UP)
 			return;
-		IBlockState state = GeneralUtil.getActualState(world, pos);
+		IExtendedBlockState state = GeneralUtil.getTileState(world, pos);
 		side = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), side);
 		
 		TileExtended tile = (TileExtended) world.getTileEntity(pos);
@@ -523,15 +522,13 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 	}
 
 	@Override
-	public List<CollisionBox> getCollisionBoxes(IBlockState state, World world, BlockPos pos) {
+	public List<CollisionBox> getCollisionBoxes(IBlockState rawstate, World world, BlockPos pos) {
+		IExtendedBlockState state = getTileState(rawstate, world, pos);
 		EnumFacing facing = state.getValue(Const.FACING);
 		List<CollisionBox> list = collisionBoxes.get(facing);
 		if(list == null) {
-			Logs.warn("Tried to get collision boxes for invalid facing value! %s at (%d, %d, %d) in dim %d",
-					facing.toString().toUpperCase(), pos.getX(), pos.getY(), pos.getZ(), world.provider.getDimensionType().getName(), world.provider.getDimension());
-			world.setBlockState(pos, Blocks.AIR.getDefaultState());
-			Logs.warn("Removed invalid CatwalkStair block at (%d, %d, %d) in dim %d",
-					pos.getX(), pos.getY(), pos.getZ(), world.provider.getDimensionType().getName(), world.provider.getDimension());
+			Logs.warn("Tried to get collision boxes for invalid facing value! %s at %s", GeneralUtil.getWorldPosLogInfo(world, pos));
+			Logs.warn("Removed invalid CatwalkStair block at %s", GeneralUtil.getWorldPosLogInfo(world, pos));
 			list = collisionBoxes.get(EnumFacing.NORTH);
 		}
 		return list;
@@ -681,7 +678,7 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 
 	@Override
 	public List<LookSide> lookSides(IBlockState state, World world, BlockPos pos) {
-		return sideLookBoxes.get(state.getValue(Const.FACING));
+		return sideLookBoxes.get(getTileState(state, world, pos).getValue(Const.FACING));
 	}
 	
 }

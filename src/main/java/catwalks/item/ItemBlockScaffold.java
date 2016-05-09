@@ -61,9 +61,9 @@ public class ItemBlockScaffold extends ItemBlock {
 		
 		if(oldFacing == facing) { // we didn't extend
 			if( stack.getMetadata() == EnumCatwalkMaterial.WOOD.ordinal()) {
-				if( facing == EnumFacing.UP ) {
+				if( facing == EnumFacing.UP && playerIn.getEntityBoundingBox().intersectsWith(new AxisAlignedBB(pos.offset(EnumFacing.UP))) ) {
 					double moveUpAmount = (pos.getY()+2) - playerIn.posY;
-					MovementHandler.INSTANCE.setPlayerNerdPoleMove(playerIn, moveUpAmount+1, 2);
+					MovementHandler.INSTANCE.setPlayerNerdPoleMove(playerIn, moveUpAmount, 2);
 					checkPlayer = playerIn;
 				}
 			}
