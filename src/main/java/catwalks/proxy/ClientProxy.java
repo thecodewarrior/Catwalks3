@@ -13,6 +13,7 @@ import catwalks.Const;
 import catwalks.block.BlockCatwalkBase.Face;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
+import catwalks.register.NodeRegister;
 import catwalks.shade.ccl.raytracer.RayTracer;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
@@ -60,6 +61,7 @@ public class ClientProxy extends CommonProxy {
 	public void preInit() {
 		BlockRegister.initRender();
 		ItemRegister.initRender();
+		NodeRegister.initRender();
 		MinecraftForge.EVENT_BUS.register(new Conf());
 		OBJLoader.INSTANCE.addDomain(Const.MODID);
 	}

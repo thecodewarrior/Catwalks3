@@ -4,6 +4,7 @@ import catwalks.movement.MovementHandler;
 import catwalks.proxy.CommonProxy;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
+import catwalks.register.NodeRegister;
 import catwalks.register.RecipeRegister;
 import catwalks.util.WrenchChecker;
 import net.minecraft.creativetab.CreativeTabs;
@@ -11,6 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -26,11 +28,15 @@ public class CatwalksMod {
     @SidedProxy(serverSide="catwalks.proxy.CommonProxy", clientSide="catwalks.proxy.ClientProxy")
     public static CommonProxy proxy;
     
+    @Instance
+    public static CatwalksMod INSTANCE;
+    
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
     	BlockRegister.register();
     	ItemRegister.register();
     	RecipeRegister.register();
+    	NodeRegister.register();
     	Conf.loadConfigsFromFile(event.getSuggestedConfigurationFile());
     	MinecraftForge.EVENT_BUS.register(proxy);
     	proxy.preInit();

@@ -3,6 +3,7 @@ package catwalks.item;
 import java.util.List;
 
 import catwalks.Conf;
+import catwalks.node.EntityNodeBase;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -49,6 +50,11 @@ public class ItemLadderGrabber extends ItemBase {
 		if(playerIn.isSneaking()) {
 			ItemStack stack = itemStackIn.copy();
 			stack.setItemDamage(stack.getMetadata() == 0 ? 1 : 0);
+			
+			EntityNodeBase entity = new EntityNodeBase(worldIn, playerIn.posX, playerIn.posY+2, playerIn.posZ);
+			
+			worldIn.spawnEntityInWorld(entity);
+			
 			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
 		}
 		return new ActionResult<ItemStack>(EnumActionResult.PASS, itemStackIn);
