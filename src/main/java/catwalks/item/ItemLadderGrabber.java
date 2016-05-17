@@ -18,6 +18,7 @@ public class ItemLadderGrabber extends ItemBase {
 	
 	public ItemLadderGrabber() {
 		super("ladderGrabber");
+		setMaxStackSize(1);
 	}
 	
 	@Override
@@ -50,12 +51,6 @@ public class ItemLadderGrabber extends ItemBase {
 		if(playerIn.isSneaking()) {
 			ItemStack stack = itemStackIn.copy();
 			stack.setItemDamage(stack.getMetadata() == 0 ? 1 : 0);
-			
-			EntityNodeBase entity = new EntityNodeBase(worldIn, playerIn.posX, playerIn.posY+2, playerIn.posZ);
-			
-			worldIn.spawnEntityInWorld(entity);
-			
-			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
 		}
 		return new ActionResult<ItemStack>(EnumActionResult.PASS, itemStackIn);
 	}

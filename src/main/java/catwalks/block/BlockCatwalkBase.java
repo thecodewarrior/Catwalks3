@@ -15,7 +15,11 @@ import catwalks.block.extended.BlockExtended;
 import catwalks.block.extended.ITileStateProvider;
 import catwalks.block.extended.TileExtended;
 import catwalks.block.property.UPropertyBool;
-import catwalks.proxy.ClientProxy;
+import catwalks.raytrace.RayTraceUtil;
+import catwalks.raytrace.RayTraceUtil.IRenderableFace;
+import catwalks.raytrace.RayTraceUtil.ITraceResult;
+import catwalks.raytrace.RayTraceUtil.ITraceable;
+import catwalks.raytrace.RayTraceUtil.VertexList;
 import catwalks.register.ItemRegister;
 import catwalks.shade.ccl.util.Copyable;
 import catwalks.shade.ccl.vec.Cuboid6;
@@ -29,7 +33,6 @@ import catwalks.util.WrenchChecker;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -42,7 +45,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -379,94 +381,66 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	
 	public abstract void initSides();
 	
-	public abstract List<LookSide> lookSides(IBlockState state, World world, BlockPos pos);
+	public abstract List<? extends ITraceable<BlockTraceParam, BlockTraceResult> > lookSides(IBlockState state, World world, BlockPos pos);
+	
+
+	public static class BlockTraceResult {
+		public BlockPos offset;
+		public EnumFacing side;
+		public BlockTraceResult(BlockPos offset, EnumFacing side) {
+			this.offset = offset; this.side = side;
+		}
+//		public IWireframe frame;
+	}
+	
+	public static class BlockTraceParam {
+		public EntityPlayer player;
+		public IExtendedBlockState state;
+		public boolean wrench;
+		public BlockTraceParam(EntityPlayer player, IExtendedBlockState state, boolean wrench) {
+			this.player = player; this.state = state; this.wrench = wrench;
+		}
+	}
 	
 	@Override
 	public RayTraceResult collisionRayTrace(IBlockState baseState, World world, BlockPos pos, EntityPlayer player, Vec3d startRaw, Vec3d endRaw) {
 		IExtendedBlockState state = getTileState(world.getBlockState(pos), world, pos);
 		boolean hasWrench = player.inventory.getCurrentItem() != null && WrenchChecker.isAWrench(player.inventory.getCurrentItem().getItem());
 		
-		Vector3
-			blockPosVec = new Vector3(pos),
-			start = new Vector3(startRaw).sub(blockPosVec),
-			end   = new Vector3(  endRaw).sub(blockPosVec);
+		Vec3d posVec = new Vec3d(pos), start = startRaw.subtract(posVec), end = endRaw.subtract(posVec);
 		
 		if(Const.developmentEnvironment) initSides();
-		List<LookSide> sides = lookSides(state, world, pos);
+		List<? extends ITraceable<BlockTraceParam, BlockTraceResult> > sides = lookSides(state, world, pos);
 		if(sides == null) {
 			return null;
 		}
 		
-		LookSide hitSide = null;
-		Vector3 hitVector = null;
-		double smallestDistanceSq = Double.POSITIVE_INFINITY;
-		ClientProxy.hits.clear();
-		for (LookSide side : sides) {
-			Face quad = null;
-			if(side.showProperty == null || side.showProperty == Const.CONST_TRUE || (side.showProperty != Const.CONST_FALSE && state.getValue(side.showProperty))) {
-				quad = side.mainSide;
-			} else if(side.showWithoutWrench || hasWrench) {
-				quad = side.wrenchSide;
-			}
-			if(quad == null)
-				continue;
-			
-			start.x -= side.offset.getX();
-			start.y -= side.offset.getY();
-			start.z -= side.offset.getZ();
-			
-			end.x   -= side.offset.getX();
-			end.y   -= side.offset.getY();
-			end.z   -= side.offset.getZ();
-			
-			Tri[] tris = quad.tris();
-			for (Tri tri : tris) {
-				Vector3 vec = GeneralUtil.intersectRayTri(start.copy(), end.copy(), tri);
-				if(vec != null) {
-					Vector3 sub = vec.copy().sub(start);
-					double distanceSq = sub.magSquared();
-					if(distanceSq < 4.1 && distanceSq > 3.9) {
-						distanceSq = distanceSq -1 +1;
-					}
-					if(Const.developmentEnvironment)
-						ClientProxy.hits.add(new Tuple<Vector3, Double>(vec.copy().add(blockPosVec).add(new Vector3(side.offset)), Math.sqrt( distanceSq )));
-					if(distanceSq < smallestDistanceSq) {
-						hitSide = side;
-						hitVector = vec.copy().add(blockPosVec);
-						smallestDistanceSq = distanceSq;
-					}
-				}
-			}
-			
-			start.x += side.offset.getX();
-			start.y += side.offset.getY();
-			start.z += side.offset.getZ();
-			
-			end.x   += side.offset.getX();
-			end.y   += side.offset.getY();
-			end.z   += side.offset.getZ();
-		}
+		ITraceResult<BlockTraceResult> hitSide = RayTraceUtil.trace(start, end, sides, new BlockTraceParam(player, state, hasWrench));
 		
-		if(hitSide == null)
+		if(hitSide.hitDistance() == Double.POSITIVE_INFINITY)
 			return null;
 		
-		Face quad = null;
-		
-		if(hitSide.showProperty == null || hitSide.showProperty == Const.CONST_TRUE || (hitSide.showProperty != Const.CONST_FALSE && state.getValue(hitSide.showProperty))) {
-			quad = hitSide.mainSide;
-		} else if(hitSide.showWithoutWrench || hasWrench) {
-			quad = hitSide.wrenchSide;
+		IRenderableFace face = null;
+		if(hitSide instanceof IRenderableFace) {
+			face = (IRenderableFace) hitSide;
+		} else {
+			face = new IRenderableFace() {
+				
+				@Override
+				public List<VertexList> getVertices() {
+					return ImmutableList.of();
+				}
+			};
 		}
 		
-		BlockPos actualPos = pos.add(hitSide.offset.getX(), hitSide.offset.getY(), hitSide.offset.getZ());
+		BlockPos actualPos = pos.add(hitSide.data().offset.getX(), hitSide.data().offset.getY(), hitSide.data().offset.getZ());
 		
 		CustomFaceRayTraceResult mop = new CustomFaceRayTraceResult(
-					hitVector.vec3(),
-					hitSide.side == null ? EnumFacing.UP : hitSide.side,
-					actualPos
-				).face(quad) ;
-
-		
+					hitSide.hitPoint().add(posVec),
+					hitSide.data().side,
+					actualPos,
+					hitSide.data().offset
+				).face(face) ;
 		
 		return mop;
 	}
@@ -495,165 +469,6 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			box.enableProperty = enableProperty;
 			return box;
 		}
-		
-	}
-	
-	public static class LookSide {
-		public Face mainSide, wrenchSide;
-		public UPropertyBool showProperty;
-		public boolean showWithoutWrench;
-		public EnumFacing side;
-		public BlockPos offset;
-		
-		public LookSide() {
-			this.offset = new BlockPos(0,0,0);
-		}
-		
-		public LookSide(Quad mainSide, Quad wrenchSide, EnumFacing side, UPropertyBool showProperty, boolean showWithoutWrench) {
-			this.mainSide = mainSide;
-			this.wrenchSide = wrenchSide;
-			this.showProperty = showProperty;
-			this.showWithoutWrench = showWithoutWrench;
-			this.side = side;
-			this.offset = new BlockPos(0,0,0);
-		}
-		
-		public void apply(Matrix4 matrix) {
-			if(mainSide != null)
-				mainSide.apply(matrix);
-			if(wrenchSide != null)
-				wrenchSide.apply(matrix);
-		}
-		
-		public LookSide copy() {
-			LookSide side = new LookSide();
-			
-			side.mainSide   = mainSide == null ? null : mainSide.copy();
-			side.wrenchSide = wrenchSide == null ? null : wrenchSide.copy();
-			side.showProperty = showProperty;
-			side.showWithoutWrench = showWithoutWrench;
-			side.side = this.side;
-			side.offset = this.offset;
-			return side;
-		}
-		
-		@Override
-		public String toString() {
-			return showProperty.getName() + " => " + mainSide.toString() + " | " + wrenchSide.toString() + " @ " + side.getName();
-		}
-		
-	}
-	
-	public abstract static class Face implements Copyable<Face> {
-		public abstract void apply(Matrix4 matrix);
-		public abstract void rotate(int rotation);
-		public abstract void rotateCenter(int rotation);
-		public abstract Tri[] tris();
-		public abstract Vector3[] points();
-	}
-	
-	public static class Quad extends Face {
-		public Vector3 v1, v2, v3, v4;
-		
-		public Quad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4) {
-			this.v1 = v1;
-			this.v2 = v2;
-			this.v3 = v3;
-			this.v4 = v4;
-		}
-		
-		public void apply(Matrix4 matix) {
-			v1.apply(matix);
-			v2.apply(matix);
-			v3.apply(matix);
-			v4.apply(matix);
-		}
-		
-		public void rotate(int rotation) {
-			GeneralUtil.rotateVector(rotation, v1);
-			GeneralUtil.rotateVector(rotation, v2);
-			GeneralUtil.rotateVector(rotation, v3);
-			GeneralUtil.rotateVector(rotation, v4);
-		}
-		
-		public void rotateCenter(int rotation) {
-			GeneralUtil.rotateVectorCenter(rotation, v1);
-			GeneralUtil.rotateVectorCenter(rotation, v2);
-			GeneralUtil.rotateVectorCenter(rotation, v3);
-			GeneralUtil.rotateVectorCenter(rotation, v4);
-		}
-		
-		public Quad copy() {
-			return new Quad(v1.copy(), v2.copy(), v3.copy(), v4.copy());
-		}
-		
-		public Tri[] tris() {
-			Tri[] tris = new Tri[2];
-			tris[0] = new Tri(v1, v2, v3);
-			tris[1] = new Tri(v1, v3, v4);
-			return tris;
-		}
-		
-		@Override
-		public Vector3[] points() {
-			return new Vector3[] {
-				v1, v2, v3, v4
-			};
-		}
-		
-		@Override
-		public String toString() {
-			return "(" + v1.toString() + ", " + v2.toString() + ", " + v3.toString() + ", " + v4.toString() + ")";
-		}
-	}
-	
-	public static class Tri extends Face {
-		public Vector3 v1, v2, v3;
-		public Tri(Vector3 v1, Vector3 v2, Vector3 v3) {
-			this.v1 = v1;
-			this.v2 = v2;
-			this.v3 = v3;
-		}
-		
-		public void apply(Matrix4 matix) {
-			v1.apply(matix);
-			v2.apply(matix);
-			v3.apply(matix);
-		}
-		
-		public void rotate(int rotation) {
-			GeneralUtil.rotateVector(rotation, v1);
-			GeneralUtil.rotateVector(rotation, v2);
-			GeneralUtil.rotateVector(rotation, v3);
-		}
-		
-		public void rotateCenter(int rotation) {
-			GeneralUtil.rotateVectorCenter(rotation, v1);
-			GeneralUtil.rotateVectorCenter(rotation, v2);
-			GeneralUtil.rotateVectorCenter(rotation, v3);
-		}
-		
-		public Tri copy() {
-			return new Tri(v1.copy(), v2.copy(), v3.copy());
-		}
-		
-		@Override
-		public Tri[] tris() {
-			return new Tri[] { this };
-		}
-		
-		@Override
-		public Vector3[] points() {
-			return new Vector3[] {
-				v1, v2, v3
-			};
-		}
-		
-		@Override
-		public String toString() {
-			return "(" + v1.toString() + ", " + v2.toString() + ", " + v3.toString() + ")";
-		}
-
 		
 	}
 }

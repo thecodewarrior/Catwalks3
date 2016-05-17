@@ -70,10 +70,10 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	@Override
 	public IExtendedBlockState getExtendedState(IBlockState rawstate, IBlockAccess worldIn, BlockPos pos) {
 		IExtendedBlockState state = (IExtendedBlockState)rawstate;
-		IExtendedBlockState below = getBelowState(worldIn, pos);
 		boolean westTop = false, eastTop = false, north = false, tape = false, speed = false, lights = false;
 		EnumFacing facing = EnumFacing.NORTH;
-		if(below.getBlock() == BlockRegister.catwalkStair) {
+		if(worldIn.getBlockState(pos.offset(EnumFacing.DOWN)).getBlock() == BlockRegister.catwalkStair) {
+			IExtendedBlockState below = getBelowState(worldIn, pos);
 			 facing = below.getValue(Const.FACING);
 			 
 			  north = below.getValue(Const.NORTH);

@@ -70,7 +70,6 @@ public class TileExtended extends TileEntity {
 	}
 	
 	@Override
-	@SuppressWarnings("rawtypes")
 	public Packet<?> getDescriptionPacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		writeToNBT(tag);

@@ -1,5 +1,7 @@
 package catwalks.shade.ccl.vec;
 
+import net.minecraft.util.math.Vec3d;
+
 public class SwapYZ extends VariableTransformation
 {
     public SwapYZ()
@@ -18,6 +20,11 @@ public class SwapYZ extends VariableTransformation
         vec.z = vec.y;
         vec.y = vz;
     }
+    
+    @Override
+	public Vec3d apply(Vec3d vec) {
+		return new Vec3d(vec.xCoord, vec.zCoord, vec.yCoord);
+	}
     
     @Override
     public Transformation inverse()

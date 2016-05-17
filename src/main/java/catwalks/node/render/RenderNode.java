@@ -81,7 +81,7 @@ public class RenderNode extends Render<EntityNodeBase> {
         GlStateManager.disableBlend();
         GlStateManager.depthMask(true);
 		
-		this.renderLivingLabel(entity, entity.getNodeName().getFormattedText(), x, y, z, 64);
+		this.renderLivingLabel(entity, entity.getNodeName().getFormattedText(), x, y-0.375, z, 64);
 	}
 	
 	@Override

@@ -1,5 +1,7 @@
 package catwalks.shade.ccl.vec;
 
+import net.minecraft.util.math.Vec3d;
+
 /**
  * Abstract supertype for any VectorN transformation
  * @param <Vector> The vector type
@@ -12,6 +14,11 @@ public abstract class ITransformation<Vector, Transformation extends ITransforma
      */
     public abstract void apply(Vector vec);
 
+    /**
+     * Applies this transformation to vec
+     */
+    public abstract Vec3d apply(Vec3d vec);
+    
     /**
      * @param point The point to apply this transformation around
      * @return Wraps this transformation in a translation to point and then back from point

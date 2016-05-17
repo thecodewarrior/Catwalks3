@@ -3,6 +3,7 @@ package catwalks.shade.ccl.vec;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -54,6 +55,16 @@ public class TransformationList extends Transformation
             for(int i = 0; i < transformations.size(); i++)
                 transformations.get(i).apply(vec);
     }
+    
+    @Override
+	public Vec3d apply(Vec3d vec) {
+    	if(mat != null)
+            return mat.apply(vec);
+        else
+            for(int i = 0; i < transformations.size(); i++)
+                vec = transformations.get(i).apply(vec);
+    	return vec;
+	}
     
     @Override
     public void applyN(Vector3 normal)

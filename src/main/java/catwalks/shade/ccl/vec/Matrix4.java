@@ -10,6 +10,7 @@ import java.nio.DoubleBuffer;
 import org.lwjgl.opengl.GL11;
 
 import catwalks.shade.ccl.util.Copyable;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -304,11 +305,27 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4>
         vec.z = z;
     }
     
+    private Vec3d mult3x3(Vec3d vec)
+    {
+        double x = m00 * vec.xCoord + m01 * vec.yCoord + m02 * vec.zCoord;
+        double y = m10 * vec.xCoord + m11 * vec.yCoord + m12 * vec.zCoord;
+        double z = m20 * vec.xCoord + m21 * vec.yCoord + m22 * vec.zCoord;
+        
+        return new Vec3d(x,y,z);
+    }
+    
     @Override
     public void apply(Vector3 vec)
     {
         mult3x3(vec);
         vec.add(m03, m13, m23);
+    }
+    
+    @Override
+    public Vec3d apply(Vec3d vec)
+    {
+        mult3x3(vec);
+        return vec.addVector(m03, m13, m23);
     }
     
     @Override

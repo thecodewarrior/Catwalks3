@@ -24,6 +24,8 @@ public class Const {
 	
 	public static Random RAND = new Random();
 	
+	public static EnumFacing[] HORIZONTALS_FROM_NORTH = new EnumFacing[] { EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.WEST };
+	
 	public static boolean developmentEnvironment = (Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment");
 	public static final String MODID = CatwalksMod.MODID;
 	

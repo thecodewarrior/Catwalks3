@@ -92,7 +92,7 @@ Connecting: Right click on source, right click on dest, optionally select which 
 * Redstone reception node
  * Turns 0-15 redstone signal into 0-n
 * Redstone emmision node
- * Turns 0-n 
+ * Turns 0-n number into 0-15 redstone signal
 
 ### Number nodes
 * Manipulation node

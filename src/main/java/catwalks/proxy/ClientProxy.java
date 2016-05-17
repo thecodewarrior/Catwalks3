@@ -10,12 +10,11 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 
 import catwalks.Conf;
 import catwalks.Const;
-import catwalks.block.BlockCatwalkBase.Face;
+import catwalks.raytrace.RayTraceUtil.VertexList;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
 import catwalks.register.NodeRegister;
 import catwalks.shade.ccl.raytracer.RayTracer;
-import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.CustomFaceRayTraceResult;
 import catwalks.util.GeneralUtil;
@@ -94,48 +93,48 @@ public class ClientProxy extends CommonProxy {
             
             GlStateManager.translate(pos.getX()-d0, pos.getY()-d1, pos.getZ()-d2);
             
+            
             Tessellator tessellator = Tessellator.getInstance();
             VertexBuffer worldrenderer = tessellator.getBuffer();
             
-            worldrenderer.begin(1, DefaultVertexFormats.POSITION);
             
-            Face q = mop.quad.copy();
-            Vector3[] points = q.points();
+            List<VertexList> points = mop.quad.getVertices();
             
-            if(!Minecraft.getMinecraft().theWorld.isSideSolid(event.getTarget().getBlockPos().offset(event.getTarget().sideHit), event.getTarget().sideHit.getOpposite())) {
-            	Matrix4 matrix = new Matrix4();
-                matrix.translate(Vector3.center.copy().multiply(-1));
-                matrix.scale(new Vector3(1.002, 1.002, 1.002));
-                matrix.translate(Vector3.center);
-                q.apply(matrix);
-            }
+            double s = 1.005, centering = ((1-s)/2)/s; // ( (1m size difference) / 2 ) / adjust for previous scale
+            GlStateManager.scale(s, s, s);
+            GlStateManager.translate(centering, centering, centering);
             
-            Vector3 prev = null;
+            GlStateManager.translate(-mop.offset.getX(), -mop.offset.getY(), -mop.offset.getZ());
             
-            for (int i = 0; i < points.length; i++) {
-            	if(i == 0)
-            		prev = points[points.length-1];
-				Vector3 point = points[i];
+            for (VertexList drawList : points) {
 				
-				worldrenderer.pos(prev.x,  prev.y,  prev.z ).endVertex();
-				worldrenderer.pos(point.x, point.y, point.z).endVertex();
-				
-				for (int j = 0; j < points.length/2; j++) {
-					if(j != i && j != i+1 && j != i-1) {
-						
-						Vector3 opp = points[j];
-						
-						worldrenderer.pos(opp.x,   opp.y,   opp.z  ).endVertex();
-						worldrenderer.pos(point.x, point.y, point.z).endVertex();
-						
-					}
+                worldrenderer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
+            	
+                Vec3d prev = null;
+                
+                for (int i = 0; i < drawList.vertices.length; i++) {
+                	if(i == 0)
+                		prev = drawList.vertices[drawList.vertices.length-1];
+    				Vec3d point = drawList.vertices[i];
+    				
+            		worldrenderer.pos( prev.xCoord,  prev.yCoord,  prev.zCoord).endVertex();
+    				worldrenderer.pos(point.xCoord, point.yCoord, point.zCoord).endVertex();
+    				
+    				if(drawList.shouldHaveNetting) {
+    					for(int j = i+1; j < drawList.vertices.length; j++) {
+    						Vec3d netPoint = drawList.vertices[j];
+    	    				worldrenderer.pos(   point.xCoord,    point.yCoord,    point.zCoord).endVertex();
+    						worldrenderer.pos(netPoint.xCoord, netPoint.yCoord, netPoint.zCoord).endVertex();
+    					}
+    				}
+    				
+    				prev = point;
 				}
-				prev = point;
+            	
+                tessellator.draw();
+                
 			}
             
-            tessellator.draw();
-            
-
             GlStateManager.popMatrix();
             GlStateManager.depthMask(true);
             GlStateManager.enableTexture2D();
@@ -181,7 +180,13 @@ public class ClientProxy extends CommonProxy {
                 	for (IUnlistedProperty<?> entry : extended.getUnlistedNames())
                     {
                 		Object value = extended.getValue(entry);
-                        String s = value.toString();
+                		
+                		String NULL_VALUE =
+                				ChatFormatting.OBFUSCATED + "|" +
+                				ChatFormatting.RESET + ChatFormatting.ITALIC + "NULL" +
+                				ChatFormatting.OBFUSCATED + "|";
+                		
+                        String s = value == null ? NULL_VALUE : value.toString();
 
                         if (value == Boolean.TRUE)
                         {
@@ -191,7 +196,7 @@ public class ClientProxy extends CommonProxy {
                         {
                             s = ChatFormatting.RED + "" +  ChatFormatting.ITALIC + s;
                         }
-
+                        
                         event.getRight().add(ChatFormatting.ITALIC + entry.getName() + ": " + s);
                     }
                 }

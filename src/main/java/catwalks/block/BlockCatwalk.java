@@ -1,15 +1,20 @@
 package catwalks.block;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 
 import catwalks.Const;
+import catwalks.block.BlockCatwalkBase.BlockTraceParam;
+import catwalks.block.BlockCatwalkBase.BlockTraceResult;
 import catwalks.block.extended.CubeEdge;
 import catwalks.block.extended.TileExtended;
 import catwalks.item.ItemBlockCatwalk;
+import catwalks.raytrace.RayTraceUtil.ITraceable;
+import catwalks.raytrace.block.BlockTracable;
+import catwalks.raytrace.block.BlockTraceFactory;
+import catwalks.raytrace.primitives.Quad;
 import catwalks.shade.ccl.vec.Cuboid6;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
@@ -17,9 +22,9 @@ import catwalks.util.AABBUtils;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
@@ -69,71 +74,77 @@ public class BlockCatwalk extends BlockCatwalkBase {
 		return EnumSideType.FULL;
 	}
 	
-	private List<LookSide> sideLookBoxes;
+	private List<BlockTracable> sideLookBoxes;
 	
 	@Override
 	public void initSides() {
-		Vector3 center    = new Vector3( 0.5,  0.5,  0.5),
-				negCenter = new Vector3(-0.5, -0.5, -0.5);
-		
-		Matrix4 matrix = new Matrix4();
-		matrix.translate(center);
-		
-		sideLookBoxes = new ArrayList<>();
-		
-		LookSide side = new LookSide();
-		
-		side.mainSide = new Quad(
-			new Vector3(0, 0, 0),
-			new Vector3(0, 1, 0),
-			new Vector3(1, 1, 0),
-			new Vector3(1, 0, 0)
-		);
-		
+		BlockTraceFactory factory = new BlockTraceFactory();
 		double h = 0.5;
-		side.wrenchSide = new Quad(
-			new Vector3(0, 0, 0),
-			new Vector3(0, h, 0),
-			new Vector3(1, h, 0),
-			new Vector3(1, 0, 0)
+		
+		factory.setShown(
+			new Quad(
+				new Vec3d(0, 0, 0),
+				new Vec3d(0, 1, 0),
+				new Vec3d(1, 1, 0),
+				new Vec3d(1, 0, 0)
+			)
+		);
+		factory.setHidden(
+			new Quad(
+				new Vec3d(0, 0, 0),
+				new Vec3d(0, h, 0),
+				new Vec3d(1, h, 0),
+				new Vec3d(1, 0, 0)
+			)
 		);
 		
-		LookSide s;
+		factory.setEnable(Const.NORTH);
+		factory.setSide(EnumFacing.NORTH);
+		factory.commit();
 		
-		double q = Math.toRadians(90);
-		Vector3 y = new Vector3(0, 1, 0);
-		s = side.copy();
-//		s.apply(new Matrix4().translate(center).translate(negCenter));
-		s.showProperty = Const.NORTH; s.side = EnumFacing.NORTH;
-		sideLookBoxes.add(s);
+		factory.rotate(1);
+		factory.setEnable(Const.EAST);
+		factory.setSide(EnumFacing.EAST);
+		factory.commit();
 		
-		s = side.copy();
-		s.apply(new Matrix4().translate(center).rotate(-q, y).translate(negCenter));
-		s.showProperty = Const.EAST; s.side = EnumFacing.EAST;
-		sideLookBoxes.add(s);
+		factory.rotate(1);
+		factory.setEnable(Const.SOUTH);
+		factory.setSide(EnumFacing.SOUTH);
+		factory.commit();
 		
-		s = side.copy();
-		s.apply(new Matrix4().translate(center).rotate(2*q, y).translate(negCenter));
-		s.showProperty = Const.SOUTH; s.side = EnumFacing.SOUTH;
-		sideLookBoxes.add(s);
+		factory.rotate(1);
+		factory.setEnable(Const.WEST);
+		factory.setSide(EnumFacing.WEST);
+		factory.commit();
 		
-		s = side.copy();
-		s.apply(new Matrix4().translate(center).rotate(q, y).translate(negCenter));
-		s.showProperty = Const.WEST; s.side = EnumFacing.WEST;
-		sideLookBoxes.add(s);
+		factory.setShown(
+			new Quad(
+				new Vec3d(0, 0, 0),
+				new Vec3d(1, 0, 0),
+				new Vec3d(1, 0, 1),
+				new Vec3d(0, 0, 1)
+			)
+		);
 		
+		double d = 0.25, D = 1-d;
+		factory.setHidden(
+			new Quad(
+				new Vec3d(d, 0, d),
+				new Vec3d(D, 0, d),
+				new Vec3d(D, 0, D),
+				new Vec3d(d, 0, D)
+			)
+		);
 		
-		s = side.copy();
-		s.apply(new Matrix4().translate(center).rotate(-q, Vector3.axis(Axis.X)).translate(negCenter));
-		s.showProperty = Const.BOTTOM; s.side = EnumFacing.DOWN;
-		s.showWithoutWrench = true;
-		s.wrenchSide = s.mainSide.copy();
-		s.wrenchSide.apply( new Matrix4().translate(new Vector3(0.5, 0, 0.5)).scale(new Vector3(0.5, 1, 0.5)).translate(new Vector3(-0.5, 0, -0.5)) );
-		sideLookBoxes.add(s);
+		factory.setEnable(Const.BOTTOM);
+		factory.setSide(EnumFacing.DOWN);
+		factory.commit();
+		
+		sideLookBoxes = factory.build();
 	}
 	
 	@Override
-	public List<LookSide> lookSides(IBlockState state, World world, BlockPos pos) {
+	public List<? extends ITraceable<BlockTraceParam, BlockTraceResult>> lookSides(IBlockState state, World world, BlockPos pos) {
 		return sideLookBoxes;
 	}
 	

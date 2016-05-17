@@ -13,6 +13,11 @@ import catwalks.Const;
 import catwalks.block.extended.CubeEdge;
 import catwalks.block.extended.TileExtended;
 import catwalks.item.ItemBlockCatwalk;
+import catwalks.raytrace.RayTraceUtil.ITraceable;
+import catwalks.raytrace.block.BlockTracable;
+import catwalks.raytrace.block.BlockTraceFactory;
+import catwalks.raytrace.primitives.Quad;
+import catwalks.raytrace.primitives.Tri;
 import catwalks.register.BlockRegister;
 import catwalks.shade.ccl.vec.Cuboid6;
 import catwalks.shade.ccl.vec.Matrix4;
@@ -29,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -273,162 +279,143 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	
 	{ /* hit boxes */ }
 	
-	private Map<EnumFacing, List<LookSide>> sideLookBoxes;
+	private Map<EnumFacing, List<BlockTracable>> sideLookBoxes;
 
 	@Override
 	public void initSides() {
 		sideLookBoxes = new HashMap<>();
 		
-		List<LookSide> sides = new ArrayList<>();
+		BlockTraceFactory factory = new BlockTraceFactory();
 		
-		LookSide side = new LookSide();
-		
-		side.mainSide = new Quad(
-			new Vector3(0, 0, 1),
-			new Vector3(0, 1, 1),
-			new Vector3(1, 1, 1),
-			new Vector3(1, 0, 1)
+		// bottom end
+		factory.setShown(
+			new Quad(
+				new Vec3d(0, 0, 1),
+				new Vec3d(0, 1, 1),
+				new Vec3d(1, 1, 1),
+				new Vec3d(1, 0, 1)
+			)
 		);
 		
 		double h = 0.5;
-		side.wrenchSide = new Quad(
-			new Vector3(0, 0, 1),
-			new Vector3(0, h, 1),
-			new Vector3(1, h, 1),
-			new Vector3(1, 0, 1)
+		factory.setHidden(
+			new Quad(
+				new Vec3d(0, 0, 1),
+				new Vec3d(0, h, 1),
+				new Vec3d(1, h, 1),
+				new Vec3d(1, 0, 1)
+			)
 		);
+		factory.setEnable(Const.SOUTH);
+		factory.setSide(EnumFacing.SOUTH);
+		factory.commit();
 		
-		side.showProperty = Const.SOUTH;
-		side.side = EnumFacing.SOUTH;
-		sides.add(side.copy());
+		// top end
+		factory.translate(0, 1, -1); // up and toward the north
+		factory.setEnable(Const.NORTH);
+		factory.setSide(EnumFacing.NORTH);
+		factory.setOffset(0, 1, 0);
+		factory.commit();
 		
-		side.showProperty = Const.NORTH;
-		side.side = EnumFacing.NORTH;
-		side.mainSide  .apply(new Matrix4().translate(new Vector3(0, 0, -1)));
-		side.wrenchSide.apply(new Matrix4().translate(new Vector3(0, 0, -1)));
-		side.offset = new BlockPos(0, 1, 0);
-		sides.add(side.copy());
-		side.offset = new BlockPos(0, 0, 0);
+		factory.setOffset(0, 0, 0);
 		
 		// bottom sides
-		side.mainSide = new Tri(
-			new Vector3(0, 0, 1),
-			new Vector3(0, 1, 1),
-			new Vector3(0, 1, 0)
+		factory.setShown(
+			new Tri(
+				new Vec3d(0, 0, 1),
+				new Vec3d(0, 1, 1),
+				new Vec3d(0, 1, 0)
+			)
 		);
 		
-		side.wrenchSide = new Quad(
-			new Vector3(0, 0, 1),
-			new Vector3(0, h, 1),
-			new Vector3(0, 1, h),
-			new Vector3(0, 1, 0)
+		factory.setHidden(
+			new Quad(
+				new Vec3d(0, 0, 1),
+				new Vec3d(0, h, 1),
+				new Vec3d(0, 1, h),
+				new Vec3d(0, 1, 0)
+			).noNet()
 		);
+		factory.setEnable(Const.WEST);
+		factory.setSide(EnumFacing.WEST);
+		factory.commit();
 		
-		side.showProperty = Const.WEST;
-		side.side = EnumFacing.WEST;
-		sides.add(side.copy());
-		
-		side.showProperty = Const.EAST;
-		side.side = EnumFacing.EAST;
-		side.mainSide  .apply(new Matrix4().translate(new Vector3(1, 0, 0)));
-		side.wrenchSide.apply(new Matrix4().translate(new Vector3(1, 0, 0)));
-		sides.add(side.copy());
-		
+		factory.translate(1, 0, 0);
+		factory.setEnable(Const.EAST);
+		factory.setSide(EnumFacing.EAST);
+		factory.commit();
 		
 		// top sides
-		side.mainSide = new Tri(
-			new Vector3(0, 0, 1),
-			new Vector3(0, 1, 0),
-			new Vector3(0, 0, 0)
+		factory.setShown(
+			new Tri(
+				new Vec3d(0, 0, 1),
+				new Vec3d(0, 1, 0),
+				new Vec3d(0, 0, 0)
+			)
 		);
 		
-		side.wrenchSide = new Quad(
-			new Vector3(0, 0, h),
-			new Vector3(0, h, 0),
-			new Vector3(0, 0, 0),
-			new Vector3(0, 0, 0)
+		factory.setHidden(
+			new Tri(
+				new Vec3d(0, 0, h),
+				new Vec3d(0, h, 0),
+				new Vec3d(0, 0, 0)
+			)
 		);
+		factory.translate(0, 1, 0);
 		
-		side.offset = new BlockPos(0, 1, 0);
+		factory.setEnable(Const.WEST_TOP);
+		factory.setSide(EnumFacing.WEST);
+		factory.setOffset(0, 1, 0);
+		factory.commit();
 		
-		side.showProperty = Const.WEST_TOP;
-		side.side = EnumFacing.WEST;
-		sides.add(side.copy());
+		factory.setEnable(Const.EAST_TOP);
+		factory.setSide(EnumFacing.EAST);
+		factory.translate(1, 0, 0);
+		factory.commit();
 		
-		side.showProperty = Const.EAST_TOP;
-		side.side = EnumFacing.EAST;
-		side.mainSide  .apply(new Matrix4().translate(new Vector3(1, 0, 0)));
-		side.wrenchSide.apply(new Matrix4().translate(new Vector3(1, 0, 0)));
-		sides.add(side.copy());
+		// steps
 		
 		double stepLength = 1.0/STEP_COUNT;
-		side.offset = new BlockPos(0, 0, 0);
+		
+		factory.setOffset(0, 0, 0);
+        factory.setAlwaysShow(true);
+        factory.setSide(EnumFacing.DOWN);
+        factory.setShown(
+    		new Quad(
+        		new Vec3d(0, stepLength/2, 1),
+        		new Vec3d(0, stepLength/2, 1-stepLength),
+        		new Vec3d(1, stepLength/2, 1-stepLength),
+        		new Vec3d(1, stepLength/2, 1)
+    		)
+    	);
+        
 		for (int i = 0; i < STEP_COUNT; i++) {
-            side.showProperty = null;
-            
-            double y = i*stepLength + stepLength/2, minZ = 1-i*stepLength, maxZ = 1-(i+1)*stepLength;
-            side.mainSide = new Quad(
-            		new Vector3(0, y, minZ),
-            		new Vector3(0, y, maxZ),
-            		new Vector3(1, y, maxZ),
-            		new Vector3(1, y, minZ)
-            		);
-            side.side = EnumFacing.DOWN;
-            sides.add(side.copy());
-            if(i != 0) {
-            	side.mainSide = new Quad(
-                		new Vector3(0, y-stepLength, minZ),
-                		new Vector3(0, y,            minZ),
-                		new Vector3(1, y,            minZ),
-                		new Vector3(1, y-stepLength, minZ)
-                		);
-                side.side = EnumFacing.DOWN;
-                sides.add(side.copy());
-            }
-            if(i == 0) {
-            	side.mainSide = new Quad(
-                		new Vector3(0, y-stepLength/2, minZ),
-                		new Vector3(0, y,              minZ),
-                		new Vector3(1, y,              minZ),
-                		new Vector3(1, y-stepLength/2, minZ)
-                		);
-                side.side = EnumFacing.DOWN;
-                sides.add(side.copy());
-            }
-            if(i == STEP_COUNT-1) {
-            	side.mainSide = new Quad(
-                		new Vector3(0, y,              maxZ),
-                		new Vector3(0, y+stepLength/2, maxZ),
-                		new Vector3(1, y+stepLength/2, maxZ),
-                		new Vector3(1, y,              maxZ)
-                		);
-                side.side = EnumFacing.DOWN;
-                sides.add(side.copy());
-            }
+			factory.commit();
+			factory.translate(0, stepLength, -stepLength);
 		}
 		
-		double q = Math.toRadians(90);
-		Matrix4 matrix = new Matrix4();
-		
-        for (EnumFacing dir : new EnumFacing[]{EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.WEST}) {
-			
-        	List<LookSide> turnedSides = new ArrayList<>();
-        	
-        	for (LookSide rawSide : sides) {
-        		LookSide turnedSide = rawSide.copy();
-        		turnedSide.apply(matrix);
-        		turnedSide.side = GeneralUtil.rotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, dir), turnedSide.side);
-				turnedSides.add(turnedSide);
-			}
-        	
-        	sideLookBoxes.put(dir, turnedSides);
-        	
-        	matrix.translate(new Vector3(0.5, 0.5, 0.5)).rotate(-q, new Vector3(0, 1, 0)).translate(new Vector3(-0.5, -0.5, -0.5));
+//		factory.setOffset(0, 0, 0);
+//        factory.setAlwaysShow(true);
+//        factory.setSide(EnumFacing.DOWN);
+//		factory.setShown(
+//			new Quad(
+//				new Vec3d(0, 1, 0),
+//				new Vec3d(1, 1, 0),
+//				new Vec3d(1, 0, 1),
+//				new Vec3d(0, 0, 1)
+//			).noNet()
+//		);     
+//		factory.commit();
+        
+		for (EnumFacing dir : Const.HORIZONTALS_FROM_NORTH) {
+        	sideLookBoxes.put(dir, factory.build());
+        	factory.rotateAll(1);
 		}
 	}
 
 	@Override
-	public List<LookSide> lookSides(IBlockState state, World world, BlockPos pos) {
+	public List<? extends ITraceable<BlockTraceParam, BlockTraceResult>> lookSides(IBlockState state, World world,
+			BlockPos pos) {
 		return sideLookBoxes.get(getTileState(state, world, pos).getValue(Const.FACING));
 	}
 	
