@@ -14,7 +14,7 @@ import catwalks.block.extended.CubeEdge;
 import catwalks.block.extended.TileExtended;
 import catwalks.item.ItemBlockCatwalk;
 import catwalks.raytrace.RayTraceUtil.ITraceable;
-import catwalks.raytrace.block.BlockTracable;
+import catwalks.raytrace.block.BlockTraceable;
 import catwalks.raytrace.block.BlockTraceFactory;
 import catwalks.raytrace.primitives.Quad;
 import catwalks.raytrace.primitives.Tri;
@@ -279,7 +279,7 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	
 	{ /* hit boxes */ }
 	
-	private Map<EnumFacing, List<BlockTracable>> sideLookBoxes;
+	private Map<EnumFacing, List<BlockTraceable>> sideLookBoxes;
 
 	@Override
 	public void initSides() {

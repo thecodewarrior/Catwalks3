@@ -2,8 +2,6 @@ package catwalks.register;
 
 import java.util.function.Supplier;
 
-import javax.vecmath.Vector3f;
-
 import catwalks.Const;
 import catwalks.block.BlockCatwalk;
 import catwalks.block.BlockCatwalkStair;
@@ -23,7 +21,6 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

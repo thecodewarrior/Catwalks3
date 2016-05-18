@@ -324,7 +324,7 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4>
     @Override
     public Vec3d apply(Vec3d vec)
     {
-        mult3x3(vec);
+        vec = mult3x3(vec);
         return vec.addVector(m03, m13, m23);
     }
     

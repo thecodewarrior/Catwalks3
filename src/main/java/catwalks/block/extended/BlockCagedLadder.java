@@ -16,9 +16,9 @@ import catwalks.block.property.UPropertyBool;
 import catwalks.item.ItemBlockCatwalk;
 import catwalks.raytrace.RayTraceUtil;
 import catwalks.raytrace.RayTraceUtil.IRenderableTraceResult;
-import catwalks.raytrace.RayTraceUtil.ITraceablePrimitive;
+import catwalks.raytrace.RayTraceUtil.TraceablePrimitive;
 import catwalks.raytrace.RayTraceUtil.ITraceable;
-import catwalks.raytrace.block.BlockTracable;
+import catwalks.raytrace.block.BlockTraceable;
 import catwalks.raytrace.block.BlockTraceFactory;
 import catwalks.raytrace.primitives.Quad;
 import catwalks.shade.ccl.vec.Cuboid6;
@@ -540,7 +540,7 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		return list;
 	}
 
-	private Map<EnumFacing, List<BlockTracable>> sideLookBoxes;
+	private Map<EnumFacing, List<BlockTraceable>> sideLookBoxes;
 
 	@Override
 	public void initSides() {

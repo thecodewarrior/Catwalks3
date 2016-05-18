@@ -10,7 +10,7 @@ public class NodeRegister {
 
 	public static void register() {
 		int id = 0;
-		EntityRegistry.registerModEntity(EntityNodeBase.class, "node", id++, CatwalksMod.INSTANCE, 128, Integer.MAX_VALUE, false);
+		EntityRegistry.registerModEntity(EntityNodeBase.class, "node", id++, CatwalksMod.INSTANCE, 32, Integer.MAX_VALUE, false);
 	}
 	
 	public static void initRender() {

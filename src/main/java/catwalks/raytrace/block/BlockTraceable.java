@@ -6,7 +6,7 @@ import catwalks.block.BlockCatwalkBase.BlockTraceParam;
 import catwalks.block.BlockCatwalkBase.BlockTraceResult;
 import catwalks.raytrace.RayTraceUtil;
 import catwalks.raytrace.RayTraceUtil.IRenderableFace;
-import catwalks.raytrace.RayTraceUtil.ITraceablePrimitive;
+import catwalks.raytrace.RayTraceUtil.TraceablePrimitive;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
 import catwalks.raytrace.RayTraceUtil.ITraceable;
 import catwalks.raytrace.RayTraceUtil.SimpleRenderableTraceResult;
@@ -17,15 +17,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
-public class BlockTracable implements ITraceable<BlockTraceParam, BlockTraceResult> {
+public class BlockTraceable implements ITraceable<BlockTraceParam, BlockTraceResult> {
 	
 	private static final Vec3d   toCenter = new Vec3d(-0.5, 0, -0.5);
 	private static final Vec3d fromCenter = new Vec3d(0.5, 0, 0.5);
 	
 	
 	
-	public ITraceablePrimitive<?> shown;
-	public ITraceablePrimitive<?> hidden;
+	public TraceablePrimitive<?> shown;
+	public TraceablePrimitive<?> hidden;
 	public IProperty<Boolean> normalEnable;
 	public IUnlistedProperty<Boolean> unlistedEnable;
 	public Predicate<BlockTraceParam> predEnable;
@@ -34,7 +34,7 @@ public class BlockTracable implements ITraceable<BlockTraceParam, BlockTraceResu
 	public boolean ignoreWrench;
 	public boolean alwaysShow;
 	
-	public BlockTracable(ITraceablePrimitive<?> shown, ITraceablePrimitive<?> hidden, IProperty<Boolean> normalEnable,
+	public BlockTraceable(TraceablePrimitive<?> shown, TraceablePrimitive<?> hidden, IProperty<Boolean> normalEnable,
 			IUnlistedProperty<Boolean> unlistedEnable, Predicate<BlockTraceParam> predEnable, EnumFacing side, BlockPos offset,
 			boolean ignoreWrench, boolean alwaysShow) {
 		super();
@@ -49,8 +49,8 @@ public class BlockTracable implements ITraceable<BlockTraceParam, BlockTraceResu
 		this.alwaysShow = alwaysShow;
 	}
 
-	public BlockTracable clone() {
-		return new BlockTracable(shown.clone(), hidden.clone(), normalEnable, unlistedEnable, predEnable, side, offset, ignoreWrench, alwaysShow);
+	public BlockTraceable clone() {
+		return new BlockTraceable(shown.clone(), hidden.clone(), normalEnable, unlistedEnable, predEnable, side, offset, ignoreWrench, alwaysShow);
 	}
 
 	public void rotate(int rotation) {
@@ -87,10 +87,8 @@ public class BlockTracable implements ITraceable<BlockTraceParam, BlockTraceResu
 		} else {
 			result = hidden.trace(start, end);
 		}
-		if(Double.isInfinite( result.hitDistance() ))
-			return (ITraceResult<BlockTraceResult>) RayTraceUtil.MISS_RESULT;
 		
-		return new SimpleRenderableTraceResult<BlockTraceResult>(start, result.hitPoint(), new BlockTraceResult(offset == null ? BlockPos.ORIGIN : offset, side), ((IRenderableFace) result).getVertices());
+		return new SimpleRenderableTraceResult<BlockTraceResult>(result, new BlockTraceResult(offset == null ? BlockPos.ORIGIN : offset, side), ((IRenderableFace) result).getVertices());
 	}
 
 }

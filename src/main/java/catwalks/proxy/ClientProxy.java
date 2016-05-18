@@ -251,15 +251,17 @@ public class ClientProxy extends CommonProxy {
 			
 			// desired move vec
 			
-			Vec3d p1 = new Vec3d(x, y+1, z);
-			Vec3d p2 = p1.add(GeneralUtil.getDesiredMoveVector(rootPlayer));
-			
-			Tessellator tessellator = Tessellator.getInstance();
-	        VertexBuffer vertexbuffer = tessellator.getBuffer();
-	        vertexbuffer.begin(3, DefaultVertexFormats.POSITION_COLOR);
-	        vertexbuffer.pos(p1.xCoord, p1.yCoord, p1.zCoord).color(127, 127, 255, 255).endVertex();
-	        vertexbuffer.pos(p2.xCoord, p2.yCoord, p2.zCoord).color(127, 127, 255, 255).endVertex();
-	        tessellator.draw();
+			if(mc.gameSettings.thirdPersonView > 0) {
+				Vec3d p1 = new Vec3d(x, y+1, z);
+				Vec3d p2 = p1.add(GeneralUtil.getDesiredMoveVector(rootPlayer));
+				
+				Tessellator tessellator = Tessellator.getInstance();
+		        VertexBuffer vertexbuffer = tessellator.getBuffer();
+		        vertexbuffer.begin(3, DefaultVertexFormats.POSITION_COLOR);
+		        vertexbuffer.pos(p1.xCoord, p1.yCoord, p1.zCoord).color(127, 127, 255, 255).endVertex();
+		        vertexbuffer.pos(p2.xCoord, p2.yCoord, p2.zCoord).color(127, 127, 255, 255).endVertex();
+		        tessellator.draw();
+			}
 		}
 		
 		mc.mcProfiler.endStartSection("hitDist");

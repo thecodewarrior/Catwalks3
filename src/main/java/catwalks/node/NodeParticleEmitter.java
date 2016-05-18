@@ -11,7 +11,7 @@ public class NodeParticleEmitter extends NodeBase {
 	}
 
 	@Override
-	public void onTick() {
+	public void clientTick() {
 		Vec3d look = entity.getLook(1).scale(0.25);
 		for (int i = 0; i < Const.RAND.nextInt(5); i++) {
 			entity.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL,

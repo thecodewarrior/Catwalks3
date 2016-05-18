@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 import com.google.common.collect.ImmutableList;
 
 import catwalks.block.BlockCatwalkBase.BlockTraceParam;
-import catwalks.raytrace.RayTraceUtil.ITraceablePrimitive;
+import catwalks.raytrace.RayTraceUtil.TraceablePrimitive;
 import catwalks.util.GeneralUtil;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.util.EnumFacing;
@@ -21,8 +21,8 @@ public class BlockTraceFactory {
 	private static final Vec3d fromCenter = new Vec3d(0.5, 0, 0.5);
 	
 	
-	private ITraceablePrimitive<?> shown;
-	private ITraceablePrimitive<?> hidden;
+	private TraceablePrimitive<?> shown;
+	private TraceablePrimitive<?> hidden;
 	private IProperty<Boolean> normalEnable;
 	private IUnlistedProperty<Boolean> unlistedEnable;
 	private Predicate<BlockTraceParam> predEnable;
@@ -31,10 +31,10 @@ public class BlockTraceFactory {
 	private boolean ignoreWrench;
 	private boolean alwaysShow;
 	
-	private List<BlockTracable> list = new ArrayList<>();
+	private List<BlockTraceable> list = new ArrayList<>();
 	
 	public void commit() {
-		BlockTracable tracable = new BlockTracable(shown.clone(), hidden.clone(), normalEnable, unlistedEnable, predEnable, side, offset, ignoreWrench, alwaysShow);
+		BlockTraceable tracable = new BlockTraceable(shown.clone(), hidden.clone(), normalEnable, unlistedEnable, predEnable, side, offset, ignoreWrench, alwaysShow);
 		list.add(tracable);
 	}
 	
@@ -57,16 +57,16 @@ public class BlockTraceFactory {
 	}
 	
 	public void rotateAll(int rotation) {
-		List<BlockTracable> newList = new ArrayList<>();
-		for (BlockTracable trace : list) {
-			BlockTracable clone = trace.clone();
+		List<BlockTraceable> newList = new ArrayList<>();
+		for (BlockTraceable trace : list) {
+			BlockTraceable clone = trace.clone();
 			clone.rotate(rotation);
 			newList.add(clone);
 		}
 		list = newList;
 	}
 	
-	public List<BlockTracable> build() {
+	public List<BlockTraceable> build() {
 		return ImmutableList.copyOf(list);
 	}
 	
@@ -76,10 +76,10 @@ public class BlockTraceFactory {
 	
 	{ /* setters */ }
 	
-	public void setShown(ITraceablePrimitive<?> shown) {
+	public void setShown(TraceablePrimitive<?> shown) {
 		this.shown = shown;
 	}
-	public void setHidden(ITraceablePrimitive<?> hidden) {
+	public void setHidden(TraceablePrimitive<?> hidden) {
 		this.hidden = hidden;
 	}
 	public void setEnable(IProperty<Boolean> normalEnable) {

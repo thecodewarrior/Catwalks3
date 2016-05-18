@@ -3,7 +3,7 @@ package catwalks.raytrace.primitives;
 import catwalks.raytrace.RayTraceUtil;
 import catwalks.raytrace.RayTraceUtil.IRenderableFace;
 import catwalks.raytrace.RayTraceUtil.IRenderableTraceResult;
-import catwalks.raytrace.RayTraceUtil.ITraceablePrimitive;
+import catwalks.raytrace.RayTraceUtil.TraceablePrimitive;
 import catwalks.raytrace.RayTraceUtil.SimpleRenderableTraceResult;
 import catwalks.raytrace.RayTraceUtil.VertexList;
 import catwalks.shade.ccl.vec.Matrix4;
@@ -12,7 +12,7 @@ import catwalks.util.GeneralUtil;
 import net.minecraft.util.math.Vec3d;
 import scala.actors.threadpool.Arrays;
 
-public class Tri implements ITraceablePrimitive<Tri> {
+public class Tri extends TraceablePrimitive<Tri> {
 
 	private static final double SMALL_NUM = 0.00000001f;
 	
@@ -22,6 +22,16 @@ public class Tri implements ITraceablePrimitive<Tri> {
 		this.v1 = v1;
 		this.v2 = v2;
 		this.v3 = v3;
+	}
+	
+	@Override
+	public Vec3d[] edges() {
+		return new Vec3d[] { v1, v2, v2, v3, v3, v1 };
+	}
+	
+	@Override
+	public Vec3d[] points() {
+		return new Vec3d[] { v1, v2, v3 };
 	}
 	
 	@SuppressWarnings("unchecked")

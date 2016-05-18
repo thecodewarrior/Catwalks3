@@ -1,6 +1,7 @@
 package catwalks;
 
 import catwalks.movement.MovementHandler;
+import catwalks.network.NetworkHandler;
 import catwalks.proxy.CommonProxy;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
@@ -37,6 +38,7 @@ public class CatwalksMod {
     	ItemRegister.register();
     	RecipeRegister.register();
     	NodeRegister.register();
+    	NetworkHandler.init();
     	Conf.loadConfigsFromFile(event.getSuggestedConfigurationFile());
     	MinecraftForge.EVENT_BUS.register(proxy);
     	proxy.preInit();

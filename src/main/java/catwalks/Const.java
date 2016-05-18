@@ -96,4 +96,11 @@ public class Const {
 		sideProperties.put(EnumFacing.EAST, EAST);
 		sideProperties.put(EnumFacing.WEST, WEST);
 	}
+	
+	public static class NODE {
+		public static final int PITCH_PLUS  = -1;
+		public static final int PITCH_MINUS = -2;
+		public static final int YAW_PLUS  = -3;
+		public static final int YAW_MINUS = -4;
+	};
 }

@@ -87,12 +87,15 @@ public class RayTraceUtil {
 		public ITraceResult<R> trace(Vec3d start, Vec3d end, T param);
 	}
 	
-	public static interface ITraceablePrimitive<T> {
-		public IRenderableTraceResult<T> trace(Vec3d start, Vec3d end);
-		public ITraceablePrimitive<T> clone();
-		public void rotate(int yRotation);
-		public void translate(Vec3d vec);
-		public void apply(Matrix4 matrix);
+	public static abstract class TraceablePrimitive<T> implements ITraceable<Object, T> {
+		public ITraceResult<T> trace(Vec3d start, Vec3d end, Object param) { return trace(start, end); }
+		public abstract IRenderableTraceResult<T> trace(Vec3d start, Vec3d end);
+		public abstract TraceablePrimitive<T> clone();
+		public abstract Vec3d[] points();
+		public abstract Vec3d[] edges();
+		public abstract void rotate(int yRotation);
+		public abstract void translate(Vec3d vec);
+		public abstract void apply(Matrix4 matrix);
 	}
 	
 	public static interface ITraceResult<T> {
@@ -127,6 +130,12 @@ public class RayTraceUtil {
 		protected Vec3d hit;
 		protected double dist;
 		
+		public SimpleTraceResult(ITraceResult<?> other, T data) {
+			dist = other.hitDistance();
+			hit = other.hitPoint();
+			this.data = data;
+		}
+		
 		public SimpleTraceResult(Vec3d start, Vec3d hit, T data) {
 			dist = hit.subtract(start).lengthVector();
 			this.hit = hit;
@@ -154,6 +163,11 @@ public class RayTraceUtil {
 
 		private List<VertexList> vertices;
 
+		public SimpleRenderableTraceResult(ITraceResult<?> other, T data, List<VertexList> vertices) {
+			super(other, data);
+			this.vertices = vertices;
+		}
+		
 		public SimpleRenderableTraceResult(Vec3d start, Vec3d hit, T data, List<VertexList> vertices) {
 			super(start, hit, data);
 			this.vertices = vertices;
@@ -184,7 +198,7 @@ public class RayTraceUtil {
 		
 	};
 	
-	public static final ITraceablePrimitive<Object> NULL_TRACABLE = new ITraceablePrimitive<Object>() {
+	public static final TraceablePrimitive<Object> NULL_TRACABLE = new TraceablePrimitive<Object>() {
 
 		@Override
 		public IRenderableTraceResult<Object> trace(Vec3d start, Vec3d end) {
@@ -192,7 +206,7 @@ public class RayTraceUtil {
 		}
 
 		@Override
-		public ITraceablePrimitive<Object> clone() {
+		public TraceablePrimitive<Object> clone() {
 			return this;
 		}
 
@@ -204,5 +218,15 @@ public class RayTraceUtil {
 
 		@Override
 		public void apply(Matrix4 matrix) {}
+
+		@Override
+		public Vec3d[] points() {
+			return new Vec3d[0];
+		}
+		
+		@Override
+		public Vec3d[] edges() {
+			return new Vec3d[0];
+		}
 	};
 }

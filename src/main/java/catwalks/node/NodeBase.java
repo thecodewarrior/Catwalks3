@@ -8,7 +8,8 @@ public class NodeBase {
 		this.entity = entity;
 	}
 	
-	public void onTick() {}
+	public void serverTick() {}
+	public void clientTick() {}
 	public void onFirstTick() {}
 	public void onLoad() {}
 	

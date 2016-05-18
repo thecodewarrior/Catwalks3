@@ -3,7 +3,7 @@ package catwalks.raytrace.primitives;
 import catwalks.raytrace.RayTraceUtil;
 import catwalks.raytrace.RayTraceUtil.IRenderableTraceResult;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
-import catwalks.raytrace.RayTraceUtil.ITraceablePrimitive;
+import catwalks.raytrace.RayTraceUtil.TraceablePrimitive;
 import catwalks.raytrace.RayTraceUtil.SimpleRenderableTraceResult;
 import catwalks.raytrace.RayTraceUtil.VertexList;
 import catwalks.shade.ccl.vec.Matrix4;
@@ -11,7 +11,7 @@ import catwalks.util.GeneralUtil;
 import net.minecraft.util.math.Vec3d;
 import scala.actors.threadpool.Arrays;
 
-public class Quad implements ITraceablePrimitive<Quad> {
+public class Quad extends TraceablePrimitive<Quad> {
 
 	Vec3d v1, v2, v3, v4;
 	Tri t1, t2;
@@ -25,6 +25,16 @@ public class Quad implements ITraceablePrimitive<Quad> {
 		
 		t1 = new Tri(v1, v2, v3);
 		t2 = new Tri(v1, v3, v4);
+	}
+	
+	@Override
+	public Vec3d[] edges() {
+		return new Vec3d[] { v1, v2, v2, v3, v3, v4, v4, v1 };
+	}
+	
+	@Override
+	public Vec3d[] points() {
+		return new Vec3d[] { v1, v2, v3, v4 };
 	}
 	
 	public Quad(Vec3d v1, Vec3d v2, Vec3d v3, Vec3d v4, boolean hasNet) {
@@ -41,11 +51,7 @@ public class Quad implements ITraceablePrimitive<Quad> {
 			t2.trace(start, end)
 		);
 		
-		if(Double.isInfinite( result.hitDistance() )) {
-			return RayTraceUtil.miss(this);
-		}
-		
-		return new SimpleRenderableTraceResult<Quad>(start, result.hitPoint(), this,
+		return new SimpleRenderableTraceResult<Quad>(result, this,
 			Arrays.asList(new VertexList[] {
 				new VertexList(hasNet, new Vec3d[] { v1, v2, v3, v4 })
 			})
