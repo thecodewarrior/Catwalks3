@@ -22,7 +22,7 @@ import catwalks.raytrace.primitives.TexCoords;
 import catwalks.register.ItemRegister;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
-import net.minecraft.client.Minecraft;
+import catwalks.util.Logs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -78,7 +78,7 @@ public class EntityNodeBase extends Entity {
 	}
 
 	public void onLeftClick(EntityPlayer player, int hit) {
-		if(destroyTimer > 0) {
+		if(destroyTimer > 0 && destroyTimer < 9) {
 			this.kill();
 		} else {
 			destroyTimer = 10;
@@ -139,20 +139,29 @@ public class EntityNodeBase extends Entity {
 		Vec3d rotStart = derotate.apply(relStart);
 		Vec3d rotEnd = derotate.apply(relEnd);
 		
-		ITraceResult<Integer> result = RayTraceUtil.min(
-			RayTraceUtil.trace(rotStart, rotEnd, baseHits(), player),
-			null
-		);
+		ITraceResult<Integer> result = box.trace(rotStart, rotEnd, player);
+		ITraceResult<Integer> other = null;
+		if(true) {
+			other = RayTraceUtil.min(
+				RayTraceUtil.trace(rotStart, rotEnd, baseHits(), player),
+				null
+			);
+			
+		}
+		result = RayTraceUtil.min(result, other);
 		
-		if(Double.isInfinite(result.hitDistance()))
+		if(Double.isInfinite(result.hitDistance())) {
+//			Logs.debug("FAIL: %.2f, %.2f, %.2f -> %.2f, %.2f, %.2f", rotStart.xCoord, rotStart.yCoord, rotStart.zCoord, rotEnd.xCoord, rotEnd.yCoord, rotEnd.zCoord);
 			return (ITraceResult<NodeHit>) RayTraceUtil.MISS_RESULT;
+		}
 		
-		Vec3d adjustedHit = matrix.apply(result.hitPoint()).addVector(posX, posY, posZ); //.rotatePitch(this.rotationPitch).rotateYaw(this.rotationYaw).addVector(posX, posY, posZ);
-		
+		Vec3d adjustedHit = matrix.apply(result.hitPoint()).addVector(posX, posY, posZ);
+//		Logs.debug("SUCC: %.2f, %.2f, %.2f -> %.2f, %.2f, %.2f", rotStart.xCoord, rotStart.yCoord, rotStart.zCoord, rotEnd.xCoord, rotEnd.yCoord, rotEnd.zCoord);
 		return new SimpleTraceResult<NodeHit>(start, adjustedHit, new NodeHit(this, result.data()));
 	}
 	
 	List<NodeTraceable> traces;
+	NodeTraceable box;
 	
 	public List<NodeTraceable> baseHits() {
 		initTraces();
@@ -165,12 +174,12 @@ public class EntityNodeBase extends Entity {
 		traces = new ArrayList<>();
 		
 		double s = SIZE/2;
-		traces.add(new NodeTraceable(0,
+		box = new NodeTraceable(0,
 			new Box(
 				new Vec3d(-s, -s, -s),
 				new Vec3d( s,  s,  s)
 			), TexCoords.NULL
-		));
+		);
 		
 		traces.add(new NodeTraceable(Const.NODE.PITCH_PLUS,
 			new Quad(

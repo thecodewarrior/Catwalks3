@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
+import catwalks.CatwalksMod;
 import catwalks.Const;
 import catwalks.node.EntityNodeBase;
 import catwalks.raytrace.node.NodeTraceable;
@@ -24,7 +25,7 @@ import net.minecraft.util.math.Vec3d;
 
 public class RenderNode extends Render<EntityNodeBase> {
 	public static final ResourceLocation BASE_NODE_TEX = new ResourceLocation(Const.MODID, "textures/nodes/base.png");
-
+	
 	public RenderNode(RenderManager renderManager) {
 		super(renderManager);
 	}
@@ -43,7 +44,6 @@ public class RenderNode extends Render<EntityNodeBase> {
 		))
 			return;
 		
-		double l = 0.5;
         int red = 255, green = 255, blue = 255, alpha = 255;
 
         GlStateManager.pushMatrix();
@@ -56,9 +56,93 @@ public class RenderNode extends Render<EntityNodeBase> {
         GlStateManager.disableCull();
         GlStateManager.disableBlend();
         
-        AxisAlignedBB bb = new AxisAlignedBB(0, 0, 0, 0, 0, 0).expandXyz(EntityNodeBase.SIZE/2);
-//        AxisAlignedBB bb = axisalignedbb.offset(-entity.posX, -entity.posY, -entity.posZ);
+        Tessellator tessellator = Tessellator.getInstance();
+        VertexBuffer vb = tessellator.getBuffer();
         
+        // normal
+        GlStateManager.depthMask(false);
+        renderBounding(entity, partialTicks, 255, 255, 255, 255);
+        vb.begin(3, DefaultVertexFormats.POSITION_COLOR);
+        vb.pos(0, 0, 0).color(0, 0, 255, 255).endVertex();
+        vb.pos(0, 0, EntityNodeBase.SIZE).color(0, 0, 255, 255).endVertex();
+        tessellator.draw();
+        
+        // back
+        GlStateManager.depthFunc(GL11.GL_GREATER);
+        renderBounding(entity, partialTicks, 127, 127, 127, 255);
+        GlStateManager.depthMask(true);
+        GlStateManager.depthFunc(GL11.GL_LEQUAL);
+
+        
+        
+        if(CatwalksMod.proxy.getSelectedNode() == entity) {
+        
+	        red   = 0;
+	        green = 127;
+	        blue  = 0;
+	        alpha = 255;
+	        
+	        List<NodeTraceable> list = entity.baseHits();
+	        
+	        // outlines
+	        for (NodeTraceable trace : list) {
+				if(trace.getUv() == null) {
+		        	Vec3d[] points = trace.getTraceable().edges();
+		        	if(points.length == 0)
+		        		continue;
+					vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+					for (Vec3d vec : points) {
+						vb.pos(vec.xCoord, vec.yCoord, vec.zCoord).color(red, green, blue, alpha).endVertex();
+					}
+					tessellator.draw();
+				}
+			}
+	        
+	        GlStateManager.enableTexture2D();
+	        
+	        Minecraft.getMinecraft().renderEngine.bindTexture(BASE_NODE_TEX);
+	                
+	        for (NodeTraceable trace : list) {
+				if(trace.getUv() != null && trace.getUv() != TexCoords.NULL) {
+		        	Vec3d[] points = trace.getTraceable().points();
+		        	UV[] uvs = trace.getUv().uvs;
+		        	
+		        	if(uvs.length != points.length)
+		        		continue;
+		        	
+		        	if(points.length == 3) {
+		        		vb.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
+						for (int i = 0; i < 3; i++) {
+							vb.pos(points[i].xCoord, points[i].yCoord, points[i].zCoord).tex(uvs[i].u, uvs[i].v).endVertex();
+						}
+						tessellator.draw();
+		        	}
+		        	
+		        	if(points.length == 4) {
+		        		vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+						for (int i = 0; i < 4; i++) {
+							vb.pos(points[i].xCoord, points[i].yCoord, points[i].zCoord).tex(uvs[i].u, uvs[i].v).endVertex();
+						}
+						tessellator.draw();
+		        	}
+		        	
+					
+				}
+			}
+        }
+        
+	    GlStateManager.enableTexture2D();
+        GlStateManager.enableLighting();
+        GlStateManager.enableCull();
+        GlStateManager.disableBlend();
+		
+        GlStateManager.popMatrix();
+	}
+	
+	public void renderBounding(EntityNodeBase entity, float partialTicks, int red, int green, int blue, int alpha) {
+		int redAcc = 0, greenAcc = 0, blueAcc = 255, alphaAcc = 255;
+		
+		AxisAlignedBB bb = new AxisAlignedBB(0, 0, 0, 0, 0, 0).expandXyz(EntityNodeBase.SIZE/2);
         Tessellator tessellator = Tessellator.getInstance();
         VertexBuffer vb = tessellator.getBuffer();
         // bottom loop
@@ -79,121 +163,97 @@ public class RenderNode extends Render<EntityNodeBase> {
         vb.pos(bb.minX, bb.maxY, bb.minZ).color(red, green, blue, alpha).endVertex();
         tessellator.draw();
         
+        double d = entity.destroyTimer == 0 ? 0 : ( (entity.destroyTimer/10.0) - (partialTicks/10.0) );
+        
+        double amt = (EntityNodeBase.SIZE/2)*d;
         // crosses
         vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+        // bottom
         vb.pos(bb.minX, bb.minY, bb.minZ).color(red, green, blue, alpha).endVertex();
-        vb.pos(bb.maxX, bb.maxY, bb.maxZ).color(red, green, blue, alpha).endVertex();
+        vb.pos(-amt, -amt, -amt).color(red, green, blue, alpha).endVertex();
+
+        vb.pos(bb.maxX, bb.minY, bb.minZ).color(red, green, blue, alpha).endVertex();
+        vb.pos(amt, -amt, -amt).color(red, green, blue, alpha).endVertex();
+        
+        vb.pos(bb.maxX, bb.minY, bb.maxZ).color(red, green, blue, alpha).endVertex();
+        vb.pos(amt, -amt, amt).color(red, green, blue, alpha).endVertex();
         
         vb.pos(bb.minX, bb.minY, bb.maxZ).color(red, green, blue, alpha).endVertex();
-        vb.pos(bb.maxX, bb.maxY, bb.minZ).color(red, green, blue, alpha).endVertex();
+        vb.pos(-amt, -amt, amt).color(red, green, blue, alpha).endVertex();
         
-        vb.pos(bb.maxX, bb.minY, bb.minZ).color(red, green, blue, alpha).endVertex();
-        vb.pos(bb.minX, bb.maxY, bb.maxZ).color(red, green, blue, alpha).endVertex();
-
-        vb.pos(bb.maxX, bb.minY, bb.maxZ).color(red, green, blue, alpha).endVertex();
+        // top
         vb.pos(bb.minX, bb.maxY, bb.minZ).color(red, green, blue, alpha).endVertex();
+        vb.pos(-amt, amt, -amt).color(red, green, blue, alpha).endVertex();
+
+        vb.pos(bb.maxX, bb.maxY, bb.minZ).color(red, green, blue, alpha).endVertex();
+        vb.pos(amt, amt, -amt).color(red, green, blue, alpha).endVertex();
+        
+        vb.pos(bb.maxX, bb.maxY, bb.maxZ).color(red, green, blue, alpha).endVertex();
+        vb.pos(amt, amt, amt).color(red, green, blue, alpha).endVertex();
+        
+        vb.pos(bb.minX, bb.maxY, bb.maxZ).color(red, green, blue, alpha).endVertex();
+        vb.pos(-amt, amt, amt).color(red, green, blue, alpha).endVertex();
         tessellator.draw();
+        
+        if(entity.destroyTimer > 0) {
+        	vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+            // bottom
+            vb.pos(0, 0, 0).color(redAcc, greenAcc, blueAcc, alphaAcc).endVertex();
+            vb.pos(-amt, -amt, -amt).color(redAcc, greenAcc, blueAcc, alphaAcc).endVertex();
+
+            vb.pos(0, 0, 0).color(redAcc, greenAcc, blueAcc, alphaAcc).endVertex();
+            vb.pos(amt, -amt, -amt).color(redAcc, greenAcc, blueAcc, alphaAcc).endVertex();
+            
+            vb.pos(0, 0, 0).color(redAcc, greenAcc, blueAcc, alphaAcc).endVertex();
+            vb.pos(amt, -amt, amt).color(redAcc, greenAcc, blueAcc, alphaAcc).endVertex();
+            
+            vb.pos(0, 0, 0).color(redAcc, greenAcc, blueAcc, alphaAcc).endVertex();
+            vb.pos(-amt, -amt, amt).color(redAcc, greenAcc, blueAcc, alphaAcc).endVertex();
+            
+            // top
+            vb.pos(0, 0, 0).color(redAcc, greenAcc, blueAcc, alphaAcc).endVertex();
+            vb.pos(-amt, amt, -amt).color(redAcc, greenAcc, blueAcc, alphaAcc).endVertex();
+
+            vb.pos(0, 0, 0).color(redAcc, greenAcc, blueAcc, alphaAcc).endVertex();
+            vb.pos(amt, amt, -amt).color(redAcc, greenAcc, blueAcc, alphaAcc).endVertex();
+            
+            vb.pos(0, 0, 0).color(redAcc, greenAcc, blueAcc, alphaAcc).endVertex();
+            vb.pos(amt, amt, amt).color(redAcc, greenAcc, blueAcc, alphaAcc).endVertex();
+            
+            vb.pos(0, 0, 0).color(redAcc, greenAcc, blueAcc, alphaAcc).endVertex();
+            vb.pos(-amt, amt, amt).color(redAcc, greenAcc, blueAcc, alphaAcc).endVertex();
+            tessellator.draw();
+        }
 
         // destroy timer
-        double d = entity.destroyTimer == 0 ? 0 : (bb.maxY-bb.minY) * ( (entity.destroyTimer/10.0) - (partialTicks/10.0) );
+//        double d = entity.destroyTimer == 0 ? 0 : (bb.maxY-bb.minY) * ( (entity.destroyTimer/10.0) - (partialTicks/10.0) );
 
         // sides
         
         vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
         
-        vb.pos(bb.minX, bb.minY+d, bb.minZ).color(red, green, blue, alpha).endVertex();
+        vb.pos(bb.minX, bb.minY, bb.minZ).color(red, green, blue, alpha).endVertex();
         vb.pos(bb.minX, bb.maxY, bb.minZ).color(red, green, blue, alpha).endVertex();
-        vb.pos(bb.maxX, bb.minY+d, bb.minZ).color(red, green, blue, alpha).endVertex();
+        vb.pos(bb.maxX, bb.minY, bb.minZ).color(red, green, blue, alpha).endVertex();
         vb.pos(bb.maxX, bb.maxY, bb.minZ).color(red, green, blue, alpha).endVertex();
-        vb.pos(bb.minX, bb.minY+d, bb.maxZ).color(red, green, blue, alpha).endVertex();
+        vb.pos(bb.minX, bb.minY, bb.maxZ).color(red, green, blue, alpha).endVertex();
         vb.pos(bb.minX, bb.maxY, bb.maxZ).color(red, green, blue, alpha).endVertex();
-        vb.pos(bb.maxX, bb.minY+d, bb.maxZ).color(red, green, blue, alpha).endVertex();
+        vb.pos(bb.maxX, bb.minY, bb.maxZ).color(red, green, blue, alpha).endVertex();
         vb.pos(bb.maxX, bb.maxY, bb.maxZ).color(red, green, blue, alpha).endVertex();
         tessellator.draw();
-
-//        Vec3d vec3d = entity.getLook(partialTicks);
-        vb.begin(3, DefaultVertexFormats.POSITION_COLOR);
-        vb.pos(0, 0, 0).color(0, 0, 255, 255).endVertex();
-        vb.pos(0, 0, l).color(0, 0, 255, 255).endVertex();
-        tessellator.draw();
-        
-        GlStateManager.depthMask(false);
-        
-        if(entity.destroyTimer > 0) {
-	        vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-	        vb.pos(bb.minX, bb.minY, bb.minZ).color(0, 0, 255, 255).endVertex();
-	        vb.pos(bb.minX, bb.minY+d, bb.minZ).color(0, 0, 255, 255).endVertex();
-	        vb.pos(bb.maxX, bb.minY, bb.minZ).color(0, 0, 255, 255).endVertex();
-	        vb.pos(bb.maxX, bb.minY+d, bb.minZ).color(0, 0, 255, 255).endVertex();
-	        vb.pos(bb.minX, bb.minY, bb.maxZ).color(0, 0, 255, 255).endVertex();
-	        vb.pos(bb.minX, bb.minY+d, bb.maxZ).color(0, 0, 255, 255).endVertex();
-	        vb.pos(bb.maxX, bb.minY, bb.maxZ).color(0, 0, 255, 255).endVertex();
-	        vb.pos(bb.maxX, bb.minY+d, bb.maxZ).color(0, 0, 255, 255).endVertex();
-	        tessellator.draw();
-	    }
-        
-        GlStateManager.depthMask(true);
-        
-        red   = 0;
-        green = 127;
-        blue  = 0;
-        alpha = 255;
-        
-        List<NodeTraceable> list = entity.baseHits();
-        
-        // outlines
-        for (NodeTraceable trace : list) {
-			if(trace.getUv() == null) {
-	        	Vec3d[] points = trace.getTraceable().edges();
-	        	if(points.length == 0)
-	        		continue;
-				vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-				for (Vec3d vec : points) {
-					vb.pos(vec.xCoord, vec.yCoord, vec.zCoord).color(red, green, blue, alpha).endVertex();
-				}
-				tessellator.draw();
-			}
-		}
-        
-        GlStateManager.enableTexture2D();
-        
-        Minecraft.getMinecraft().renderEngine.bindTexture(BASE_NODE_TEX);
-                
-        for (NodeTraceable trace : list) {
-			if(trace.getUv() != null && trace.getUv() != TexCoords.NULL) {
-	        	Vec3d[] points = trace.getTraceable().points();
-	        	UV[] uvs = trace.getUv().uvs;
-	        	
-	        	if(uvs.length != points.length)
-	        		continue;
-	        	
-	        	if(points.length == 3) {
-	        		vb.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-					for (int i = 0; i < 3; i++) {
-						vb.pos(points[i].xCoord, points[i].yCoord, points[i].zCoord).tex(uvs[i].u, uvs[i].v).endVertex();
-					}
-					tessellator.draw();
-	        	}
-	        	
-	        	if(points.length == 4) {
-	        		vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-					for (int i = 0; i < 4; i++) {
-						vb.pos(points[i].xCoord, points[i].yCoord, points[i].zCoord).tex(uvs[i].u, uvs[i].v).endVertex();
-					}
-					tessellator.draw();
-	        	}
-	        	
-				
-			}
-		}
-        
-        GlStateManager.enableLighting();
-        GlStateManager.enableCull();
-        GlStateManager.disableBlend();
 		
-        GlStateManager.popMatrix();
-        
-//		this.renderLivingLabel(entity, entity.getNodeName().getFormattedText(), x, y-0.375, z, 64);
+//        if(entity.destroyTimer > 0) {
+//	        vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+//	        vb.pos(bb.minX, bb.minY, bb.minZ).color(0, 0, 255, 255).endVertex();
+//	        vb.pos(bb.minX, bb.minY+d, bb.minZ).color(0, 0, 255, 255).endVertex();
+//	        vb.pos(bb.maxX, bb.minY, bb.minZ).color(0, 0, 255, 255).endVertex();
+//	        vb.pos(bb.maxX, bb.minY+d, bb.minZ).color(0, 0, 255, 255).endVertex();
+//	        vb.pos(bb.minX, bb.minY, bb.maxZ).color(0, 0, 255, 255).endVertex();
+//	        vb.pos(bb.minX, bb.minY+d, bb.maxZ).color(0, 0, 255, 255).endVertex();
+//	        vb.pos(bb.maxX, bb.minY, bb.maxZ).color(0, 0, 255, 255).endVertex();
+//	        vb.pos(bb.maxX, bb.minY+d, bb.maxZ).color(0, 0, 255, 255).endVertex();
+//	        tessellator.draw();
+//	    }
 	}
 	
 	@Override

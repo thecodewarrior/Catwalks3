@@ -3,6 +3,7 @@ package catwalks.proxy;
 import java.util.List;
 
 import catwalks.item.ItemDecoration;
+import catwalks.node.EntityNodeBase;
 import catwalks.shade.ccl.raytracer.RayTracer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -16,6 +17,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.server.FMLServerHandler;
 
 public class CommonProxy {
+	public void setSelectedNode(EntityNodeBase entity) {}
+	public EntityNodeBase getSelectedNode() { return null; }
+	
 	public void preInit() {}
 	public void reloadConfigs() {}
 	

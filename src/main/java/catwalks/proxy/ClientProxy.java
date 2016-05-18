@@ -10,6 +10,7 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 
 import catwalks.Conf;
 import catwalks.Const;
+import catwalks.node.EntityNodeBase;
 import catwalks.raytrace.RayTraceUtil.VertexList;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
@@ -45,6 +46,18 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientProxy extends CommonProxy {
+	
+	private EntityNodeBase SELECTED_NODE = null;
+	
+	@Override
+	public EntityNodeBase getSelectedNode() {
+		return SELECTED_NODE;
+	}
+	
+	@Override
+	public void setSelectedNode(EntityNodeBase entity) {
+		SELECTED_NODE = entity;
+	}
 	
 	@Override
 	public MinecraftServer getServer() {

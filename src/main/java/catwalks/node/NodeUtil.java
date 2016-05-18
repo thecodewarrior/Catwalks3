@@ -1,60 +1,33 @@
 package catwalks.node;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import catwalks.raytrace.RayTraceUtil;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
 import catwalks.raytrace.node.NodeHit;
-import catwalks.util.AABB;
-import catwalks.util.GeneralUtil;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class NodeUtil {
 
-	public static ITraceResult<NodeHit> rayTraceNodes(World world, @Nullable EntityPlayer player, Vec3d start, Vec3d look, double reachDistance) {
-//		double step = Math.min(2, reachDistance);
-//		double buffer = 1;
-		Vec3d end = start.add( look.scale(reachDistance) );
+	@SideOnly(Side.CLIENT)
+	public static ITraceResult<NodeHit> rayTraceNodes() {
+		Minecraft mc = Minecraft.getMinecraft();
+		RayTraceResult rtr = mc.objectMouseOver;
+
+		EntityPlayer player = mc.thePlayer;
+        Vec3d start = player.getPositionEyes(1);
+        Vec3d look = player.getLook(1);
+        double d0 = mc.playerController.extendedReach() ? 6 : mc.playerController.getBlockReachDistance();
+        Vec3d end = start.addVector(look.xCoord * d0, look.yCoord * d0, look.zCoord * d0);
+        
+		if(rtr.entityHit instanceof EntityNodeBase) {
+			ITraceResult<NodeHit> hit = ((EntityNodeBase)rtr.entityHit).rayTraceNode(player, start, end);
+			return hit;
+		}
 		
-		AxisAlignedBB bb = new AABB(start, end).expandXyz(5);
-		
-//		List<AxisAlignedBB> bbs = new ArrayList<>();
-//		for(double i = step; i <= reachDistance; i += step) {
-//			if(i > reachDistance)
-//				i = reachDistance;
-//			
-//			bbs.add(  GeneralUtil.getAABB(
-//						start.add(look.scale(i-step)),
-//						start.add(look.scale(i     ))
-//					  ).expandXyz(buffer)
-//					);
-//			if( i == reachDistance )
-//				break;
-//		}
-//		
-		ITraceResult<NodeHit> result = null;
-//				
-//		for (AxisAlignedBB bb : bbs) {
-			List<Entity> entities = world.getEntitiesWithinAABB(EntityNodeBase.class, bb);
-			
-			for (Entity entity : entities) {
-				EntityNodeBase nodeEntity = (EntityNodeBase) entity;
-				
-				ITraceResult<NodeHit> hit = nodeEntity.rayTraceNode(player, start, end);
-				if(hit != null) {
-					result = RayTraceUtil.min(result, hit);
-				}
-			}
-//		}
-		
-		return result;
+		return null;
 	}
 	
 }

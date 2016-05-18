@@ -4,6 +4,7 @@ import java.util.List;
 
 import catwalks.raytrace.RayTraceUtil;
 import catwalks.raytrace.RayTraceUtil.IRenderableTraceResult;
+import catwalks.raytrace.RayTraceUtil.ITraceResult;
 import catwalks.raytrace.RayTraceUtil.SimpleRenderableTraceResult;
 import catwalks.raytrace.RayTraceUtil.TraceablePrimitive;
 import catwalks.raytrace.RayTraceUtil.VertexList;
@@ -56,7 +57,10 @@ public class Box extends TraceablePrimitive<Box> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public IRenderableTraceResult<Box> trace(Vec3d start, Vec3d end) {
-		return new SimpleRenderableTraceResult<Box>(RayTraceUtil.trace(start, end, quadList, null), this, Arrays.asList(new VertexList[] {
+		ITraceResult<?> result = RayTraceUtil.trace(start, end, quadList, null);
+		if(Double.isInfinite( result.hitDistance() ))
+			start = end;
+		return new SimpleRenderableTraceResult<Box>(result, this, Arrays.asList(new VertexList[] {
 			new VertexList(false, quads[0].points()),
 			new VertexList(false, quads[1].points()),
 			new VertexList(false, points[0], points[4]),
