@@ -15,10 +15,13 @@ public class Conf {
 	public static int catwalkSpeed = 1;
 	public static boolean showScaffoldInsideFaces = false;
 	
+	public static boolean logPackets = false;
+	
 	public static File file;
 	public static Configuration config;
 	
 	public static final String CATEGORY_GENERAL = "general";
+	public static final String CATEGORY_DEV = "developer options";
 	
 	@SubscribeEvent
     public void onConfigChangedEvent(OnConfigChangedEvent event)
@@ -53,7 +56,11 @@ public class Conf {
     	prop = conf.get(CATEGORY_GENERAL, "Show Scaffold Inside Faces", false).setRequiresMcRestart(false);
     	prop.setComment("Whether the faces of scaffolds should show if they are next to another scaffold");
     	showScaffoldInsideFaces = (boolean)prop.getBoolean();
-
+    	
+    	prop = conf.get(CATEGORY_DEV, "Log packet handling", false).setRequiresMcRestart(false);
+    	prop.setComment("Useful to see if more packets are being sent than needed");
+    	logPackets = (boolean)prop.getBoolean();
+    	
         if (conf.hasChanged() == true)
         {
             conf.save();

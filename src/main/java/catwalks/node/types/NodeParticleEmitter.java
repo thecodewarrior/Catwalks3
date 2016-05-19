@@ -1,19 +1,34 @@
 package catwalks.node.types;
 
-import catwalks.Const;
-import catwalks.node.EntityNodeBase;
-import catwalks.node.NodeBase;
+import java.util.List;
+
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.Vec3d;
 
+import catwalks.Const;
+import catwalks.node.EntityNodeBase;
+import catwalks.node.NodeBase;
+import catwalks.node.net.InputPort;
+import catwalks.node.port.BooleanInput;
+import scala.actors.threadpool.Arrays;
+
 public class NodeParticleEmitter extends NodeBase {
 
+	BooleanInput input = new BooleanInput(true);
+	
 	public NodeParticleEmitter(EntityNodeBase entity) {
 		super(entity);
 	}
 
 	@Override
+	public List<InputPort> inputs() {
+		return Arrays.asList(new InputPort[] { input });
+	}
+	
+	@Override
 	public void clientTick() {
+		if(!input.getValue())
+			return;
 		Vec3d look = entity.getLook(1).scale(0.25);
 		for (int i = 0; i < Const.RAND.nextInt(5); i++) {
 			entity.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL,

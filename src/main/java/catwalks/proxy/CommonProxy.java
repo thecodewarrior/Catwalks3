@@ -20,6 +20,9 @@ public class CommonProxy {
 	public void setSelectedNode(EntityNodeBase entity) {}
 	public EntityNodeBase getSelectedNode() { return null; }
 	
+	public void setConnectingIndex(int index) {}
+	public int getConnectingIndex() { return -1; }
+	
 	public void preInit() {}
 	public void reloadConfigs() {}
 	

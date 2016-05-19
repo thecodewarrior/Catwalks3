@@ -1,5 +1,6 @@
 package catwalks.network.messages;
 
+import catwalks.network.NetworkHandler;
 import catwalks.node.EntityNodeBase;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -38,6 +39,7 @@ public class PacketNodeInteract implements IMessage {
         public IMessage onMessage(PacketNodeInteract message, MessageContext ctx) {
             IThreadListener mainThread = Minecraft.getMinecraft();
             mainThread.addScheduledTask(() -> {
+            	NetworkHandler.notifyPacketHandling(true, "NodeInteract");
             	Entity plainentity = ctx.getServerHandler().playerEntity.worldObj.getEntityByID(message.id);
             	if(!( plainentity instanceof EntityNodeBase ))
             		return;

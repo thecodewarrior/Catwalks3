@@ -14,10 +14,11 @@ import scala.actors.threadpool.Arrays;
 
 public class NodeRedstoneReader extends NodeBase {
 	
-	public BooleanPort value = new BooleanPort(false);
+	public BooleanPort value;
 	
 	public NodeRedstoneReader(EntityNodeBase entity) {
 		super(entity);
+		value = new BooleanPort(false, this);
 	}
 	
 	@Override

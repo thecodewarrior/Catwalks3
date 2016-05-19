@@ -1,14 +1,31 @@
 package catwalks.node.net;
 
+import java.lang.ref.WeakReference;
+import java.util.UUID;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+
+import catwalks.network.messages.PacketClientPortConnection;
+import catwalks.node.EntityNodeBase;
+import catwalks.node.NodeBase;
 import io.netty.buffer.ByteBuf;
 
 public abstract class OutputPort<T> {
 
+	public Vec3d clientConnectLoc;
+	
+	public final Class<T> type;
+	PortConnection<T> connection;
 	T value;
 	boolean modified;
+	NodeBase node;
 	
-	public OutputPort(T value) {
+	public OutputPort(Class<T> type, T value, NodeBase node) {
+		this.type = type;
 		this.value = value;
+		this.node = node;
 	}
 	
 	public void setValue(T value) {
@@ -17,6 +34,10 @@ public abstract class OutputPort<T> {
 		if(value != null && value.equals(this.value)) return;
 		this.value = value;
 		this.modified = true;
+	}
+	
+	public int getColor() {
+		return 0x7f7f7f;
 	}
 	
 	public T getValue() {
@@ -31,8 +52,92 @@ public abstract class OutputPort<T> {
 		modified = false;
 	}
 	
-	public abstract void readFromBuf(ByteBuf buf);
+	public boolean updateConnected(World world) {
+		if(connection == null)
+			return false;
+		return connection.updateConnected(world, value);
+	}
 	
-	public abstract void writeToBuf(ByteBuf buf);
+	public void connectTo(EntityNodeBase entity, int index) {
+		connection = new PortConnection<>(entity.getPersistentID(), index, entity.worldObj, this.type);
+	}
 	
+	public Vec3d connectedPoint() {
+		return connection == null ? null : connection.connectedLoc;
+	}
+	
+	public void readFromBuf(ByteBuf buf) {
+		if(buf.readBoolean()) {
+			connection = PortConnection.readFromBuf(buf, node.entity.worldObj, type);
+			clientConnectLoc = connection.connectedLoc;
+		}
+	}
+	
+	public void writeToBuf(ByteBuf buf) {
+		buf.writeBoolean(connection != null);
+		if(connection != null) {
+			connection.writeToBuf(buf);
+		}
+	}
+	
+	
+	public static class PortConnection<T> {
+		public Class<T> type;
+		public boolean isInvalid;
+		public Vec3d connectedLoc;
+		public WeakReference<InputPort<T>> port = new WeakReference<InputPort<T>>(null);
+//		public WeakReference<NodeBase> node = new WeakReference<NodeBase>(null);
+		
+		public int connectedIndex;
+		public UUID connectedUUID;
+		
+		public PortConnection(UUID uuid, int index, World world, Class<T> type) {
+			this.connectedUUID = uuid;
+			this.connectedIndex = index;
+			tryConnect(world);
+		}
+		
+		public boolean updateConnected(World world, T value) {
+			boolean didConnect = false;
+			if(port.get() == null) {
+				didConnect = tryConnect(world);
+			}
+			if(port.get() != null) {
+				port.get().setValue(value);
+			}
+			return didConnect;
+		}
+		
+		@SuppressWarnings("unchecked")
+		public boolean tryConnect(World world) {
+			for(Entity e : world.loadedEntityList) {
+				if(e.getPersistentID().equals(connectedUUID) && e instanceof EntityNodeBase) {
+					EntityNodeBase entity = (EntityNodeBase) e;
+					InputPort<?> otherPort = entity.getNode().inputs().get(connectedIndex);
+					port = new WeakReference<InputPort<T>>((InputPort<T>) otherPort);
+					connectedLoc = entity.getPositionVector();
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		public void writeToBuf(ByteBuf buf) {
+			buf.writeLong(connectedUUID.getMostSignificantBits());
+			buf.writeLong(connectedUUID.getLeastSignificantBits());
+			buf.writeInt(connectedIndex);
+			buf.writeFloat((float) connectedLoc.xCoord);
+			buf.writeFloat((float) connectedLoc.yCoord);
+			buf.writeFloat((float) connectedLoc.zCoord);
+		}
+		
+		public static <T> PortConnection<T> readFromBuf(ByteBuf buf, World world, Class<T> type) {
+			UUID uuid = new UUID(buf.readLong(), buf.readLong());
+			int index = buf.readInt();
+			Vec3d vec = new Vec3d(buf.readFloat(), buf.readFloat(), buf.readFloat());
+			PortConnection<T> con = new PortConnection<>(uuid, index, world, type);
+			con.connectedLoc = vec;
+			return con;
+		}
+	}
 }

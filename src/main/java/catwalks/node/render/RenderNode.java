@@ -2,15 +2,6 @@ package catwalks.node.render;
 
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
-import catwalks.CatwalksMod;
-import catwalks.Const;
-import catwalks.node.EntityNodeBase;
-import catwalks.raytrace.node.NodeTraceable;
-import catwalks.raytrace.primitives.TexCoords;
-import catwalks.raytrace.primitives.TexCoords.UV;
-import catwalks.register.ItemRegister;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -22,6 +13,17 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+
+import org.lwjgl.opengl.GL11;
+
+import catwalks.CatwalksMod;
+import catwalks.Const;
+import catwalks.node.EntityNodeBase;
+import catwalks.node.net.OutputPort;
+import catwalks.raytrace.node.NodeTraceable;
+import catwalks.raytrace.primitives.TexCoords;
+import catwalks.raytrace.primitives.TexCoords.UV;
+import catwalks.register.ItemRegister;
 
 public class RenderNode extends Render<EntityNodeBase> {
 	public static final ResourceLocation BASE_NODE_TEX = new ResourceLocation(Const.MODID, "textures/nodes/base.png");
@@ -50,35 +52,34 @@ public class RenderNode extends Render<EntityNodeBase> {
         int green = (colorHex >> 8) & 0xFF;
         int blue  = (colorHex >> 0) & 0xFF;
         
-        
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
-        GlStateManager.rotate(entity.rotationYaw, 0, -1, 0);
-        GlStateManager.rotate(entity.rotationPitch, 1, 0, 0);
+        Tessellator tessellator = Tessellator.getInstance();
+        VertexBuffer vb = tessellator.getBuffer();
         
         GlStateManager.disableTexture2D();
         GlStateManager.disableLighting();
         GlStateManager.disableCull();
         GlStateManager.disableBlend();
         
-        Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vb = tessellator.getBuffer();
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, z);
+        GlStateManager.rotate(entity.rotationYaw, 0, -1, 0);
+        GlStateManager.rotate(entity.rotationPitch, 1, 0, 0);
         
-        // normal
         GlStateManager.depthMask(false);
+        
+        // back
+        GlStateManager.depthFunc(GL11.GL_GREATER);
+        renderBounding(entity, partialTicks, red/2, green/2, blue/2, alpha);
+        GlStateManager.depthFunc(GL11.GL_LEQUAL);
+        
+        // normal        
         renderBounding(entity, partialTicks, red, green, blue, alpha);
         vb.begin(3, DefaultVertexFormats.POSITION_COLOR);
         vb.pos(0, 0, 0).color(0, 0, 255, 255).endVertex();
         vb.pos(0, 0, EntityNodeBase.SIZE).color(0, 0, 255, 255).endVertex();
         tessellator.draw();
         
-        // back
-        GlStateManager.depthFunc(GL11.GL_GREATER);
-        renderBounding(entity, partialTicks, red/2, green/2, blue/2, alpha);
         GlStateManager.depthMask(true);
-        GlStateManager.depthFunc(GL11.GL_LEQUAL);
-
-        
         
         if(CatwalksMod.proxy.getSelectedNode() == entity) {
         
@@ -136,12 +137,53 @@ public class RenderNode extends Render<EntityNodeBase> {
 			}
         }
         
+        GlStateManager.popMatrix();
+        GlStateManager.pushMatrix();
+        
+        GlStateManager.translate(x, y, z);
+        
+        // normal
+        GlStateManager.depthMask(false);
+        
+        // back
+        GlStateManager.depthFunc(GL11.GL_GREATER);
+        renderConnections(entity, partialTicks, 2);
+        GlStateManager.depthFunc(GL11.GL_LEQUAL);
+        
+        renderConnections(entity, partialTicks, 1);
+        
+        GlStateManager.depthMask(true);
+        
 	    GlStateManager.enableTexture2D();
         GlStateManager.enableLighting();
         GlStateManager.enableCull();
         GlStateManager.disableBlend();
 		
         GlStateManager.popMatrix();
+	}
+	
+	public void renderConnections(EntityNodeBase entity, float partialTicks, int div) {
+		Tessellator tessellator = Tessellator.getInstance();
+        VertexBuffer vb = tessellator.getBuffer();
+        Vec3d posVec = entity.getPositionVector();
+        
+        for (OutputPort port : entity.getNode().outputs()) {
+        	if(port.clientConnectLoc == null)
+        		continue;
+        	
+        	int colorHex = port.getColor();
+            int alpha = 255;
+            int red   = (colorHex >> 16) & 0xFF; red = red/div;
+            int green = (colorHex >> 8) & 0xFF; green = green/div;
+            int blue  = (colorHex >> 0) & 0xFF; blue = blue/div;
+            
+            Vec3d point = port.clientConnectLoc.subtract(posVec);
+            
+    		vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+            vb.pos(0, 0, 0).color(red, green, blue, alpha).endVertex();
+            vb.pos(point.xCoord, point.yCoord, point.zCoord).color(red, green, blue, alpha).endVertex();
+            tessellator.draw();
+		}
 	}
 	
 	public void renderBounding(EntityNodeBase entity, float partialTicks, int red, int green, int blue, int alpha) {
@@ -246,7 +288,7 @@ public class RenderNode extends Render<EntityNodeBase> {
         vb.pos(bb.maxX, bb.minY, bb.maxZ).color(red, green, blue, alpha).endVertex();
         vb.pos(bb.maxX, bb.maxY, bb.maxZ).color(red, green, blue, alpha).endVertex();
         tessellator.draw();
-		
+        
 //        if(entity.destroyTimer > 0) {
 //	        vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 //	        vb.pos(bb.minX, bb.minY, bb.minZ).color(0, 0, 255, 255).endVertex();

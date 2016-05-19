@@ -1,6 +1,7 @@
 package catwalks.network.messages;
 
 import catwalks.CatwalksMod;
+import catwalks.network.NetworkHandler;
 import catwalks.node.EntityNodeBase;
 import catwalks.node.render.RenderNode;
 import io.netty.buffer.ByteBuf;
@@ -58,6 +59,7 @@ public class PacketUpdateNode implements IMessage {
         public IMessage onMessage(PacketUpdateNode message, MessageContext ctx) {
             IThreadListener mainThread = Minecraft.getMinecraft();
             mainThread.addScheduledTask(() -> {
+            	NetworkHandler.notifyPacketHandling(false, "UpdateNode");
             	Entity plainentity = Minecraft.getMinecraft().theWorld.getEntityByID(message.entityID);
             	if(!( plainentity instanceof EntityNodeBase ))
             		return;
@@ -66,8 +68,6 @@ public class PacketUpdateNode implements IMessage {
             	entity.rotationPitch = message.rotationPitch;
             	entity.rotationYaw = message.rotationYaw;
             	entity.destroyTimer = message.destroyTimer;
-            	if(entity.destroyTimer > 0)
-            		CatwalksMod.proxy.setSelectedNode(entity);
             });
             return null;
         }

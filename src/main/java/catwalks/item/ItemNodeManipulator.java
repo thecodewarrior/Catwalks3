@@ -1,5 +1,6 @@
 package catwalks.item;
 
+import catwalks.CatwalksMod;
 import catwalks.network.NetworkHandler;
 import catwalks.network.messages.PacketNodeClick;
 import catwalks.network.messages.PacketNodeInteract;
@@ -9,6 +10,7 @@ import catwalks.node.NodeUtil.EnumNodes;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
 import catwalks.raytrace.node.NodeHit;
 import catwalks.shade.ccl.raytracer.RayTracer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -33,7 +35,10 @@ public class ItemNodeManipulator extends ItemBase {
 			if(result == null || result.data() == null)
 				return super.onEntitySwing(entityLiving, stack);
 			
-			NetworkHandler.network.sendToServer(new PacketNodeClick(result.data().node.getEntityId(), result.data().hit));
+			if(!result.data().node.clientLeftClick((EntityPlayer) entityLiving, result.data().hit)) {
+				NetworkHandler.network.sendToServer(new PacketNodeClick(result.data().node.getEntityId(), result.data().hit));
+				CatwalksMod.proxy.setSelectedNode(result.data().node);
+			}
 		}
 		return super.onEntitySwing(entityLiving, stack);
 	}
@@ -46,7 +51,9 @@ public class ItemNodeManipulator extends ItemBase {
 			if(result == null || result.data() == null)
 				return super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
 			
-			NetworkHandler.network.sendToServer(new PacketNodeInteract(result.data().node.getEntityId(), result.data().hit));
+			if(!result.data().node.clientRightClick(Minecraft.getMinecraft().thePlayer, result.data().hit)) {
+				NetworkHandler.network.sendToServer(new PacketNodeInteract(result.data().node.getEntityId(), result.data().hit));
+			}
 		}
 		
 		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemStackIn);
@@ -56,7 +63,7 @@ public class ItemNodeManipulator extends ItemBase {
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
 			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if(playerIn.isSneaking() && !worldIn.isRemote) {
-			EntityNodeBase entity = new EntityNodeBase(worldIn, pos.getX()+hitX, pos.getY()+hitY, pos.getZ()+hitZ, EnumNodes.REDSTONEREADER);
+			EntityNodeBase entity = new EntityNodeBase(worldIn, pos.getX()+hitX, pos.getY()+hitY, pos.getZ()+hitZ, EnumNodes.PARTICLE);
 			
 			switch (facing) {
 			case NORTH:

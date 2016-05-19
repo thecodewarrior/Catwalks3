@@ -22,7 +22,7 @@ public class CatwalksModConfGui extends GuiConfig
         List<IConfigElement> configElements = new ArrayList<IConfigElement>();
 
         configElements.addAll(new ConfigElement(Conf.config.getCategory(Conf.CATEGORY_GENERAL)).getChildElements());
-
+        configElements.add(new ConfigElement(Conf.config.getCategory(Conf.CATEGORY_DEV)));
         return configElements;
     }
 

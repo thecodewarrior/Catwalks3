@@ -1,5 +1,6 @@
 package catwalks.proxy;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -47,17 +48,27 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientProxy extends CommonProxy {
 	
-	private EntityNodeBase SELECTED_NODE = null;
+	private WeakReference<EntityNodeBase> SELECTED_NODE = null;
+	private int connectingIndex;
+//	private WeakReference<EntityNodeBase> SELECTED_OUTPUT = null;
 	
 	@Override
 	public EntityNodeBase getSelectedNode() {
-		return SELECTED_NODE;
+		return SELECTED_NODE == null ? null : SELECTED_NODE.get();
 	}
 	
 	@Override
 	public void setSelectedNode(EntityNodeBase entity) {
-		SELECTED_NODE = entity;
+		SELECTED_NODE = new WeakReference<>(entity);
 	}
+	
+	@Override
+	public void setConnectingIndex(int index) {
+		connectingIndex = index;
+	}
+	public int getConnectingIndex() {
+		return connectingIndex;
+	};
 	
 	@Override
 	public MinecraftServer getServer() {

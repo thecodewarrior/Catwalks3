@@ -3,14 +3,33 @@ package catwalks.node;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.World;
+
 import javax.annotation.Nullable;
 
 import catwalks.CatwalksMod;
 import catwalks.Const;
 import catwalks.network.NetworkHandler;
+import catwalks.network.messages.PacketClientPortConnection;
+import catwalks.network.messages.PacketNodeConnect;
 import catwalks.network.messages.PacketUpdateNode;
 import catwalks.network.messages.PacketUpdatePort;
 import catwalks.node.NodeUtil.EnumNodes;
+import catwalks.node.net.InputPort;
 import catwalks.node.net.OutputPort;
 import catwalks.raytrace.CustomAABBCollide;
 import catwalks.raytrace.RayTraceUtil;
@@ -26,21 +45,6 @@ import catwalks.register.ItemRegister;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData {
 
@@ -76,9 +80,20 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 			int i = 0;
 			for(OutputPort<?> port : node.outputs()) {
 				if(port.isModified()) {
-					PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+					PacketBuffer buf = NetworkHandler.createBuffer();
 					port.writeToBuf(buf);
-					firePacket(new PacketUpdatePort(this, i, buf));
+					firePacket(new PacketUpdatePort(this, true, i, buf));
+					if( port.updateConnected(this.worldObj) )
+						firePacket(new PacketClientPortConnection(this.getEntityId(), i, port.connectedPoint()));
+					port.resetModified();
+				}
+				i++;
+			}
+			for(InputPort<?> port : node.inputs()) {
+				if(port.isModified()) {
+					PacketBuffer buf = NetworkHandler.createBuffer();
+					port.writeToBuf(buf);
+					firePacket(new PacketUpdatePort(this, false, i, buf));
 					port.resetModified();
 				}
 				i++;
@@ -100,6 +115,24 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 		return node;
 	}
 
+	public boolean clientRightClick(EntityPlayer player, int hit) {
+		if(hit == Const.NODE.CONNECT_POINT) {
+			CatwalksMod.proxy.setConnectingIndex(0);
+			return true;
+		}
+		if(hit == 0 && CatwalksMod.proxy.getConnectingIndex() >= 0 && CatwalksMod.proxy.getSelectedNode() != null) {
+			int index = CatwalksMod.proxy.getConnectingIndex();
+			CatwalksMod.proxy.setConnectingIndex(-1);
+			NetworkHandler.network.sendToServer(new PacketNodeConnect(CatwalksMod.proxy.getSelectedNode().getEntityId(), index, this.getEntityId(), 0));
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean clientLeftClick(EntityPlayer player, int hit) {
+		return false;
+	}
+	
 	public void onLeftClick(EntityPlayer player, int hit) {
 		if(destroyTimer > 0 && destroyTimer < 9) {
 			this.kill();
@@ -272,6 +305,34 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 				0,  0
 			)
 		));
+		
+		traces.add(new NodeTraceable(Const.NODE.CONNECT_POINT,
+			new Quad(
+				new Vec3d(0, -d/4, SIZE),
+				new Vec3d(0,  d/4, SIZE),
+				new Vec3d(0,  d/4, SIZE+d/2),
+				new Vec3d(0, -d/4, SIZE+d/2)
+			), new TexCoords(64,
+				0, 38,
+				7, 38,
+				7, 45,
+				0, 45
+			)
+		));
+		
+		traces.add(new NodeTraceable(Const.NODE.CONNECT_POINT,
+			new Quad(
+				new Vec3d(-d/4, 0, SIZE),
+				new Vec3d( d/4, 0, SIZE),
+				new Vec3d( d/4, 0, SIZE+d/2),
+				new Vec3d(-d/4, 0, SIZE+d/2)
+			), new TexCoords(64,
+				0, 38,
+				7, 38,
+				7, 45,
+				0, 45
+			)
+		));
 			
 	}
 	
@@ -305,6 +366,7 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 		setEntityInvulnerable(true);
 		setSize(0, 0);
 		initTraces();
+		this.ignoreFrustumCheck = true;
 //		this.node = new NodeParticleEmitter(this);
 	}
 	
@@ -354,12 +416,14 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 	@Override
 	public void writeSpawnData(ByteBuf buffer) {
 		buffer.writeInt(nodeType.ordinal());
+		node.writeSyncData(buffer);
 	}
 
 	@Override
 	public void readSpawnData(ByteBuf additionalData) {
 		nodeType = EnumNodes.values()[ additionalData.readInt() ];
 		node = nodeType.create(this);
+		node.readSyncData(additionalData);
 	}
 
 }
