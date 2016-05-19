@@ -134,6 +134,19 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 			this.rotationYaw += 5;
 		}
 		
+		if(this.rotationPitch < -90) {
+			float diff = this.rotationPitch+90;
+			this.rotationPitch -= 2* diff;
+			this.rotationYaw += 180;
+		}
+		if(this.rotationPitch > 90) {
+			float diff = this.rotationPitch-90;
+			this.rotationPitch = 2* diff;
+			this.rotationYaw += 180;
+		}
+		
+		this.rotationYaw = this.rotationYaw % 360;
+		
 		sendNodeUpdate();
 	}
 	
