@@ -3,6 +3,7 @@ package catwalks.network;
 import catwalks.network.messages.PacketNodeClick;
 import catwalks.network.messages.PacketNodeInteract;
 import catwalks.network.messages.PacketUpdateNode;
+import catwalks.network.messages.PacketUpdatePort;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -17,6 +18,7 @@ public class NetworkHandler {
 	    network.registerMessage(PacketUpdateNode.Handler.class, PacketUpdateNode.class, i++, Side.CLIENT);
 	    network.registerMessage(PacketNodeClick.Handler.class, PacketNodeClick.class, i++, Side.SERVER);
 	    network.registerMessage(PacketNodeInteract.Handler.class, PacketNodeInteract.class, i++, Side.SERVER);
+	    network.registerMessage(PacketUpdatePort.Handler.class, PacketUpdatePort.class, i++, Side.CLIENT);
 	}
 	
 }

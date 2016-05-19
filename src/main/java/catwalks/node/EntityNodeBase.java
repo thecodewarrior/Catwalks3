@@ -9,6 +9,9 @@ import catwalks.CatwalksMod;
 import catwalks.Const;
 import catwalks.network.NetworkHandler;
 import catwalks.network.messages.PacketUpdateNode;
+import catwalks.network.messages.PacketUpdatePort;
+import catwalks.node.NodeUtil.EnumNodes;
+import catwalks.node.net.OutputPort;
 import catwalks.raytrace.CustomAABBCollide;
 import catwalks.raytrace.RayTraceUtil;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
@@ -22,34 +25,41 @@ import catwalks.raytrace.primitives.TexCoords;
 import catwalks.register.ItemRegister;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
-import catwalks.util.Logs;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class EntityNodeBase extends Entity {
+public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData {
 
 	public static double SIZE = 0.25;
 	public int destroyTimer;
 	
 	protected boolean isPosDirty = false;
 	protected NodeBase node;
+	protected EnumNodes nodeType;
 	
 	public EntityNodeBase(World worldIn) {
 		super(worldIn);
 	}
 	
-	public EntityNodeBase(World worldIn, double x, double y, double z) {
+	public EntityNodeBase(World worldIn, double x, double y, double z, EnumNodes node) {
 		this(worldIn);
 		setPosition(x, y, z);
+		nodeType = node;
+		this.node = nodeType.create(this);
 	}
 
 	@Override
@@ -60,6 +70,19 @@ public class EntityNodeBase extends Entity {
 			node.clientTick();
 		} else {
 			node.serverTick();
+		}
+		
+		if(!worldObj.isRemote) {
+			int i = 0;
+			for(OutputPort<?> port : node.outputs()) {
+				if(port.isModified()) {
+					PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+					port.writeToBuf(buf);
+					firePacket(new PacketUpdatePort(this, i, buf));
+					port.resetModified();
+				}
+				i++;
+			}
 		}
 	}
 	
@@ -269,14 +292,11 @@ public class EntityNodeBase extends Entity {
 		setEntityInvulnerable(true);
 		setSize(0, 0);
 		initTraces();
-		this.node = new NodeParticleEmitter(this);
+//		this.node = new NodeParticleEmitter(this);
 	}
 	
 	@SideOnly(Side.CLIENT)
     public int getBrightnessForRender(float partialTicks) {
-//		int i = this.getLightFromNeighborsFor(EnumSkyBlock.SKY, pos);
-//        int j = this.getLightFromNeighborsFor(EnumSkyBlock.BLOCK, pos);
-
         return 15 << 20 | 15 << 4;
 	}
     public float getBrightness(float partialTicks) { return 15; }
@@ -293,18 +313,40 @@ public class EntityNodeBase extends Entity {
 	
 	public void sendNodeUpdate() {
 		if(!worldObj.isRemote) {
-			NetworkHandler.network.sendToAllAround(new PacketUpdateNode(this), new TargetPoint(worldObj.provider.getDimension(), posX, posY, posZ, 32));
+			firePacket(new PacketUpdateNode(this));
 		}
+	}
+	
+	public void firePacket(IMessage message) {
+		NetworkHandler.network.sendToAllAround(message, new TargetPoint(worldObj.provider.getDimension(), posX, posY, posZ, 32));
 	}
 	
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound) {
-		
+		nodeType = EnumNodes.values()[ compound.getInteger("nodeID") ];
+		if(node == null)
+			node = nodeType.create(this);
+		node.readFromNBT(compound.getCompoundTag("node"));
 	}
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound) {
+		NBTTagCompound nodeTag = new NBTTagCompound();
+		node.saveToNBT(nodeTag);
 		
+		compound.setInteger("nodeID", nodeType.ordinal());
+		compound.setTag("node", nodeTag);
+	}
+
+	@Override
+	public void writeSpawnData(ByteBuf buffer) {
+		buffer.writeInt(nodeType.ordinal());
+	}
+
+	@Override
+	public void readSpawnData(ByteBuf additionalData) {
+		nodeType = EnumNodes.values()[ additionalData.readInt() ];
+		node = nodeType.create(this);
 	}
 
 }

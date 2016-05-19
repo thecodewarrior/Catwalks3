@@ -5,6 +5,7 @@ import catwalks.network.messages.PacketNodeClick;
 import catwalks.network.messages.PacketNodeInteract;
 import catwalks.node.EntityNodeBase;
 import catwalks.node.NodeUtil;
+import catwalks.node.NodeUtil.EnumNodes;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
 import catwalks.raytrace.node.NodeHit;
 import catwalks.shade.ccl.raytracer.RayTracer;
@@ -55,7 +56,7 @@ public class ItemNodeManipulator extends ItemBase {
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
 			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if(playerIn.isSneaking() && !worldIn.isRemote) {
-			EntityNodeBase entity = new EntityNodeBase(worldIn, pos.getX()+hitX, pos.getY()+hitY, pos.getZ()+hitZ);
+			EntityNodeBase entity = new EntityNodeBase(worldIn, pos.getX()+hitX, pos.getY()+hitY, pos.getZ()+hitZ, EnumNodes.REDSTONEREADER);
 			
 			switch (facing) {
 			case NORTH:

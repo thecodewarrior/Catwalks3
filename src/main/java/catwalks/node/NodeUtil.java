@@ -1,5 +1,9 @@
 package catwalks.node;
 
+import java.util.function.Function;
+
+import catwalks.node.types.NodeParticleEmitter;
+import catwalks.node.types.NodeRedstoneReader;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
 import catwalks.raytrace.node.NodeHit;
 import net.minecraft.client.Minecraft;
@@ -28,6 +32,22 @@ public class NodeUtil {
 		}
 		
 		return null;
+	}
+	
+	public static enum EnumNodes {
+		PARTICLE((entity) -> new NodeParticleEmitter(entity)),
+		REDSTONEREADER((entity) -> new NodeRedstoneReader(entity));
+		
+		private Function<EntityNodeBase, NodeBase> constructor;
+		
+		private EnumNodes(Function<EntityNodeBase, NodeBase> constructor) {
+			this.constructor = constructor;
+		}
+		
+		public NodeBase create(EntityNodeBase entity) {
+			return constructor.apply(entity);
+		}
+		
 	}
 	
 }

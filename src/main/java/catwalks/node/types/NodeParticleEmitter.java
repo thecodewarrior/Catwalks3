@@ -1,6 +1,8 @@
-package catwalks.node;
+package catwalks.node.types;
 
 import catwalks.Const;
+import catwalks.node.EntityNodeBase;
+import catwalks.node.NodeBase;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.Vec3d;
 

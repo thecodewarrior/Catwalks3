@@ -44,8 +44,13 @@ public class RenderNode extends Render<EntityNodeBase> {
 		))
 			return;
 		
-        int red = 255, green = 255, blue = 255, alpha = 255;
-
+		int colorHex = entity.getNode().getColor();
+        int alpha = 255;
+        int red   = (colorHex >> 16) & 0xFF;
+        int green = (colorHex >> 8) & 0xFF;
+        int blue  = (colorHex >> 0) & 0xFF;
+        
+        
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
         GlStateManager.rotate(entity.rotationYaw, 0, -1, 0);
@@ -61,7 +66,7 @@ public class RenderNode extends Render<EntityNodeBase> {
         
         // normal
         GlStateManager.depthMask(false);
-        renderBounding(entity, partialTicks, 255, 255, 255, 255);
+        renderBounding(entity, partialTicks, red, green, blue, alpha);
         vb.begin(3, DefaultVertexFormats.POSITION_COLOR);
         vb.pos(0, 0, 0).color(0, 0, 255, 255).endVertex();
         vb.pos(0, 0, EntityNodeBase.SIZE).color(0, 0, 255, 255).endVertex();
@@ -69,7 +74,7 @@ public class RenderNode extends Render<EntityNodeBase> {
         
         // back
         GlStateManager.depthFunc(GL11.GL_GREATER);
-        renderBounding(entity, partialTicks, 127, 127, 127, 255);
+        renderBounding(entity, partialTicks, red/2, green/2, blue/2, alpha);
         GlStateManager.depthMask(true);
         GlStateManager.depthFunc(GL11.GL_LEQUAL);
 
