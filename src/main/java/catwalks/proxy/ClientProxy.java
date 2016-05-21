@@ -44,9 +44,15 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class ClientProxy extends CommonProxy {
+	
+	public boolean isClientProxy() {
+		return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
+	}
 	
 	private WeakReference<EntityNodeBase> SELECTED_NODE = null;
 	private int connectingIndex;

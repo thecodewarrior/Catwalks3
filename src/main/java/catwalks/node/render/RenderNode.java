@@ -135,6 +135,8 @@ public class RenderNode extends Render<EntityNodeBase> {
 					
 				}
 			}
+	        GlStateManager.disableTexture2D();
+
         }
         
         GlStateManager.popMatrix();
@@ -168,7 +170,7 @@ public class RenderNode extends Render<EntityNodeBase> {
         Vec3d posVec = entity.getPositionVector();
         
         for (OutputPort port : entity.getNode().outputs()) {
-        	if(port.clientConnectLoc == null)
+        	if(port.connectedLocs == null)
         		continue;
         	
         	int colorHex = port.getColor();
@@ -177,12 +179,16 @@ public class RenderNode extends Render<EntityNodeBase> {
             int green = (colorHex >> 8) & 0xFF; green = green/div;
             int blue  = (colorHex >> 0) & 0xFF; blue = blue/div;
             
-            Vec3d point = port.clientConnectLoc.subtract(posVec);
+            List<Vec3d> connections = port.connectedLocs;
             
-    		vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-            vb.pos(0, 0, 0).color(red, green, blue, alpha).endVertex();
-            vb.pos(point.xCoord, point.yCoord, point.zCoord).color(red, green, blue, alpha).endVertex();
-            tessellator.draw();
+            for (Vec3d loc : connections) {
+            	Vec3d point = loc.subtract(posVec);
+                
+        		vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+                vb.pos(0, 0, 0).color(red, green, blue, alpha).endVertex();
+                vb.pos(point.xCoord, point.yCoord, point.zCoord).color(red, green, blue, alpha).endVertex();
+                tessellator.draw();
+			}
 		}
 	}
 	

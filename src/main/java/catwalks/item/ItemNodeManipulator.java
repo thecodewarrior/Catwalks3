@@ -1,5 +1,18 @@
 package catwalks.item;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
 import catwalks.CatwalksMod;
 import catwalks.network.NetworkHandler;
 import catwalks.network.messages.PacketNodeClick;
@@ -9,23 +22,23 @@ import catwalks.node.NodeUtil;
 import catwalks.node.NodeUtil.EnumNodes;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
 import catwalks.raytrace.node.NodeHit;
-import catwalks.shade.ccl.raytracer.RayTracer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class ItemNodeManipulator extends ItemBase {
 
 	public ItemNodeManipulator() {
 		super("nodeManipulator");
 		setMaxStackSize(1);
+		setHasSubtypes(true);
+	}
+	
+	@Override
+	public String getItemStackDisplayName(ItemStack stack) {
+		String nodeText = "NONE";
+		if(stack.hasTagCompound()) {
+			EnumNodes type = EnumNodes.values()[stack.getTagCompound().getInteger("type")];
+			nodeText = I18n.format("node." + type.toString() + ".name");
+		}
+		return I18n.format(this.getUnlocalizedName(stack), nodeText);
 	}
 	
 	@Override
@@ -63,8 +76,14 @@ public class ItemNodeManipulator extends ItemBase {
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
 			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if(playerIn.isSneaking() && !worldIn.isRemote) {
-			EntityNodeBase entity = new EntityNodeBase(worldIn, pos.getX()+hitX, pos.getY()+hitY, pos.getZ()+hitZ, EnumNodes.PARTICLE);
+			if(!stack.hasTagCompound()) {
+				stack.setTagCompound(new NBTTagCompound());
+				stack.getTagCompound().setInteger("type", 0);
+			}
 			
+			EntityNodeBase entity = new EntityNodeBase(worldIn, pos.getX()+hitX, pos.getY()+hitY, pos.getZ()+hitZ, EnumNodes.values()[stack.getTagCompound().getInteger("type")]);
+			int i = (stack.getTagCompound().getInteger("type")+1)%EnumNodes.values().length;
+			stack.getTagCompound().setInteger("type", i);
 			switch (facing) {
 			case NORTH:
 				entity.rotationYaw = 180;

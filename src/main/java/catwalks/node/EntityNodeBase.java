@@ -26,6 +26,7 @@ import catwalks.Const;
 import catwalks.network.NetworkHandler;
 import catwalks.network.messages.PacketClientPortConnection;
 import catwalks.network.messages.PacketNodeConnect;
+import catwalks.network.messages.PacketNodeSettingsQuery;
 import catwalks.network.messages.PacketUpdateNode;
 import catwalks.network.messages.PacketUpdatePort;
 import catwalks.node.NodeUtil.EnumNodes;
@@ -84,7 +85,7 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 					port.writeToBuf(buf);
 					firePacket(new PacketUpdatePort(this, true, i, buf));
 					if( port.updateConnected(this.worldObj) )
-						firePacket(new PacketClientPortConnection(this.getEntityId(), i, port.connectedPoint()));
+						firePacket(new PacketClientPortConnection(this.getEntityId(), i, port.connectedPoints()));
 					port.resetModified();
 				}
 				i++;
@@ -125,6 +126,9 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 			CatwalksMod.proxy.setConnectingIndex(-1);
 			NetworkHandler.network.sendToServer(new PacketNodeConnect(CatwalksMod.proxy.getSelectedNode().getEntityId(), index, this.getEntityId(), 0));
 			return true;
+		}
+		if(hit == 0 && CatwalksMod.proxy.getSelectedNode() == this) {
+			NetworkHandler.network.sendToServer(new PacketNodeSettingsQuery(this.getEntityId()));
 		}
 		return false;
 	}
@@ -174,7 +178,7 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 		}
 		if(this.rotationPitch > 90) {
 			float diff = this.rotationPitch-90;
-			this.rotationPitch = 2* diff;
+			this.rotationPitch -= 2* diff;
 			this.rotationYaw += 180;
 		}
 		
@@ -310,13 +314,13 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 			new Quad(
 				new Vec3d(0, -d/4, SIZE),
 				new Vec3d(0,  d/4, SIZE),
-				new Vec3d(0,  d/4, SIZE+d/2),
-				new Vec3d(0, -d/4, SIZE+d/2)
+				new Vec3d(0,  d/4, SIZE+(3*d/2)),
+				new Vec3d(0, -d/4, SIZE+(3*d/2))
 			), new TexCoords(64,
-				0, 38,
-				7, 38,
-				7, 45,
-				0, 45
+				15, 38,
+				15, 43,
+				 0, 43,
+				 0, 38
 			)
 		));
 		
@@ -324,13 +328,13 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 			new Quad(
 				new Vec3d(-d/4, 0, SIZE),
 				new Vec3d( d/4, 0, SIZE),
-				new Vec3d( d/4, 0, SIZE+d/2),
-				new Vec3d(-d/4, 0, SIZE+d/2)
+				new Vec3d( d/4, 0, SIZE+(3*d/2)),
+				new Vec3d(-d/4, 0, SIZE+(3*d/2))
 			), new TexCoords(64,
-				0, 38,
-				7, 38,
-				7, 45,
-				0, 45
+				15, 38,
+				15, 43,
+				 0, 43,
+				 0, 38
 			)
 		));
 			

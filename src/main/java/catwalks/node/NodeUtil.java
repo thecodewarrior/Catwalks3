@@ -48,6 +48,10 @@ public class NodeUtil {
 			return constructor.apply(entity);
 		}
 		
+		@Override
+		public String toString() {
+			return name().toLowerCase();
+		}
 	}
 	
 }

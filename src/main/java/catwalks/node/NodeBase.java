@@ -2,22 +2,44 @@ package catwalks.node;
 
 import java.util.List;
 
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.nbt.NBTTagByteArray;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+
 import com.google.common.collect.ImmutableList;
 
 import catwalks.network.NetworkHandler;
 import catwalks.node.net.InputPort;
 import catwalks.node.net.OutputPort;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.nbt.NBTTagByteArray;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 
 public class NodeBase {
-
+	
 	public final EntityNodeBase entity;
 	
 	public NodeBase(EntityNodeBase entity) {
 		this.entity = entity;
+	}
+	
+	public void openGUI(NBTTagCompound tag) {
+		if(entity.worldObj.isRemote) {
+			Minecraft.getMinecraft().displayGuiScreen(createGui(tag));
+		}
+	}
+	
+	public GuiScreen createGui(NBTTagCompound tag) {
+		return null;
+	}
+	
+	public void updateSettings(NBTTagCompound tag) {
+		
+	}
+	public NBTTagCompound getSettings() {
+		return new NBTTagCompound();
 	}
 	
 	/**
@@ -60,6 +82,8 @@ public class NodeBase {
 		
 		tag.setTag("outputPorts", outputs);
 		tag.setTag("inputPorts",   inputs);
+		
+		tag.setTag("settings", getSettings());
 	}
 	
 	public void readFromNBT(NBTTagCompound tag) {
@@ -84,6 +108,8 @@ public class NodeBase {
 			buf.clear();
 			i++;
 		}
+		
+		updateSettings(tag.getCompoundTag("settings"));
 	}
 	
 	public void writeSyncData(ByteBuf buf) {
@@ -94,6 +120,8 @@ public class NodeBase {
 		for (InputPort port : inputs()) {
 			port.writeToBuf(buf);
 		}
+		
+		ByteBufUtils.writeTag(buf, getSettings());
 	}
 	
 	public void readSyncData(ByteBuf buf) {
@@ -104,5 +132,7 @@ public class NodeBase {
 		for (InputPort port : inputs()) {
 			port.readFromBuf(buf);
 		}
+		
+		updateSettings(ByteBufUtils.readTag(buf));
 	}
 }

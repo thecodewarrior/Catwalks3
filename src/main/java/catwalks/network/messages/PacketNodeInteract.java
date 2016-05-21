@@ -39,7 +39,7 @@ public class PacketNodeInteract implements IMessage {
         public IMessage onMessage(PacketNodeInteract message, MessageContext ctx) {
             IThreadListener mainThread = Minecraft.getMinecraft();
             mainThread.addScheduledTask(() -> {
-            	NetworkHandler.notifyPacketHandling(true, "NodeInteract");
+            	NetworkHandler.notifyPacketHandling("NodeInteract");
             	Entity plainentity = ctx.getServerHandler().playerEntity.worldObj.getEntityByID(message.id);
             	if(!( plainentity instanceof EntityNodeBase ))
             		return;

@@ -46,7 +46,7 @@ public class PacketNodeConnect implements IMessage {
         public IMessage onMessage(PacketNodeConnect message, MessageContext ctx) {
             IThreadListener mainThread = Minecraft.getMinecraft();
             mainThread.addScheduledTask(() -> {
-            	NetworkHandler.notifyPacketHandling(true, "NodeConnect");
+            	NetworkHandler.notifyPacketHandling("NodeConnect");
             	Entity plainFrom = ctx.getServerHandler().playerEntity.worldObj.getEntityByID(message.fromEID);
             	Entity plainTo = ctx.getServerHandler().playerEntity.worldObj.getEntityByID(message.toEID);
             	if(!( plainFrom instanceof EntityNodeBase && plainTo instanceof EntityNodeBase))
@@ -55,7 +55,7 @@ public class PacketNodeConnect implements IMessage {
             	EntityNodeBase to = (EntityNodeBase) plainTo;
             	
             	from.getNode().outputs().get(message.fromIndex).connectTo(to, message.toIndex);
-            	from.firePacket(new PacketClientPortConnection(message.fromEID, message.fromIndex, to.getPositionVector()));
+            	from.firePacket(new PacketClientPortConnection(message.fromEID, message.fromIndex, from.getNode().outputs().get(message.fromIndex).connectedPoints()));
             });
             return null;
         }

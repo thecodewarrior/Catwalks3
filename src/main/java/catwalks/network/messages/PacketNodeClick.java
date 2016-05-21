@@ -41,7 +41,7 @@ public class PacketNodeClick implements IMessage {
         public IMessage onMessage(PacketNodeClick message, MessageContext ctx) {
             IThreadListener mainThread = Minecraft.getMinecraft();
             mainThread.addScheduledTask(() -> {
-            	NetworkHandler.notifyPacketHandling(true, "NodeClick");
+            	NetworkHandler.notifyPacketHandling("NodeClick");
             	Entity plainentity = ctx.getServerHandler().playerEntity.worldObj.getEntityByID(message.id);
             	if(!( plainentity instanceof EntityNodeBase ))
             		return;

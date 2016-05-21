@@ -30,7 +30,7 @@ public class PacketTemplate implements IMessage {
         public IMessage onMessage(PacketTemplate message, MessageContext ctx) {
             IThreadListener mainThread = Minecraft.getMinecraft();
             mainThread.addScheduledTask(() -> {
-            	NetworkHandler.notifyPacketHandling(false, "---INSERT PACKET NAME---");
+            	NetworkHandler.notifyPacketHandling("---INSERT PACKET NAME---");
 //            	Entity plainentity = ctx.getServerHandler().playerEntity.worldObj.getEntityByID(message.id);
 //            	if(!( plainentity instanceof EntityNodeBase ))
 //            		return;

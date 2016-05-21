@@ -103,5 +103,6 @@ public class Const {
 		public static final int YAW_PLUS  = -3;
 		public static final int YAW_MINUS = -4;
 		public static final int CONNECT_POINT = -5;
+		public static final int OPEN_GUI = -6;
 	};
 }

@@ -9,11 +9,15 @@ import net.minecraft.network.PacketBuffer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import catwalks.CatwalksMod;
 import catwalks.Conf;
 import catwalks.network.messages.PacketClientPortConnection;
 import catwalks.network.messages.PacketNodeClick;
 import catwalks.network.messages.PacketNodeConnect;
 import catwalks.network.messages.PacketNodeInteract;
+import catwalks.network.messages.PacketNodeSettingsQuery;
+import catwalks.network.messages.PacketNodeSettingsResponse;
+import catwalks.network.messages.PacketNodeSettingsUpdate;
 import catwalks.network.messages.PacketUpdateNode;
 import catwalks.network.messages.PacketUpdatePort;
 import io.netty.buffer.Unpooled;
@@ -22,13 +26,13 @@ public class NetworkHandler {
 
 	private static Logger logger = LogManager.getLogger("Catwalks-Packets");
 
-	public static void notifyPacketHandling(boolean serverSide, String message, Object... args) {
-		notifyPacketHandling(serverSide, String.format(message, args));
+	public static void notifyPacketHandling(String message, Object... args) {
+		notifyPacketHandling(String.format(message, args));
 	}
 	
-	public static void notifyPacketHandling(boolean serverSide, String message) {
+	public static void notifyPacketHandling(String message) {
 		if(Conf.logPackets) {
-			logger.info(( serverSide ? "[S] " : "[C] ") + message);
+			logger.info(message);
 		}
 	}
 	
@@ -43,6 +47,9 @@ public class NetworkHandler {
 	    network.registerMessage(PacketUpdatePort.Handler.class, PacketUpdatePort.class, i++, Side.CLIENT);
 	    network.registerMessage(PacketNodeConnect.Handler.class, PacketNodeConnect.class, i++, Side.SERVER);
 	    network.registerMessage(PacketClientPortConnection.Handler.class, PacketClientPortConnection.class, i++, Side.CLIENT);
+	    network.registerMessage(PacketNodeSettingsUpdate.Handler.class, PacketNodeSettingsUpdate.class, i++, Side.SERVER);
+	    network.registerMessage(PacketNodeSettingsQuery.Handler.class, PacketNodeSettingsQuery.class, i++, Side.SERVER);
+	    network.registerMessage(PacketNodeSettingsResponse.Handler.class, PacketNodeSettingsResponse.class, i++, Side.CLIENT);
 	}
 
 	public static PacketBuffer createBuffer() {

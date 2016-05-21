@@ -1,23 +1,24 @@
 package catwalks.node.net;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import catwalks.network.messages.PacketClientPortConnection;
 import catwalks.node.EntityNodeBase;
 import catwalks.node.NodeBase;
 import io.netty.buffer.ByteBuf;
 
 public abstract class OutputPort<T> {
 
-	public Vec3d clientConnectLoc;
+	public List<Vec3d> connectedLocs;
 	
 	public final Class<T> type;
-	PortConnection<T> connection;
+	List<PortConnection<T>> connections;
 	T value;
 	boolean modified;
 	NodeBase node;
@@ -26,6 +27,8 @@ public abstract class OutputPort<T> {
 		this.type = type;
 		this.value = value;
 		this.node = node;
+		connections = new ArrayList<>();
+		connectedLocs = new ArrayList<>();
 	}
 	
 	public void setValue(T value) {
@@ -53,30 +56,48 @@ public abstract class OutputPort<T> {
 	}
 	
 	public boolean updateConnected(World world) {
-		if(connection == null)
-			return false;
-		return connection.updateConnected(world, value);
+		boolean update = false;
+		for (PortConnection<T> connection : connections) {
+			update = update || connection.updateConnected(world, value);
+		}
+		return update;
 	}
 	
 	public void connectTo(EntityNodeBase entity, int index) {
-		connection = new PortConnection<>(entity.getPersistentID(), index, entity.worldObj, this.type);
+		if( connections.removeIf((con) -> {
+			return entity.getPersistentID().equals(con.connectedUUID);
+		}) ) {
+			return;
+		}
+		connections.add(new PortConnection<>(entity.getPersistentID(), index, entity.worldObj, this.type));
 	}
 	
-	public Vec3d connectedPoint() {
-		return connection == null ? null : connection.connectedLoc;
+	public List<Vec3d> connectedPoints() {
+		if(connectedLocs.size() != connections.size()) {
+			List<Vec3d> points = new ArrayList<>();
+			
+			for (PortConnection<T> connection : connections) {
+				if(connection.connectedLoc != null)
+					points.add(connection.connectedLoc);
+			}
+			connectedLocs = points;
+		}
+		return connectedLocs;
 	}
 	
 	public void readFromBuf(ByteBuf buf) {
-		if(buf.readBoolean()) {
-			connection = PortConnection.readFromBuf(buf, node.entity.worldObj, type);
-			clientConnectLoc = connection.connectedLoc;
+		int count = buf.readInt(); 
+		connections = new ArrayList<>();
+		for (int i = 0; i < count; i++) {
+			connections.add(PortConnection.readFromBuf(buf, node.entity.worldObj, type));
 		}
 	}
 	
 	public void writeToBuf(ByteBuf buf) {
-		buf.writeBoolean(connection != null);
-		if(connection != null) {
+		buf.writeInt(connections.size());
+		for (PortConnection<T> connection : connections) {
 			connection.writeToBuf(buf);
+
 		}
 	}
 	

@@ -59,7 +59,7 @@ public class PacketUpdateNode implements IMessage {
         public IMessage onMessage(PacketUpdateNode message, MessageContext ctx) {
             IThreadListener mainThread = Minecraft.getMinecraft();
             mainThread.addScheduledTask(() -> {
-            	NetworkHandler.notifyPacketHandling(false, "UpdateNode");
+            	NetworkHandler.notifyPacketHandling("UpdateNode");
             	Entity plainentity = Minecraft.getMinecraft().theWorld.getEntityByID(message.entityID);
             	if(!( plainentity instanceof EntityNodeBase ))
             		return;

@@ -38,6 +38,7 @@ public class PacketUpdatePort implements IMessage {
         this.buf = NetworkHandler.createBuffer();
         
         int length = buf.readInt();
+        this.buf.capacity(length);
         buf.readBytes(this.buf, 0, length);
         this.buf.writerIndex(length);
     }
@@ -57,7 +58,7 @@ public class PacketUpdatePort implements IMessage {
         public IMessage onMessage(PacketUpdatePort message, MessageContext ctx) {
             IThreadListener mainThread = Minecraft.getMinecraft();
             mainThread.addScheduledTask(() -> {
-            	NetworkHandler.notifyPacketHandling(false, "UpdatePort (%s)", message.isoutput ? "out" : "in");
+            	NetworkHandler.notifyPacketHandling("UpdatePort (%s)", message.isoutput ? "out" : "in");
             	Entity plainentity = Minecraft.getMinecraft().theWorld.getEntityByID(message.entityID);
             	if(!( plainentity instanceof EntityNodeBase ))
             		return;
