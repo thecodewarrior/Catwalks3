@@ -179,7 +179,7 @@ public class RenderNode extends Render<EntityNodeBase> {
             int green = (colorHex >> 8) & 0xFF; green = green/div;
             int blue  = (colorHex >> 0) & 0xFF; blue = blue/div;
             
-            List<Vec3d> connections = port.connectedLocs;
+            List<Vec3d> connections = port.connectedPoints();
             
             for (Vec3d loc : connections) {
             	Vec3d point = loc.subtract(posVec);
