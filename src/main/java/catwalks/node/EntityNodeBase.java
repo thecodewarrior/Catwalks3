@@ -196,6 +196,8 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 			}
 		}
 		
+		ITraceResult<NodeHit> hit = (ITraceResult<NodeHit>) RayTraceUtil.MISS_RESULT;
+		
 		Vec3d relStart = start.subtract(posX, posY, posZ);
 		Vec3d relEnd   =   end.subtract(posX, posY, posZ);
 		
@@ -204,14 +206,15 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 		if(yawHit != null) {
 			double len = yawHit.lengthVector();
 			if(len > 0.375 && len < 0.5) {
-//				yawHit = yawHit.normalize();
 				double angle = Math.toDegrees(Math.atan2(yawHit.xCoord, yawHit.zCoord));
-				return new SimpleTraceResult<NodeHit>(start, yawHit.addVector(posX, posY, posZ), new NodeHit(this, Const.NODE.YAW, -(int)angle));
+				hit = RayTraceUtil.min(hit, new SimpleTraceResult<NodeHit>(start, yawHit.addVector(posX, posY, posZ), new NodeHit(this, Const.NODE.YAW, -(int)angle)));
 			}
 		}
 		
 		Matrix4 matrix = new Matrix4();
 		matrix.rotate(Math.toRadians( this.rotationYaw ),   new Vector3(0, 1, 0));
+		Matrix4 invmatrix = new Matrix4();
+		invmatrix.rotate(Math.toRadians( this.rotationYaw ),   new Vector3(0, -1, 0));
 		
 		relStart = matrix.apply(relStart);
 		relEnd = matrix.apply(relEnd);
@@ -221,13 +224,13 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 		if(pitchHit != null) {
 			double len = pitchHit.lengthVector();
 			if(len > 0.375 && len < 0.5) {
-//				yawHit = yawHit.normalize();
 				double angle = Math.toDegrees(Math.atan2(pitchHit.yCoord, pitchHit.zCoord));
-				return new SimpleTraceResult<NodeHit>(start, pitchHit.addVector(posX, posY, posZ), new NodeHit(this, Const.NODE.PITCH, -(int)angle));
+				ITraceResult<NodeHit> h = new SimpleTraceResult<NodeHit>(start, invmatrix.apply(pitchHit).addVector(posX, posY, posZ), new NodeHit(this, Const.NODE.PITCH, -(int)angle));
+				hit = RayTraceUtil.min(hit, h);
 			}
 		}
 		
-		return (ITraceResult<NodeHit>) RayTraceUtil.MISS_RESULT;
+		return hit;
 
 //		matrix = new Matrix4();
 ////		matrix.rotate(Math.toRadians( this.rotationYaw ),   new Vector3(0, -1, 0));
