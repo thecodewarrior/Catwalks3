@@ -98,11 +98,10 @@ public class Const {
 	}
 	
 	public static class NODE {
-		public static final int PITCH_PLUS  = -1;
-		public static final int PITCH_MINUS = -2;
-		public static final int YAW_PLUS  = -3;
-		public static final int YAW_MINUS = -4;
-		public static final int CONNECT_POINT = -5;
-		public static final int OPEN_GUI = -6;
+		private static int i = -1;
+		public static final int PITCH  = i--;
+		public static final int YAW  = i--;
+		public static final int CONNECT_POINT = i--;
+		public static final int OPEN_GUI = i--;
 	};
 }

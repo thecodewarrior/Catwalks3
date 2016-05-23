@@ -14,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
+import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.GL11;
 
 import catwalks.CatwalksMod;
@@ -24,6 +25,8 @@ import catwalks.raytrace.node.NodeTraceable;
 import catwalks.raytrace.primitives.TexCoords;
 import catwalks.raytrace.primitives.TexCoords.UV;
 import catwalks.register.ItemRegister;
+import catwalks.render.ShaderCallback;
+import catwalks.render.ShaderHelper;
 
 public class RenderNode extends Render<EntityNodeBase> {
 	public static final ResourceLocation BASE_NODE_TEX = new ResourceLocation(Const.MODID, "textures/nodes/base.png");
@@ -72,15 +75,15 @@ public class RenderNode extends Render<EntityNodeBase> {
         renderBounding(entity, partialTicks, red/2, green/2, blue/2, alpha);
         GlStateManager.depthFunc(GL11.GL_LEQUAL);
         
+        GlStateManager.depthMask(true);
+        
         // normal        
         renderBounding(entity, partialTicks, red, green, blue, alpha);
         vb.begin(3, DefaultVertexFormats.POSITION_COLOR);
         vb.pos(0, 0, 0).color(0, 0, 255, 255).endVertex();
-        vb.pos(0, 0, EntityNodeBase.SIZE).color(0, 0, 255, 255).endVertex();
+        vb.pos(0, 0, 0.375).color(0, 0, 255, 255).endVertex();
         tessellator.draw();
-        
-        GlStateManager.depthMask(true);
-        
+                
         if(CatwalksMod.proxy.getSelectedNode() == entity) {
         
 	        red   = 0;
@@ -153,8 +156,35 @@ public class RenderNode extends Render<EntityNodeBase> {
         GlStateManager.depthFunc(GL11.GL_LEQUAL);
         
         renderConnections(entity, partialTicks, 1);
-        
+
         GlStateManager.depthMask(true);
+
+		ShaderHelper.useShader(ShaderHelper.ring, new ShaderCallback() {
+			@Override
+			public void call(int shader) {
+				int thicknessUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "thickness");
+				ARBShaderObjects.glUniform1fARB(thicknessUniform, 0.25f);
+			}
+		});
+        
+		vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+		vb.pos(-0.5, 0, -0.5).tex(0, 0).color(0, 0, 255, 255).endVertex();
+		vb.pos( 0.5, 0, -0.5).tex(1, 0).color(0, 0, 255, 255).endVertex();
+		vb.pos( 0.5, 0,  0.5).tex(1, 1).color(0, 0, 255, 255).endVertex();
+		vb.pos(-0.5, 0,  0.5).tex(0, 1).color(0, 0, 255, 255).endVertex();
+		tessellator.draw();
+		
+        GlStateManager.rotate(entity.rotationYaw, 0, -1, 0);
+        
+        vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+		vb.pos(0, -0.5, -0.5).tex(0, 0).color(0, 0, 127, 255).endVertex();
+		vb.pos(0,  0.5, -0.5).tex(1, 0).color(0, 0, 127, 255).endVertex();
+		vb.pos(0,  0.5,  0.5).tex(1, 1).color(0, 0, 127, 255).endVertex();
+		vb.pos(0, -0.5,  0.5).tex(0, 1).color(0, 0, 127, 255).endVertex();
+		tessellator.draw();
+        
+		ShaderHelper.releaseShader();
+        
         
 	    GlStateManager.enableTexture2D();
         GlStateManager.enableLighting();

@@ -12,25 +12,28 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketNodeInteract implements IMessage {
     
-    protected int id, hit;
+    protected int id, hit, data;
     
     public PacketNodeInteract() { }
 
-    public PacketNodeInteract(int id, int hit) {
+    public PacketNodeInteract(int id, int hit, int data) {
     	this.id = id;
     	this.hit = hit;
+    	this.data = data;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
         id = buf.readInt();
         hit = buf.readInt();
+        data = buf.readInt();
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
     	buf.writeInt(id);
     	buf.writeInt(hit);
+    	buf.writeInt(data);
     }
 
     public static class Handler implements IMessageHandler<PacketNodeInteract, IMessage> {
@@ -44,7 +47,7 @@ public class PacketNodeInteract implements IMessage {
             	if(!( plainentity instanceof EntityNodeBase ))
             		return;
             	EntityNodeBase entity = (EntityNodeBase) plainentity;
-            	entity.onRightClick(ctx.getServerHandler().playerEntity, message.hit);
+            	entity.onRightClick(ctx.getServerHandler().playerEntity, message.hit, message.data);
             });
             return null;
         }

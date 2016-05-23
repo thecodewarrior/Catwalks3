@@ -146,29 +146,25 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 		}
 	}
 	
-	public void onRightClick(EntityPlayer player, int hit) {
+	public void onRightClick(EntityPlayer player, int hit, int data) {
 		if(worldObj.isRemote) {
 			return;
 		}
 		
-		if(hit > 0) {
-//			node.onRightClick(player, hit);
-			return;
-		}
+//		
+//		if(hit > 0) {
+////			node.onRightClick(player, hit);
+//			return;
+//		}
 		if(hit == 0)
 			return;
 		
-		if(hit == Const.NODE.PITCH_PLUS) {
-			this.rotationPitch -= 5;
+		if(hit == Const.NODE.PITCH) {
+			this.rotationPitch = data;
 		}
-		if(hit == Const.NODE.PITCH_MINUS) {
-			this.rotationPitch += 5;
-		}
-		if(hit == Const.NODE.YAW_PLUS) {
-			this.rotationYaw -= 5;
-		}
-		if(hit == Const.NODE.YAW_MINUS) {
-			this.rotationYaw += 5;
+		
+		if(hit == Const.NODE.YAW) {
+			this.rotationYaw = data;
 		}
 		
 		if(this.rotationPitch < -90) {
@@ -183,6 +179,8 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 		}
 		
 		this.rotationYaw = this.rotationYaw % 360;
+		
+		
 		
 		sendNodeUpdate();
 	}
@@ -201,36 +199,66 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 		Vec3d relStart = start.subtract(posX, posY, posZ);
 		Vec3d relEnd   =   end.subtract(posX, posY, posZ);
 		
+		Vec3d yawHit = relEnd.getIntermediateWithYValue(relStart, 0);
+		
+		if(yawHit != null) {
+			double len = yawHit.lengthVector();
+			if(len > 0.375 && len < 0.5) {
+//				yawHit = yawHit.normalize();
+				double angle = Math.toDegrees(Math.atan2(yawHit.xCoord, yawHit.zCoord));
+				return new SimpleTraceResult<NodeHit>(start, yawHit.addVector(posX, posY, posZ), new NodeHit(this, Const.NODE.YAW, -(int)angle));
+			}
+		}
+		
 		Matrix4 matrix = new Matrix4();
-		matrix.rotate(Math.toRadians( this.rotationYaw ),   new Vector3(0, -1, 0));
-		matrix.rotate(Math.toRadians( this.rotationPitch ), new Vector3(1, 0, 0));
+		matrix.rotate(Math.toRadians( this.rotationYaw ),   new Vector3(0, 1, 0));
 		
-		Matrix4 derotate = new Matrix4();
-		derotate.rotate(-Math.toRadians( this.rotationPitch ), new Vector3(1, 0, 0));
-		derotate.rotate(-Math.toRadians( this.rotationYaw ),   new Vector3(0, -1, 0));
+		relStart = matrix.apply(relStart);
+		relEnd = matrix.apply(relEnd);
 		
-		Vec3d rotStart = derotate.apply(relStart);
-		Vec3d rotEnd = derotate.apply(relEnd);
+		Vec3d pitchHit = relEnd.getIntermediateWithXValue(relStart, 0);
 		
-		ITraceResult<Integer> result = box.trace(rotStart, rotEnd, player);
-		ITraceResult<Integer> other = null;
-		if(true) {
-			other = RayTraceUtil.min(
-				RayTraceUtil.trace(rotStart, rotEnd, baseHits(), player),
-				null
-			);
-			
-		}
-		result = RayTraceUtil.min(result, other);
-		
-		if(Double.isInfinite(result.hitDistance())) {
-//			Logs.debug("FAIL: %.2f, %.2f, %.2f -> %.2f, %.2f, %.2f", rotStart.xCoord, rotStart.yCoord, rotStart.zCoord, rotEnd.xCoord, rotEnd.yCoord, rotEnd.zCoord);
-			return (ITraceResult<NodeHit>) RayTraceUtil.MISS_RESULT;
+		if(pitchHit != null) {
+			double len = pitchHit.lengthVector();
+			if(len > 0.375 && len < 0.5) {
+//				yawHit = yawHit.normalize();
+				double angle = Math.toDegrees(Math.atan2(pitchHit.yCoord, pitchHit.zCoord));
+				return new SimpleTraceResult<NodeHit>(start, pitchHit.addVector(posX, posY, posZ), new NodeHit(this, Const.NODE.PITCH, -(int)angle));
+			}
 		}
 		
-		Vec3d adjustedHit = matrix.apply(result.hitPoint()).addVector(posX, posY, posZ);
-//		Logs.debug("SUCC: %.2f, %.2f, %.2f -> %.2f, %.2f, %.2f", rotStart.xCoord, rotStart.yCoord, rotStart.zCoord, rotEnd.xCoord, rotEnd.yCoord, rotEnd.zCoord);
-		return new SimpleTraceResult<NodeHit>(start, adjustedHit, new NodeHit(this, result.data()));
+		return (ITraceResult<NodeHit>) RayTraceUtil.MISS_RESULT;
+
+//		matrix = new Matrix4();
+////		matrix.rotate(Math.toRadians( this.rotationYaw ),   new Vector3(0, -1, 0));
+//		matrix.rotate(Math.toRadians( this.rotationPitch ), new Vector3(1, 0, 0));
+//		
+//		Matrix4 derotate = new Matrix4();
+//		derotate.rotate(-Math.toRadians( this.rotationPitch ), new Vector3(1, 0, 0));
+//		derotate.rotate(-Math.toRadians( this.rotationYaw ),   new Vector3(0, -1, 0));
+//		
+//		Vec3d rotStart = derotate.apply(relStart);
+//		Vec3d rotEnd = derotate.apply(relEnd);
+//		
+//		ITraceResult<Integer> result = box.trace(rotStart, rotEnd, player);
+//		ITraceResult<Integer> other = null;
+//		if(true) {
+//			other = RayTraceUtil.min(
+//				RayTraceUtil.trace(rotStart, rotEnd, baseHits(), player),
+//				null
+//			);
+//			
+//		}
+//		result = RayTraceUtil.min(result, other);
+//		
+//		if(Double.isInfinite(result.hitDistance())) {
+////			Logs.debug("FAIL: %.2f, %.2f, %.2f -> %.2f, %.2f, %.2f", rotStart.xCoord, rotStart.yCoord, rotStart.zCoord, rotEnd.xCoord, rotEnd.yCoord, rotEnd.zCoord);
+//			return (ITraceResult<NodeHit>) RayTraceUtil.MISS_RESULT;
+//		}
+//		
+//		Vec3d adjustedHit = matrix.apply(result.hitPoint()).addVector(posX, posY, posZ);
+////		Logs.debug("SUCC: %.2f, %.2f, %.2f -> %.2f, %.2f, %.2f", rotStart.xCoord, rotStart.yCoord, rotStart.zCoord, rotEnd.xCoord, rotEnd.yCoord, rotEnd.zCoord);
+//		return new SimpleTraceResult<NodeHit>(start, adjustedHit, new NodeHit(this, result.data()));
 	}
 	
 	List<NodeTraceable> traces;
@@ -254,61 +282,61 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 			), TexCoords.NULL
 		);
 		
-		traces.add(new NodeTraceable(Const.NODE.PITCH_PLUS,
-			new Quad(
-				new Vec3d(0, d, d),
-				new Vec3d(0, D, d),
-				new Vec3d(0, D, D),
-				new Vec3d(0, d, D)
-			), new TexCoords(64,
-				18, 16,
-				18, 0,
-				0,  0,
-				0,  16
-			)
-		));
-		
-		traces.add(new NodeTraceable(Const.NODE.PITCH_MINUS,
-			new Quad(
-				new Vec3d(0, -D, d),
-				new Vec3d(0, -d, d),
-				new Vec3d(0, -d, D),
-				new Vec3d(0, -D, D)
-			), new TexCoords(64,
-				18, 0,
-				18, 16,
-				0,  16,
-				0,  0
-			)
-		));
-		
-		traces.add(new NodeTraceable(Const.NODE.YAW_PLUS,
-			new Quad(
-				new Vec3d(d, 0, d),
-				new Vec3d(D, 0, d),
-				new Vec3d(D, 0, D),
-				new Vec3d(d, 0, D)
-			), new TexCoords(64,
-				18, 16,
-				18, 0,
-				0,  0,
-				0,  16
-			)
-		));
-		
-		traces.add(new NodeTraceable(Const.NODE.YAW_MINUS,
-			new Quad(
-				new Vec3d(-D, 0, d),
-				new Vec3d(-d, 0, d),
-				new Vec3d(-d, 0, D),
-				new Vec3d(-D, 0, D)
-			), new TexCoords(64,
-				18, 0,
-				18, 16,
-				0,  16,
-				0,  0
-			)
-		));
+//		traces.add(new NodeTraceable(Const.NODE.PITCH_PLUS,
+//			new Quad(
+//				new Vec3d(0, d, d),
+//				new Vec3d(0, D, d),
+//				new Vec3d(0, D, D),
+//				new Vec3d(0, d, D)
+//			), new TexCoords(64,
+//				18, 16,
+//				18, 0,
+//				0,  0,
+//				0,  16
+//			)
+//		));
+//		
+//		traces.add(new NodeTraceable(Const.NODE.PITCH_MINUS,
+//			new Quad(
+//				new Vec3d(0, -D, d),
+//				new Vec3d(0, -d, d),
+//				new Vec3d(0, -d, D),
+//				new Vec3d(0, -D, D)
+//			), new TexCoords(64,
+//				18, 0,
+//				18, 16,
+//				0,  16,
+//				0,  0
+//			)
+//		));
+//		
+//		traces.add(new NodeTraceable(Const.NODE.YAW_PLUS,
+//			new Quad(
+//				new Vec3d(d, 0, d),
+//				new Vec3d(D, 0, d),
+//				new Vec3d(D, 0, D),
+//				new Vec3d(d, 0, D)
+//			), new TexCoords(64,
+//				18, 16,
+//				18, 0,
+//				0,  0,
+//				0,  16
+//			)
+//		));
+//		
+//		traces.add(new NodeTraceable(Const.NODE.YAW_MINUS,
+//			new Quad(
+//				new Vec3d(-D, 0, d),
+//				new Vec3d(-d, 0, d),
+//				new Vec3d(-d, 0, D),
+//				new Vec3d(-D, 0, D)
+//			), new TexCoords(64,
+//				18, 0,
+//				18, 16,
+//				0,  16,
+//				0,  0
+//			)
+//		));
 		
 		traces.add(new NodeTraceable(Const.NODE.CONNECT_POINT,
 			new Quad(

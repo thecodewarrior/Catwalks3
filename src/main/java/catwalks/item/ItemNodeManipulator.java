@@ -65,7 +65,7 @@ public class ItemNodeManipulator extends ItemBase {
 				return super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
 			
 			if(!result.data().node.clientRightClick(Minecraft.getMinecraft().thePlayer, result.data().hit)) {
-				NetworkHandler.network.sendToServer(new PacketNodeInteract(result.data().node.getEntityId(), result.data().hit));
+				NetworkHandler.network.sendToServer(new PacketNodeInteract(result.data().node.getEntityId(), result.data().hit, result.data().data));
 			}
 		}
 		

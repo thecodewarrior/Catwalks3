@@ -16,6 +16,7 @@ import catwalks.raytrace.RayTraceUtil.VertexList;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
 import catwalks.register.NodeRegister;
+import catwalks.render.ShaderHelper;
 import catwalks.shade.ccl.raytracer.RayTracer;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.CustomFaceRayTraceResult;
@@ -93,6 +94,7 @@ public class ClientProxy extends CommonProxy {
 		NodeRegister.initRender();
 		MinecraftForge.EVENT_BUS.register(new Conf());
 		OBJLoader.INSTANCE.addDomain(Const.MODID);
+		ShaderHelper.initShaders();
 	}
 	
 	public void reloadConfigs() {
