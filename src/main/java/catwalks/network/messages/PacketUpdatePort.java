@@ -64,7 +64,7 @@ public class PacketUpdatePort implements IMessage {
             		return;
             	EntityNodeBase entity = (EntityNodeBase) plainentity;
             	if(message.isoutput)
-            		entity.getNode().outputs().get(message.index).readFromBuf(message.buf);
+            		entity.getNode().outputs().get(message.index).readValueFromBuf(message.buf);
             	if(!message.isoutput)
             		entity.getNode().inputs().get(message.index).readFromBuf(message.buf);
             });

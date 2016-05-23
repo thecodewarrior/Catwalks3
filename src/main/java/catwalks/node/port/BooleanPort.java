@@ -20,14 +20,12 @@ public class BooleanPort extends OutputPort<Boolean> {
 	}
 	
 	@Override
-	public void readFromBuf(ByteBuf buf) {
-		super.readFromBuf(buf);
+	public void readValueFromBuf(ByteBuf buf) {
 		setValue( buf.readBoolean() );
 	}
 
 	@Override
-	public void writeToBuf(ByteBuf buf) {
-		super.writeToBuf(buf);
+	public void writeValueToBuf(ByteBuf buf) {
 		buf.writeBoolean(getValue());
 	}
 

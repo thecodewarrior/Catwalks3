@@ -16,6 +16,7 @@ import io.netty.buffer.ByteBuf;
 public abstract class OutputPort<T> {
 
 	public List<Vec3d> connectedLocs;
+	public List<Vec3d> clientConnectedLocs = null;
 	
 	public final Class<T> type;
 	List<PortConnection<T>> connections;
@@ -73,6 +74,8 @@ public abstract class OutputPort<T> {
 	}
 	
 	public List<Vec3d> connectedPoints() {
+		if(clientConnectedLocs != null)
+			return clientConnectedLocs;
 		if(connectedLocs.size() != connections.size()) {
 			List<Vec3d> points = new ArrayList<>();
 			
@@ -85,7 +88,11 @@ public abstract class OutputPort<T> {
 		return connectedLocs;
 	}
 	
+	public abstract void readValueFromBuf(ByteBuf buf);
+	public abstract void writeValueToBuf(ByteBuf buf);
+	
 	public void readFromBuf(ByteBuf buf) {
+		readValueFromBuf(buf);
 		int count = buf.readInt(); 
 		connections = new ArrayList<>();
 		for (int i = 0; i < count; i++) {
@@ -94,10 +101,10 @@ public abstract class OutputPort<T> {
 	}
 	
 	public void writeToBuf(ByteBuf buf) {
+		writeValueToBuf(buf);
 		buf.writeInt(connections.size());
 		for (PortConnection<T> connection : connections) {
 			connection.writeToBuf(buf);
-
 		}
 	}
 	

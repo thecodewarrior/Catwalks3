@@ -82,7 +82,7 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 			for(OutputPort<?> port : node.outputs()) {
 				if(port.isModified()) {
 					PacketBuffer buf = NetworkHandler.createBuffer();
-					port.writeToBuf(buf);
+					port.writeValueToBuf(buf);
 					firePacket(new PacketUpdatePort(this, true, i, buf));
 					if( port.updateConnected(this.worldObj) )
 						firePacket(new PacketClientPortConnection(this.getEntityId(), i, port.connectedPoints()));
@@ -420,14 +420,14 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 	@Override
 	public void writeSpawnData(ByteBuf buffer) {
 		buffer.writeInt(nodeType.ordinal());
-		node.writeSyncData(buffer);
+		node.writeSpawnData(buffer);
 	}
 
 	@Override
 	public void readSpawnData(ByteBuf additionalData) {
 		nodeType = EnumNodes.values()[ additionalData.readInt() ];
 		node = nodeType.create(this);
-		node.readSyncData(additionalData);
+		node.readSpawnData(additionalData);
 	}
 
 }

@@ -112,7 +112,7 @@ public class NodeBase {
 		updateSettings(tag.getCompoundTag("settings"));
 	}
 	
-	public void writeSyncData(ByteBuf buf) {
+	public void writeSpawnData(ByteBuf buf) {
 		for (OutputPort port : outputs()) {
 			port.writeToBuf(buf);
 		}
@@ -124,7 +124,7 @@ public class NodeBase {
 		ByteBufUtils.writeTag(buf, getSettings());
 	}
 	
-	public void readSyncData(ByteBuf buf) {
+	public void readSpawnData(ByteBuf buf) {
 		for (OutputPort port : outputs()) {
 			port.readFromBuf(buf);
 		}

@@ -64,7 +64,7 @@ public class PacketClientPortConnection implements IMessage {
             	if(!( plainentity instanceof EntityNodeBase ))
             		return;
             	EntityNodeBase entity = (EntityNodeBase) plainentity;
-            	entity.getNode().outputs().get(message.index).connectedLocs = message.points;
+            	entity.getNode().outputs().get(message.index).clientConnectedLocs = message.points;
             });
             return null;
         }
