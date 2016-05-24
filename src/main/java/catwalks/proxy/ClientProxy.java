@@ -16,6 +16,7 @@ import catwalks.raytrace.RayTraceUtil.VertexList;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
 import catwalks.register.NodeRegister;
+import catwalks.render.NodeConnectionRenderer;
 import catwalks.render.ShaderHelper;
 import catwalks.shade.ccl.raytracer.RayTracer;
 import catwalks.shade.ccl.vec.Vector3;
@@ -197,6 +198,7 @@ public class ClientProxy extends CommonProxy {
 		}
 		
 		event.getLeft().add(String.format("Move: forward %.5f, strafe %.5f", player.moveForward, player.moveStrafing));
+		event.getLeft().add(String.format("Connections: %d", NodeConnectionRenderer.connectionCount()));
 		
 		if(player.isSneaking()) {
 			if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK && mc.objectMouseOver.getBlockPos() != null)

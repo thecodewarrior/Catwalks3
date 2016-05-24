@@ -14,6 +14,7 @@ import net.minecraft.util.math.Vec3d;
 
 import catwalks.network.NetworkHandler;
 import catwalks.node.EntityNodeBase;
+import catwalks.render.NodeConnectionRenderer;
 import io.netty.buffer.ByteBuf;
 
 public class PacketClientPortConnection implements IMessage {
@@ -60,11 +61,7 @@ public class PacketClientPortConnection implements IMessage {
             IThreadListener mainThread = Minecraft.getMinecraft();
             mainThread.addScheduledTask(() -> {
             	NetworkHandler.notifyPacketHandling("ClientPortConnection");
-            	Entity plainentity = Minecraft.getMinecraft().theWorld.getEntityByID(message.id);
-            	if(!( plainentity instanceof EntityNodeBase ))
-            		return;
-            	EntityNodeBase entity = (EntityNodeBase) plainentity;
-            	entity.getNode().outputs().get(message.index).clientConnectedLocs = message.points;
+            	NodeConnectionRenderer.set(message.id, message.points);
             });
             return null;
         }

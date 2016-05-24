@@ -50,10 +50,10 @@ public class NodeUtil {
 		Minecraft mc = Minecraft.getMinecraft();
 				
 		RayTraceResult rtr = mc.objectMouseOver;
-		if(rtr == null)
+		EntityPlayer player = mc.thePlayer;
+		if(rtr == null || player == null)
 			return null;
 		if(rtr.entityHit instanceof EntityNodeBase) {
-			EntityPlayer player = mc.thePlayer;
 	        Vec3d start = player.getPositionEyes(1);
 	        Vec3d look = player.getLook(1);
 	        double d0 = mc.playerController.extendedReach() ? 6 : mc.playerController.getBlockReachDistance();

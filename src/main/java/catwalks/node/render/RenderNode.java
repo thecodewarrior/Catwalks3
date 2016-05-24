@@ -100,16 +100,6 @@ public class RenderNode extends Render<EntityNodeBase> {
         
         GlStateManager.translate(x, y, z);
         
-        // normal
-        GlStateManager.depthMask(false);
-        
-        // back
-        GlStateManager.depthFunc(GL11.GL_GREATER);
-        renderConnections(entity, partialTicks, 2);
-        GlStateManager.depthFunc(GL11.GL_LEQUAL);
-        
-        renderConnections(entity, partialTicks, 1);
-
         GlStateManager.depthMask(true);
 
         
@@ -153,34 +143,6 @@ public class RenderNode extends Render<EntityNodeBase> {
         GlStateManager.disableBlend();
 		
         GlStateManager.popMatrix();
-	}
-	
-	public void renderConnections(EntityNodeBase entity, float partialTicks, int div) {
-		Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vb = tessellator.getBuffer();
-        Vec3d posVec = entity.getPositionVector();
-        
-        for (OutputPort port : entity.getNode().outputs()) {
-        	if(port.connectedLocs == null)
-        		continue;
-        	
-        	int colorHex = port.getColor();
-            int alpha = 255;
-            int red   = (colorHex >> 16) & 0xFF; red = red/div;
-            int green = (colorHex >> 8) & 0xFF; green = green/div;
-            int blue  = (colorHex >> 0) & 0xFF; blue = blue/div;
-            
-            List<Vec3d> connections = port.connectedPoints();
-            
-            for (Vec3d loc : connections) {
-            	Vec3d point = loc.subtract(posVec);
-                
-        		vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-                vb.pos(0, 0, 0).color(red, green, blue, alpha).endVertex();
-                vb.pos(point.xCoord, point.yCoord, point.zCoord).color(red, green, blue, alpha).endVertex();
-                tessellator.draw();
-			}
-		}
 	}
 	
 	public void renderBounding(EntityNodeBase entity, float partialTicks, int red, int green, int blue, int alpha) {

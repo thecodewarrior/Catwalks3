@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import catwalks.node.EntityNodeBase;
 import catwalks.node.NodeBase;
+import catwalks.util.Logs;
 import io.netty.buffer.ByteBuf;
 
 public abstract class OutputPort<T> {
@@ -59,8 +61,9 @@ public abstract class OutputPort<T> {
 	public boolean updateConnected(World world) {
 		boolean update = false;
 		for (PortConnection<T> connection : connections) {
-			update = update || connection.updateConnected(world, value);
+			update = connection.updateConnected(world, value) || update;
 		}
+		update = connections.removeIf((con) -> con.isInvalid) || update;
 		return update;
 	}
 	
@@ -131,6 +134,7 @@ public abstract class OutputPort<T> {
 			boolean didConnect = false;
 			if(port.get() == null) {
 				didConnect = tryConnect(world);
+				Logs.debug("Tried to connect - " + ( didConnect ? "Y" : "N" ));
 			}
 			if(port.get() != null) {
 				port.get().setValue(value);
@@ -148,6 +152,10 @@ public abstract class OutputPort<T> {
 					connectedLoc = entity.getPositionVector();
 					return true;
 				}
+			}
+			if(connectedLoc != null && world.isBlockLoaded(new BlockPos(connectedLoc)) && port.get() == null) {
+				isInvalid = true;
+				return false;
 			}
 			return false;
 		}

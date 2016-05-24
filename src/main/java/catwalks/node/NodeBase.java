@@ -15,6 +15,7 @@ import com.google.common.collect.ImmutableList;
 import catwalks.network.NetworkHandler;
 import catwalks.node.net.InputPort;
 import catwalks.node.net.OutputPort;
+import catwalks.render.NodeConnectionRenderer;
 import io.netty.buffer.ByteBuf;
 
 public class NodeBase {
@@ -133,6 +134,8 @@ public class NodeBase {
 			port.readFromBuf(buf);
 		}
 		
+		if(outputs().size() != 0)
+			NodeConnectionRenderer.set(entity.getEntityId(), outputs().get(0).connectedPoints());
 		updateSettings(ByteBufUtils.readTag(buf));
 	}
 }
