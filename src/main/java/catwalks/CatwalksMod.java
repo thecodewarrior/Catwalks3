@@ -2,6 +2,7 @@ package catwalks;
 
 import catwalks.movement.MovementHandler;
 import catwalks.network.NetworkHandler;
+import catwalks.node.NodeUtil;
 import catwalks.proxy.CommonProxy;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
@@ -48,6 +49,7 @@ public class CatwalksMod {
     public void init(FMLInitializationEvent event) {
     	WrenchChecker.init();
 		MovementHandler.INSTANCE.getClass(); // just to load the class
+		NodeUtil.INSTANCE.getClass(); // just to load the class
     }
     
     public static CreativeTabs tab = new CreativeTabs("tabCatwalks") {

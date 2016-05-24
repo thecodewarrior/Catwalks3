@@ -23,7 +23,7 @@ import catwalks.node.NodeUtil.EnumNodes;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
 import catwalks.raytrace.node.NodeHit;
 
-public class ItemNodeManipulator extends ItemBase {
+public class ItemNodeManipulator extends ItemNodeBase {
 
 	public ItemNodeManipulator() {
 		super("nodeManipulator");
@@ -40,36 +40,15 @@ public class ItemNodeManipulator extends ItemBase {
 		}
 		return I18n.format(this.getUnlocalizedName(stack), nodeText);
 	}
-	
+
 	@Override
-	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) {
-		if(entityLiving instanceof EntityPlayer && entityLiving.worldObj.isRemote) {			
-			ITraceResult<NodeHit> result = NodeUtil.rayTraceNodes();
-			if(result == null || result.data() == null)
-				return super.onEntitySwing(entityLiving, stack);
-			
-			if(!result.data().node.clientLeftClick((EntityPlayer) entityLiving, result.data().hit)) {
-				NetworkHandler.network.sendToServer(new PacketNodeClick(result.data().node.getEntityId(), result.data().hit));
-				CatwalksMod.proxy.setSelectedNode(result.data().node);
-			}
-		}
-		return super.onEntitySwing(entityLiving, stack);
+	public boolean leftClickNodeClient(ITraceResult<NodeHit> hit, ItemStack stack, EntityPlayer player) {
+		return false;
 	}
-	
+
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn,
-			EnumHand hand) {
-		if(worldIn.isRemote && !playerIn.isSneaking()) {
-			ITraceResult<NodeHit> result = NodeUtil.rayTraceNodes();
-			if(result == null || result.data() == null)
-				return super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
-			
-			if(!result.data().node.clientRightClick(Minecraft.getMinecraft().thePlayer, result.data().hit)) {
-				NetworkHandler.network.sendToServer(new PacketNodeInteract(result.data().node.getEntityId(), result.data().hit, result.data().data));
-			}
-		}
-		
-		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemStackIn);
+	public EnumActionResult rightClickNodeClient(ITraceResult<NodeHit> hit, ItemStack stack, EntityPlayer player) {
+		return EnumActionResult.PASS;
 	}
 	
 	@Override

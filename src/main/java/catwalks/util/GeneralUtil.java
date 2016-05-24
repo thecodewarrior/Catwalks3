@@ -3,17 +3,15 @@ package catwalks.util;
 import java.util.BitSet;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Predicate;
 
-import catwalks.Const;
-import catwalks.block.ICatwalkConnect;
-import catwalks.block.extended.CubeEdge;
-import catwalks.block.extended.ITileStateProvider;
-import catwalks.shade.ccl.vec.Cuboid6;
-import catwalks.shade.ccl.vec.Vector3;
+import net.minecraftforge.common.property.IExtendedBlockState;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -24,10 +22,24 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
+
+import catwalks.Const;
+import catwalks.block.ICatwalkConnect;
+import catwalks.block.extended.CubeEdge;
+import catwalks.block.extended.ITileStateProvider;
+import catwalks.shade.ccl.vec.Cuboid6;
+import catwalks.shade.ccl.vec.Vector3;
 
 public class GeneralUtil {
 	private static final Random RANDOM = new Random();
+	
+	public static boolean isHolding(EntityPlayer player, Predicate<ItemStack> test) {
+		if(player.getHeldItemMainhand() != null && test.test(player.getHeldItemMainhand()))
+			return true;
+		if(player.getHeldItemOffhand() != null && test.test(player.getHeldItemOffhand()))
+			return true;
+		return false;
+	}
 	
 	public static IExtendedBlockState getTileState(IBlockAccess worldIn, BlockPos pos) {
 		IBlockState state = worldIn.getBlockState(pos);

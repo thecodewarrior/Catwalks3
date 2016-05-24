@@ -24,7 +24,8 @@ public class CustomAABBCollide extends AABB {
 			return null;
 		if(Double.isInfinite(result.hitDistance()))
 			return null;
-		return new RayTraceResult(result.hitPoint(), EnumFacing.UP);
+		double S = 0.9995; // to avoid some z-fighting when placed on the top/bottom of a block
+		return new RayTraceResult(result.hitPoint().subtract(vecA).scale(S).add(vecA), EnumFacing.UP);
 	}
 	
 	@Override

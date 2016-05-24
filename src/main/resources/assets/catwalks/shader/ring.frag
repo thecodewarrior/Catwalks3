@@ -8,7 +8,7 @@ void main() {
 	float len = length(uv);
 	
 	if(len > 0.5-thickness/2.0 && len < 0.5) {
-        float ang = degrees( atan(uv.x, uv.y) );
+        float ang = degrees( atan(uv.x, uv.y) )+0.5;
         float lrg = mod( ang, 10.0);
         float sml = mod( ang+5.0, 10.0);
 		

@@ -70,7 +70,9 @@ public abstract class OutputPort<T> {
 		}) ) {
 			return;
 		}
-		connections.add(new PortConnection<>(entity.getPersistentID(), index, entity.worldObj, this.type));
+		PortConnection<T> con = new PortConnection<>(entity.getPersistentID(), index, entity.worldObj, this.type);
+		connections.add(con);
+		con.updateConnected(entity.worldObj, value);
 	}
 	
 	public List<Vec3d> connectedPoints() {

@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -23,6 +24,7 @@ import javax.annotation.Nullable;
 
 import catwalks.CatwalksMod;
 import catwalks.Const;
+import catwalks.item.ItemNodeBase;
 import catwalks.network.NetworkHandler;
 import catwalks.network.messages.PacketClientPortConnection;
 import catwalks.network.messages.PacketNodeConnect;
@@ -45,6 +47,7 @@ import catwalks.raytrace.primitives.TexCoords;
 import catwalks.register.ItemRegister;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
+import catwalks.util.GeneralUtil;
 import io.netty.buffer.ByteBuf;
 
 public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData {
@@ -117,16 +120,6 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 	}
 
 	public boolean clientRightClick(EntityPlayer player, int hit) {
-		if(hit == Const.NODE.CONNECT_POINT) {
-			CatwalksMod.proxy.setConnectingIndex(0);
-			return true;
-		}
-		if(hit == 0 && CatwalksMod.proxy.getConnectingIndex() >= 0 && CatwalksMod.proxy.getSelectedNode() != null) {
-			int index = CatwalksMod.proxy.getConnectingIndex();
-			CatwalksMod.proxy.setConnectingIndex(-1);
-			NetworkHandler.network.sendToServer(new PacketNodeConnect(CatwalksMod.proxy.getSelectedNode().getEntityId(), index, this.getEntityId(), 0));
-			return true;
-		}
 		if(hit == 0 && CatwalksMod.proxy.getSelectedNode() == this) {
 			NetworkHandler.network.sendToServer(new PacketNodeSettingsQuery(this.getEntityId()));
 		}
@@ -185,17 +178,54 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 		sendNodeUpdate();
 	}
 	
-	@SuppressWarnings("unchecked")
 	public ITraceResult<NodeHit> rayTraceNode(@Nullable EntityPlayer player, Vec3d start, Vec3d end) {
+		if(!player.worldObj.isRemote)
+			return (ITraceResult<NodeHit>) RayTraceUtil.MISS_RESULT; // we only want to raytrace on the client, as only they have all the information
+		
 		if(player != null) {
-			if(!(
-				( player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemRegister.nodeManipulator ) ||
-				( player.getHeldItemOffhand() != null && player.getHeldItemOffhand().getItem() == ItemRegister.nodeManipulator )
-			)) {
+			if(!GeneralUtil.isHolding(player, (stack) -> stack.getItem() instanceof ItemNodeBase)) {
 				return (ITraceResult<NodeHit>) RayTraceUtil.MISS_RESULT;
 			}
 		}
 		
+		ITraceResult<NodeHit> hit = (ITraceResult<NodeHit>) RayTraceUtil.MISS_RESULT;
+		
+		if(GeneralUtil.isHolding(player, (stack) -> stack.getItem() == ItemRegister.nodeManipulator) && CatwalksMod.proxy.getSelectedNode() == this)
+			hit = RayTraceUtil.min(hit, rayTraceRotRings(player, start, end));
+		
+		hit = RayTraceUtil.min(hit, rayTraceBox(player, start, end));
+		
+		return hit;
+	}
+	
+	public ITraceResult<NodeHit> rayTraceBox(EntityPlayer player, Vec3d start, Vec3d end) {
+		Vec3d relStart = start.subtract(posX, posY, posZ);
+		Vec3d relEnd   =   end.subtract(posX, posY, posZ);
+		
+		Matrix4 matrix = new Matrix4();
+		Matrix4 invmatrix = new Matrix4();
+		
+		   matrix.rotate(Math.toRadians( this.rotationPitch ), new Vector3( 1, 0, 0));
+		invmatrix.rotate(Math.toRadians( this.rotationPitch ), new Vector3(-1, 0, 0));
+		   matrix.rotate(Math.toRadians( this.rotationYaw ),   new Vector3(0,  1, 0));
+		invmatrix.rotate(Math.toRadians( this.rotationYaw ),   new Vector3(0, -1, 0));
+			
+		relStart = matrix.apply(relStart);
+		relEnd = matrix.apply(relEnd);
+		
+		double s = SIZE/2;
+		AxisAlignedBB aabb = new AxisAlignedBB(-s, -s, -s, s, s, s);
+		RayTraceResult boxHit = aabb.calculateIntercept(relStart, relEnd);
+		
+		if(boxHit != null) {
+			return new SimpleTraceResult<NodeHit>(start, invmatrix.apply(boxHit.hitVec).addVector(posX, posY, posZ), new NodeHit(this, 0, boxHit.sideHit.ordinal()));
+		}
+		
+		return null;
+	}
+	
+	public ITraceResult<NodeHit> rayTraceRotRings(EntityPlayer player, Vec3d start, Vec3d end) {
+		@SuppressWarnings("unchecked")
 		ITraceResult<NodeHit> hit = (ITraceResult<NodeHit>) RayTraceUtil.MISS_RESULT;
 		
 		Vec3d relStart = start.subtract(posX, posY, posZ);
@@ -231,37 +261,6 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 		}
 		
 		return hit;
-
-//		matrix = new Matrix4();
-////		matrix.rotate(Math.toRadians( this.rotationYaw ),   new Vector3(0, -1, 0));
-//		matrix.rotate(Math.toRadians( this.rotationPitch ), new Vector3(1, 0, 0));
-//		
-//		Matrix4 derotate = new Matrix4();
-//		derotate.rotate(-Math.toRadians( this.rotationPitch ), new Vector3(1, 0, 0));
-//		derotate.rotate(-Math.toRadians( this.rotationYaw ),   new Vector3(0, -1, 0));
-//		
-//		Vec3d rotStart = derotate.apply(relStart);
-//		Vec3d rotEnd = derotate.apply(relEnd);
-//		
-//		ITraceResult<Integer> result = box.trace(rotStart, rotEnd, player);
-//		ITraceResult<Integer> other = null;
-//		if(true) {
-//			other = RayTraceUtil.min(
-//				RayTraceUtil.trace(rotStart, rotEnd, baseHits(), player),
-//				null
-//			);
-//			
-//		}
-//		result = RayTraceUtil.min(result, other);
-//		
-//		if(Double.isInfinite(result.hitDistance())) {
-////			Logs.debug("FAIL: %.2f, %.2f, %.2f -> %.2f, %.2f, %.2f", rotStart.xCoord, rotStart.yCoord, rotStart.zCoord, rotEnd.xCoord, rotEnd.yCoord, rotEnd.zCoord);
-//			return (ITraceResult<NodeHit>) RayTraceUtil.MISS_RESULT;
-//		}
-//		
-//		Vec3d adjustedHit = matrix.apply(result.hitPoint()).addVector(posX, posY, posZ);
-////		Logs.debug("SUCC: %.2f, %.2f, %.2f -> %.2f, %.2f, %.2f", rotStart.xCoord, rotStart.yCoord, rotStart.zCoord, rotEnd.xCoord, rotEnd.yCoord, rotEnd.zCoord);
-//		return new SimpleTraceResult<NodeHit>(start, adjustedHit, new NodeHit(this, result.data()));
 	}
 	
 	List<NodeTraceable> traces;

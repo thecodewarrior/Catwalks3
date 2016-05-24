@@ -19,7 +19,9 @@ import org.lwjgl.opengl.GL11;
 
 import catwalks.CatwalksMod;
 import catwalks.Const;
+import catwalks.item.ItemNodeBase;
 import catwalks.node.EntityNodeBase;
+import catwalks.node.NodeUtil;
 import catwalks.node.net.OutputPort;
 import catwalks.raytrace.node.NodeTraceable;
 import catwalks.raytrace.primitives.TexCoords;
@@ -27,6 +29,7 @@ import catwalks.raytrace.primitives.TexCoords.UV;
 import catwalks.register.ItemRegister;
 import catwalks.render.ShaderCallback;
 import catwalks.render.ShaderHelper;
+import catwalks.util.GeneralUtil;
 
 public class RenderNode extends Render<EntityNodeBase> {
 	public static final ResourceLocation BASE_NODE_TEX = new ResourceLocation(Const.MODID, "textures/nodes/base.png");
@@ -43,10 +46,7 @@ public class RenderNode extends Render<EntityNodeBase> {
 	
 	@Override
 	public void doRender(EntityNodeBase entity, double x, double y, double z, float entityYaw, float partialTicks) {
-		if(!(
-			( Minecraft.getMinecraft().thePlayer.getHeldItemMainhand() != null && Minecraft.getMinecraft().thePlayer.getHeldItemMainhand().getItem() == ItemRegister.nodeManipulator ) ||
-			( Minecraft.getMinecraft().thePlayer.getHeldItemOffhand() != null && Minecraft.getMinecraft().thePlayer.getHeldItemOffhand().getItem() == ItemRegister.nodeManipulator )
-		))
+		if(!GeneralUtil.isHolding(Minecraft.getMinecraft().thePlayer, (stack) -> stack.getItem() instanceof ItemNodeBase))
 			return;
 		
 		int colorHex = entity.getNode().getColor();
@@ -83,63 +83,16 @@ public class RenderNode extends Render<EntityNodeBase> {
         vb.pos(0, 0, 0).color(0, 0, 255, 255).endVertex();
         vb.pos(0, 0, 0.375).color(0, 0, 255, 255).endVertex();
         tessellator.draw();
-                
-        if(CatwalksMod.proxy.getSelectedNode() == entity) {
         
-	        red   = 0;
-	        green = 127;
-	        blue  = 0;
-	        alpha = 255;
-	        
-	        List<NodeTraceable> list = entity.baseHits();
-	        
-	        // outlines
-	        for (NodeTraceable trace : list) {
-				if(trace.getUv() == null) {
-		        	Vec3d[] points = trace.getTraceable().edges();
-		        	if(points.length == 0)
-		        		continue;
-					vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-					for (Vec3d vec : points) {
-						vb.pos(vec.xCoord, vec.yCoord, vec.zCoord).color(red, green, blue, alpha).endVertex();
-					}
-					tessellator.draw();
-				}
-			}
-	        
-	        GlStateManager.enableTexture2D();
-	        
-	        Minecraft.getMinecraft().renderEngine.bindTexture(BASE_NODE_TEX);
-	                
-	        for (NodeTraceable trace : list) {
-				if(trace.getUv() != null && trace.getUv() != TexCoords.NULL) {
-		        	Vec3d[] points = trace.getTraceable().points();
-		        	UV[] uvs = trace.getUv().uvs;
-		        	
-		        	if(uvs.length != points.length)
-		        		continue;
-		        	
-		        	if(points.length == 3) {
-		        		vb.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX);
-						for (int i = 0; i < 3; i++) {
-							vb.pos(points[i].xCoord, points[i].yCoord, points[i].zCoord).tex(uvs[i].u, uvs[i].v).endVertex();
-						}
-						tessellator.draw();
-		        	}
-		        	
-		        	if(points.length == 4) {
-		        		vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-						for (int i = 0; i < 4; i++) {
-							vb.pos(points[i].xCoord, points[i].yCoord, points[i].zCoord).tex(uvs[i].u, uvs[i].v).endVertex();
-						}
-						tessellator.draw();
-		        	}
-		        	
-					
-				}
-			}
-	        GlStateManager.disableTexture2D();
-
+        // highlight
+        if(NodeUtil.nodeHit != null && NodeUtil.nodeHit.data().node == entity) {
+	        double selectScale = 1.05;
+	        GlStateManager.scale(selectScale,selectScale,selectScale);
+	        GlStateManager.depthFunc(GL11.GL_ALWAYS);
+	        int highlightBrightness = 64;
+	        renderBounding(entity, partialTicks, highlightBrightness, highlightBrightness, highlightBrightness, 255);
+	        GlStateManager.depthFunc(GL11.GL_LEQUAL);
+	        GlStateManager.scale(1/selectScale,1/selectScale,1/selectScale);
         }
         
         GlStateManager.popMatrix();
@@ -159,32 +112,40 @@ public class RenderNode extends Render<EntityNodeBase> {
 
         GlStateManager.depthMask(true);
 
-		ShaderHelper.useShader(ShaderHelper.ring, new ShaderCallback() {
-			@Override
-			public void call(int shader) {
-				int thicknessUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "thickness");
-				ARBShaderObjects.glUniform1fARB(thicknessUniform, 0.25f);
-			}
-		});
         
-		vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-		vb.pos(-0.5, 0, -0.5).tex(0, 0).color(0, 0, 255, 255).endVertex();
-		vb.pos( 0.5, 0, -0.5).tex(1, 0).color(0, 0, 255, 255).endVertex();
-		vb.pos( 0.5, 0,  0.5).tex(1, 1).color(0, 0, 255, 255).endVertex();
-		vb.pos(-0.5, 0,  0.5).tex(0, 1).color(0, 0, 255, 255).endVertex();
-		tessellator.draw();
-		
-        GlStateManager.rotate(entity.rotationYaw, 0, -1, 0);
-        
-        vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-		vb.pos(0, -0.5, -0.5).tex(0, 0).color(0, 0, 127, 255).endVertex();
-		vb.pos(0,  0.5, -0.5).tex(1, 0).color(0, 0, 127, 255).endVertex();
-		vb.pos(0,  0.5,  0.5).tex(1, 1).color(0, 0, 127, 255).endVertex();
-		vb.pos(0, -0.5,  0.5).tex(0, 1).color(0, 0, 127, 255).endVertex();
-		tessellator.draw();
-        
-		ShaderHelper.releaseShader();
-        
+        if(CatwalksMod.proxy.getSelectedNode() == entity && GeneralUtil.isHolding(Minecraft.getMinecraft().thePlayer, (stack) -> stack.getItem() == ItemRegister.nodeManipulator)) {
+        	GlStateManager.doPolygonOffset(-3.0F, -3.0F);
+            GlStateManager.enablePolygonOffset();
+        	
+        	ShaderHelper.useShader(ShaderHelper.ring, new ShaderCallback() {
+				@Override
+				public void call(int shader) {
+					int thicknessUniform = ARBShaderObjects.glGetUniformLocationARB(shader, "thickness");
+					ARBShaderObjects.glUniform1fARB(thicknessUniform, 0.25f);
+				}
+			});
+	        
+			vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+			vb.pos(-0.5, 0, -0.5).tex(0, 0).color(0, 0, 255, 255).endVertex();
+			vb.pos( 0.5, 0, -0.5).tex(1, 0).color(0, 0, 255, 255).endVertex();
+			vb.pos( 0.5, 0,  0.5).tex(1, 1).color(0, 0, 255, 255).endVertex();
+			vb.pos(-0.5, 0,  0.5).tex(0, 1).color(0, 0, 255, 255).endVertex();
+			tessellator.draw();
+			
+	        GlStateManager.rotate(entity.rotationYaw, 0, -1, 0);
+	        
+	        vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+			vb.pos(0, -0.5, -0.5).tex(0, 0).color(0, 0, 127, 255).endVertex();
+			vb.pos(0,  0.5, -0.5).tex(1, 0).color(0, 0, 127, 255).endVertex();
+			vb.pos(0,  0.5,  0.5).tex(1, 1).color(0, 0, 127, 255).endVertex();
+			vb.pos(0, -0.5,  0.5).tex(0, 1).color(0, 0, 127, 255).endVertex();
+			tessellator.draw();
+	        
+			ShaderHelper.releaseShader();
+			
+			GlStateManager.doPolygonOffset(0.0F, 0.0F);
+            GlStateManager.disablePolygonOffset();
+		}
         
 	    GlStateManager.enableTexture2D();
         GlStateManager.enableLighting();
