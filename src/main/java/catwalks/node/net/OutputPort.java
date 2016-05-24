@@ -119,7 +119,7 @@ public abstract class OutputPort<T> {
 		public boolean isInvalid;
 		public Vec3d connectedLoc;
 		public WeakReference<InputPort<T>> port = new WeakReference<InputPort<T>>(null);
-//		public WeakReference<NodeBase> node = new WeakReference<NodeBase>(null);
+		public WeakReference<NodeBase> node = new WeakReference<NodeBase>(null);
 		
 		public int connectedIndex;
 		public UUID connectedUUID;
@@ -136,6 +136,7 @@ public abstract class OutputPort<T> {
 				didConnect = tryConnect(world);
 				Logs.debug("Tried to connect - " + ( didConnect ? "Y" : "N" ));
 			}
+			checkValidity(world);
 			if(port.get() != null) {
 				port.get().setValue(value);
 			}
@@ -148,16 +149,25 @@ public abstract class OutputPort<T> {
 				if(e.getPersistentID().equals(connectedUUID) && e instanceof EntityNodeBase) {
 					EntityNodeBase entity = (EntityNodeBase) e;
 					InputPort<?> otherPort = entity.getNode().inputs().get(connectedIndex);
+					node = new WeakReference<NodeBase>(entity.getNode());
 					port = new WeakReference<InputPort<T>>((InputPort<T>) otherPort);
 					connectedLoc = entity.getPositionVector();
 					return true;
 				}
 			}
-			if(connectedLoc != null && world.isBlockLoaded(new BlockPos(connectedLoc)) && port.get() == null) {
-				isInvalid = true;
-				return false;
-			}
 			return false;
+		}
+		
+		public void checkValidity(World world) {
+			if(!world.isBlockLoaded(new BlockPos(connectedLoc)))
+				return;
+			
+			if(connectedLoc != null && port.get() == null) {
+				isInvalid = true;
+			}
+			if(node.get() != null && node.get().entity != null && node.get().entity.isDead) {
+				isInvalid = true;
+			}
 		}
 		
 		public void writeToBuf(ByteBuf buf) {
