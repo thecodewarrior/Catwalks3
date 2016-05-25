@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import catwalks.CatwalksMod;
 import catwalks.Const;
 import catwalks.network.NetworkHandler;
+import catwalks.util.Logs;
 import mcjty.lib.container.GenericGuiContainer;
 import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.gui.Window;
@@ -32,11 +33,19 @@ public class GuiNodeConfItem extends GenericGuiContainer<GenericTileEntity> {
         super.initGui();
 
         Panel toplevel = new Panel(mc, this).setBackground(iconLocation).setLayout(new PositionalLayout());
-        
-        ToggleButton w = new ToggleButton(mc, this);
-        w.setLayoutHint(new PositionalHint(43, 12)).setDesiredWidth(19).setDesiredHeight(8);
-        
-        toplevel.addChild(w);
+        ToggleButton[] list = new ToggleButton[5];
+        for (int i = 0; i < list.length; i++) {
+        	ToggleButton w = new ToggleButton(mc, this);
+        	list[i] = w;
+            w.setLayoutHint(new PositionalHint(43 + i*18, 12)).setDesiredWidth(19).setDesiredHeight(8);
+            w.addButtonEvent((button) -> {
+            	for (ToggleButton other : list) {
+					other.setPressed(false);
+				}
+            	((ToggleButton)button).setPressed(true);
+            });
+            toplevel.addChild(w);
+		}
         
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
