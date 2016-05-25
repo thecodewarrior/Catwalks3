@@ -97,12 +97,12 @@ public class NodeConfItemContainer extends GenericContainer implements CommandCo
 	        return false;
 	    }
 		
-		// forwarding
-		
 		@Override
 		public boolean canBeHovered() {
-			return s.canBeHovered();
+			return false;
 		}
+		
+		// forwarding
 		
 		@Override
 		public ItemStack decrStackSize(int amount) {

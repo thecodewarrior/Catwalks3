@@ -1,12 +1,15 @@
 package catwalks.gui.nodemanipulator;
 
 import java.awt.Rectangle;
+import java.io.IOException;
 
-import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.input.Keyboard;
 
 import catwalks.CatwalksMod;
 import catwalks.Const;
+import catwalks.gui.widget.QuickSelectorRing;
 import catwalks.network.NetworkHandler;
 import catwalks.network.messages.PacketServerContainerCommand;
 import mcjty.lib.container.GenericGuiContainer;
@@ -23,49 +26,54 @@ public class GuiNodeConfItem extends GenericGuiContainer<GenericTileEntity> {
 
 	private static final ResourceLocation iconLocation = new ResourceLocation(Const.MODID, "textures/gui/nodeConf.png");
 	
-	private int initialIndex = 0;
-	private int selectedSlot = -1;
+	private int selectedButton = 0;
+	private int lockedSlotIndex = -1;
+	private ToggleButton[] selectButtonList = new ToggleButton[5];
+	private boolean showQuickSelect = false;
 	
 	public GuiNodeConfItem(NodeConfItemContainer container) {
 		super(CatwalksMod.INSTANCE, NetworkHandler.network, null, container, 0, "");
-		
-		initialIndex = container.index;
-		selectedSlot = container.selectedSlot;
 		xSize = 176;
 		ySize = 133;
+		
+		showQuickSelect = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
+		selectedButton = container.index;
+		lockedSlotIndex = container.selectedSlot;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Override
     public void initGui() {
         super.initGui();
 
         Panel toplevel = new Panel(mc, this).setBackground(iconLocation).setLayout(new PositionalLayout());
-        ToggleButton[] list = new ToggleButton[5];
-        for (int i = 0; i < list.length; i++) {
+        for (int i = 0; i < selectButtonList.length; i++) {
         	ToggleButton w = new ToggleButton(mc, this);
-        	list[i] = w;
+        	selectButtonList[i] = w;
         	final int index = i;
             w.setLayoutHint(new PositionalHint(43 + i*18, 12)).setDesiredWidth(19).setDesiredHeight(8);
             w.addButtonEvent((button) -> {
-            	for (ToggleButton other : list) {
-					other.setPressed(false);
-				}
-            	((ToggleButton)button).setPressed(true);
             	setSelected(index);
             });
             toplevel.addChild(w);
 		}
-        list[initialIndex].setPressed(true);
+        setSelected(selectedButton);
         
-        if(selectedSlot != -1) {
-        	int lockedX = 7 + 18*selectedSlot;
+        if(lockedSlotIndex != -1) {
+        	int lockedX = 7 + 18*lockedSlotIndex;
             int lockedY = 108;
-            ImageLabel<ImageLabel> lockedSlot = new ImageLabel<ImageLabel>(mc, this);
+            ImageLabel lockedSlot = new ImageLabel(mc, this);
             lockedSlot.setImage(iconLocation, 176, 0);
             lockedSlot.setBounds(new Rectangle(lockedX, lockedY, 18, 18));
             
             toplevel.addChild(lockedSlot);
         }
+        
+        QuickSelectorRing ring = new QuickSelectorRing(mc, this);
+        ring.addSlot(this.inventorySlots.getSlot(0));
+        ring.setBounds(new Rectangle(0, 0, this.height/2, this.height/2));
+        ring.setLayoutHint(new PositionalHint(xSize/2, ySize/2));
+        toplevel.addChild(ring);
         
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
@@ -73,13 +81,29 @@ public class GuiNodeConfItem extends GenericGuiContainer<GenericTileEntity> {
     }
 	
 	private void setSelected(int index) {
-		NetworkHandler.network.sendToServer(new PacketServerContainerCommand(Const.COMMAND_OPTIONS, new Argument("sel", index)));
+		for (ToggleButton other : selectButtonList) {
+			other.setPressed(false);
+		}
+    	selectButtonList[index].setPressed(true);
+    	
+		if(index != selectedButton) {
+			NetworkHandler.network.sendToServer(new PacketServerContainerCommand(Const.COMMAND_OPTIONS, new Argument("sel", index)));
+		}
+		
+		selectedButton = index;
 	}
+	
+	public void handleKeyboardInput() throws IOException
+    {
+		if(showQuickSelect && !(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) ) {
+			showQuickSelect = false;
+		}
+		super.handleKeyboardInput();
+    }
 	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		if(window != null)
-			drawWindow();
+		drawWindow();
 	}
 
 }

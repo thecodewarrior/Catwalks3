@@ -49,6 +49,18 @@ public class GeneralUtil {
 		return null;
 	}
 	
+	public static Vec3d snapToGrid(Vec3d in, double gridSize) {
+		return new Vec3d(
+				snapToNearestMultiple(in.xCoord, gridSize),
+				snapToNearestMultiple(in.yCoord, gridSize),
+				snapToNearestMultiple(in.zCoord, gridSize)
+			);
+	}
+	
+	public static double snapToNearestMultiple(double in, double multiple) {
+		return multiple*(Math.round(in/multiple));
+	}
+	
 	public static IExtendedBlockState getTileState(IBlockAccess worldIn, BlockPos pos) {
 		IBlockState state = worldIn.getBlockState(pos);
 		

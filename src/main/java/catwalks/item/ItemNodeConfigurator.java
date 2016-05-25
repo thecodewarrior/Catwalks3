@@ -23,6 +23,7 @@ import catwalks.node.NodeUtil.EnumNodes;
 import catwalks.proxy.ClientProxy;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
 import catwalks.raytrace.node.NodeHit;
+import catwalks.util.Logs;
 
 public class ItemNodeConfigurator extends ItemNodeBase implements IInventoryContainerItem {
 
@@ -80,40 +81,44 @@ public class ItemNodeConfigurator extends ItemNodeBase implements IInventoryCont
 			IInventory inventory = new ItemInventoryWrapper(stack);
 			ItemStack nodeStack = inventory.getStackInSlot(index);
 			
-			if(nodeStack.getItemDamage() < EnumNodes.values().length) {
-			
-				EntityNodeBase entity = new EntityNodeBase(worldIn, pos.getX()+hitX, pos.getY()+hitY, pos.getZ()+hitZ, EnumNodes.values()[nodeStack.getItemDamage()]);
-				inventory.decrStackSize(index, 1);
-				inventory.markDirty();
-				int i = (stack.getTagCompound().getInteger("type")+1)%EnumNodes.values().length;
-				stack.getTagCompound().setInteger("type", i);
-				switch (facing) {
-				case NORTH:
-					entity.rotationYaw = 180;
-					break;
-				case SOUTH:
-					break;
-				case EAST:
-					entity.rotationYaw = -90;
-					break;
-				case WEST:
-					entity.rotationYaw = 90;
-					break;
-				case UP:
-					entity.rotationPitch = -90;
-					break;
-				case DOWN:
-					entity.rotationPitch = 90;
-					break;
-	
-				default:
-					break;
-				}
+			if(nodeStack != null) {
+				if(nodeStack.getItemDamage() < EnumNodes.values().length) {
 				
-				worldIn.spawnEntityInWorld(entity);
-				
-				return EnumActionResult.SUCCESS;
-			}
+					EntityNodeBase entity = new EntityNodeBase(worldIn, pos.getX()+hitX, pos.getY()+hitY, pos.getZ()+hitZ, EnumNodes.values()[nodeStack.getItemDamage()]);
+					if(!playerIn.capabilities.isCreativeMode) {
+						inventory.decrStackSize(index, 1);
+						inventory.markDirty();
+					}
+					switch (facing) {
+					case NORTH:
+						entity.rotationYaw = 180;
+						break;
+					case SOUTH:
+						break;
+					case EAST:
+						entity.rotationYaw = -90;
+						break;
+					case WEST:
+						entity.rotationYaw = 90;
+						break;
+					case UP:
+						entity.rotationPitch = -90;
+						break;
+					case DOWN:
+						entity.rotationPitch = 90;
+						break;
+		
+					default:
+						break;
+					}
+					
+					worldIn.spawnEntityInWorld(entity);
+					
+					return EnumActionResult.SUCCESS;
+				} else {
+					Logs.error("ERROR! Incorrect node item metadata! (%d, max is %d)", nodeStack.getItemDamage(), EnumNodes.values().length-1);
+				} // damage < max
+			} // stack != null
 		}
 		return super.onItemUse(stack, playerIn, worldIn, pos, hand, facing, hitX, hitY, hitZ);
 	}
