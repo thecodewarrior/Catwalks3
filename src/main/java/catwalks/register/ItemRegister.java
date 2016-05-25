@@ -7,6 +7,7 @@ import catwalks.item.ItemBase;
 import catwalks.item.ItemCatwalkTool;
 import catwalks.item.ItemDecoration;
 import catwalks.item.ItemLadderGrabber;
+import catwalks.item.ItemNode;
 import catwalks.item.ItemNodeConfigurator;
 import catwalks.item.ItemNodeConnector;
 import catwalks.item.ItemNodeManipulator;
@@ -24,6 +25,7 @@ public class ItemRegister {
 	public static ItemNodeManipulator nodeManipulator;
 	public static ItemNodeConnector nodeConnector;
 	public static ItemNodeConfigurator nodeConf;
+	public static ItemNode nodes;
 	
 	public static void register() {
 		lights = new ItemDecoration("lights");
@@ -35,6 +37,7 @@ public class ItemRegister {
 		nodeManipulator = new ItemNodeManipulator();
 		nodeConnector = new ItemNodeConnector();
 		nodeConf = new ItemNodeConfigurator();
+		nodes = new ItemNode();
 	}
 	
 	public static List<ItemBase> renderRegsiterItems = new ArrayList<>();

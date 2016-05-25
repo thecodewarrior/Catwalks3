@@ -14,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import catwalks.Const;
 import catwalks.gui.CommandContainer;
 import catwalks.gui.inventory.ItemInventoryWrapper;
+import catwalks.item.ItemNode;
 import catwalks.register.ItemRegister;
 import catwalks.util.GeneralUtil;
 import mcjty.lib.container.ContainerFactory;
@@ -32,13 +33,14 @@ public class NodeConfItemContainer extends GenericContainer implements CommandCo
     	return new ContainerFactory() {
             @Override
             protected void setup() {
-            	addSlotRange(new SlotDefinition(SlotType.SLOT_CONTAINER), CONTAINER_INVENTORY, 0, 44, 20, 5, 18);
+            	addSlotRange(new SlotDefinition(SlotType.SLOT_SPECIFICITEM, ItemNode.class), CONTAINER_INVENTORY, 0, 44, 20, 5, 18);
                 layoutPlayerInventorySlots(8, 51);
             }
         };
     }
     
     public int index = 0;
+    public int selectedSlot = -1;
     public ItemStack stack;
     
 	public NodeConfItemContainer(EntityPlayer player) {
@@ -54,10 +56,15 @@ public class NodeConfItemContainer extends GenericContainer implements CommandCo
         addInventory(ContainerFactory.CONTAINER_PLAYER, player.inventory);
         generateSlots();
         
-        int selectedSlot = this.inventorySlots.size() - ( 9 - player.inventory.currentItem );
-        Slot s = this.inventorySlots.get(selectedSlot);
-        s = new SlotStaticWrapper(s);
-        this.inventorySlots.set(selectedSlot, s);
+        
+        if(player.inventory.mainInventory[player.inventory.currentItem] == stack) {
+	        int selectedSlot = this.inventorySlots.size() - ( 9 - player.inventory.currentItem );
+	        Slot s = this.inventorySlots.get(selectedSlot);
+	        s = new SlotStaticWrapper(s);
+	        this.inventorySlots.set(selectedSlot, s);
+	        
+	        this.selectedSlot = player.inventory.currentItem;
+        }
 	}
 
 	@Override

@@ -1,11 +1,8 @@
 package catwalks.item;
 
-import java.util.List;
-import java.util.Map;
-
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
@@ -18,6 +15,7 @@ import net.minecraft.world.World;
 import catwalks.CatwalksMod;
 import catwalks.Const;
 import catwalks.gui.inventory.IInventoryContainerItem;
+import catwalks.gui.inventory.ItemInventoryWrapper;
 import catwalks.network.NetworkHandler;
 import catwalks.network.messages.PacketNodeSettingsQuery;
 import catwalks.node.EntityNodeBase;
@@ -25,8 +23,6 @@ import catwalks.node.NodeUtil.EnumNodes;
 import catwalks.proxy.ClientProxy;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
 import catwalks.raytrace.node.NodeHit;
-import mcjty.lib.network.Argument;
-import mcjty.lib.network.CommandHandler;
 
 public class ItemNodeConfigurator extends ItemNodeBase implements IInventoryContainerItem {
 
@@ -63,7 +59,7 @@ public class ItemNodeConfigurator extends ItemNodeBase implements IInventoryCont
 	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn,
 			EnumHand hand) {
 		ActionResult<ItemStack> res = super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
-		if(res.getType() == EnumActionResult.PASS) {
+		if(playerIn.isSneaking() && res.getType() == EnumActionResult.PASS) {
 			if (!worldIn.isRemote) {
 	            playerIn.openGui(CatwalksMod.INSTANCE, Const.GUI.NODE_MANIPULATOR, playerIn.worldObj, (int) playerIn.posX, (int) playerIn.posY, (int) playerIn.posZ);
 	        }
@@ -75,41 +71,49 @@ public class ItemNodeConfigurator extends ItemNodeBase implements IInventoryCont
 	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
 			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if(playerIn.isSneaking() && !worldIn.isRemote) {
-			if(!stack.hasTagCompound()) {
-				stack.setTagCompound(new NBTTagCompound());
-				stack.getTagCompound().setInteger("type", 0);
+		if(!playerIn.isSneaking() && !worldIn.isRemote) {
+			int index = 0;
+			if(stack.hasTagCompound()) {
+				index = stack.getTagCompound().getInteger("selectedSlot");
 			}
 			
-			EntityNodeBase entity = new EntityNodeBase(worldIn, pos.getX()+hitX, pos.getY()+hitY, pos.getZ()+hitZ, EnumNodes.values()[stack.getTagCompound().getInteger("type")]);
-			int i = (stack.getTagCompound().getInteger("type")+1)%EnumNodes.values().length;
-			stack.getTagCompound().setInteger("type", i);
-			switch (facing) {
-			case NORTH:
-				entity.rotationYaw = 180;
-				break;
-			case SOUTH:
-				break;
-			case EAST:
-				entity.rotationYaw = -90;
-				break;
-			case WEST:
-				entity.rotationYaw = 90;
-				break;
-			case UP:
-				entity.rotationPitch = -90;
-				break;
-			case DOWN:
-				entity.rotationPitch = 90;
-				break;
-
-			default:
-				break;
+			IInventory inventory = new ItemInventoryWrapper(stack);
+			ItemStack nodeStack = inventory.getStackInSlot(index);
+			
+			if(nodeStack.getItemDamage() < EnumNodes.values().length) {
+			
+				EntityNodeBase entity = new EntityNodeBase(worldIn, pos.getX()+hitX, pos.getY()+hitY, pos.getZ()+hitZ, EnumNodes.values()[nodeStack.getItemDamage()]);
+				inventory.decrStackSize(index, 1);
+				inventory.markDirty();
+				int i = (stack.getTagCompound().getInteger("type")+1)%EnumNodes.values().length;
+				stack.getTagCompound().setInteger("type", i);
+				switch (facing) {
+				case NORTH:
+					entity.rotationYaw = 180;
+					break;
+				case SOUTH:
+					break;
+				case EAST:
+					entity.rotationYaw = -90;
+					break;
+				case WEST:
+					entity.rotationYaw = 90;
+					break;
+				case UP:
+					entity.rotationPitch = -90;
+					break;
+				case DOWN:
+					entity.rotationPitch = 90;
+					break;
+	
+				default:
+					break;
+				}
+				
+				worldIn.spawnEntityInWorld(entity);
+				
+				return EnumActionResult.SUCCESS;
 			}
-			
-			worldIn.spawnEntityInWorld(entity);
-			
-			return EnumActionResult.SUCCESS;
 		}
 		return super.onItemUse(stack, playerIn, worldIn, pos, hand, facing, hitX, hitY, hitZ);
 	}
