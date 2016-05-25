@@ -1,16 +1,5 @@
 package catwalks;
 
-import catwalks.movement.MovementHandler;
-import catwalks.network.NetworkHandler;
-import catwalks.node.NodeUtil;
-import catwalks.proxy.CommonProxy;
-import catwalks.register.BlockRegister;
-import catwalks.register.ItemRegister;
-import catwalks.register.NodeRegister;
-import catwalks.register.RecipeRegister;
-import catwalks.util.WrenchChecker;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -20,6 +9,19 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+
+import catwalks.movement.MovementHandler;
+import catwalks.network.NetworkHandler;
+import catwalks.node.NodeUtil;
+import catwalks.proxy.CommonProxy;
+import catwalks.register.BlockRegister;
+import catwalks.register.ItemRegister;
+import catwalks.register.NodeRegister;
+import catwalks.register.RecipeRegister;
+import catwalks.util.WrenchChecker;
 
 @Mod(modid = CatwalksMod.MODID, version = CatwalksMod.VERSION,
 	guiFactory = "catwalks.gui.CatwalksModConfGuiFactory")

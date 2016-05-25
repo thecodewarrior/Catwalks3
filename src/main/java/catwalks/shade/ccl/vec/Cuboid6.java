@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-import catwalks.shade.ccl.util.Copyable;
-import net.minecraft.block.Block;
 import net.minecraft.util.math.AxisAlignedBB;
+
+import catwalks.shade.ccl.util.Copyable;
 
 public class Cuboid6 implements Copyable<Cuboid6>
 {

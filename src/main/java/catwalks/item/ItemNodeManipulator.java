@@ -1,24 +1,16 @@
 package catwalks.item;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import catwalks.CatwalksMod;
-import catwalks.network.NetworkHandler;
-import catwalks.network.messages.PacketNodeClick;
-import catwalks.network.messages.PacketNodeInteract;
 import catwalks.node.EntityNodeBase;
-import catwalks.node.NodeUtil;
 import catwalks.node.NodeUtil.EnumNodes;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
 import catwalks.raytrace.node.NodeHit;

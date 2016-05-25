@@ -3,11 +3,11 @@ package catwalks.render.cached;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.util.EnumFacing;
+
+import com.google.common.collect.ImmutableList;
 
 public abstract class SimpleModel {
 	

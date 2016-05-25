@@ -7,12 +7,14 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.DoubleBuffer;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import net.minecraft.util.math.Vec3d;
+
 import org.lwjgl.opengl.GL11;
 
 import catwalks.shade.ccl.util.Copyable;
-import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Matrix4 extends Transformation implements Copyable<Matrix4>
 {

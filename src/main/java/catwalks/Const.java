@@ -4,10 +4,9 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
 
-import catwalks.block.EnumCatwalkMaterial;
-import catwalks.block.property.UPropertyBool;
-import catwalks.block.property.UPropertyEnum;
-import catwalks.movement.capability.ICWEntityData;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.launchwrapper.Launch;
@@ -15,8 +14,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+
+import catwalks.block.EnumCatwalkMaterial;
+import catwalks.block.property.UPropertyBool;
+import catwalks.block.property.UPropertyEnum;
+import catwalks.movement.capability.ICWEntityData;
 
 public class Const {
 	

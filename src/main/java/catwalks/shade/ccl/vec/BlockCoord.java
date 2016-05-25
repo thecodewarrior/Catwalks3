@@ -1,9 +1,10 @@
 package catwalks.shade.ccl.vec;
 
-import catwalks.shade.ccl.math.MathHelper;
-import catwalks.shade.ccl.util.Copyable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+
+import catwalks.shade.ccl.math.MathHelper;
+import catwalks.shade.ccl.util.Copyable;
 
 public class BlockCoord implements Comparable<BlockCoord>, Copyable<BlockCoord>
 {

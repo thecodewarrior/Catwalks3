@@ -2,17 +2,15 @@ package catwalks.item;
 
 import java.util.List;
 
-import catwalks.Conf;
-import catwalks.node.EntityNodeBase;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import catwalks.Conf;
 
 public class ItemLadderGrabber extends ItemBase {
 	

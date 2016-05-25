@@ -1,14 +1,15 @@
 package catwalks.raytrace.primitives;
 
+import net.minecraft.util.math.Vec3d;
+
 import catwalks.raytrace.RayTraceUtil;
 import catwalks.raytrace.RayTraceUtil.IRenderableTraceResult;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
-import catwalks.raytrace.RayTraceUtil.TraceablePrimitive;
 import catwalks.raytrace.RayTraceUtil.SimpleRenderableTraceResult;
+import catwalks.raytrace.RayTraceUtil.TraceablePrimitive;
 import catwalks.raytrace.RayTraceUtil.VertexList;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.util.GeneralUtil;
-import net.minecraft.util.math.Vec3d;
 import scala.actors.threadpool.Arrays;
 
 public class Quad extends TraceablePrimitive<Quad> {

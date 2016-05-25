@@ -1,14 +1,16 @@
 package catwalks.network.messages;
 
-import catwalks.network.NetworkHandler;
-import catwalks.node.EntityNodeBase;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.IThreadListener;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.IThreadListener;
+
+import catwalks.network.NetworkHandler;
+import catwalks.node.EntityNodeBase;
+import io.netty.buffer.ByteBuf;
 
 public class PacketNodeInteract implements IMessage {
     

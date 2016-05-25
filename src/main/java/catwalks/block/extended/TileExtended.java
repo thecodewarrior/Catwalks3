@@ -2,7 +2,6 @@ package catwalks.block.extended;
 
 import java.util.BitSet;
 
-import catwalks.util.GeneralUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -11,6 +10,8 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import catwalks.util.GeneralUtil;
 
 public class TileExtended extends TileEntity {
 

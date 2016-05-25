@@ -6,30 +6,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
-import javax.annotation.Nonnull;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import com.google.common.collect.ImmutableList;
-
-import catwalks.Const;
-import catwalks.block.extended.BlockExtended;
-import catwalks.block.extended.ITileStateProvider;
-import catwalks.block.extended.TileExtended;
-import catwalks.block.property.UPropertyBool;
-import catwalks.raytrace.RayTraceUtil;
-import catwalks.raytrace.RayTraceUtil.IRenderableFace;
-import catwalks.raytrace.RayTraceUtil.ITraceResult;
-import catwalks.raytrace.RayTraceUtil.ITraceable;
-import catwalks.raytrace.RayTraceUtil.VertexList;
-import catwalks.register.ItemRegister;
-import catwalks.shade.ccl.util.Copyable;
-import catwalks.shade.ccl.vec.Cuboid6;
-import catwalks.shade.ccl.vec.Matrix4;
-import catwalks.shade.ccl.vec.Vector3;
-import catwalks.util.CustomFaceRayTraceResult;
-import catwalks.util.GeneralUtil;
-import catwalks.util.Logs;
-import catwalks.util.Trimap;
-import catwalks.util.WrenchChecker;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -51,11 +33,29 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
+
+import com.google.common.collect.ImmutableList;
+
+import catwalks.Const;
+import catwalks.block.extended.BlockExtended;
+import catwalks.block.extended.ITileStateProvider;
+import catwalks.block.extended.TileExtended;
+import catwalks.block.property.UPropertyBool;
+import catwalks.raytrace.RayTraceUtil;
+import catwalks.raytrace.RayTraceUtil.IRenderableFace;
+import catwalks.raytrace.RayTraceUtil.ITraceResult;
+import catwalks.raytrace.RayTraceUtil.ITraceable;
+import catwalks.raytrace.RayTraceUtil.VertexList;
+import catwalks.register.ItemRegister;
+import catwalks.shade.ccl.vec.Cuboid6;
+import catwalks.shade.ccl.vec.Matrix4;
+import catwalks.util.CustomFaceRayTraceResult;
+import catwalks.util.GeneralUtil;
+import catwalks.util.Logs;
+import catwalks.util.Trimap;
+import catwalks.util.WrenchChecker;
 
 public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalkConnect, IDecoratable, ITileStateProvider {
 	

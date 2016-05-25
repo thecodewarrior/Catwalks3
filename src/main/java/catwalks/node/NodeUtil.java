@@ -1,6 +1,5 @@
 package catwalks.node;
 
-import java.util.List;
 import java.util.function.Function;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -19,7 +18,6 @@ import catwalks.node.types.NodeParticleEmitter;
 import catwalks.node.types.NodeRedstoneReader;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
 import catwalks.raytrace.node.NodeHit;
-import catwalks.shade.ccl.raytracer.RayTracer;
 
 public class NodeUtil {
 

@@ -27,7 +27,6 @@ import catwalks.Const;
 import catwalks.item.ItemNodeBase;
 import catwalks.network.NetworkHandler;
 import catwalks.network.messages.PacketClientPortConnection;
-import catwalks.network.messages.PacketNodeConnect;
 import catwalks.network.messages.PacketNodeSettingsQuery;
 import catwalks.network.messages.PacketUpdateNode;
 import catwalks.network.messages.PacketUpdatePort;

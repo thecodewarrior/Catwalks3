@@ -6,27 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
-import catwalks.Const;
-import catwalks.block.extended.CubeEdge;
-import catwalks.block.extended.TileExtended;
-import catwalks.item.ItemBlockCatwalk;
-import catwalks.raytrace.RayTraceUtil.ITraceable;
-import catwalks.raytrace.block.BlockTraceable;
-import catwalks.raytrace.block.BlockTraceFactory;
-import catwalks.raytrace.primitives.Quad;
-import catwalks.raytrace.primitives.Tri;
-import catwalks.register.BlockRegister;
-import catwalks.shade.ccl.vec.Cuboid6;
-import catwalks.shade.ccl.vec.Matrix4;
-import catwalks.shade.ccl.vec.Vector3;
-import catwalks.util.AABBUtils;
-import catwalks.util.GeneralUtil;
-import catwalks.util.Logs;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
@@ -36,8 +19,26 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
+
+import catwalks.Const;
+import catwalks.block.extended.CubeEdge;
+import catwalks.block.extended.TileExtended;
+import catwalks.item.ItemBlockCatwalk;
+import catwalks.raytrace.RayTraceUtil.ITraceable;
+import catwalks.raytrace.block.BlockTraceFactory;
+import catwalks.raytrace.block.BlockTraceable;
+import catwalks.raytrace.primitives.Quad;
+import catwalks.raytrace.primitives.Tri;
+import catwalks.register.BlockRegister;
+import catwalks.shade.ccl.vec.Cuboid6;
+import catwalks.shade.ccl.vec.Matrix4;
+import catwalks.shade.ccl.vec.Vector3;
+import catwalks.util.AABBUtils;
+import catwalks.util.GeneralUtil;
+import catwalks.util.Logs;
 
 public class BlockCatwalkStair extends BlockCatwalkBase {
 

@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 
 import net.minecraft.client.renderer.OpenGlHelper;
 
-import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.ARBFragmentShader;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.ARBVertexShader;

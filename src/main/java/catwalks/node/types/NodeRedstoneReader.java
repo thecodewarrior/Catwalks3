@@ -2,14 +2,14 @@ package catwalks.node.types;
 
 import java.util.List;
 
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+
 import catwalks.node.EntityNodeBase;
 import catwalks.node.NodeBase;
 import catwalks.node.net.OutputPort;
 import catwalks.node.port.BooleanPort;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import scala.actors.threadpool.Arrays;
 
 public class NodeRedstoneReader extends NodeBase {
