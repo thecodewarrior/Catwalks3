@@ -33,6 +33,7 @@ import catwalks.network.messages.PacketUpdatePort;
 import catwalks.node.NodeUtil.EnumNodes;
 import catwalks.node.net.InputPort;
 import catwalks.node.net.OutputPort;
+import catwalks.proxy.ClientProxy;
 import catwalks.raytrace.CustomAABBCollide;
 import catwalks.raytrace.RayTraceUtil;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
@@ -119,9 +120,6 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 	}
 
 	public boolean clientRightClick(EntityPlayer player, int hit) {
-		if(hit == 0 && CatwalksMod.proxy.getSelectedNode() == this) {
-			NetworkHandler.network.sendToServer(new PacketNodeSettingsQuery(this.getEntityId()));
-		}
 		return false;
 	}
 	
@@ -189,7 +187,7 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 		
 		ITraceResult<NodeHit> hit = (ITraceResult<NodeHit>) RayTraceUtil.MISS_RESULT;
 		
-		if(GeneralUtil.isHolding(player, (stack) -> stack.getItem() == ItemRegister.nodeManipulator) && CatwalksMod.proxy.getSelectedNode() == this)
+		if(GeneralUtil.isHolding(player, (stack) -> stack.getItem() == ItemRegister.nodeManipulator) && ClientProxy.getSelectedNode() == this)
 			hit = RayTraceUtil.min(hit, rayTraceRotRings(player, start, end));
 		
 		hit = RayTraceUtil.min(hit, rayTraceBox(player, start, end));

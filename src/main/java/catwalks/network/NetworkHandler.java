@@ -14,6 +14,7 @@ import catwalks.network.messages.PacketClientPortConnection;
 import catwalks.network.messages.PacketNodeClick;
 import catwalks.network.messages.PacketNodeConnect;
 import catwalks.network.messages.PacketNodeInteract;
+import catwalks.network.messages.PacketNodeRelocate;
 import catwalks.network.messages.PacketNodeSettingsQuery;
 import catwalks.network.messages.PacketNodeSettingsResponse;
 import catwalks.network.messages.PacketNodeSettingsUpdate;
@@ -49,6 +50,7 @@ public class NetworkHandler {
 	    network.registerMessage(PacketNodeSettingsUpdate.Handler.class, PacketNodeSettingsUpdate.class, i++, Side.SERVER);
 	    network.registerMessage(PacketNodeSettingsQuery.Handler.class, PacketNodeSettingsQuery.class, i++, Side.SERVER);
 	    network.registerMessage(PacketNodeSettingsResponse.Handler.class, PacketNodeSettingsResponse.class, i++, Side.CLIENT);
+	    network.registerMessage(PacketNodeRelocate.Handler.class, PacketNodeRelocate.class, i++, Side.SERVER);
 	}
 
 	public static PacketBuffer createBuffer() {

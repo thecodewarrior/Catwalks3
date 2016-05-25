@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.IThreadListener;
+import net.minecraft.world.WorldServer;
 
 import catwalks.network.NetworkHandler;
 import catwalks.node.EntityNodeBase;
@@ -36,7 +37,7 @@ public class PacketNodeSettingsQuery implements IMessage {
     	
         @Override
         public IMessage onMessage(PacketNodeSettingsQuery message, MessageContext ctx) {
-            IThreadListener mainThread = Minecraft.getMinecraft();
+            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.worldObj;
             mainThread.addScheduledTask(() -> {
             	NetworkHandler.notifyPacketHandling("NodeSettingsQuery");
             	Entity plainentity = ctx.getServerHandler().playerEntity.worldObj.getEntityByID(message.id);

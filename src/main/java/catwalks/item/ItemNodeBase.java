@@ -8,11 +8,11 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
-import catwalks.CatwalksMod;
 import catwalks.network.NetworkHandler;
 import catwalks.network.messages.PacketNodeClick;
 import catwalks.network.messages.PacketNodeInteract;
 import catwalks.node.NodeUtil;
+import catwalks.proxy.ClientProxy;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
 import catwalks.raytrace.node.NodeHit;
 
@@ -32,9 +32,10 @@ public abstract class ItemNodeBase extends ItemBase {
 			boolean ret = leftClickNodeClient(result, stack, (EntityPlayer)entityLiving);
 			if(!ret) {
 				NetworkHandler.network.sendToServer(new PacketNodeClick(result.data().node.getEntityId(), result.data().hit));
-				if(CatwalksMod.proxy.getSelectedNode() != result.data().node) {
-					CatwalksMod.proxy.setSelectedNode(result.data().node);
-					CatwalksMod.proxy.setConnectingIndex(-1);
+				if(ClientProxy.getSelectedNode() != result.data().node) {
+					ClientProxy.setSelectedNode(result.data().node);
+					ClientProxy.connectingIndex = -1;
+					ClientProxy.isRelocating = false;
 				}
 			}
 			return ret;

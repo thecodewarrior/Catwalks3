@@ -1,7 +1,5 @@
 package catwalks.node.render;
 
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -12,20 +10,15 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
 
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.GL11;
 
-import catwalks.CatwalksMod;
 import catwalks.Const;
 import catwalks.item.ItemNodeBase;
 import catwalks.node.EntityNodeBase;
 import catwalks.node.NodeUtil;
-import catwalks.node.net.OutputPort;
-import catwalks.raytrace.node.NodeTraceable;
-import catwalks.raytrace.primitives.TexCoords;
-import catwalks.raytrace.primitives.TexCoords.UV;
+import catwalks.proxy.ClientProxy;
 import catwalks.register.ItemRegister;
 import catwalks.render.ShaderCallback;
 import catwalks.render.ShaderHelper;
@@ -103,7 +96,7 @@ public class RenderNode extends Render<EntityNodeBase> {
         GlStateManager.depthMask(true);
 
         
-        if(CatwalksMod.proxy.getSelectedNode() == entity && GeneralUtil.isHolding(Minecraft.getMinecraft().thePlayer, (stack) -> stack.getItem() == ItemRegister.nodeManipulator)) {
+        if(ClientProxy.getSelectedNode() == entity && GeneralUtil.isHolding(Minecraft.getMinecraft().thePlayer, (stack) -> stack.getItem() == ItemRegister.nodeManipulator)) {
         	GlStateManager.doPolygonOffset(-3.0F, -3.0F);
             GlStateManager.enablePolygonOffset();
         	

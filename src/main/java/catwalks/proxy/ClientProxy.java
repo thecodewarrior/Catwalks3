@@ -52,31 +52,17 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class ClientProxy extends CommonProxy {
 	
-	public boolean isClientProxy() {
-		return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
-	}
+	private static WeakReference<EntityNodeBase> SELECTED_NODE = null;
+	public static int connectingIndex;
+	public static boolean isRelocating;
 	
-	private WeakReference<EntityNodeBase> SELECTED_NODE = null;
-	private int connectingIndex;
-//	private WeakReference<EntityNodeBase> SELECTED_OUTPUT = null;
-	
-	@Override
-	public EntityNodeBase getSelectedNode() {
+	public static EntityNodeBase getSelectedNode() {
 		return SELECTED_NODE == null ? null : SELECTED_NODE.get();
 	}
 	
-	@Override
-	public void setSelectedNode(EntityNodeBase entity) {
+	public static void setSelectedNode(EntityNodeBase entity) {
 		SELECTED_NODE = new WeakReference<>(entity);
 	}
-	
-	@Override
-	public void setConnectingIndex(int index) {
-		connectingIndex = index;
-	}
-	public int getConnectingIndex() {
-		return connectingIndex;
-	};
 	
 	@Override
 	public MinecraftServer getServer() {

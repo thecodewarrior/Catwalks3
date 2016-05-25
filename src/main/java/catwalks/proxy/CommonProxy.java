@@ -19,16 +19,6 @@ import catwalks.node.EntityNodeBase;
 import catwalks.shade.ccl.raytracer.RayTracer;
 
 public class CommonProxy {
-	public boolean isClientProxy() {
-		return false;
-	}
-	
-	public void setSelectedNode(EntityNodeBase entity) {}
-	public EntityNodeBase getSelectedNode() { return null; }
-	
-	public void setConnectingIndex(int index) {}
-	public int getConnectingIndex() { return -1; }
-	
 	public void preInit() {}
 	public void reloadConfigs() {}
 	

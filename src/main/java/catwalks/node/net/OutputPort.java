@@ -12,13 +12,13 @@ import net.minecraft.world.World;
 
 import catwalks.node.EntityNodeBase;
 import catwalks.node.NodeBase;
+import catwalks.shade.ccl.math.MathHelper;
 import catwalks.util.Logs;
 import io.netty.buffer.ByteBuf;
 
 public abstract class OutputPort<T> {
 
 	public List<Vec3d> connectedLocs;
-	public List<Vec3d> clientConnectedLocs = null;
 	
 	public final Class<T> type;
 	List<PortConnection<T>> connections;
@@ -64,6 +64,9 @@ public abstract class OutputPort<T> {
 			update = connection.updateConnected(world, value) || update;
 		}
 		update = connections.removeIf((con) -> con.isInvalid) || update;
+		if(update) {
+			connectedLocs.clear();
+		}
 		return update;
 	}
 	
@@ -79,8 +82,6 @@ public abstract class OutputPort<T> {
 	}
 	
 	public List<Vec3d> connectedPoints() {
-		if(clientConnectedLocs != null)
-			return clientConnectedLocs;
 		if(connectedLocs.size() != connections.size()) {
 			List<Vec3d> points = new ArrayList<>();
 			
@@ -131,16 +132,27 @@ public abstract class OutputPort<T> {
 		}
 		
 		public boolean updateConnected(World world, T value) {
-			boolean didConnect = false;
+			boolean didChange = false;
 			if(port.get() == null) {
-				didConnect = tryConnect(world);
-				Logs.debug("Tried to connect - " + ( didConnect ? "Y" : "N" ));
+				didChange = tryConnect(world);
 			}
 			checkValidity(world);
+			if(node.get() != null) {
+				Vec3d loc = node.get().entity.getPositionVector();
+				double SMALL = 0.0001;
+				if(!(
+						MathHelper.between(-SMALL, loc.xCoord - connectedLoc.xCoord, SMALL) &&
+						MathHelper.between(-SMALL, loc.yCoord - connectedLoc.yCoord, SMALL) &&
+						MathHelper.between(-SMALL, loc.zCoord - connectedLoc.zCoord, SMALL)
+					)) {
+					connectedLoc = loc;
+					didChange = true;
+				}
+			}
 			if(port.get() != null) {
 				port.get().setValue(value);
 			}
-			return didConnect;
+			return didChange;
 		}
 		
 		@SuppressWarnings("unchecked")

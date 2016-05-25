@@ -7,6 +7,7 @@ import catwalks.item.ItemBase;
 import catwalks.item.ItemCatwalkTool;
 import catwalks.item.ItemDecoration;
 import catwalks.item.ItemLadderGrabber;
+import catwalks.item.ItemNodeConfigurator;
 import catwalks.item.ItemNodeConnector;
 import catwalks.item.ItemNodeManipulator;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -22,6 +23,7 @@ public class ItemRegister {
 	public static ItemLadderGrabber ladderGrabber;
 	public static ItemNodeManipulator nodeManipulator;
 	public static ItemNodeConnector nodeConnector;
+	public static ItemNodeConfigurator nodeConf;
 	
 	public static void register() {
 		lights = new ItemDecoration("lights");
@@ -32,6 +34,7 @@ public class ItemRegister {
 		ladderGrabber = new ItemLadderGrabber();
 		nodeManipulator = new ItemNodeManipulator();
 		nodeConnector = new ItemNodeConnector();
+		nodeConf = new ItemNodeConfigurator();
 	}
 	
 	public static List<ItemBase> renderRegsiterItems = new ArrayList<>();
