@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import catwalks.CatwalksMod;
 import catwalks.Const;
 import catwalks.network.NetworkHandler;
-import catwalks.util.Logs;
+import catwalks.network.messages.PacketServerContainerCommand;
 import mcjty.lib.container.GenericGuiContainer;
 import mcjty.lib.entity.GenericTileEntity;
 import mcjty.lib.gui.Window;
@@ -16,14 +16,18 @@ import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.layout.PositionalLayout.PositionalHint;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.gui.widgets.ToggleButton;
+import mcjty.lib.network.Argument;
 
 public class GuiNodeConfItem extends GenericGuiContainer<GenericTileEntity> {
 
 	private static final ResourceLocation iconLocation = new ResourceLocation(Const.MODID, "textures/gui/nodeConf.png");
 	
-	public GuiNodeConfItem(Container container) {
+	private int initialIndex = 0;
+	
+	public GuiNodeConfItem(NodeConfItemContainer container) {
 		super(CatwalksMod.INSTANCE, NetworkHandler.network, null, container, 0, "");
 		
+		initialIndex = container.index;
 		xSize = 176;
 		ySize = 133;
 	}
@@ -37,22 +41,27 @@ public class GuiNodeConfItem extends GenericGuiContainer<GenericTileEntity> {
         for (int i = 0; i < list.length; i++) {
         	ToggleButton w = new ToggleButton(mc, this);
         	list[i] = w;
+        	final int index = i;
             w.setLayoutHint(new PositionalHint(43 + i*18, 12)).setDesiredWidth(19).setDesiredHeight(8);
             w.addButtonEvent((button) -> {
             	for (ToggleButton other : list) {
 					other.setPressed(false);
 				}
             	((ToggleButton)button).setPressed(true);
+            	setSelected(index);
             });
             toplevel.addChild(w);
 		}
-        
+        list[initialIndex].setPressed(true);
         toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
 
         window = new Window(this, toplevel);
     }
-
-
+	
+	private void setSelected(int index) {
+		NetworkHandler.network.sendToServer(new PacketServerContainerCommand(Const.COMMAND_OPTIONS, new Argument("sel", index)));
+	}
+	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		if(window != null)

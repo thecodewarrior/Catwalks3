@@ -28,7 +28,7 @@ public class GuiHandler implements IGuiHandler {
         NetworkRegistry.INSTANCE.registerGuiHandler(CatwalksMod.INSTANCE, this);
 		Const.GUI.NODE_MANIPULATOR = register(
 				(params) -> new NodeConfItemContainer(params.player),
-				(params) -> new GuiNodeConfItem((Container) params.container())
+				(params) -> new GuiNodeConfItem((NodeConfItemContainer) params.container())
 		);
 	}
 	

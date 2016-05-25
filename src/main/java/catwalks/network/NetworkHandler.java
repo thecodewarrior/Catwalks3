@@ -10,17 +10,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import catwalks.Conf;
-import catwalks.network.messages.PacketClientPortConnection;
-import catwalks.network.messages.PacketNodeClick;
-import catwalks.network.messages.PacketNodeConnect;
-import catwalks.network.messages.PacketNodeInteract;
-import catwalks.network.messages.PacketNodeRelocate;
-import catwalks.network.messages.PacketNodeSettingsQuery;
-import catwalks.network.messages.PacketNodeSettingsResponse;
-import catwalks.network.messages.PacketNodeSettingsUpdate;
-import catwalks.network.messages.PacketUpdateNode;
-import catwalks.network.messages.PacketUpdatePort;
+import catwalks.network.messages.*;
 import io.netty.buffer.Unpooled;
+import mcjty.lib.network.PacketHandler;
 
 public class NetworkHandler {
 
@@ -39,18 +31,25 @@ public class NetworkHandler {
 	public static SimpleNetworkWrapper network;
 	
 	public static void init() {
-		int i = 1;
 		network = NetworkRegistry.INSTANCE.newSimpleChannel("Catwalks");
-	    network.registerMessage(PacketUpdateNode.Handler.class, PacketUpdateNode.class, i++, Side.CLIENT);
+		int i = PacketHandler.registerMessages(network);
+		
+	    network.registerMessage(PacketServerContainerCommand.Handler.class, PacketServerContainerCommand.class, i++, Side.SERVER);
+		
 	    network.registerMessage(PacketNodeClick.Handler.class, PacketNodeClick.class, i++, Side.SERVER);
 	    network.registerMessage(PacketNodeInteract.Handler.class, PacketNodeInteract.class, i++, Side.SERVER);
-	    network.registerMessage(PacketUpdatePort.Handler.class, PacketUpdatePort.class, i++, Side.CLIENT);
 	    network.registerMessage(PacketNodeConnect.Handler.class, PacketNodeConnect.class, i++, Side.SERVER);
-	    network.registerMessage(PacketClientPortConnection.Handler.class, PacketClientPortConnection.class, i++, Side.CLIENT);
 	    network.registerMessage(PacketNodeSettingsUpdate.Handler.class, PacketNodeSettingsUpdate.class, i++, Side.SERVER);
 	    network.registerMessage(PacketNodeSettingsQuery.Handler.class, PacketNodeSettingsQuery.class, i++, Side.SERVER);
-	    network.registerMessage(PacketNodeSettingsResponse.Handler.class, PacketNodeSettingsResponse.class, i++, Side.CLIENT);
 	    network.registerMessage(PacketNodeRelocate.Handler.class, PacketNodeRelocate.class, i++, Side.SERVER);
+		
+	    network.registerMessage(PacketClientGuiCommand.Handler.class, PacketClientGuiCommand.class, i++, Side.CLIENT);
+	    
+		network.registerMessage(PacketUpdateNode.Handler.class, PacketUpdateNode.class, i++, Side.CLIENT);
+	    network.registerMessage(PacketUpdatePort.Handler.class, PacketUpdatePort.class, i++, Side.CLIENT);
+	    network.registerMessage(PacketClientPortConnection.Handler.class, PacketClientPortConnection.class, i++, Side.CLIENT);
+	    network.registerMessage(PacketNodeSettingsResponse.Handler.class, PacketNodeSettingsResponse.class, i++, Side.CLIENT);
+	    
 	}
 
 	public static PacketBuffer createBuffer() {

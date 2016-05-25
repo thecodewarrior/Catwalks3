@@ -86,6 +86,8 @@ public class Const {
 	public static final UPropertyBool NW_LADDER_EXT  = UPropertyBool.create("northwest_ladder_ext");
 	public static final UPropertyBool SE_LADDER_EXT  = UPropertyBool.create("southeast_ladder_ext");
 	public static final UPropertyBool SW_LADDER_EXT  = UPropertyBool.create("southwest_ladder_ext");
+
+	public static final String COMMAND_OPTIONS = "options";
 	
 	static {
 		sideProperties.put(EnumFacing.UP, TOP);

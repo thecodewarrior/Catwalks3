@@ -1,7 +1,11 @@
 package catwalks.item;
 
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
@@ -21,6 +25,8 @@ import catwalks.node.NodeUtil.EnumNodes;
 import catwalks.proxy.ClientProxy;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
 import catwalks.raytrace.node.NodeHit;
+import mcjty.lib.network.Argument;
+import mcjty.lib.network.CommandHandler;
 
 public class ItemNodeConfigurator extends ItemNodeBase implements IInventoryContainerItem {
 
