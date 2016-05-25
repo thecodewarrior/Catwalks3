@@ -11,8 +11,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 
+import catwalks.gui.GuiHandler;
 import catwalks.movement.MovementHandler;
 import catwalks.network.NetworkHandler;
 import catwalks.node.NodeUtil;
@@ -21,11 +23,15 @@ import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
 import catwalks.register.NodeRegister;
 import catwalks.register.RecipeRegister;
+import catwalks.util.Logs;
 import catwalks.util.WrenchChecker;
+import mcjty.lib.McJtyLib;
+import mcjty.lib.base.ModBase;
 
 @Mod(modid = CatwalksMod.MODID, version = CatwalksMod.VERSION,
-	guiFactory = "catwalks.gui.CatwalksModConfGuiFactory")
-public class CatwalksMod {
+	guiFactory = "catwalks.gui.CatwalksModConfGuiFactory",
+	dependencies="required-after:McJtyLib")
+public class CatwalksMod implements ModBase {
 	public static final String MODID = "catwalks";
     public static final String VERSION = "0.3.0";
     
@@ -42,6 +48,8 @@ public class CatwalksMod {
     	RecipeRegister.register();
     	NodeRegister.register();
     	NetworkHandler.init();
+    	McJtyLib.preInit(event);
+    	
     	Conf.loadConfigsFromFile(event.getSuggestedConfigurationFile());
     	MinecraftForge.EVENT_BUS.register(proxy);
     	proxy.preInit();
@@ -50,9 +58,20 @@ public class CatwalksMod {
     @EventHandler
     public void init(FMLInitializationEvent event) {
     	WrenchChecker.init();
-		MovementHandler.INSTANCE.getClass(); // just to load the class
-		NodeUtil.INSTANCE.getClass(); // just to load the class
+    	// just to load the classes and their instances
+		MovementHandler.INSTANCE.getClass();
+		NodeUtil.INSTANCE.getClass();
+		GuiHandler.INSTANCE.getClass();
     }
+    
+    @Override
+	public String getModId() {
+		return MODID;
+	}
+	@Override
+	public void openManual(EntityPlayer player, int bookindex, String page) {
+		
+	}
     
     public static CreativeTabs tab = new CreativeTabs("tabCatwalks") {
 		@Override

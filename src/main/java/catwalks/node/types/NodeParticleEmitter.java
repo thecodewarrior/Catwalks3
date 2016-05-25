@@ -22,6 +22,7 @@ public class NodeParticleEmitter extends NodeBase {
 	
 	public NodeParticleEmitter(EntityNodeBase entity) {
 		super(entity);
+		input.needsClientUpdate(true);
 	}
 	
 	@Override

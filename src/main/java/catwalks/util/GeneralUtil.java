@@ -41,6 +41,14 @@ public class GeneralUtil {
 		return false;
 	}
 	
+	public static ItemStack getHeld(EntityPlayer player, Predicate<ItemStack> test) {
+		if(player.getHeldItemMainhand() != null && test.test(player.getHeldItemMainhand()))
+			return player.getHeldItemMainhand();
+		if(player.getHeldItemOffhand() != null && test.test(player.getHeldItemOffhand()))
+			return player.getHeldItemOffhand();
+		return null;
+	}
+	
 	public static IExtendedBlockState getTileState(IBlockAccess worldIn, BlockPos pos) {
 		IBlockState state = worldIn.getBlockState(pos);
 		

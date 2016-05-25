@@ -4,12 +4,16 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import catwalks.CatwalksMod;
+import catwalks.Const;
+import catwalks.gui.inventory.IInventoryContainerItem;
 import catwalks.network.NetworkHandler;
 import catwalks.network.messages.PacketNodeSettingsQuery;
 import catwalks.node.EntityNodeBase;
@@ -18,7 +22,7 @@ import catwalks.proxy.ClientProxy;
 import catwalks.raytrace.RayTraceUtil.ITraceResult;
 import catwalks.raytrace.node.NodeHit;
 
-public class ItemNodeConfigurator extends ItemNodeBase {
+public class ItemNodeConfigurator extends ItemNodeBase implements IInventoryContainerItem {
 
 	public ItemNodeConfigurator() {
 		super("nodeConfigurator");
@@ -44,8 +48,22 @@ public class ItemNodeConfigurator extends ItemNodeBase {
 	public EnumActionResult rightClickNodeClient(ITraceResult<NodeHit> hit, ItemStack stack, EntityPlayer player) {
 		if(ClientProxy.getSelectedNode() == hit.data().node) {
 			NetworkHandler.network.sendToServer(new PacketNodeSettingsQuery(hit.data().node.getEntityId()));
+			return EnumActionResult.SUCCESS;
 		}
-		return null;
+		return EnumActionResult.PASS;
+	}
+	
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn,
+			EnumHand hand) {
+		ActionResult<ItemStack> res = super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
+		if(res.getType() == EnumActionResult.PASS) {
+			if (!worldIn.isRemote) {
+	            playerIn.openGui(CatwalksMod.INSTANCE, Const.GUI.NODE_MANIPULATOR, playerIn.worldObj, (int) playerIn.posX, (int) playerIn.posY, (int) playerIn.posZ);
+	        }
+			res = new ActionResult<ItemStack>(EnumActionResult.SUCCESS, res.getResult());
+		}
+		return res;
 	}
 	
 	@Override
@@ -88,6 +106,17 @@ public class ItemNodeConfigurator extends ItemNodeBase {
 			return EnumActionResult.SUCCESS;
 		}
 		return super.onItemUse(stack, playerIn, worldIn, pos, hand, facing, hitX, hitY, hitZ);
+	}
+
+	
+	@Override
+	public int getInventorySize() {
+		return 5;
+	}
+
+	@Override
+	public String getGuiUnlocalizedName() {
+		return "gui.title." + this.getUnlocalizedName().substring(5);
 	}
 
 }

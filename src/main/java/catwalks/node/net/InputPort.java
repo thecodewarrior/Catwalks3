@@ -7,10 +7,19 @@ public abstract class InputPort<T> {
 	public final Class<T> type;
 	T value;
 	boolean modified;
+	protected boolean needsClientUpdate = false;
 	
 	public InputPort(Class<T> type, T value) {
 		this.type = type;
 		this.value = value;
+	}
+	
+	public void needsClientUpdate(boolean bool) {
+		this.needsClientUpdate = bool;
+	}
+	
+	public boolean needsClientUpdate() {
+		return needsClientUpdate;
 	}
 	
 	public void setValue(T value) {

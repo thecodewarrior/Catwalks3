@@ -94,7 +94,7 @@ public class EntityNodeBase extends Entity implements IEntityAdditionalSpawnData
 				i++;
 			}
 			for(InputPort<?> port : node.inputs()) {
-				if(port.isModified()) {
+				if(port.isModified() && port.needsClientUpdate()) {
 					PacketBuffer buf = NetworkHandler.createBuffer();
 					port.writeToBuf(buf);
 					firePacket(new PacketUpdatePort(this, false, i, buf));

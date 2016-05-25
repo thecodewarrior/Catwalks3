@@ -39,9 +39,7 @@ public class Const {
 	@CapabilityInject(ICWEntityData.class)
 	public static Capability<ICWEntityData> CW_ENTITY_DATA_CAPABILITY = null;
 	
-	{ /* not render-only properties */ }
-	
-	{	/* normal blockstate properties*/	}
+	{	/* blockstate properties*/	}
 	
 	public static final PropertyEnum<EnumCatwalkMaterial> MATERIAL = PropertyEnum.create("material", EnumCatwalkMaterial.class);
 	public static final PropertyBool LIGHTS = PropertyBool.create("lights");
@@ -106,4 +104,8 @@ public class Const {
 		public static final int CONNECT_POINT = i--;
 		public static final int OPEN_GUI = i--;
 	};
+	
+	public static class GUI {
+		public static int NODE_MANIPULATOR = -1;
+	}
 }
