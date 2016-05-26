@@ -1,5 +1,7 @@
 package catwalks.item;
 
+import java.util.List;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -33,13 +35,43 @@ public class ItemNodeConfigurator extends ItemNodeBase implements IInventoryCont
 	}
 	
 	@Override
-	public String getItemStackDisplayName(ItemStack stack) {
+	public Object[] getInformationArguments(ItemStack stack, EntityPlayer player) {
+		
 		String nodeText = "NONE";
+		
+		int index = 0;
 		if(stack.hasTagCompound()) {
-			EnumNodes type = EnumNodes.values()[stack.getTagCompound().getInteger("type")];
-			nodeText = I18n.format("node." + type.toString() + ".name");
+			index = stack.getTagCompound().getInteger("selectedSlot");
 		}
-		return I18n.format(this.getUnlocalizedName(stack), nodeText);
+		
+		IInventory inventory = new ItemInventoryWrapper(stack);
+		ItemStack nodeStack = inventory.getStackInSlot(index);
+		
+		if(nodeStack != null) {
+			if(nodeStack.getItemDamage() < EnumNodes.values().length) {
+				EnumNodes type = EnumNodes.values()[nodeStack.getItemDamage()];
+				nodeText = I18n.format("node." + type.toString() + ".name");
+			}
+		}
+		
+		int amountLeft = 0;
+		
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			ItemStack amountStack = inventory.getStackInSlot(i);
+			if(amountStack != null && nodeStack != null && amountStack.getItemDamage() == nodeStack.getItemDamage()) {
+				amountLeft += amountStack.stackSize;
+			}
+		}
+		
+		return new Object[] {
+			nodeText, amountLeft
+		};
+	}
+	
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+		
+		super.addInformation(stack, playerIn, tooltip, advanced);
 	}
 
 	@Override
@@ -85,10 +117,6 @@ public class ItemNodeConfigurator extends ItemNodeBase implements IInventoryCont
 				if(nodeStack.getItemDamage() < EnumNodes.values().length) {
 				
 					EntityNodeBase entity = new EntityNodeBase(worldIn, pos.getX()+hitX, pos.getY()+hitY, pos.getZ()+hitZ, EnumNodes.values()[nodeStack.getItemDamage()]);
-					if(!playerIn.capabilities.isCreativeMode) {
-						inventory.decrStackSize(index, 1);
-						inventory.markDirty();
-					}
 					switch (facing) {
 					case NORTH:
 						entity.rotationYaw = 180;
@@ -113,6 +141,25 @@ public class ItemNodeConfigurator extends ItemNodeBase implements IInventoryCont
 					}
 					
 					worldIn.spawnEntityInWorld(entity);
+					
+					if(!playerIn.capabilities.isCreativeMode) {
+						int targetDamage = nodeStack.getItemDamage();
+						
+						inventory.decrStackSize(index, 1);
+						inventory.markDirty();
+						
+						if(nodeStack.stackSize == 0) {
+							for (int i = 0; i < inventory.getSizeInventory(); i++) {
+								if(i == index)
+									continue;
+								ItemStack checkStack = inventory.getStackInSlot(i);
+								if(checkStack != null && checkStack.getItemDamage() == targetDamage) {
+									stack.getTagCompound().setInteger("selectedSlot", i);
+									break;
+								}
+							}
+						}
+					}
 					
 					return EnumActionResult.SUCCESS;
 				} else {

@@ -1,5 +1,6 @@
 package catwalks.item;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -23,17 +24,26 @@ public class ItemBase extends Item{
 		setCreativeTab(CatwalksMod.tab);
 	}
 	
+	public Object[] getInformationArguments(ItemStack stack, EntityPlayer player) {
+		return new Object[0];
+	}
+	
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
 		int i = 0;
 		String unloc = getUnlocalizedName() + ".info.";
+		Object[] arguments = getInformationArguments(stack, playerIn);
 		
 		while(true) {
 			
 			if(!I18n.hasKey(unloc+i))
 				break;
 			
-			tooltip.add(I18n.format(unloc+i));
+			String translated = I18n.format(unloc+i);
+			if(translated.length() == 0)
+				break;
+			
+			tooltip.add(MessageFormat.format(translated, arguments));
 			i += 1;
 		}
 		

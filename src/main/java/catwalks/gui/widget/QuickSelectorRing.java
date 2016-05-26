@@ -96,6 +96,9 @@ public class QuickSelectorRing<P extends QuickSelectorRing> extends AbstractWidg
 			slotIDs.add(i);
 		}
         
+        if(stacks.size() == 0)
+        	return;
+        
         double angle = 0;
         double rotPer = 360/stacks.size();
         
