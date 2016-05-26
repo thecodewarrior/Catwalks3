@@ -11,10 +11,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
-import catwalks.util.GeneralUtil;
-import mcjty.lib.gui.Window;
 import mcjty.lib.gui.events.ButtonEvent;
 import mcjty.lib.gui.widgets.AbstractWidget;
 
@@ -23,7 +20,7 @@ public class QuickSelectorRing<P extends QuickSelectorRing> extends AbstractWidg
 	protected List<ButtonEvent> buttonEvents = null;
 	protected List<Slot> slots = null;
 	protected GuiContainer guiContainer = null;
-	protected int selectedIndex = 0;
+	protected int slotID = -1;
 	
 	public QuickSelectorRing(Minecraft mc, GuiContainer gui) {
 		super(mc, gui);
@@ -44,9 +41,8 @@ public class QuickSelectorRing<P extends QuickSelectorRing> extends AbstractWidg
 		slots.add(slot);
 	}
 	
-	@Override
-	public void draw(Window window, int x, int y) {
-		if(slots == null)
+	public void drawForeground(int x, int y) {
+		if(slots == null || !visible)
 			return;
 		
         RenderHelper.enableGUIStandardItemLighting();
@@ -56,44 +52,17 @@ public class QuickSelectorRing<P extends QuickSelectorRing> extends AbstractWidg
 	    double mouseY = mc.currentScreen.height - Mouse.getEventY() * mc.currentScreen.height / mc.displayHeight - 1;
 	    
 		int SLOTSIZE = 16;
-        int xx = x + bounds.x;
-        int yy = y + bounds.y;
+        int xx = bounds.x;
+        int yy = bounds.y;
         
-        mouseX -= xx;
-        mouseY -= yy;
+        mouseX -= x + bounds.x;
+        mouseY -= y + bounds.y;
         
-        List<ItemStack> stacks = constructStacks();
+        List<ItemStack> stacks = new ArrayList<>();
+        List<Integer> slotIDs = new ArrayList<>();
         
-        double angle = 0;
-        double rotPer = 360/stacks.size();
-        
-		for (ItemStack stack : stacks) {
-			double theta = Math.toRadians(angle);
-
-			double cs = Math.cos(theta);
-			double sn = Math.sin(theta);
-			
-			double mouseAngle = Math.toDegrees(Math.atan2(mouseY, mouseX) - Math.atan2(-cs, sn));
-			
-			int radius = 32;
-			
-			if(Math.abs(mouseAngle) < rotPer/2) {
-				radius = 48;
-			}
-			
-			int rotX = xx + (int)(radius * sn);
-			int rotY = yy + (int)(-radius * cs);
-			
-			angle += rotPer;
-			mc.getRenderItem().renderItemAndEffectIntoGUI(this.mc.thePlayer, stack, rotX - SLOTSIZE/2, rotY - SLOTSIZE/2);
-		}
-		RenderHelper.disableStandardItemLighting();
-	}
-	
-	public List<ItemStack> constructStacks() {
-		List<ItemStack> stacks = new ArrayList<>();
-        
-        for (Slot slot : slots) {
+        for (int i = 0; i < slots.size(); i++) {
+        	Slot slot = slots.get(i);
 			ItemStack stack = slot.getStack();
 			if(stack == null)
 				continue;
@@ -107,8 +76,46 @@ public class QuickSelectorRing<P extends QuickSelectorRing> extends AbstractWidg
 			if(duplicate)
 				continue;
 			stacks.add(stack);
+			slotIDs.add(i);
 		}
-        return stacks;
+        
+        double angle = 0;
+        double rotPer = 360/stacks.size();
+        
+        boolean isFarEnough = mouseX*mouseX + mouseY*mouseY > 16*16;
+        slotID = -1;
+        
+		mc.getRenderItem().zLevel += 110;
+		for (int i = 0; i < stacks.size(); i++) {
+			ItemStack stack = stacks.get(i);
+			double theta = Math.toRadians(angle);
+
+			double cs = Math.cos(theta);
+			double sn = Math.sin(theta);
+			
+			int radius = 32;
+			
+			if(isFarEnough) {
+				double mouseAngle = Math.toDegrees(Math.atan2(mouseY, mouseX) - Math.atan2(-cs, sn));
+				
+				if(Math.abs(mouseAngle) < rotPer/2) {
+					radius = 48;
+					slotID = slotIDs.get(i);
+				}
+			}
+			
+			int rotX = xx + (int)(radius * sn);
+			int rotY = yy + (int)(-radius * cs);
+			
+			angle += rotPer;
+			mc.getRenderItem().renderItemAndEffectIntoGUI(this.mc.thePlayer, stack, rotX - SLOTSIZE/2, rotY - SLOTSIZE/2);
+		}
+		mc.getRenderItem().zLevel -= 110;
+		RenderHelper.disableStandardItemLighting();
+	}
+	
+	public int getSelectedSlot() {
+		return slotID;
 	}
 	
 	public QuickSelectorRing addButtonEvent(ButtonEvent event) {
