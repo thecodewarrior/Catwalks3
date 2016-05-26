@@ -71,6 +71,10 @@ public class GuiNodeConfItem extends GenericGuiContainer<GenericTileEntity> {
         
         QuickSelectorRing ring = new QuickSelectorRing(mc, this);
         ring.addSlot(this.inventorySlots.getSlot(0));
+        ring.addSlot(this.inventorySlots.getSlot(1));
+        ring.addSlot(this.inventorySlots.getSlot(2));
+        ring.addSlot(this.inventorySlots.getSlot(3));
+        ring.addSlot(this.inventorySlots.getSlot(4));
         ring.setBounds(new Rectangle(0, 0, this.height/2, this.height/2));
         ring.setLayoutHint(new PositionalHint(xSize/2, ySize/2));
         toplevel.addChild(ring);
