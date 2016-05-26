@@ -22,9 +22,14 @@ public class QuickSelectorRing<P extends QuickSelectorRing> extends AbstractWidg
 	protected GuiContainer guiContainer = null;
 	protected int slotID = -1;
 	
+	protected double initMouseX;
+	protected double initMouseY;
+	
 	public QuickSelectorRing(Minecraft mc, GuiContainer gui) {
 		super(mc, gui);
 		guiContainer = gui;
+		initMouseX = Mouse.getEventX() * mc.currentScreen.width / mc.displayWidth;
+	    initMouseY = mc.currentScreen.height - Mouse.getEventY() * mc.currentScreen.height / mc.displayHeight - 1;
 	}
 	
 	@Override
@@ -50,6 +55,17 @@ public class QuickSelectorRing<P extends QuickSelectorRing> extends AbstractWidg
 		
 		double mouseX = Mouse.getEventX() * mc.currentScreen.width / mc.displayWidth;
 	    double mouseY = mc.currentScreen.height - Mouse.getEventY() * mc.currentScreen.height / mc.displayHeight - 1;
+	    
+	    if(
+	    	mouseX == initMouseX && Double.isFinite(initMouseX) &&
+	    	mouseY == initMouseY && Double.isFinite(initMouseY)
+	    	) { // mouse position isn't correct until the mouse moves, this checks for that
+	    	mouseX = x + bounds.x; // cancel out with the -= later
+	    	mouseY = y + bounds.y;
+	    } else { // the mouse moved
+	    	initMouseX = Double.POSITIVE_INFINITY;
+	    	initMouseY = Double.POSITIVE_INFINITY;
+	    }
 	    
 		int SLOTSIZE = 16;
         int xx = bounds.x;

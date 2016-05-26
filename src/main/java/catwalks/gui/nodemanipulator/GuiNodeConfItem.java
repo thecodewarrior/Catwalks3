@@ -12,8 +12,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import org.lwjgl.input.Mouse;
-
 import catwalks.CatwalksMod;
 import catwalks.Const;
 import catwalks.gui.inventory.SlotWrapper;
@@ -142,7 +140,7 @@ public class GuiNodeConfItem extends GenericGuiContainer<GenericTileEntity> {
 	private void updateRingMouseOrKey() {
 		if(ring.isVisible()) {
 			ring.setVisible(GameSettings.isKeyDown(mc.gameSettings.keyBindSneak) && GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem));
-			if(!ring.isVisible()) {
+			if(!ring.isVisible() && GameSettings.isKeyDown(mc.gameSettings.keyBindSneak)) { // only fire when the mouse is released
 				int slot = ring.getSelectedSlot();
 				if(slot >= 0) {
 					setSelected(slot);
