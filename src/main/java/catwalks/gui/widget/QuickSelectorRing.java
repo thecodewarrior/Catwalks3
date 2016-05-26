@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -111,12 +112,14 @@ public class QuickSelectorRing<P extends QuickSelectorRing> extends AbstractWidg
 			
 			int radius = 32;
 			
+			boolean showName = false;
 			if(isFarEnough) {
 				double mouseAngle = Math.toDegrees(Math.atan2(mouseY, mouseX) - Math.atan2(-cs, sn));
 				
 				if(Math.abs(mouseAngle) < rotPer/2) {
 					radius = 48;
 					slotID = slotIDs.get(i);
+					showName = true;
 				}
 			}
 			
@@ -125,6 +128,11 @@ public class QuickSelectorRing<P extends QuickSelectorRing> extends AbstractWidg
 			
 			angle += rotPer;
 			mc.getRenderItem().renderItemAndEffectIntoGUI(this.mc.thePlayer, stack, rotX - SLOTSIZE/2, rotY - SLOTSIZE/2);
+			if(showName) {
+				String name = I18n.format(stack.getUnlocalizedName());
+				int centering = xx - (mc.fontRendererObj.getStringWidth(name)/2);
+				mc.fontRendererObj.drawString(name, centering, -9, 0xFFFFFF);
+			}
 		}
 		mc.getRenderItem().zLevel -= 110;
 		RenderHelper.disableStandardItemLighting();
