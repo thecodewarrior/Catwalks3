@@ -115,9 +115,9 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	public void randomTick(World worldIn, BlockPos pos, IBlockState state, Random random) {
 		checkForValidity(worldIn, pos);
 	}
-
+	
 	@Override
-	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn) {
 		checkForValidity(worldIn, pos);
 	}
 	

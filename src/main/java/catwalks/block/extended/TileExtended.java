@@ -58,9 +58,10 @@ public class TileExtended extends TileEntity {
 	{ /* normal Tile Entity stuff */ }
 	
 	@Override
-	public void writeToNBT(NBTTagCompound compound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
 		compound.setByteArray("m", meta.toByteArray());
+		return compound;
 	}
 	
 	@Override
@@ -71,7 +72,7 @@ public class TileExtended extends TileEntity {
 	}
 	
 	@Override
-	public Packet<?> getDescriptionPacket() {
+	public SPacketUpdateTileEntity getUpdatePacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		writeToNBT(tag);
 		return new SPacketUpdateTileEntity(pos, 0, tag);
