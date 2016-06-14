@@ -14,16 +14,11 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 
-import catwalks.gui.GuiHandler;
 import catwalks.movement.MovementHandler;
-import catwalks.network.NetworkHandler;
-import catwalks.node.NodeUtil;
 import catwalks.proxy.CommonProxy;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
-import catwalks.register.NodeRegister;
 import catwalks.register.RecipeRegister;
-import catwalks.util.Logs;
 import catwalks.util.WrenchChecker;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.base.ModBase;
@@ -46,8 +41,6 @@ public class CatwalksMod implements ModBase {
     	BlockRegister.register();
     	ItemRegister.register();
     	RecipeRegister.register();
-    	NodeRegister.register();
-    	NetworkHandler.init();
     	McJtyLib.preInit(event);
     	
     	Conf.loadConfigsFromFile(event.getSuggestedConfigurationFile());
@@ -60,8 +53,6 @@ public class CatwalksMod implements ModBase {
     	WrenchChecker.init();
     	// just to load the classes and their instances
 		MovementHandler.INSTANCE.getClass();
-		NodeUtil.INSTANCE.getClass();
-		GuiHandler.INSTANCE.getClass();
     }
     
     @Override

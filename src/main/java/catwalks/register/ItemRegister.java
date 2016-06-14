@@ -3,18 +3,16 @@ package catwalks.register;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+
 import catwalks.item.ItemBase;
 import catwalks.item.ItemCatwalkTool;
 import catwalks.item.ItemDecoration;
 import catwalks.item.ItemLadderGrabber;
-import catwalks.item.ItemNode;
-import catwalks.item.ItemNodeConfigurator;
-import catwalks.item.ItemNodeConnector;
-import catwalks.item.ItemNodeManipulator;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemRegister {
 	
@@ -22,10 +20,6 @@ public class ItemRegister {
 	public static ItemCatwalkTool tool;
 	public static ItemBase grate;
 	public static ItemLadderGrabber ladderGrabber;
-	public static ItemNodeManipulator nodeManipulator;
-	public static ItemNodeConnector nodeConnector;
-	public static ItemNodeConfigurator nodeConf;
-	public static ItemNode nodes;
 	
 	public static void register() {
 		lights = new ItemDecoration("lights");
@@ -34,10 +28,6 @@ public class ItemRegister {
 		tool   = new ItemCatwalkTool();
 		grate  = new ItemBase("steelgrate");
 		ladderGrabber = new ItemLadderGrabber();
-		nodeManipulator = new ItemNodeManipulator();
-		nodeConnector = new ItemNodeConnector();
-		nodeConf = new ItemNodeConfigurator();
-		nodes = new ItemNode();
 	}
 	
 	public static List<ItemBase> renderRegsiterItems = new ArrayList<>();

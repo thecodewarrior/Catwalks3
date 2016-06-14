@@ -5,23 +5,16 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
-
-import catwalks.Conf;
-import catwalks.Const;
-import catwalks.node.EntityNodeBase;
-import catwalks.raytrace.RayTraceUtil.VertexList;
-import catwalks.register.BlockRegister;
-import catwalks.register.ItemRegister;
-import catwalks.register.NodeRegister;
-import catwalks.render.NodeConnectionRenderer;
-import catwalks.render.ShaderHelper;
-import catwalks.shade.ccl.raytracer.RayTracer;
-import catwalks.shade.ccl.vec.Vector3;
-import catwalks.util.CustomFaceRayTraceResult;
-import catwalks.util.GeneralUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -38,31 +31,23 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.event.DrawBlockHighlightEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.client.model.obj.OBJLoader;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
+
+import org.lwjgl.opengl.GL11;
+
+import com.mojang.realmsclient.gui.ChatFormatting;
+
+import catwalks.Conf;
+import catwalks.Const;
+import catwalks.raytrace.RayTraceUtil.VertexList;
+import catwalks.register.BlockRegister;
+import catwalks.register.ItemRegister;
+import catwalks.render.ShaderHelper;
+import catwalks.shade.ccl.raytracer.RayTracer;
+import catwalks.shade.ccl.vec.Vector3;
+import catwalks.util.CustomFaceRayTraceResult;
+import catwalks.util.GeneralUtil;
 
 public class ClientProxy extends CommonProxy {
-	
-	private static WeakReference<EntityNodeBase> SELECTED_NODE = null;
-	public static int connectingIndex;
-	public static boolean isRelocating;
-	
-	public static EntityNodeBase getSelectedNode() {
-		return SELECTED_NODE == null ? null : SELECTED_NODE.get();
-	}
-	
-	public static void setSelectedNode(EntityNodeBase entity) {
-		SELECTED_NODE = new WeakReference<>(entity);
-	}
 	
 	@Override
 	public MinecraftServer getServer() {
@@ -78,7 +63,6 @@ public class ClientProxy extends CommonProxy {
 	public void preInit() {
 		BlockRegister.initRender();
 		ItemRegister.initRender();
-		NodeRegister.initRender();
 		MinecraftForge.EVENT_BUS.register(new Conf());
 		OBJLoader.INSTANCE.addDomain(Const.MODID);
 		ShaderHelper.initShaders();
@@ -184,7 +168,6 @@ public class ClientProxy extends CommonProxy {
 		}
 		
 		event.getLeft().add(String.format("Move: forward %.5f, strafe %.5f", player.moveForward, player.moveStrafing));
-		event.getLeft().add(String.format("Connections: %d", NodeConnectionRenderer.connectionCount()));
 		
 		if(player.isSneaking()) {
 			if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK && mc.objectMouseOver.getBlockPos() != null)

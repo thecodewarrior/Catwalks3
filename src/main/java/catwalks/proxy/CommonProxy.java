@@ -15,7 +15,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.Vec3d;
 
 import catwalks.item.ItemDecoration;
-import catwalks.node.EntityNodeBase;
 import catwalks.shade.ccl.raytracer.RayTracer;
 
 public class CommonProxy {
