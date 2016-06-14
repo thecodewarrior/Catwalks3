@@ -4,15 +4,15 @@ import catwalks.node.NodeBase;
 import catwalks.node.net.OutputPort;
 import io.netty.buffer.ByteBuf;
 
-public class BooleanPort extends OutputPort<Boolean> {
+public class IntPort extends OutputPort<Integer> {
 
-	public BooleanPort(boolean value, NodeBase node) {
-		super(Boolean.class, value, node);
+	public IntPort(int value, NodeBase node) {
+		super(Integer.class, value, node);
 	}
 
 	@Override
 	public int getColor() {
-		if(getValue()) {
+		if(getValue() > 0) {
 			return 0xFF0000;
 		} else {
 			return 0x7F0000;
@@ -21,12 +21,12 @@ public class BooleanPort extends OutputPort<Boolean> {
 	
 	@Override
 	public void readValueFromBuf(ByteBuf buf) {
-		setValue( buf.readBoolean() );
+		setValue( buf.readInt() );
 	}
 
 	@Override
 	public void writeValueToBuf(ByteBuf buf) {
-		buf.writeBoolean(getValue());
+		buf.writeInt(getValue());
 	}
 
 }

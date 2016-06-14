@@ -1,5 +1,5 @@
 {
-    "parent": "catwalks:item/standard_item",
+    "parent": "item/generated",
     "textures": { 
         "layer0": "catwalks:items/lights"
     }

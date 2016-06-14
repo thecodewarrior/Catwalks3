@@ -14,9 +14,7 @@ import net.minecraft.util.math.Vec3d;
 
 import org.lwjgl.opengl.GL11;
 
-import catwalks.shade.ccl.util.Copyable;
-
-public class Matrix4 extends Transformation implements Copyable<Matrix4>
+public class Matrix4 extends Transformation
 {
     private static DoubleBuffer glBuf = ByteBuffer.allocateDirect(16*8).order(ByteOrder.nativeOrder()).asDoubleBuffer();
     
@@ -64,57 +62,67 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4>
         return this;
     }
     
+    public Matrix4 translate(Vec3d vec)
+    {
+        m03 += m00 * vec.xCoord + m01 * vec.yCoord + m02 * vec.zCoord;
+        m13 += m10 * vec.xCoord + m11 * vec.yCoord + m12 * vec.zCoord;
+        m23 += m20 * vec.xCoord + m21 * vec.yCoord + m22 * vec.zCoord;
+        m33 += m30 * vec.xCoord + m31 * vec.yCoord + m32 * vec.zCoord;
+        
+        return this;
+    }
+    
     public Matrix4 translate(Vector3 vec)
     {
-        m03 += m00 * vec.x + m01 * vec.y + m02 * vec.z;
-        m13 += m10 * vec.x + m11 * vec.y + m12 * vec.z;
-        m23 += m20 * vec.x + m21 * vec.y + m22 * vec.z;
-        m33 += m30 * vec.x + m31 * vec.y + m32 * vec.z;
+        return translate(vec.vec3());
+    }
+    
+    public Matrix4 scale(Vec3d vec)
+    {
+        m00 *= vec.xCoord;
+        m10 *= vec.xCoord;
+        m20 *= vec.xCoord;
+        m30 *= vec.xCoord;
+        m01 *= vec.yCoord;
+        m11 *= vec.yCoord;
+        m21 *= vec.yCoord;
+        m31 *= vec.yCoord;
+        m02 *= vec.zCoord;
+        m12 *= vec.zCoord;
+        m22 *= vec.zCoord;
+        m32 *= vec.zCoord;
         
         return this;
     }
     
     public Matrix4 scale(Vector3 vec)
     {
-        m00 *= vec.x;
-        m10 *= vec.x;
-        m20 *= vec.x;
-        m30 *= vec.x;
-        m01 *= vec.y;
-        m11 *= vec.y;
-        m21 *= vec.y;
-        m31 *= vec.y;
-        m02 *= vec.z;
-        m12 *= vec.z;
-        m22 *= vec.z;
-        m32 *= vec.z;
-        
-        return this;
+    	return scale(vec.vec3());
     }
         
-    public Matrix4 rotate(double angle, Vector3 axis)
+    public Matrix4 rotate(double angle, Vec3d axis)
     {
         double c = Math.cos(angle);
         double s = Math.sin(angle);
         double mc = 1.0f - c;
-        double xy = axis.x*axis.y;
-        double yz = axis.y*axis.z;
-        double xz = axis.x*axis.z;
-        double xs = axis.x*s;
-        double ys = axis.y*s;
-        double zs = axis.z*s;
+        double xy = axis.xCoord*axis.yCoord;
+        double yz = axis.yCoord*axis.zCoord;
+        double xz = axis.xCoord*axis.zCoord;
+        double xs = axis.xCoord*s;
+        double ys = axis.yCoord*s;
+        double zs = axis.zCoord*s;
 
-        double f00 = axis.x*axis.x*mc+c;
+        double f00 = axis.xCoord*axis.xCoord*mc+c;
         double f10 = xy*mc+zs;
         double f20 = xz*mc-ys;
         
         double f01 = xy*mc-zs;
-        double f11 = axis.y*axis.y*mc+c;
+        double f11 = axis.yCoord*axis.yCoord*mc+c;
         double f21 = yz*mc+xs;
         
         double f02 = xz*mc+ys;
         double f12 = yz*mc-xs;
-        double f22 = axis.z*axis.z*mc+c;
+        double f22 = axis.zCoord*axis.zCoord*mc+c;
 
         double t00 = m00 * f00 + m01 * f10 + m02 * f20;
         double t10 = m10 * f00 + m11 * f10 + m12 * f20;
@@ -140,10 +148,9 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4>
         return this;
     }
     
-    public Matrix4 rotate(Rotation rotation)
+    public Matrix4 rotate(double angle, Vector3 axis)
     {
-        rotation.apply(this);
-        return this;
+    	return rotate(angle, axis.vec3());
     }
     
     public Matrix4 leftMultiply(Matrix4 mat)
@@ -290,10 +297,18 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4>
         return this;
     }
     
-    @Override
     public void apply(Matrix4 mat)
     {
         mat.multiply(this);
+    }
+    
+    private Vec3d mult3x3(Vec3d vec)
+    {
+        double x = m00 * vec.xCoord + m01 * vec.yCoord + m02 * vec.zCoord;
+        double y = m10 * vec.xCoord + m11 * vec.yCoord + m12 * vec.zCoord;
+        double z = m20 * vec.xCoord + m21 * vec.yCoord + m22 * vec.zCoord;
+        
+        return new Vec3d(x,y,z);
     }
     
     private void mult3x3(Vector3 vec)
@@ -307,30 +322,24 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4>
         vec.z = z;
     }
     
-    private Vec3d mult3x3(Vec3d vec)
-    {
-        double x = m00 * vec.xCoord + m01 * vec.yCoord + m02 * vec.zCoord;
-        double y = m10 * vec.xCoord + m11 * vec.yCoord + m12 * vec.zCoord;
-        double z = m20 * vec.xCoord + m21 * vec.yCoord + m22 * vec.zCoord;
-        
-        return new Vec3d(x,y,z);
-    }
-    
-    @Override
-    public void apply(Vector3 vec)
-    {
-        mult3x3(vec);
-        vec.add(m03, m13, m23);
-    }
-    
-    @Override
     public Vec3d apply(Vec3d vec)
     {
         vec = mult3x3(vec);
         return vec.addVector(m03, m13, m23);
     }
     
-    @Override
+    public void apply(Vector3 vec)
+    {
+        mult3x3(vec);
+        vec.add(m03, m13, m23);
+    }
+    
+    public Vec3d applyN(Vec3d vec)
+    {
+        mult3x3(vec);
+        return vec.normalize();
+    }
+    
     public void applyN(Vector3 vec)
     {
         mult3x3(vec);
@@ -347,13 +356,6 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4>
             "["+new BigDecimal(m30, cont)+","+new BigDecimal(m31, cont)+","+new BigDecimal(m32, cont)+","+new BigDecimal(m33, cont)+"]";
     }
     
-    public Matrix4 apply(Transformation t)
-    {
-        t.apply(this);
-        return this;
-    }
-    
-    @Override
     @SideOnly(Side.CLIENT)
     public void glApply()
     {
@@ -364,10 +366,9 @@ public class Matrix4 extends Transformation implements Copyable<Matrix4>
         glBuf.flip();
         GL11.glMultMatrix(glBuf);
     }
-    
-    @Override
-    public Transformation inverse()
-    {
-        throw new IrreversibleTransformationException(this);//Don't waste your cpu with matrix inverses
-    }
+
+	@Override
+	public Transformation inverse() {
+		throw new UnsupportedOperationException("Don't waste CPU on matrix inverses");
+	}
 }

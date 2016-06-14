@@ -12,12 +12,12 @@ import catwalks.gui.client.GuiNodeParticleEmitter;
 import catwalks.node.EntityNodeBase;
 import catwalks.node.NodeBase;
 import catwalks.node.net.InputPort;
-import catwalks.node.port.BooleanInput;
+import catwalks.node.port.IntInput;
 import scala.actors.threadpool.Arrays;
 
 public class NodeParticleEmitter extends NodeBase {
 
-	BooleanInput input = new BooleanInput(true);
+	IntInput input = new IntInput(15);
 	boolean isFire = false;
 	
 	public NodeParticleEmitter(EntityNodeBase entity) {
@@ -50,7 +50,7 @@ public class NodeParticleEmitter extends NodeBase {
 	
 	@Override
 	public void clientTick() {
-		if(!input.getValue())
+		if(input.getValue() <= 0)
 			return;
 		Vec3d look = entity.getLook(1).scale(0.25);
 		for (int i = 0; i < Const.RAND.nextInt(5); i++) {

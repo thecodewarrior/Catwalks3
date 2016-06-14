@@ -63,26 +63,60 @@ public class StairTopModel extends SimpleModel {
         TextureAtlasSprite speedTex  = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/stair/"+mat+"/speed"));
 		
         ModelUtils.resetConditionCounter();
+        ModelUtils.texSize(64, 64);
         
-		ModelUtils.quad(quads,
-    		0, 0, 1, 12.5f/16f, 0,
-    		0, 1, 0, 0,         0,
-    		0, 0, 0, 0,        .5,
-    		0, 0, 0, 0,        .5
+        // tweaked
+		ModelUtils.quadP(quads,
+    		0, 0, 1, 25, 0,
+    		0, 1, 0, 0,  0,
+    		0, 0, 0, 0,  16,
+    		0, 0, 0, 0,  16
+    	).setSide(GeneralUtil.rotateFacing(rot, EnumFacing.WEST)).showBackface();
+		ModelUtils.sameCondition();
+		// diagonal
+		ModelUtils.quadP(quads,
+    		0, 0, 1, 26, 18,
+    		0, 1, 0, 0,  18,
+    		0, 0, 0, 13, 31,
+    		0, 0, 0, 13, 31
+    	).setSide(GeneralUtil.rotateFacing(rot, EnumFacing.WEST)).showBackface();
+		ModelUtils.sameCondition();
+		// horizontal
+		ModelUtils.quadP(quads,
+    		0, 0, 1, 42, 16,
+    		0, 1, 0, 26, 0,
+    		0, 0, 0, 26, 16,
+    		0, 0, 0, 26, 16
     	).setSide(GeneralUtil.rotateFacing(rot, EnumFacing.WEST)).showBackface();
 	
-		ModelUtils.quad(quads,
-    		1, 0, 1, 12.5f/16f, 0,
-    		1, 1, 0, 0,         0,
-    		1, 0, 0, 0,        .5,
-    		1, 0, 0, 0,        .5
+		ModelUtils.quadP(quads,
+    		1, 0, 1, 25, 0,
+    		1, 1, 0, 0,  0,
+    		1, 0, 0, 0,  16,
+    		1, 0, 0, 0,  16
     	).setSide(GeneralUtil.rotateFacing(rot, EnumFacing.EAST)).showBackface();
-	
-		ModelUtils.quad(quads,
-    		0, 0, 0, .5,  1,
-    		0, 1, 0, .5, .5,
-    		1, 1, 0,  1, .5,
-    		1, 0, 0,  1,  1
+		ModelUtils.sameCondition();
+		// diagonal
+		ModelUtils.quadP(quads,
+    		1, 0, 1, 26, 18,
+    		1, 1, 0, 0,  18,
+    		1, 0, 0, 13, 31,
+    		1, 0, 0, 13, 31
+    	).setSide(GeneralUtil.rotateFacing(rot, EnumFacing.EAST)).showBackface();
+		ModelUtils.sameCondition();
+		// horizontal
+		ModelUtils.quadP(quads,
+    		1, 0, 1, 42, 16,
+    		1, 1, 0, 26, 0,
+    		1, 0, 0, 26, 16,
+    		1, 0, 0, 26, 16
+    	).setSide(GeneralUtil.rotateFacing(rot, EnumFacing.EAST)).showBackface();
+		
+		ModelUtils.quadP(quads,
+    		0, 0, 0, 43, 32,
+    		0, 1, 0, 43, 16,
+    		1, 1, 0, 59, 16,
+    		1, 0, 0, 59, 32
     	).setSide(GeneralUtil.rotateFacing(rot, EnumFacing.NORTH)).showBackface();
 		
 		for (SpritelessQuad quad : quads) {

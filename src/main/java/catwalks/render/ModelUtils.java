@@ -209,10 +209,16 @@ public class ModelUtils {
 		return quad;
 	}
 	
-	private static int texSize = 16;
+	private static int texWidth = 16;
+	private static int texHeight = 16;
 	
 	public static void texSize(int size) {
-		texSize = size;
+		texWidth = texHeight = size;
+	}
+	
+	public static void texSize(int width, int height) {
+		texWidth = width;
+		texHeight = height;
 	}
 	
 	/**
@@ -226,10 +232,10 @@ public class ModelUtils {
 			double x4, double y4, double z4, double u4, double v4) {
 		
 		SpritelessQuad quad = createQuad(
-			x1, y1, z1, u1/texSize, v1/texSize,
-			x2, y2, z2, u2/texSize, v2/texSize,
-			x3, y3, z3, u3/texSize, v3/texSize,
-			x4, y4, z4, u4/texSize, v4/texSize
+			x1, y1, z1, u1/texWidth, v1/texHeight,
+			x2, y2, z2, u2/texWidth, v2/texHeight,
+			x3, y3, z3, u3/texWidth, v3/texHeight,
+			x4, y4, z4, u4/texWidth, v4/texHeight
 		);
 		
 		quads.add(quad);
