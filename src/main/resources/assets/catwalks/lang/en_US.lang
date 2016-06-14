@@ -21,18 +21,6 @@ item.catwalktool.info.0=§8§oOther wrenches work
 item.ladderGrabber.name=Ladder Grabber
 item.ladderGrabber.troll.name=Laddey Grabbey
 item.ladderGrabber.troll.info=Normally Ladder Grabber, but you're §cs§bp§de§ac§9i§ea§6l.
-item.nodeManipulator.name=Node Manipulator
-item.nodeConnector.name=Node Connector
-item.nodeConfigurator.name=Node Configurator
-item.nodeConfigurator.info.0=Selected node type: {0}
-item.nodeConfigurator.info.1=Amount: {1}
-
-item.node.particle.name=Particle Node
-item.node.redstonereader.name=Redstone Reader Node
-item.node.InvalidID.name=§4§lError! Invalid node index!
 
 gui.jei.crafting.decorationMerge=Combine
 gui.jei.crafting.decorationSplit=Split
-
-node.particle.name=Particle Emitter
-node.redstonereader.name=Redstone Reader

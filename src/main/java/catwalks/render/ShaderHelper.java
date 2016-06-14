@@ -21,7 +21,7 @@ public final class ShaderHelper {
 	private static final int VERT = ARBVertexShader.GL_VERTEX_SHADER_ARB;
 	private static final int FRAG = ARBFragmentShader.GL_FRAGMENT_SHADER_ARB;
 
-	public static int ring = 0;
+//	public static int ring = 0;
 //	public static int enchanterRune = 0;
 //	public static int manaPool = 0;
 //	public static int doppleganger = 0;
@@ -36,7 +36,7 @@ public final class ShaderHelper {
 		if(!useShaders())
 			return;
 
-		ring = createProgram(null, "/assets/catwalks/shader/ring.frag");
+//		ring = createProgram(null, "/assets/catwalks/shader/ring.frag");
 //		enchanterRune = createProgram(null, LibResources.SHADER_ENCHANTER_RUNE_FRAG);
 //		manaPool = createProgram(null, LibResources.SHADER_MANA_POOL_FRAG);
 //		doppleganger = createProgram(LibResources.SHADER_DOPLLEGANGER_VERT, LibResources.SHADER_DOPLLEGANGER_FRAG);
