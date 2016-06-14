@@ -4,6 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraftforge.common.property.IExtendedBlockState;
+
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+
 import catwalks.Const;
 import catwalks.block.BlockCatwalkStair;
 import catwalks.block.EnumCatwalkMaterial;
@@ -11,12 +19,6 @@ import catwalks.render.ModelUtils;
 import catwalks.render.ModelUtils.SpritelessQuad;
 import catwalks.render.cached.SimpleModel;
 import catwalks.util.GeneralUtil;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.property.IExtendedBlockState;
 
 public class StairBottomModel extends SimpleModel {
 
@@ -39,6 +41,7 @@ public class StairBottomModel extends SimpleModel {
 	protected List<BakedQuad> generateQuads(List<Object> list) {
 		List<BakedQuad> output = new ArrayList<>();
         List<SpritelessQuad> quads = new ArrayList<>();
+		ModelUtils.texSize(64, 64);
 		
 		int i = 0;
 		EnumCatwalkMaterial material = (EnumCatwalkMaterial) list.get(i++);
@@ -60,17 +63,18 @@ public class StairBottomModel extends SimpleModel {
         TextureAtlasSprite speedTex  = ModelUtils.getSprite( new ResourceLocation(Const.MODID + ":blocks/stair/"+mat+"/speed"));
 		
 		double stepLength = 1/BlockCatwalkStair.STEP_COUNT;
+		int p = 16;
 		
 		for (i = 0; i < BlockCatwalkStair.STEP_COUNT; i++) {
             
             double y = i*stepLength + stepLength/2, minZ = 1-i*stepLength, maxZ = 1-(i+1)*stepLength;
-            float minV = 16-(i*2), maxV = minV-2;
-            ModelUtils.quad(quads,
-            		0, y, minZ,  0, minV/16f,
-            		0, y, maxZ,  0, maxV/16f,
-            		1, y, maxZ, .5, maxV/16f,
-            		1, y, minZ, .5, minV/16f
-            	).nocull().condition(-1).showBackface();
+            ModelUtils.quadP(quads,
+        		0, y, minZ, 43, p,
+        		0, y, maxZ, 43, p-4,
+        		1, y, maxZ, 59, p-4,
+        		1, y, minZ, 59, p
+        	).nocull().condition(-1).showBackface();
+            p -= 4;
 		}
 		
 		for (SpritelessQuad quad : quads) {
@@ -91,25 +95,63 @@ public class StairBottomModel extends SimpleModel {
         
 		ModelUtils.resetConditionCounter();
 		
-		ModelUtils.quad(quads,
-    		1, 0, 1, 12.5f/16f, .5,
-    		1, 1, 1, 12.5f/16f, 0,
-    		1, 1, 0, 0, .5,
-    		1, 1, 0, 0, .5
+		// EAST
+		// tweaked
+		ModelUtils.quadP(quads,
+    		1, 0, 1, 25, 16,
+    		1, 1, 1, 25, 0,
+    		1, 1, 0, 0, 16,
+    		1, 1, 0, 0, 16
+    	).setSide(GeneralUtil.rotateFacing(r, EnumFacing.EAST)).showBackface();
+		ModelUtils.sameCondition();
+		// diagonal
+		ModelUtils.quadP(quads,
+    		1, 0, 1, 39, 31,
+    		1, 1, 1, 26, 18,
+    		1, 1, 0, 13, 31,
+    		1, 1, 0, 13, 31
+    	).setSide(GeneralUtil.rotateFacing(r, EnumFacing.EAST)).showBackface();
+		ModelUtils.sameCondition();
+		// vertical
+		ModelUtils.quadP(quads,
+    		1, 0, 1, 42, 32,
+    		1, 1, 1, 42, 16,
+    		1, 1, 0, 26, 16,
+    		1, 1, 0, 26, 16
     	).setSide(GeneralUtil.rotateFacing(r, EnumFacing.EAST)).showBackface();
 		
-		ModelUtils.quad(quads,
-    		0, 0, 1, 12.5f/16f, .5,
-    		0, 1, 1, 12.5f/16f, 0,
-    		0, 1, 0, 0, .5,
-    		0, 1, 0, 0, .5
+		// WEST
+		
+		// tweaked
+		ModelUtils.quadP(quads,
+    		0, 0, 1, 25, 16,
+    		0, 1, 1, 25, 0,
+    		0, 1, 0, 0, 16,
+    		0, 1, 0, 0, 16
+    	).setSide(GeneralUtil.rotateFacing(r, EnumFacing.WEST)).showBackface();
+		ModelUtils.sameCondition();
+		// diagonal
+		ModelUtils.quadP(quads,
+    		0, 0, 1, 39, 31,
+    		0, 1, 1, 26, 18,
+    		0, 1, 0, 13, 31,
+    		0, 1, 0, 13, 31
+    	).setSide(GeneralUtil.rotateFacing(r, EnumFacing.WEST)).showBackface();
+		ModelUtils.sameCondition();
+		// vertical
+		ModelUtils.quadP(quads,
+    		0, 0, 1, 42, 32,
+    		0, 1, 1, 42, 16,
+    		0, 1, 0, 26, 16,
+    		0, 1, 0, 26, 16
     	).setSide(GeneralUtil.rotateFacing(r, EnumFacing.WEST)).showBackface();
 		
-		ModelUtils.quad(quads,
-    		0, 0, 1, .5,  1,
-    		0, 1, 1, .5, .5,
-    		1, 1, 1,  1, .5,
-    		1, 0, 1,  1,  1
+		// other stuff
+		ModelUtils.quadP(quads,
+    		0, 0, 1, 43, 32,
+    		0, 1, 1, 43, 16,
+    		1, 1, 1, 59, 16,
+    		1, 0, 1, 59, 32
     	).setSide(GeneralUtil.rotateFacing(r, EnumFacing.SOUTH)).showBackface();
 		
 		for (SpritelessQuad quad : quads) {

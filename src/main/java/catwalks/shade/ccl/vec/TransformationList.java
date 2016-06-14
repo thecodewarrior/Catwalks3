@@ -6,6 +6,8 @@ import java.util.Iterator;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import net.minecraft.util.math.Vec3d;
+
 public class TransformationList extends Transformation
 {
     private ArrayList<Transformation> transformations = new ArrayList<Transformation>();
@@ -54,6 +56,16 @@ public class TransformationList extends Transformation
             for(int i = 0; i < transformations.size(); i++)
                 transformations.get(i).apply(vec);
     }
+    
+    @Override
+	public Vec3d apply(Vec3d vec) {
+    	if(mat != null)
+            return mat.apply(vec);
+        else
+            for(int i = 0; i < transformations.size(); i++)
+                vec = transformations.get(i).apply(vec);
+    	return vec;
+	}
     
     @Override
     public void applyN(Vector3 normal)

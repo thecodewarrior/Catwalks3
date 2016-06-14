@@ -4,12 +4,15 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-import catwalks.shade.ccl.math.MathHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.math.Vec3d;
+
+import catwalks.shade.ccl.math.MathHelper;
 
 public class Rotation extends Transformation
 {
@@ -22,20 +25,32 @@ public class Rotation extends Transformation
             @Override public void apply(Vector3 vec){
                 double d1 = vec.x; double d2 = vec.z;
                 vec.x = -d2; vec.z = d1;
-            } @Override public Transformation inverse(){
+            }
+            @Override public Vec3d apply(Vec3d vec){
+                Vector3 v = new Vector3(vec); apply(v); return v.vec3();
+            }
+            @Override public Transformation inverse(){
                 return quarterRotations[3];
             }},
         new VariableTransformation(new Matrix4(-1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1)){
             @Override public void apply(Vector3 vec){
                 vec.x = -vec.x; vec.z = -vec.z;
-            } @Override public Transformation inverse(){
+            }
+            @Override public Vec3d apply(Vec3d vec){
+                Vector3 v = new Vector3(vec); apply(v); return v.vec3();
+            }
+            @Override public Transformation inverse(){
                 return this;
             }},
         new VariableTransformation(new Matrix4(0, 0, 1, 0, 0, 1, 0, 0,-1, 0, 0, 0, 0, 0, 0, 1)){
             @Override public void apply(Vector3 vec){
                 double d1 = vec.x; double d2 = vec.z;
                 vec.x = d2; vec.z = -d1;
-            } @Override public Transformation inverse(){
+            }
+            @Override public Vec3d apply(Vec3d vec){
+                Vector3 v = new Vector3(vec); apply(v); return v.vec3();
+            }
+            @Override public Transformation inverse(){
                 return quarterRotations[1];
             }}
         };
@@ -45,35 +60,55 @@ public class Rotation extends Transformation
         new VariableTransformation(new Matrix4(1, 0, 0, 0, 0,-1, 0, 0, 0, 0,-1, 0, 0, 0, 0, 1)){
             @Override public void apply(Vector3 vec){
                 vec.y = -vec.y; vec.z = -vec.z;
-            } @Override public Transformation inverse(){
+            }
+            @Override public Vec3d apply(Vec3d vec){
+                Vector3 v = new Vector3(vec); apply(v); return v.vec3();
+            }
+            @Override public Transformation inverse(){
                 return this;
             }},
         new VariableTransformation(new Matrix4(1, 0, 0, 0, 0, 0,-1, 0, 0, 1, 0, 0, 0, 0, 0, 1)){
             @Override public void apply(Vector3 vec){
                 double d1 = vec.y; double d2 = vec.z;
                 vec.y = -d2; vec.z = d1;
-            } @Override public Transformation inverse(){
+            }
+            @Override public Vec3d apply(Vec3d vec){
+                Vector3 v = new Vector3(vec); apply(v); return v.vec3();
+            }
+            @Override public Transformation inverse(){
                 return sideRotations[3];
             }},
         new VariableTransformation(new Matrix4(1, 0, 0, 0, 0, 0, 1, 0, 0,-1, 0, 0, 0, 0, 0, 1)){
             @Override public void apply(Vector3 vec){
                 double d1 = vec.y; double d2 = vec.z;
                 vec.y = d2; vec.z = -d1;
-            } @Override public Transformation inverse(){
+            }
+            @Override public Vec3d apply(Vec3d vec){
+                Vector3 v = new Vector3(vec); apply(v); return v.vec3();
+            }
+            @Override public Transformation inverse(){
                 return sideRotations[2];
             }},
         new VariableTransformation(new Matrix4(0, 1, 0, 0,-1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)){
             @Override public void apply(Vector3 vec){
                 double d0 = vec.x; double d1 = vec.y;
                 vec.x = d1; vec.y = -d0;
-            } @Override public Transformation inverse(){
+            }
+            @Override public Vec3d apply(Vec3d vec){
+                Vector3 v = new Vector3(vec); apply(v); return v.vec3();
+            }
+            @Override public Transformation inverse(){
                 return sideRotations[5];
             }},
         new VariableTransformation(new Matrix4(0,-1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)){
             @Override public void apply(Vector3 vec){
                 double d0 = vec.x; double d1 = vec.y;
                 vec.x = -d1; vec.y = d0;
-            } @Override public Transformation inverse(){
+            }
+            @Override public Vec3d apply(Vec3d vec){
+                Vector3 v = new Vector3(vec); apply(v); return v.vec3();
+            }
+            @Override public Transformation inverse(){
                 return sideRotations[4];
             }}
         };
@@ -199,6 +234,10 @@ public class Rotation extends Transformation
         vec.rotate(quat);
     }
 
+    @Override public Vec3d apply(Vec3d vec){
+        Vector3 v = new Vector3(vec); apply(v); return v.vec3();
+    }
+    
     @Override
     public void applyN(Vector3 normal) {
         apply(normal);

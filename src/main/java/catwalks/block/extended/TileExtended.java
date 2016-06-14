@@ -2,7 +2,6 @@ package catwalks.block.extended;
 
 import java.util.BitSet;
 
-import catwalks.util.GeneralUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -11,6 +10,8 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import catwalks.util.GeneralUtil;
 
 public class TileExtended extends TileEntity {
 
@@ -57,9 +58,10 @@ public class TileExtended extends TileEntity {
 	{ /* normal Tile Entity stuff */ }
 	
 	@Override
-	public void writeToNBT(NBTTagCompound compound) {
-		super.writeToNBT(compound);
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+		compound = super.writeToNBT(compound);
 		compound.setByteArray("m", meta.toByteArray());
+		return compound;
 	}
 	
 	@Override
@@ -70,11 +72,13 @@ public class TileExtended extends TileEntity {
 	}
 	
 	@Override
-	@SuppressWarnings("rawtypes")
-	public Packet<?> getDescriptionPacket() {
-		NBTTagCompound tag = new NBTTagCompound();
-		writeToNBT(tag);
-		return new SPacketUpdateTileEntity(pos, 0, tag);
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
+	}
+	
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(pos, 0, getUpdateTag());
 	}
 	
 	@Override

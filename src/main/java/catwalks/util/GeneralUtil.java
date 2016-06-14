@@ -3,18 +3,15 @@ package catwalks.util;
 import java.util.BitSet;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Predicate;
 
-import catwalks.Const;
-import catwalks.block.BlockCatwalkBase.Tri;
-import catwalks.block.ICatwalkConnect;
-import catwalks.block.extended.CubeEdge;
-import catwalks.block.extended.ITileStateProvider;
-import catwalks.shade.ccl.vec.Cuboid6;
-import catwalks.shade.ccl.vec.Vector3;
+import net.minecraftforge.common.property.IExtendedBlockState;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -25,10 +22,44 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
+
+import catwalks.Const;
+import catwalks.block.ICatwalkConnect;
+import catwalks.block.extended.CubeEdge;
+import catwalks.block.extended.ITileStateProvider;
+import catwalks.shade.ccl.vec.Cuboid6;
+import catwalks.shade.ccl.vec.Vector3;
 
 public class GeneralUtil {
 	private static final Random RANDOM = new Random();
+	
+	public static boolean isHolding(EntityPlayer player, Predicate<ItemStack> test) {
+		if(player.getHeldItemMainhand() != null && test.test(player.getHeldItemMainhand()))
+			return true;
+		if(player.getHeldItemOffhand() != null && test.test(player.getHeldItemOffhand()))
+			return true;
+		return false;
+	}
+	
+	public static ItemStack getHeld(EntityPlayer player, Predicate<ItemStack> test) {
+		if(player.getHeldItemMainhand() != null && test.test(player.getHeldItemMainhand()))
+			return player.getHeldItemMainhand();
+		if(player.getHeldItemOffhand() != null && test.test(player.getHeldItemOffhand()))
+			return player.getHeldItemOffhand();
+		return null;
+	}
+	
+	public static Vec3d snapToGrid(Vec3d in, double gridSize) {
+		return new Vec3d(
+				snapToNearestMultiple(in.xCoord, gridSize),
+				snapToNearestMultiple(in.yCoord, gridSize),
+				snapToNearestMultiple(in.zCoord, gridSize)
+			);
+	}
+	
+	public static double snapToNearestMultiple(double in, double multiple) {
+		return multiple*(Math.round(in/multiple));
+	}
 	
 	public static IExtendedBlockState getTileState(IBlockAccess worldIn, BlockPos pos) {
 		IBlockState state = worldIn.getBlockState(pos);
@@ -38,6 +69,7 @@ public class GeneralUtil {
 				Logs.error("%s is not a ITileStateProvider!!! [ located at %s ]", state.getBlock().getClass().getName(), getWorldPosLogInfo((World)worldIn, pos));
 			else
 				Logs.error("%s is not a ITileStateProvider!!! [ located at %d %d %d ]", state.getBlock().getClass().getName(), pos.getX(), pos.getY(), pos.getZ());
+			return null;
 		}
 		
 		return ( (ITileStateProvider)state.getBlock() ).getTileState(state, worldIn, pos);
@@ -90,6 +122,18 @@ public class GeneralUtil {
 		return
 				a <= b+APPROX_EQ_ACC &&
 				a >= b-APPROX_EQ_ACC;
+	}
+	
+	public static AxisAlignedBB getAABB(Vec3d point1, Vec3d point2) {
+		return new AxisAlignedBB(
+				Math.min(point1.xCoord, point2.xCoord),
+				Math.min(point1.yCoord, point2.yCoord),
+				Math.min(point1.zCoord, point2.zCoord),
+				
+				Math.max(point1.xCoord, point2.xCoord),
+				Math.max(point1.yCoord, point2.yCoord),
+				Math.max(point1.zCoord, point2.zCoord)
+			);
 	}
 	
 	public static double getAABBSide(AxisAlignedBB aabb, EnumFacing side) {
@@ -189,15 +233,15 @@ public class GeneralUtil {
 	
 	public static final float SMALL_NUM = 0.00000001f;
 	
-	public static Vector3 intersectRayTri( Vector3 start, Vector3 end, Tri tri ) {
+	public static Vector3 intersectRayTri( Vector3 start, Vector3 end, Vector3 p1, Vector3 p2, Vector3 p3) {
 		Vector3 intersect;
 	    Vector3    u, v, n;              // triangle vectors
 	    Vector3    dir, w0, w;           // ray vectors
 	    double     r, a, b;              // params to calc ray-plane intersect
 
 	    // get triangle edge vectors and plane normal
-	    u = tri.v2.copy().sub(tri.v1);
-	    v = tri.v3.copy().sub(tri.v1);
+	    u = p2.copy().sub(p1);
+	    v = p3.copy().sub(p1);
 	    n = u.crossProduct(v);              // cross product
 	    if (n.equals( Vector3.zero ))             // triangle is degenerate
 	        return null;                   // do not deal with this case
@@ -206,7 +250,7 @@ public class GeneralUtil {
 	    start.sub(dir.copy().normalize().multiply(0.25));
 	    dir = end.copy().sub(start);             // ray direction vector
 	    w0 = start.copy();
-	    w0.sub(tri.v1);
+	    w0.sub(p1);
 	    a = -n.copy().dotProduct(w0);
 	    b =  n.copy().dotProduct(dir);
 	    if (Math.abs(b) < SMALL_NUM) {     // ray is  parallel to triangle plane
@@ -227,9 +271,9 @@ public class GeneralUtil {
 	    
 	    float angles = 0;
 
-        Vector3 v1 = new Vector3(intersect.x - tri.v1.x, intersect.y - tri.v1.y, intersect.z - tri.v1.z).normalize();
-        Vector3 v2 = new Vector3(intersect.x - tri.v2.x, intersect.y - tri.v2.y, intersect.z - tri.v2.z).normalize();
-        Vector3 v3 = new Vector3(intersect.x - tri.v3.x, intersect.y - tri.v3.y, intersect.z - tri.v3.z).normalize();
+        Vector3 v1 = new Vector3(intersect.x - p1.x, intersect.y - p1.y, intersect.z - p1.z).normalize();
+        Vector3 v2 = new Vector3(intersect.x - p2.x, intersect.y - p2.y, intersect.z - p2.z).normalize();
+        Vector3 v3 = new Vector3(intersect.x - p3.x, intersect.y - p3.y, intersect.z - p3.z).normalize();
 
         angles += Math.acos(v1.copy().dotProduct(v2));
         angles += Math.acos(v2.copy().dotProduct(v3));

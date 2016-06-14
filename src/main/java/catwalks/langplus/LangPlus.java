@@ -3,12 +3,13 @@ package catwalks.langplus;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.minecraftforge.common.MinecraftForge;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.text.translation.LanguageMap;
-import net.minecraftforge.common.MinecraftForge;
 
 public class LangPlus implements IResourceManagerReloadListener {
 

@@ -1,10 +1,11 @@
 package catwalks.shade.ccl.raytracer;
 
-import catwalks.shade.ccl.vec.BlockCoord;
-import catwalks.shade.ccl.vec.Vector3;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.RayTraceResult;
+
+import catwalks.shade.ccl.vec.BlockCoord;
+import catwalks.shade.ccl.vec.Vector3;
 
 public class ExtendedMOP extends RayTraceResult implements Comparable<ExtendedMOP>
 {

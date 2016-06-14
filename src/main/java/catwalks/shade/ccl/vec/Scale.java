@@ -4,9 +4,11 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.math.Vec3d;
 
 public class Scale extends Transformation {
     public Vector3 factor;
@@ -28,6 +30,11 @@ public class Scale extends Transformation {
         vec.multiply(factor);
     }
 
+    @Override
+	public Vec3d apply(Vec3d vec) {
+		return new Vec3d(vec.xCoord*factor.x, vec.yCoord*factor.y, vec.zCoord*factor.z);
+	}
+    
     @Override
     public void applyN(Vector3 normal) {
     }

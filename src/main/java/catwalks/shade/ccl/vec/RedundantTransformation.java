@@ -3,11 +3,16 @@ package catwalks.shade.ccl.vec;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import net.minecraft.util.math.Vec3d;
+
 public class RedundantTransformation extends Transformation
 {
     @Override
     public void apply(Vector3 vec){}
 
+    @Override
+    public Vec3d apply(Vec3d vec){return vec;}
+    
     @Override
     public void apply(Matrix4 mat){}
     

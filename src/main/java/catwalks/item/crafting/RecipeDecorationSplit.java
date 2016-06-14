@@ -1,6 +1,5 @@
 package catwalks.item.crafting;
 
-import catwalks.item.ItemDecoration;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

@@ -2,18 +2,20 @@ package catwalks.proxy;
 
 import java.util.List;
 
-import catwalks.item.ItemDecoration;
-import catwalks.shade.ccl.raytracer.RayTracer;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.server.FMLServerHandler;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.server.FMLServerHandler;
+
+import catwalks.item.ItemDecoration;
+import catwalks.shade.ccl.raytracer.RayTracer;
 
 public class CommonProxy {
 	public void preInit() {}

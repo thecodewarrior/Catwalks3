@@ -2,8 +2,9 @@ package catwalks.shade.ccl.vec;
 
 import java.util.Iterator;
 
-import catwalks.shade.ccl.util.Copyable;
 import net.minecraft.util.math.AxisAlignedBB;
+
+import catwalks.shade.ccl.util.Copyable;
 
 public class CuboidCoord implements Iterable<BlockCoord>, Copyable<CuboidCoord>
 {

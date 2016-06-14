@@ -3,13 +3,10 @@ package catwalks.block;
 import java.util.List;
 import java.util.Random;
 
-import catwalks.Const;
-import catwalks.block.extended.CubeEdge;
-import catwalks.block.extended.TileExtended;
-import catwalks.register.BlockRegister;
-import catwalks.util.GeneralUtil;
-import catwalks.util.Logs;
-import catwalks.util.WrenchChecker;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -18,7 +15,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -29,9 +25,14 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
+
+import catwalks.Const;
+import catwalks.block.extended.CubeEdge;
+import catwalks.block.extended.TileExtended;
+import catwalks.register.BlockRegister;
+import catwalks.util.GeneralUtil;
+import catwalks.util.Logs;
+import catwalks.util.WrenchChecker;
 
 public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, IDecoratable {
 
@@ -70,10 +71,10 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	@Override
 	public IExtendedBlockState getExtendedState(IBlockState rawstate, IBlockAccess worldIn, BlockPos pos) {
 		IExtendedBlockState state = (IExtendedBlockState)rawstate;
-		IExtendedBlockState below = getBelowState(worldIn, pos);
 		boolean westTop = false, eastTop = false, north = false, tape = false, speed = false, lights = false;
 		EnumFacing facing = EnumFacing.NORTH;
-		if(below.getBlock() == BlockRegister.catwalkStair) {
+		if(worldIn.getBlockState(pos.offset(EnumFacing.DOWN)).getBlock() == BlockRegister.catwalkStair) {
+			IExtendedBlockState below = getBelowState(worldIn, pos);
 			 facing = below.getValue(Const.FACING);
 			 
 			  north = below.getValue(Const.NORTH);
@@ -114,9 +115,9 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	public void randomTick(World worldIn, BlockPos pos, IBlockState state, Random random) {
 		checkForValidity(worldIn, pos);
 	}
-
+	
 	@Override
-	public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn) {
 		checkForValidity(worldIn, pos);
 	}
 	

@@ -21,9 +21,10 @@ fi
 
 for ITEM in "$@" 
 do 
+	cp -n "../../textures/filler.png" "../../textures/items/$ITEM.png"
 	echo "Making $ITEM.json"
 	echo "{
-    \"parent\": \"$MODID:item/standard_item\",
+    \"parent\": \"item/generated\",
     \"textures\": { 
         \"layer0\": \"$MODID:items/$ITEM\"
     }

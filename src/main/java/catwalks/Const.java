@@ -4,10 +4,9 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
 
-import catwalks.block.EnumCatwalkMaterial;
-import catwalks.block.property.UPropertyBool;
-import catwalks.block.property.UPropertyEnum;
-import catwalks.movement.capability.ICWEntityData;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.launchwrapper.Launch;
@@ -15,14 +14,19 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+
+import catwalks.block.EnumCatwalkMaterial;
+import catwalks.block.property.UPropertyBool;
+import catwalks.block.property.UPropertyEnum;
+import catwalks.movement.capability.ICWEntityData;
 
 public class Const {
 	
 	{ /* DRYing constants */ }
 	
 	public static Random RAND = new Random();
+	
+	public static EnumFacing[] HORIZONTALS_FROM_NORTH = new EnumFacing[] { EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.WEST };
 	
 	public static boolean developmentEnvironment = (Boolean)Launch.blackboard.get("fml.deobfuscatedEnvironment");
 	public static final String MODID = CatwalksMod.MODID;
@@ -35,9 +39,7 @@ public class Const {
 	@CapabilityInject(ICWEntityData.class)
 	public static Capability<ICWEntityData> CW_ENTITY_DATA_CAPABILITY = null;
 	
-	{ /* not render-only properties */ }
-	
-	{	/* normal blockstate properties*/	}
+	{	/* blockstate properties*/	}
 	
 	public static final PropertyEnum<EnumCatwalkMaterial> MATERIAL = PropertyEnum.create("material", EnumCatwalkMaterial.class);
 	public static final PropertyBool LIGHTS = PropertyBool.create("lights");
@@ -84,6 +86,8 @@ public class Const {
 	public static final UPropertyBool NW_LADDER_EXT  = UPropertyBool.create("northwest_ladder_ext");
 	public static final UPropertyBool SE_LADDER_EXT  = UPropertyBool.create("southeast_ladder_ext");
 	public static final UPropertyBool SW_LADDER_EXT  = UPropertyBool.create("southwest_ladder_ext");
+
+	public static final String COMMAND_OPTIONS = "options";
 	
 	static {
 		sideProperties.put(EnumFacing.UP, TOP);
@@ -93,5 +97,17 @@ public class Const {
 		sideProperties.put(EnumFacing.SOUTH, SOUTH);
 		sideProperties.put(EnumFacing.EAST, EAST);
 		sideProperties.put(EnumFacing.WEST, WEST);
+	}
+	
+	public static class NODE {
+		private static int i = -1;
+		public static final int PITCH  = i--;
+		public static final int YAW  = i--;
+		public static final int CONNECT_POINT = i--;
+		public static final int OPEN_GUI = i--;
+	};
+	
+	public static class GUI {
+		public static int NODE_MANIPULATOR = -1;
 	}
 }

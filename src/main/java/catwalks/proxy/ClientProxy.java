@@ -1,23 +1,20 @@
 package catwalks.proxy;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
-
-import catwalks.Conf;
-import catwalks.Const;
-import catwalks.block.BlockCatwalkBase.Face;
-import catwalks.register.BlockRegister;
-import catwalks.register.ItemRegister;
-import catwalks.shade.ccl.raytracer.RayTracer;
-import catwalks.shade.ccl.vec.Matrix4;
-import catwalks.shade.ccl.vec.Vector3;
-import catwalks.util.CustomFaceRayTraceResult;
-import catwalks.util.GeneralUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -34,15 +31,21 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.event.DrawBlockHighlightEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.client.model.obj.OBJLoader;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import org.lwjgl.opengl.GL11;
+
+import com.mojang.realmsclient.gui.ChatFormatting;
+
+import catwalks.Conf;
+import catwalks.Const;
+import catwalks.raytrace.RayTraceUtil.VertexList;
+import catwalks.register.BlockRegister;
+import catwalks.register.ItemRegister;
+import catwalks.render.ShaderHelper;
+import catwalks.shade.ccl.raytracer.RayTracer;
+import catwalks.shade.ccl.vec.Vector3;
+import catwalks.util.CustomFaceRayTraceResult;
+import catwalks.util.GeneralUtil;
 
 public class ClientProxy extends CommonProxy {
 	
@@ -62,6 +65,7 @@ public class ClientProxy extends CommonProxy {
 		ItemRegister.initRender();
 		MinecraftForge.EVENT_BUS.register(new Conf());
 		OBJLoader.INSTANCE.addDomain(Const.MODID);
+		ShaderHelper.initShaders();
 	}
 	
 	public void reloadConfigs() {
@@ -92,48 +96,48 @@ public class ClientProxy extends CommonProxy {
             
             GlStateManager.translate(pos.getX()-d0, pos.getY()-d1, pos.getZ()-d2);
             
+            
             Tessellator tessellator = Tessellator.getInstance();
             VertexBuffer worldrenderer = tessellator.getBuffer();
             
-            worldrenderer.begin(1, DefaultVertexFormats.POSITION);
             
-            Face q = mop.quad.copy();
-            Vector3[] points = q.points();
+            List<VertexList> points = mop.quad.getVertices();
             
-            if(!Minecraft.getMinecraft().theWorld.isSideSolid(event.getTarget().getBlockPos().offset(event.getTarget().sideHit), event.getTarget().sideHit.getOpposite())) {
-            	Matrix4 matrix = new Matrix4();
-                matrix.translate(Vector3.center.copy().multiply(-1));
-                matrix.scale(new Vector3(1.002, 1.002, 1.002));
-                matrix.translate(Vector3.center);
-                q.apply(matrix);
-            }
+            double s = 1.005, centering = ((1-s)/2)/s; // ( (1m size difference) / 2 ) / adjust for previous scale
+            GlStateManager.scale(s, s, s);
+            GlStateManager.translate(centering, centering, centering);
             
-            Vector3 prev = null;
+            GlStateManager.translate(-mop.offset.getX(), -mop.offset.getY(), -mop.offset.getZ());
             
-            for (int i = 0; i < points.length; i++) {
-            	if(i == 0)
-            		prev = points[points.length-1];
-				Vector3 point = points[i];
+            for (VertexList drawList : points) {
 				
-				worldrenderer.pos(prev.x,  prev.y,  prev.z ).endVertex();
-				worldrenderer.pos(point.x, point.y, point.z).endVertex();
-				
-				for (int j = 0; j < points.length/2; j++) {
-					if(j != i && j != i+1 && j != i-1) {
-						
-						Vector3 opp = points[j];
-						
-						worldrenderer.pos(opp.x,   opp.y,   opp.z  ).endVertex();
-						worldrenderer.pos(point.x, point.y, point.z).endVertex();
-						
-					}
+                worldrenderer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
+            	
+                Vec3d prev = null;
+                
+                for (int i = 0; i < drawList.vertices.length; i++) {
+                	if(i == 0)
+                		prev = drawList.vertices[drawList.vertices.length-1];
+    				Vec3d point = drawList.vertices[i];
+    				
+            		worldrenderer.pos( prev.xCoord,  prev.yCoord,  prev.zCoord).endVertex();
+    				worldrenderer.pos(point.xCoord, point.yCoord, point.zCoord).endVertex();
+    				
+    				if(drawList.shouldHaveNetting) {
+    					for(int j = i+1; j < drawList.vertices.length; j++) {
+    						Vec3d netPoint = drawList.vertices[j];
+    	    				worldrenderer.pos(   point.xCoord,    point.yCoord,    point.zCoord).endVertex();
+    						worldrenderer.pos(netPoint.xCoord, netPoint.yCoord, netPoint.zCoord).endVertex();
+    					}
+    				}
+    				
+    				prev = point;
 				}
-				prev = point;
+            	
+                tessellator.draw();
+                
 			}
             
-            tessellator.draw();
-            
-
             GlStateManager.popMatrix();
             GlStateManager.depthMask(true);
             GlStateManager.enableTexture2D();
@@ -179,7 +183,13 @@ public class ClientProxy extends CommonProxy {
                 	for (IUnlistedProperty<?> entry : extended.getUnlistedNames())
                     {
                 		Object value = extended.getValue(entry);
-                        String s = value.toString();
+                		
+                		String NULL_VALUE =
+                				ChatFormatting.OBFUSCATED + "|" +
+                				ChatFormatting.RESET + ChatFormatting.ITALIC + "NULL" +
+                				ChatFormatting.OBFUSCATED + "|";
+                		
+                        String s = value == null ? NULL_VALUE : value.toString();
 
                         if (value == Boolean.TRUE)
                         {
@@ -189,7 +199,7 @@ public class ClientProxy extends CommonProxy {
                         {
                             s = ChatFormatting.RED + "" +  ChatFormatting.ITALIC + s;
                         }
-
+                        
                         event.getRight().add(ChatFormatting.ITALIC + entry.getName() + ": " + s);
                     }
                 }
@@ -244,15 +254,17 @@ public class ClientProxy extends CommonProxy {
 			
 			// desired move vec
 			
-			Vec3d p1 = new Vec3d(x, y+1, z);
-			Vec3d p2 = p1.add(GeneralUtil.getDesiredMoveVector(rootPlayer));
-			
-			Tessellator tessellator = Tessellator.getInstance();
-	        VertexBuffer vertexbuffer = tessellator.getBuffer();
-	        vertexbuffer.begin(3, DefaultVertexFormats.POSITION_COLOR);
-	        vertexbuffer.pos(p1.xCoord, p1.yCoord, p1.zCoord).color(127, 127, 255, 255).endVertex();
-	        vertexbuffer.pos(p2.xCoord, p2.yCoord, p2.zCoord).color(127, 127, 255, 255).endVertex();
-	        tessellator.draw();
+			if(mc.gameSettings.thirdPersonView > 0) {
+				Vec3d p1 = new Vec3d(x, y+1, z);
+				Vec3d p2 = p1.add(GeneralUtil.getDesiredMoveVector(rootPlayer));
+				
+				Tessellator tessellator = Tessellator.getInstance();
+		        VertexBuffer vertexbuffer = tessellator.getBuffer();
+		        vertexbuffer.begin(3, DefaultVertexFormats.POSITION_COLOR);
+		        vertexbuffer.pos(p1.xCoord, p1.yCoord, p1.zCoord).color(127, 127, 255, 255).endVertex();
+		        vertexbuffer.pos(p2.xCoord, p2.yCoord, p2.zCoord).color(127, 127, 255, 255).endVertex();
+		        tessellator.draw();
+			}
 		}
 		
 		mc.mcProfiler.endStartSection("hitDist");

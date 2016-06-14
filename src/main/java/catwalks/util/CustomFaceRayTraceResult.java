@@ -1,22 +1,21 @@
 package catwalks.util;
 
-import catwalks.block.BlockCatwalkBase.Face;
-import catwalks.shade.ccl.raytracer.ExtendedMOP;
-import catwalks.shade.ccl.vec.BlockCoord;
-import catwalks.shade.ccl.vec.Vector3;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 
+import catwalks.raytrace.RayTraceUtil.IRenderableFace;
+
 public class CustomFaceRayTraceResult extends RayTraceResult {
 	
-	public Face quad;
+	public IRenderableFace quad;
+	public BlockPos offset;
 	
-	public CustomFaceRayTraceResult(Vec3d hitVecIn, EnumFacing sideHitIn, BlockPos blockPosIn)
+	public CustomFaceRayTraceResult(Vec3d hitVecIn, EnumFacing sideHitIn, BlockPos blockPosIn, BlockPos offset)
     {
         super(RayTraceResult.Type.BLOCK, hitVecIn, sideHitIn, blockPosIn);
+        this.offset = offset;
     }
 
     public CustomFaceRayTraceResult(Vec3d hitVecIn, EnumFacing sideHitIn)
@@ -24,7 +23,7 @@ public class CustomFaceRayTraceResult extends RayTraceResult {
         super(RayTraceResult.Type.BLOCK, hitVecIn, sideHitIn, BlockPos.ORIGIN);
     }
 	
-	public CustomFaceRayTraceResult face(Face quad) {
+	public CustomFaceRayTraceResult face(IRenderableFace quad) {
 		this.quad = quad;
 		return this;
 	}

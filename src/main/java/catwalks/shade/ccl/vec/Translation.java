@@ -4,9 +4,11 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.math.Vec3d;
 
 public class Translation extends Transformation {
     public Vector3 vec;
@@ -23,7 +25,12 @@ public class Translation extends Transformation {
     public void apply(Vector3 vec) {
         vec.add(this.vec);
     }
-
+    
+    @Override
+	public Vec3d apply(Vec3d vec) {
+		return vec.addVector(this.vec.x, this.vec.z, this.vec.z);
+	}
+    
     @Override
     public void applyN(Vector3 normal) {
     }

@@ -1,9 +1,8 @@
 package catwalks.item;
 
-import catwalks.block.EnumCatwalkMaterial;
-import catwalks.movement.MovementHandler;
-import catwalks.util.ExtendUtils;
-import catwalks.util.GeneralUtil;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
@@ -21,8 +20,11 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+
+import catwalks.block.EnumCatwalkMaterial;
+import catwalks.movement.MovementHandler;
+import catwalks.util.ExtendUtils;
+import catwalks.util.GeneralUtil;
 
 public class ItemBlockScaffold extends ItemBlock {
 
