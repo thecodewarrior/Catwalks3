@@ -1,5 +1,6 @@
 package catwalks.raytrace.primitives;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.util.math.AxisAlignedBB;
@@ -14,7 +15,6 @@ import catwalks.raytrace.RayTraceUtil.VertexList;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.util.AABB;
 import catwalks.util.GeneralUtil;
-import scala.actors.threadpool.Arrays;
 
 public class Box extends TraceablePrimitive<Box> {
 

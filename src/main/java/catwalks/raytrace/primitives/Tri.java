@@ -1,5 +1,7 @@
 package catwalks.raytrace.primitives;
 
+import java.util.Arrays;
+
 import net.minecraft.util.math.Vec3d;
 
 import catwalks.raytrace.RayTraceUtil;
@@ -10,7 +12,6 @@ import catwalks.raytrace.RayTraceUtil.VertexList;
 import catwalks.shade.ccl.vec.Matrix4;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.GeneralUtil;
-import scala.actors.threadpool.Arrays;
 
 public class Tri extends TraceablePrimitive<Tri> {
 
