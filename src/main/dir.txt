@@ -1,0 +1,299 @@
+src
+└── main
+    ├── dir.txt
+    ├── java
+    │   └── catwalks
+    │       ├── CatwalksMod.java
+    │       ├── Conf.java
+    │       ├── Const.java
+    │       ├── block
+    │       │   ├── BlockBase.java
+    │       │   ├── BlockCatwalk.java
+    │       │   ├── BlockCatwalkBase.java
+    │       │   ├── BlockCatwalkStair.java
+    │       │   ├── BlockCatwalkStairTop.java
+    │       │   ├── BlockScaffolding.java
+    │       │   ├── EnumCatwalkMaterial.java
+    │       │   ├── ICatwalkConnect.java
+    │       │   ├── IDecoratable.java
+    │       │   ├── extended
+    │       │   │   ├── BlockCagedLadder.java
+    │       │   │   ├── BlockExtended.java
+    │       │   │   ├── CubeEdge.java
+    │       │   │   ├── ICustomLadder.java
+    │       │   │   ├── ITileStateProvider.java
+    │       │   │   └── TileExtended.java
+    │       │   └── property
+    │       │       ├── UPropertyBool.java
+    │       │       ├── UPropertyEnum.java
+    │       │       └── UPropertyHelper.java
+    │       ├── compat
+    │       │   └── jei
+    │       │       ├── CatwalksPlugin.java
+    │       │       ├── DecorationRepairRecipeHandler.java
+    │       │       └── DecorationSplitRecipeHandler.java
+    │       ├── item
+    │       │   ├── EntityItemDecoration.java
+    │       │   ├── ItemBase.java
+    │       │   ├── ItemBlockCatwalk.java
+    │       │   ├── ItemBlockScaffold.java
+    │       │   ├── ItemCatwalkTool.java
+    │       │   ├── ItemDecoration.java
+    │       │   ├── ItemLadderGrabber.java
+    │       │   └── crafting
+    │       │       ├── RecipeDecorationRepair.java
+    │       │       └── RecipeDecorationSplit.java
+    │       ├── langplus
+    │       │   ├── LangPlus.java
+    │       │   ├── LangPlusParser.java
+    │       │   └── Rewriter.java
+    │       ├── movement
+    │       │   ├── MovementHandler.java
+    │       │   └── capability
+    │       │       ├── CWEntityDataProvider.java
+    │       │       └── ICWEntityData.java
+    │       ├── proxy
+    │       │   ├── ClientProxy.java
+    │       │   └── CommonProxy.java
+    │       ├── raytrace
+    │       │   ├── CustomAABBCollide.java
+    │       │   ├── RayTraceUtil.java
+    │       │   ├── block
+    │       │   │   ├── BlockTraceFactory.java
+    │       │   │   └── BlockTraceable.java
+    │       │   ├── primitives
+    │       │   │   ├── Box.java
+    │       │   │   ├── Quad.java
+    │       │   │   ├── TexCoords.java
+    │       │   │   └── Tri.java
+    │       │   └── render
+    │       ├── register
+    │       │   ├── BlockRegister.java
+    │       │   ├── ItemRegister.java
+    │       │   └── RecipeRegister.java
+    │       ├── render
+    │       │   ├── ModelHandler.java
+    │       │   ├── ModelUtils.java
+    │       │   ├── ShaderCallback.java
+    │       │   ├── ShaderHelper.java
+    │       │   └── cached
+    │       │       ├── CachedSmartModel.java
+    │       │       ├── SimpleModel.java
+    │       │       └── models
+    │       │           ├── CatwalkModel.java
+    │       │           ├── LadderModel.java
+    │       │           ├── StairBottomModel.java
+    │       │           └── StairTopModel.java
+    │       ├── shade
+    │       │   └── ccl
+    │       │       ├── math
+    │       │       │   └── MathHelper.java
+    │       │       ├── raytracer
+    │       │       │   ├── ExtendedMOP.java
+    │       │       │   ├── IndexedCuboid6.java
+    │       │       │   └── RayTracer.java
+    │       │       ├── util
+    │       │       │   ├── Copyable.java
+    │       │       │   └── LangProxy.java
+    │       │       └── vec
+    │       │           ├── AxisCycle.java
+    │       │           ├── BlockCoord.java
+    │       │           ├── Cuboid6.java
+    │       │           ├── CuboidCoord.java
+    │       │           ├── ITransformation.java
+    │       │           ├── IrreversibleTransformationException.java
+    │       │           ├── Line3.java
+    │       │           ├── Matrix4.java
+    │       │           ├── Quat.java
+    │       │           ├── Rectangle4i.java
+    │       │           ├── RedundantTransformation.java
+    │       │           ├── Rotation.java
+    │       │           ├── Scale.java
+    │       │           ├── SwapYZ.java
+    │       │           ├── Transformation.java
+    │       │           ├── TransformationList.java
+    │       │           ├── Translation.java
+    │       │           ├── VariableTransformation.java
+    │       │           └── Vector3.java
+    │       └── util
+    │           ├── AABB.java
+    │           ├── AABBUtils.java
+    │           ├── CustomFaceRayTraceResult.java
+    │           ├── ExtendUtils.java
+    │           ├── GeneralUtil.java
+    │           ├── Logs.java
+    │           ├── Trimap.java
+    │           └── WrenchChecker.java
+    └── resources
+        ├── assets
+        │   └── catwalks
+        │       ├── blockstates
+        │       │   ├── cagedLadder.inv.json
+        │       │   ├── catwalk.inv.json
+        │       │   ├── catwalkStair.inv.json
+        │       │   ├── catwalkStairTop.inv.json
+        │       │   ├── scaffold.inv.json
+        │       │   └── scaffold.json
+        │       ├── lang
+        │       │   └── en_US.lang
+        │       ├── models
+        │       │   ├── block
+        │       │   │   ├── catwalkStair.json
+        │       │   │   ├── catwalkStairTop.json
+        │       │   │   ├── catwalkinv.json
+        │       │   │   ├── ladderinv.json
+        │       │   │   ├── makeb.sh
+        │       │   │   ├── scaffold.json
+        │       │   │   ├── stairinv.mtl
+        │       │   │   └── stairinv.obj
+        │       │   └── item
+        │       │       ├── catwalk.json
+        │       │       ├── catwalkStair.json
+        │       │       ├── catwalkStairTop.json
+        │       │       ├── ladderGrabber.json
+        │       │       ├── lights.json
+        │       │       ├── makei.sh
+        │       │       ├── speed.json
+        │       │       ├── steelgrate.json
+        │       │       ├── tape.json
+        │       │       └── tool.json
+        │       └── textures
+        │           ├── blank.png
+        │           ├── blocks
+        │           │   ├── bottom
+        │           │   │   └── base.png
+        │           │   ├── catwalk
+        │           │   │   ├── custom
+        │           │   │   │   ├── bottom
+        │           │   │   │   │   ├── base.png
+        │           │   │   │   │   ├── lights.png
+        │           │   │   │   │   ├── speed.png
+        │           │   │   │   │   └── tape.png
+        │           │   │   │   └── side
+        │           │   │   │       ├── base.png
+        │           │   │   │       ├── lights.png
+        │           │   │   │       ├── speed.png
+        │           │   │   │       └── tape.png
+        │           │   │   ├── rusty
+        │           │   │   │   ├── bottom
+        │           │   │   │   │   ├── base.png
+        │           │   │   │   │   ├── lights.png
+        │           │   │   │   │   ├── speed.png
+        │           │   │   │   │   └── tape.png
+        │           │   │   │   └── side
+        │           │   │   │       ├── base.png
+        │           │   │   │       ├── lights.png
+        │           │   │   │       ├── speed.png
+        │           │   │   │       └── tape.png
+        │           │   │   ├── steel
+        │           │   │   │   ├── bottom
+        │           │   │   │   │   ├── base.png
+        │           │   │   │   │   ├── lights.png
+        │           │   │   │   │   ├── speed.png
+        │           │   │   │   │   └── tape.png
+        │           │   │   │   └── side
+        │           │   │   │       ├── base.png
+        │           │   │   │       ├── lights.png
+        │           │   │   │       ├── speed.png
+        │           │   │   │       └── tape.png
+        │           │   │   └── wood
+        │           │   │       ├── bottom
+        │           │   │       │   ├── base.png
+        │           │   │       │   ├── lights.png
+        │           │   │       │   ├── speed.png
+        │           │   │       │   └── tape.png
+        │           │   │       ├── catwalk
+        │           │   │       │   └── wood
+        │           │   │       │       └── side
+        │           │   │       │           └── base.png
+        │           │   │       └── side
+        │           │   │           ├── base.png
+        │           │   │           ├── blank.png
+        │           │   │           ├── lights.png
+        │           │   │           ├── speed.png
+        │           │   │           └── tape.png
+        │           │   ├── ladder
+        │           │   │   ├── custom
+        │           │   │   │   ├── base.png
+        │           │   │   │   ├── lights.png
+        │           │   │   │   ├── speed.png
+        │           │   │   │   └── tape.png
+        │           │   │   ├── rusty
+        │           │   │   │   ├── base.png
+        │           │   │   │   ├── lights.png
+        │           │   │   │   ├── speed.png
+        │           │   │   │   └── tape.png
+        │           │   │   ├── steel
+        │           │   │   │   ├── base.png
+        │           │   │   │   ├── lights.png
+        │           │   │   │   ├── speed.png
+        │           │   │   │   └── tape.png
+        │           │   │   └── wood
+        │           │   │       ├── base.png
+        │           │   │       ├── lights.png
+        │           │   │       ├── speed.png
+        │           │   │       └── tape.png
+        │           │   ├── scaffold
+        │           │   │   ├── custom
+        │           │   │   │   ├── side.png
+        │           │   │   │   └── top.png
+        │           │   │   ├── rusty
+        │           │   │   │   ├── side.png
+        │           │   │   │   └── top.png
+        │           │   │   ├── steel
+        │           │   │   │   ├── side.png
+        │           │   │   │   └── top.png
+        │           │   │   └── wood
+        │           │   │       ├── side.png
+        │           │   │       └── top.png
+        │           │   └── stair
+        │           │       ├── custom
+        │           │       │   ├── base.png
+        │           │       │   ├── lights.png
+        │           │       │   ├── speed.png
+        │           │       │   └── tape.png
+        │           │       ├── rusty
+        │           │       │   ├── base.png
+        │           │       │   ├── lights.png
+        │           │       │   ├── speed.png
+        │           │       │   └── tape.png
+        │           │       ├── steel
+        │           │       │   ├── base.png
+        │           │       │   ├── lights.png
+        │           │       │   ├── speed.png
+        │           │       │   └── tape.png
+        │           │       └── wood
+        │           │           ├── base.png
+        │           │           ├── base.png.mcmeta
+        │           │           ├── lights.png
+        │           │           ├── speed.png
+        │           │           └── tape.png
+        │           ├── filler.png
+        │           └── items
+        │               ├── ladder
+        │               │   ├── custom
+        │               │   │   ├── ladder.png
+        │               │   │   └── side.png
+        │               │   ├── rusty
+        │               │   │   ├── ladder.png
+        │               │   │   └── side.png
+        │               │   ├── steel
+        │               │   │   ├── ladder.png
+        │               │   │   └── side.png
+        │               │   └── wood
+        │               │       ├── ladder.png
+        │               │       └── side.png
+        │               ├── ladderGrabber.png
+        │               ├── lights.png
+        │               ├── node.particle.png
+        │               ├── node.redstonereader.png
+        │               ├── nodeConfigurator.png
+        │               ├── nodeConnector.png
+        │               ├── nodeManipulator.png
+        │               ├── speed.png
+        │               ├── steelgrate.png
+        │               ├── tape.png
+        │               └── tool.png
+        └── mcmod.info
+
+77 directories, 219 files

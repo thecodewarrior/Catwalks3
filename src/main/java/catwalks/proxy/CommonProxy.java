@@ -19,6 +19,7 @@ import catwalks.shade.ccl.raytracer.RayTracer;
 
 public class CommonProxy {
 	public void preInit() {}
+	
 	public void reloadConfigs() {}
 	
 	public MinecraftServer getServer() {
