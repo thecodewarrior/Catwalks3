@@ -2,6 +2,8 @@ package catwalks.block.extended;
 
 import java.util.function.Function;
 
+import catwalks.block.extended.tileprops.ExtendedTileProperties;
+import catwalks.block.extended.tileprops.TileExtended;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -13,6 +15,8 @@ import catwalks.block.BlockBase;
 
 public abstract class BlockExtended extends BlockBase {
 
+	protected ExtendedTileProperties allocator = new ExtendedTileProperties();
+	
 	public BlockExtended(Material material, String name) {
 		super(material, name);
 	}

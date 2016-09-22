@@ -26,16 +26,25 @@ public class DecorationSplitRecipeHandler implements IRecipeHandler<RecipeDecora
 		this.helper = helper;
 	}
 	
+	@Nonnull
 	@Override
 	public Class getRecipeClass() {
 		return RecipeDecorationSplit.class;
 	}
 
+	@Nonnull
 	@Override
 	public String getRecipeCategoryUid() {
 		return VanillaRecipeCategoryUid.CRAFTING;
 	}
-
+	
+	@Nonnull
+	@Override
+	public String getRecipeCategoryUid(@Nonnull RecipeDecorationSplit recipe) {
+		return VanillaRecipeCategoryUid.CRAFTING;
+	}
+	
+	@Nonnull
 	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull RecipeDecorationSplit recipe) {
 		return new Wrapper(helper, recipe);

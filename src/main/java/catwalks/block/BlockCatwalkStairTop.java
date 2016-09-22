@@ -3,6 +3,9 @@ package catwalks.block;
 import java.util.List;
 import java.util.Random;
 
+import catwalks.block.extended.BlockExtended;
+import catwalks.block.extended.tileprops.ArrayProp;
+import catwalks.block.extended.tileprops.BoolProp;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -28,19 +31,27 @@ import net.minecraft.world.World;
 
 import catwalks.Const;
 import catwalks.block.extended.CubeEdge;
-import catwalks.block.extended.TileExtended;
+import catwalks.block.extended.tileprops.TileExtended;
 import catwalks.register.BlockRegister;
 import catwalks.util.GeneralUtil;
 import catwalks.util.Logs;
 import catwalks.util.WrenchChecker;
 
-public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, IDecoratable {
+import static catwalks.Const.EAST_TOP;
 
+public class BlockCatwalkStairTop extends BlockExtended implements ICatwalkConnect, IDecoratable {
+
+	public ArrayProp<EnumCatwalkMaterial> MATERIAL;
+	
 	public BlockCatwalkStairTop() {
 		super(Material.IRON, "catwalkStairTop");
 		this.setTickRandomly(true);
-		setDefaultState(this.blockState.getBaseState().withProperty(Const.MATERIAL, EnumCatwalkMaterial.STEEL));
+		setDefaultState(this.blockState.getBaseState());
+		
+		MATERIAL = allocator.allocateArray(EnumCatwalkMaterial.values(), 16);
 	}
+	
+	
 	
 	public void initPreRegister() {
 		setCreativeTab(null);
@@ -51,21 +62,21 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	@Override
 	protected BlockStateContainer createBlockState() {
 	    return new ExtendedBlockState(this,
-	    		new IProperty[]{ Const.MATERIAL, Const.LIGHTS},
-	    		new IUnlistedProperty[] { Const.FACING, Const.TAPE, Const.SPEED, Const.NORTH, Const.WEST_TOP, Const.EAST_TOP }
+	    		new IProperty[]{ Const.LIGHTS},
+	    		new IUnlistedProperty[] { Const.MATERIAL, Const.FACING, Const.TAPE, Const.SPEED, Const.NORTH, Const.WEST_TOP, EAST_TOP }
 	    );
 	}
 	
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-	    return this.getDefaultState().withProperty(Const.MATERIAL, EnumCatwalkMaterial.values()[ meta & 0b0111 ]).withProperty(Const.LIGHTS, ( meta & 0b1000 ) == 1 );
+	    return this.getDefaultState().withProperty(Const.LIGHTS, ( meta & 0b0001 ) == 1 );
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-	    return state.getValue(Const.MATERIAL).ordinal() | ( state.getValue(Const.LIGHTS) ? 8 : 0 );
+	    return state.getValue(Const.LIGHTS) ? 1 : 0;
 	}
 	
 	@Override
@@ -73,22 +84,26 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		IExtendedBlockState state = (IExtendedBlockState)rawstate;
 		boolean westTop = false, eastTop = false, north = false, tape = false, speed = false, lights = false;
 		EnumFacing facing = EnumFacing.NORTH;
+		
 		if(worldIn.getBlockState(pos.offset(EnumFacing.DOWN)).getBlock() == BlockRegister.catwalkStair) {
 			IExtendedBlockState below = getBelowState(worldIn, pos);
 			 facing = below.getValue(Const.FACING);
 			 
 			  north = below.getValue(Const.NORTH);
 			westTop = below.getValue(Const.WEST_TOP);
-			eastTop = below.getValue(Const.EAST_TOP);
+			eastTop = below.getValue(EAST_TOP);
 			
 			   tape = below.getValue(Const.TAPE);
 			  speed = below.getValue(Const.SPEED);
 			 lights = below.getValue(Const.LIGHTS);
 		}
 		
+		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
+		
 		return (IExtendedBlockState) state
+				.withProperty(Const.MATERIAL, MATERIAL.get(tile))
 				.withProperty(Const.WEST_TOP, westTop)
-				.withProperty(Const.EAST_TOP, eastTop)
+				.withProperty(EAST_TOP, eastTop)
 				.withProperty(Const.NORTH, north)
 				.withProperty(Const.TAPE, tape)
 				.withProperty(Const.SPEED, speed)
@@ -183,7 +198,8 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 	}
 
 	public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune) {
-		int meta = state.getValue(Const.MATERIAL).ordinal();
+		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
+		int meta = MATERIAL.get(tile).ordinal();
 		GeneralUtil.spawnItemStack(worldIn, pos.getX()+0.5, pos.getY()-0.5, pos.getZ()+0.5, new ItemStack(BlockRegister.catwalkStair, 1, meta));
 	}
 	
@@ -242,7 +258,7 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		IExtendedBlockState state = getBelowState(world, pos);
 		
 		EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), side);
-		if(actualDir == EnumFacing.EAST && state.getValue(Const.EAST_TOP)) {
+		if(actualDir == EnumFacing.EAST && state.getValue(EAST_TOP)) {
 			return true;
 		}
 		if(actualDir == EnumFacing.WEST && state.getValue(Const.WEST_TOP)) {
@@ -259,18 +275,18 @@ public class BlockCatwalkStairTop extends BlockBase implements ICatwalkConnect, 
 		if(!checkForValidity(world, pos))
 			return;
 		IExtendedBlockState state = getBelowState(world, pos);
-		
+		BlockCatwalkStair block = (BlockCatwalkStair) state.getBlock();
 		TileExtended tile = (TileExtended) world.getTileEntity(pos.offset(EnumFacing.DOWN));
 		
 		EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), side);
 		if(actualDir == EnumFacing.EAST) {
-			tile.setBoolean(BlockCatwalkStair.I_EAST_TOP, value);
+			block.EAST_TOP.set(tile, value);
 		}
 		if(actualDir == EnumFacing.WEST) {
-			tile.setBoolean(BlockCatwalkStair.I_WEST_TOP, value);
+			block.WEST_TOP.set(tile, value);
 		}
 		if(side == state.getValue(Const.FACING)) {
-			tile.setBoolean(BlockCatwalkBase.I_NORTH, value);
+			block.NORTH.set(tile, value);
 		}
 	}
 	

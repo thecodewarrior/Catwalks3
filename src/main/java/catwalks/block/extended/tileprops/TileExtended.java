@@ -1,7 +1,8 @@
-package catwalks.block.extended;
+package catwalks.block.extended.tileprops;
 
 import java.util.BitSet;
 
+import catwalks.block.extended.tileprops.BoolProp;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -21,12 +22,12 @@ public class TileExtended extends TileEntity {
 	
 	{ /* getters/setters */ }
 	
-	public boolean getBoolean(int id) {
+	boolean getBoolean(int id) {
 		if(id < 0) return false;
 		return meta.get(id);
 	}
 	
-	public void setBoolean(int id, boolean bool) {
+	void setBoolean(int id, boolean bool) {
 		int oldLight = worldObj.getBlockState(pos).getBlock().getLightValue(worldObj.getBlockState(pos), worldObj, pos);
 		
 		if(id < 0) return;
@@ -43,14 +44,14 @@ public class TileExtended extends TileEntity {
 	/**
 	 * UNTESTED
 	 */
-	public int getNumber(int id, int len) {
+	int getNumber(int id, int len) {
 		return GeneralUtil.getNum(meta.get(id, id+len));
 	}
 	
 	/**
 	 * UNTESTED
 	 */
-	public void setNumber(int id, int len, int val) {
+	void setNumber(int id, int len, int val) {
 		meta.clear(id, id+len);
 		meta.or(GeneralUtil.getSet(val, id));
 	}

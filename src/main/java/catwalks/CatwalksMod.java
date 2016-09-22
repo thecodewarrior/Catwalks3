@@ -1,5 +1,13 @@
 package catwalks;
 
+import catwalks.movement.MovementHandler;
+import catwalks.proxy.CommonProxy;
+import catwalks.register.BlockRegister;
+import catwalks.register.ItemRegister;
+import catwalks.register.RecipeRegister;
+import catwalks.util.WrenchChecker;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -10,23 +18,10 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-
-import catwalks.movement.MovementHandler;
-import catwalks.proxy.CommonProxy;
-import catwalks.register.BlockRegister;
-import catwalks.register.ItemRegister;
-import catwalks.register.RecipeRegister;
-import catwalks.util.WrenchChecker;
-import mcjty.lib.McJtyLib;
-import mcjty.lib.base.ModBase;
-
 @Mod(modid = CatwalksMod.MODID, version = CatwalksMod.VERSION,
 	guiFactory = "catwalks.gui.CatwalksModConfGuiFactory",
-	dependencies="required-after:McJtyLib")
-public class CatwalksMod implements ModBase {
+	dependencies="")
+public class CatwalksMod {
 	public static final String MODID = "catwalks";
     public static final String VERSION = "0.3.0";
     
@@ -41,7 +36,6 @@ public class CatwalksMod implements ModBase {
     	BlockRegister.register();
     	ItemRegister.register();
     	RecipeRegister.register();
-    	McJtyLib.preInit(event);
     	
     	Conf.loadConfigsFromFile(event.getSuggestedConfigurationFile());
     	MinecraftForge.EVENT_BUS.register(proxy);
@@ -54,15 +48,6 @@ public class CatwalksMod implements ModBase {
     	// just to load the classes and their instances
 		MovementHandler.INSTANCE.getClass();
     }
-    
-    @Override
-	public String getModId() {
-		return MODID;
-	}
-	@Override
-	public void openManual(EntityPlayer player, int bookindex, String page) {
-		
-	}
     
     public static CreativeTabs tab = new CreativeTabs("tabCatwalks") {
 		@Override

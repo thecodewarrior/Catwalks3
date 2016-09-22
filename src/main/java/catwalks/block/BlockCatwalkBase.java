@@ -1,11 +1,13 @@
 package catwalks.block;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Function;
 
+import catwalks.block.extended.tileprops.ArrayProp;
+import catwalks.block.extended.tileprops.BoolProp;
+import catwalks.block.extended.tileprops.ExtendedTileProperties;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -27,7 +29,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -42,7 +43,7 @@ import com.google.common.collect.ImmutableList;
 import catwalks.Const;
 import catwalks.block.extended.BlockExtended;
 import catwalks.block.extended.ITileStateProvider;
-import catwalks.block.extended.TileExtended;
+import catwalks.block.extended.tileprops.TileExtended;
 import catwalks.block.property.UPropertyBool;
 import catwalks.raytrace.RayTraceUtil;
 import catwalks.raytrace.RayTraceUtil.IRenderableFace;
@@ -58,7 +59,18 @@ import catwalks.util.Logs;
 import catwalks.util.Trimap;
 import catwalks.util.WrenchChecker;
 
+import static com.sun.tools.javac.jvm.ByteCodes.ret;
+
 public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalkConnect, IDecoratable, ITileStateProvider {
+	
+	public BiMap<EnumFacing, BoolProp> sideProps = HashBiMap.create();
+	public BiMap<EnumFacing, UPropertyBool> sideState = HashBiMap.create();
+	
+	public BoolProp BOTTOM, TOP, NORTH, SOUTH, EAST, WEST;
+	public BoolProp TAPE, SPEED;
+	public BoolProp DECOR_1, DECOR_2, DECOR_3, DECOR_4, DECOR_5, DECOR_6, DECOR_7; // a max of 10 decorations
+	public ArrayProp<EnumFacing> FACING;
+	public ArrayProp<EnumCatwalkMaterial> MATERIAL;
 	
 	public BlockCatwalkBase(Material material, String name) {
 		super(material, name);
@@ -73,23 +85,39 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	public void init() {
 //		IBlockState state = this.blockState.getBaseState();
 //		this.setDefaultState(state.withProperty(Const.FACING, EnumFacing.NORTH));
+		
+		MATERIAL = allocator.allocateArray(EnumCatwalkMaterial.values(), 16);
+		
+		sideState.put(EnumFacing.DOWN, Const.BOTTOM);
+		sideState.put(EnumFacing.UP, Const.TOP);
+		sideState.put(EnumFacing.NORTH, Const.NORTH);
+		sideState.put(EnumFacing.SOUTH, Const.SOUTH);
+		sideState.put(EnumFacing.EAST, Const.EAST);
+		sideState.put(EnumFacing.WEST, Const.WEST);
+		
+		sideProps.put(EnumFacing.DOWN, BOTTOM = allocator.allocateBool());
+		sideProps.put(EnumFacing.UP, TOP = allocator.allocateBool());
+		sideProps.put(EnumFacing.NORTH, NORTH = allocator.allocateBool());
+		sideProps.put(EnumFacing.SOUTH, SOUTH = allocator.allocateBool());
+		sideProps.put(EnumFacing.EAST, EAST = allocator.allocateBool());
+		sideProps.put(EnumFacing.WEST, WEST = allocator.allocateBool());
+		
+		TAPE = allocator.allocateBool();
+		SPEED = allocator.allocateBool();
+		
+		DECOR_1 = allocator.allocateBool();
+		DECOR_2 = allocator.allocateBool();
+		DECOR_3 = allocator.allocateBool();
+		DECOR_4 = allocator.allocateBool();
+		DECOR_5 = allocator.allocateBool();
+		DECOR_6 = allocator.allocateBool();
+		DECOR_7 = allocator.allocateBool();
+		
+		FACING = allocator.allocateArray(EnumFacing.VALUES);
+		
 		initSides();
 		initColllisionBoxes();
 	}
-	
-	public static Trimap<UPropertyBool, EnumFacing, Integer> sides = new Trimap<>(UPropertyBool.class, EnumFacing.class, Integer.class);
-	static int I_BOTTOM=0, I_TOP=1, I_NORTH=2, I_SOUTH=3, I_EAST=4, I_WEST=5,  I_FACING_ID=6, I_FACING_LEN=3, I_TAPE=10, I_SPEED=12; // lights was 11
-
-	static {
-		sides.put(Const.BOTTOM, EnumFacing.DOWN,  I_BOTTOM);
-		sides.put(Const.TOP,    EnumFacing.UP,    I_TOP   );
-		sides.put(Const.NORTH,  EnumFacing.NORTH, I_NORTH );
-		sides.put(Const.SOUTH,  EnumFacing.SOUTH, I_SOUTH );
-		sides.put(Const.EAST,   EnumFacing.EAST,  I_EAST  );
-		sides.put(Const.WEST,   EnumFacing.WEST,  I_WEST  );
-	}
-	
-	protected static int I_BASE_LEN=24;
 	
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
@@ -108,8 +136,8 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 		
 		if(side != EnumFacing.UP ) {
 			side = transformAffectedSide(worldIn, pos, state, side);
-			int id = sides.getC(side);
-			tile.setBoolean(id, !tile.getBoolean(id));
+			BoolProp prop = sideProps.get(side);
+			prop.set(tile, !prop.get(tile));
 			tile.markDirty();
 			GeneralUtil.markForUpdate(worldIn, pos);
 			return true;
@@ -135,17 +163,17 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			return true;
 		}
 		if("tape".equals(name)) {
-			if(tile.getBoolean(I_TAPE) == value) {
+			if(TAPE.get(tile) == value) {
 				return false;
 			}
-			tile.setBoolean(I_TAPE, value);
+			TAPE.set(tile, value);
 			return true;
 		}
 		if("speed".equals(name)) {
-			if(tile.getBoolean(I_SPEED) == value) {
+			if(SPEED.get(tile) == value) {
 				return false;
 			}
-			tile.setBoolean(I_SPEED, value);
+			SPEED.set(tile, value);
 			return true;
 		}
 		return false;
@@ -160,10 +188,10 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			return state.getValue(Const.LIGHTS);
 		}
 		if("tape".equals(name)) {
-			return tile.getBoolean(I_TAPE);
+			return TAPE.get(tile);
 		}
 		if("speed".equals(name)) {
-			return tile.getBoolean(I_SPEED);
+			return SPEED.get(tile);
 		}
 		return false;
 	}
@@ -195,14 +223,15 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			return state;
 		
 		state = state
-				.withProperty(Const.BOTTOM, tile.getBoolean(I_BOTTOM))
-				.withProperty(Const.NORTH,  tile.getBoolean(I_NORTH) )
-				.withProperty(Const.SOUTH,  tile.getBoolean(I_SOUTH) )
-				.withProperty(Const.EAST,   tile.getBoolean(I_EAST)  )
-				.withProperty(Const.WEST,   tile.getBoolean(I_WEST)  )
-				.withProperty(Const.TAPE,   tile.getBoolean(I_TAPE)  )
-				.withProperty(Const.SPEED,  tile.getBoolean(I_SPEED) )
-				.withProperty(Const.FACING, EnumFacing.VALUES[tile.getNumber(I_FACING_ID, I_FACING_LEN)]);
+				.withProperty(Const.MATERIAL, MATERIAL.get(tile))
+				.withProperty(Const.BOTTOM, BOTTOM.get(tile))
+				.withProperty(Const.NORTH,  NORTH.get(tile) )
+				.withProperty(Const.SOUTH,  SOUTH.get(tile) )
+				.withProperty(Const.EAST,   EAST.get(tile)  )
+				.withProperty(Const.WEST,   WEST.get(tile)  )
+				.withProperty(Const.TAPE,   TAPE.get(tile)  )
+				.withProperty(Const.SPEED,  SPEED.get(tile) )
+				.withProperty(Const.FACING, FACING.get(tile));
 		
 		state = setFunctionalProperties(tile, state);
 		
@@ -227,15 +256,15 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	@SuppressWarnings("rawtypes")
 	protected BlockStateContainer createBlockState() {
 		List<IUnlistedProperty> unlistedProperties = new ArrayList<>();
-		unlistedProperties.addAll(Arrays.asList( new IUnlistedProperty[] {
-				Const.FACING, Const.TAPE, Const.SPEED,
-				Const.BOTTOM, Const.TOP, Const.NORTH, Const.SOUTH, Const.WEST, Const.EAST
-		} ));
+		unlistedProperties.addAll(Arrays.asList(
+			Const.MATERIAL, Const.FACING, Const.TAPE, Const.SPEED,
+			Const.BOTTOM, Const.TOP, Const.NORTH, Const.SOUTH, Const.WEST, Const.EAST
+		));
 		addFunctionalProperties(unlistedProperties);
 
 		addRenderOnlyProperties(unlistedProperties);
 		
-	    ExtendedBlockState state = new ExtendedBlockState(this, new IProperty[] {Const.MATERIAL, Const.LIGHTS}, unlistedProperties.toArray(new IUnlistedProperty[0]));
+	    ExtendedBlockState state = new ExtendedBlockState(this, new IProperty[] {Const.LIGHTS}, unlistedProperties.toArray(new IUnlistedProperty[0]));
 	    
 	    return state;
 	}
@@ -292,10 +321,10 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
 		TileExtended ourTile = (TileExtended) worldIn.getTileEntity(pos);
 		
-		ourTile.setNumber(I_FACING_ID, I_FACING_LEN, placer.getHorizontalFacing().ordinal());
+		FACING.set(ourTile, placer.getHorizontalFacing());
 		
-		for (EnumFacing direction : EnumFacing.VALUES) {
-			ourTile.setBoolean(sides.getC(direction), true);
+		for (BoolProp prop : sideProps.values()) {
+			prop.set(ourTile, true);
 		}
 		
 		GeneralUtil.updateSurroundingCatwalkBlocks(worldIn, pos);
@@ -306,12 +335,30 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	{ /* meta */ }
 	
 	@Override
-	public int damageDropped(IBlockState state) {
+	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+		IExtendedBlockState estate = (IExtendedBlockState) getExtendedState(state, world, pos);
+		
+		List<ItemStack> ret = new java.util.ArrayList<ItemStack>();
+		
+		Random rand = world instanceof World ? ((World)world).rand : RANDOM;
+		
+		int count = quantityDropped(state, fortune, rand);
+		for(int i = 0; i < count; i++)
+		{
+			Item item = this.getItemDroppedExtended(estate, rand, fortune);
+			if (item != null)
+			{
+				ret.add(new ItemStack(item, 1, this.damageDroppedExtended(estate)));
+			}
+		}
+		return ret;
+	}
+	
+	public int damageDroppedExtended(IExtendedBlockState state) {
 	    return state.getValue(Const.MATERIAL).ordinal();
 	}
 
-	@Override
-	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+	public Item getItemDroppedExtended(IExtendedBlockState state, Random rand, int fortune) {
 		return Item.getItemFromBlock(this);
 	}
 
@@ -333,13 +380,13 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-	    return this.getDefaultState().withProperty(Const.MATERIAL, EnumCatwalkMaterial.values()[ meta & 0b0111 ]).withProperty(Const.LIGHTS, ( meta & 0b1000 ) == 1 );
+	    return this.getDefaultState().withProperty(Const.LIGHTS, ( meta & 0b0001 ) == 1 );
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-	    return state.getValue(Const.MATERIAL).ordinal() | ( state.getValue(Const.LIGHTS) ? 8 : 0 );
+	    return state.getValue(Const.LIGHTS) ? 1 : 0;
 	}
 	
 	{ /* collision */ }

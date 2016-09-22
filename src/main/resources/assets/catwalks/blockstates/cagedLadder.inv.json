@@ -51,10 +51,10 @@
 		        "ladder": "catwalks:items/ladder/custom/ladder"
 		    }
 	    },
-	    "rusty": {
+	    "iesteel": {
 		    "textures": {
-		        "side": "catwalks:items/ladder/rusty/side",
-		        "ladder": "catwalks:items/ladder/rusty/ladder"
+		        "side": "catwalks:items/ladder/iesteel/side",
+		        "ladder": "catwalks:items/ladder/iesteel/ladder"
 		    }
 	    },
 	    "steel": {

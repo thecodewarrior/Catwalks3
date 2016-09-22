@@ -2,6 +2,8 @@ package catwalks.block;
 
 import java.util.List;
 
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import net.minecraft.block.material.Material;
@@ -17,7 +19,7 @@ import com.google.common.collect.ImmutableList.Builder;
 
 import catwalks.Const;
 import catwalks.block.extended.CubeEdge;
-import catwalks.block.extended.TileExtended;
+import catwalks.block.extended.tileprops.TileExtended;
 import catwalks.item.ItemBlockCatwalk;
 import catwalks.raytrace.RayTraceUtil.ITraceable;
 import catwalks.raytrace.block.BlockTraceFactory;
@@ -59,7 +61,7 @@ public class BlockCatwalk extends BlockCatwalkBase {
 		if(side == EnumFacing.UP)
 			return;
 		TileExtended tile = (TileExtended) world.getTileEntity(pos);
-		tile.setBoolean(sides.getC(side), value);
+		sideProps.get(side).set(tile, value);
 	}
 	
 	@Override
@@ -73,6 +75,13 @@ public class BlockCatwalk extends BlockCatwalkBase {
 	}
 	
 	private List<BlockTraceable> sideLookBoxes;
+	
+	@Override
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
+		MATERIAL.set(tile, EnumCatwalkMaterial.values()[stack.getItemDamage()]);
+	}
 	
 	@Override
 	public void initSides() {
@@ -159,7 +168,7 @@ public class BlockCatwalk extends BlockCatwalkBase {
         
         for (EnumFacing facing : EnumFacing.HORIZONTALS) {
         	CollisionBox box = new CollisionBox();
-        	box.enableProperty = sides.getA(facing);
+        	box.enableProperty = sideState.get(facing);
         	
         	Cuboid6 cuboid = new Cuboid6(bounds);
         	
@@ -174,7 +183,7 @@ public class BlockCatwalk extends BlockCatwalkBase {
 		}
         
         CollisionBox box = new CollisionBox();
-    	box.enableProperty = sides.getA(EnumFacing.DOWN);
+    	box.enableProperty = sideState.get(EnumFacing.DOWN);
     	
     	Cuboid6 cuboid = new Cuboid6(bounds);
     	

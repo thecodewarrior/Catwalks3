@@ -3,7 +3,7 @@ Documentation and mod design document
 # Blocks
 
 ### Common mechanics
-All the blocks except for (LIST HERE) have four materials, Steel, Rusty, Wooden, and Custom. The Custom variant isn't used normally and has no recipes.
+All the blocks except for (LIST HERE) have four materials, Steel, IE Steel, Wooden, and Custom. The Custom variant isn't used normally and has no recipes.
 
 * When a Speed Boost decoration is added to a block the player will get a speed increase, unless there is special handling of Speed Boost decorations, in which case the block should never give a speed boost
 * When a Rope Light decoration is added to a block the block should emit a light level of 15

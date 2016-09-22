@@ -22,7 +22,7 @@ public class RecipeRegister {
 		RecipeSorter.register(Const.MODID + ":decorationCombine",  RecipeDecorationRepair.class, SHAPELESS, "before:minecraft:repair");
 		RecipeSorter.register(Const.MODID + ":decorationSplit",    RecipeDecorationSplit.class,  SHAPELESS, "after:minecraft:shapeless");
 		
-		int m_steel = 0, m_rusty = 1, m_wood = 2;//, m_custom = 3;
+		int m_steel = 0, m_iesteel = 1, m_wood = 2;//, m_custom = 3;
 		Item
 			tape = ItemRegister.tape,
 			lights = ItemRegister.lights,
@@ -104,10 +104,10 @@ public class RecipeRegister {
 			" g ",
 			'g', grate);
 			// rusty/steel conversion
-		addShapelessRecipe(true, new ItemStack(catwalk, 1, m_rusty),
+		addShapelessRecipe(true, new ItemStack(catwalk, 1, m_iesteel),
 			new ItemStack(catwalk, 1, m_steel));
 		addShapelessRecipe(true, new ItemStack(catwalk, 1, m_steel),
-			new ItemStack(catwalk, 1, m_rusty));
+			new ItemStack(catwalk, 1, m_iesteel));
 		
 		addShapedOreRecipe(true, new ItemStack(catwalk, 1, m_wood),
 			"s s",
@@ -123,10 +123,10 @@ public class RecipeRegister {
 			" gg",
 			'g', grate);
 			// rusty/steel conversion
-		addShapelessRecipe(true, new ItemStack(stair, 1, m_rusty),
+		addShapelessRecipe(true, new ItemStack(stair, 1, m_iesteel),
 			new ItemStack(stair, 1, m_steel));
 		addShapelessRecipe(true, new ItemStack(stair, 1, m_steel),
-			new ItemStack(stair, 1, m_rusty));
+			new ItemStack(stair, 1, m_iesteel));
 		
 		addShapedOreRecipe(true, new ItemStack(stair, 1, m_wood),
 			"s  ",
@@ -142,10 +142,10 @@ public class RecipeRegister {
 			'g', grate,
 			'l', vladder);
 			// rusty/steel conversion
-		addShapelessRecipe(true, new ItemStack(ladder, 1, m_rusty),
+		addShapelessRecipe(true, new ItemStack(ladder, 1, m_iesteel),
 			new ItemStack(ladder, 1, m_steel));
 		addShapelessRecipe(true, new ItemStack(ladder, 1, m_steel),
-			new ItemStack(ladder, 1, m_rusty));
+			new ItemStack(ladder, 1, m_iesteel));
 		
 		addShapedOreRecipe(true, new ItemStack(ladder, 1, m_wood),
 			"sls",
@@ -159,10 +159,10 @@ public class RecipeRegister {
 			"gg",
 			'g', grate);
 			// rusty/steel conversion
-		addShapelessRecipe(true, new ItemStack(scaffold, 1, m_rusty),
+		addShapelessRecipe(true, new ItemStack(scaffold, 1, m_iesteel),
 			new ItemStack(scaffold, 1, m_steel));
 		addShapelessRecipe(true, new ItemStack(scaffold, 1, m_steel),
-			new ItemStack(scaffold, 1, m_rusty));
+			new ItemStack(scaffold, 1, m_iesteel));
 		
 		addShapedOreRecipe(true, new ItemStack(scaffold, 8, m_wood),
 			" p ",

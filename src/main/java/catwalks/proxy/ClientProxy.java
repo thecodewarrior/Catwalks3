@@ -249,7 +249,8 @@ public class ClientProxy extends CommonProxy {
 			List<AxisAlignedBB> aabbs = mc.theWorld.getCollisionBoxes(mc.thePlayer, searchBB);
 			
 			for (AxisAlignedBB bb : aabbs) {
-				RenderGlobal.drawOutlinedBoundingBox(bb.expand(d, d, d), 127, 255, 127, 255);
+				AxisAlignedBB bb_ = bb.expand(d, d, d);
+				RenderGlobal.drawBoundingBox(bb_.minX, bb_.minY, bb_.minZ, bb.maxX, bb.maxY, bb.maxZ, 0.5f, 1, 0.5f, 1);
 			}
 			
 			// desired move vec

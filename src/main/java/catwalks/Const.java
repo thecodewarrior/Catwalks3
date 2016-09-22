@@ -41,9 +41,10 @@ public class Const {
 	
 	{	/* blockstate properties*/	}
 	
-	public static final PropertyEnum<EnumCatwalkMaterial> MATERIAL = PropertyEnum.create("material", EnumCatwalkMaterial.class);
 	public static final PropertyBool LIGHTS = PropertyBool.create("lights");
+	public static final PropertyEnum<EnumCatwalkMaterial> MATERIAL_META = PropertyEnum.create("material", EnumCatwalkMaterial.class);
 	
+	public static final UPropertyEnum<EnumCatwalkMaterial> MATERIAL = UPropertyEnum.create("material", EnumCatwalkMaterial.class);
 	
 	public static final UPropertyBool IS_TOP    = UPropertyBool.create("istop");
 	public static final UPropertyBool IS_BOTTOM = UPropertyBool.create("isbottom");
@@ -63,7 +64,7 @@ public class Const {
 	public static final UPropertyBool TAPE   = UPropertyBool.create("tape");
 	public static final UPropertyBool SPEED  = UPropertyBool.create("speed");
 	
-	public static final UPropertyEnum<EnumFacing> FACING = UPropertyEnum.create("facing", EnumFacing.class, (v) -> v.getAxis() != Axis.Y);
+	public static final UPropertyEnum<EnumFacing> FACING = UPropertyEnum.create("facing", EnumFacing.class);
 	
 	public static final UPropertyBool CONST_TRUE = UPropertyBool.create("dummyConstTrue");
 	public static final UPropertyBool CONST_FALSE = UPropertyBool.create("dummyConstFalse");

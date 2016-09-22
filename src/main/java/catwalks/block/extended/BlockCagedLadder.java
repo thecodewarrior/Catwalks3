@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import catwalks.block.EnumCatwalkMaterial;
+import catwalks.block.extended.tileprops.TileExtended;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
@@ -402,6 +405,13 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		return world.getBlockState(pos).getBlock().isSideSolid(world.getBlockState(pos), world, pos, side);
 	}
 	
+	@Override
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
+		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
+		MATERIAL.set(tile, EnumCatwalkMaterial.values()[stack.getItemDamage()]);
+	}
+	
 	{ /* ICatwalkConnect */ }
 	
 	@Override
@@ -409,7 +419,7 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		IExtendedBlockState state = GeneralUtil.getTileState(world, pos);
 		edge.dir1 = GeneralUtil.rotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), edge.dir1);
 		edge.dir2 = GeneralUtil.rotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), edge.dir2);
-		return state.getValue(sides.getA(edge.dir1)) || (edge.dir2.getAxis() != Axis.Y && state.getValue(sides.getA(edge.dir2)) );
+		return state.getValue(sideState.get(edge.dir1)) || (edge.dir2.getAxis() != Axis.Y && state.getValue(sideState.get(edge.dir2)) );
 	}
 	
 	@Override
@@ -421,7 +431,7 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 	public boolean hasSide(World world, BlockPos pos, EnumFacing side) {
 		IExtendedBlockState state = GeneralUtil.getTileState(world, pos);
 		side = GeneralUtil.rotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), side);
-		return (side.getAxis() != Axis.Y && state.getValue(sides.getA(side)) );
+		return (side.getAxis() != Axis.Y && state.getValue(sideState.get(side)) );
 	}
 	
 	@Override
@@ -432,7 +442,7 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 		side = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), side);
 		
 		TileExtended tile = (TileExtended) world.getTileEntity(pos);
-		tile.setBoolean(sides.getC(side), value);
+		sideProps.get(side).set(tile, value);
 	}
 	
 	@Override

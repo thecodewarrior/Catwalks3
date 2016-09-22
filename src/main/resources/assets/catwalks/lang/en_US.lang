@@ -1,11 +1,11 @@
 tile.catwalk.steel.name=Catwalk
 tile.catwalk.wood.name=Wooden Catwalk
-tile.catwalk.rusty.name=Rusty Catwalk
+tile.catwalk.iesteel.name=IE Steel Catwalk
 tile.catwalk.custom.name=Custom Catwalk
 
 tile.catwalkStair.steel.name=Catwalk Stair
 tile.catwalkStair.wood.name=Wooden Catwalk Stair
-tile.catwalkStair.rusty.name=Rusty Catwalk Stair
+tile.catwalkStair.iesteel.name=IE Steel Catwalk Stair
 tile.catwalkStair.custom.name=Custom Catwalk Stair
 
 item.decoration.lights.name=Rope Lights

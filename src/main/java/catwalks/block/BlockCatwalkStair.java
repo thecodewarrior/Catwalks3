@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import catwalks.block.extended.tileprops.BoolProp;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
@@ -25,7 +26,7 @@ import com.google.common.collect.ImmutableMap.Builder;
 
 import catwalks.Const;
 import catwalks.block.extended.CubeEdge;
-import catwalks.block.extended.TileExtended;
+import catwalks.block.extended.tileprops.TileExtended;
 import catwalks.item.ItemBlockCatwalk;
 import catwalks.raytrace.RayTraceUtil.ITraceable;
 import catwalks.raytrace.block.BlockTraceFactory;
@@ -42,12 +43,22 @@ import catwalks.util.Logs;
 
 public class BlockCatwalkStair extends BlockCatwalkBase {
 
-	public static final int I_EAST_TOP = I_BASE_LEN+1, I_WEST_TOP = I_BASE_LEN+2;
+	public BoolProp EAST_TOP, WEST_TOP;
+	
 	public static final double STEP_COUNT = 4;
+	
 	public BlockCatwalkStair() {
 		super(Material.IRON, "catwalkStair", (c) -> new ItemBlockCatwalk(c));
 		setHardness(1.5f);
 		setTickRandomly(true);
+	}
+	
+	@Override
+	public void init() {
+		super.init();
+		
+		EAST_TOP = allocator.allocateBool();
+		WEST_TOP = allocator.allocateBool();
 	}
 	
 	{ /* blockstate stuffs */ }
@@ -62,8 +73,8 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	@Override
 	public IExtendedBlockState setFunctionalProperties(TileExtended tile, IExtendedBlockState state) {
 		return state
-				.withProperty(Const.EAST_TOP, tile.getBoolean(I_EAST_TOP))
-				.withProperty(Const.WEST_TOP, tile.getBoolean(I_WEST_TOP))
+				.withProperty(Const.EAST_TOP, EAST_TOP.get(tile))
+				.withProperty(Const.WEST_TOP, WEST_TOP.get(tile))
 		;
 	}
 
@@ -100,14 +111,17 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
 		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
+		MATERIAL.set(tile, EnumCatwalkMaterial.values()[stack.getItemDamage()]);
 		
-		tile.setBoolean(I_EAST_TOP, true);
-		tile.setBoolean(I_WEST_TOP, true);
+		EAST_TOP.set(tile, true);
+		WEST_TOP.set(tile, true);
 		
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 		
-		IBlockState placeState = BlockRegister.stairTop.getDefaultState().withProperty(Const.MATERIAL, state.getValue(Const.MATERIAL)).withProperty(Const.LIGHTS, state.getValue(Const.LIGHTS));
+		IBlockState placeState = BlockRegister.stairTop.getDefaultState().withProperty(Const.LIGHTS, state.getValue(Const.LIGHTS));
 		worldIn.setBlockState(pos.offset(EnumFacing.UP), placeState);
+		TileExtended aboveTile = (TileExtended) worldIn.getTileEntity(pos.offset(EnumFacing.UP));
+		BlockRegister.stairTop.MATERIAL.set(aboveTile, MATERIAL.get(tile));
 		GeneralUtil.updateSurroundingCatwalkBlocks(worldIn, pos.offset(EnumFacing.UP));
 	}
 	
@@ -464,13 +478,13 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 		
 		EnumFacing actualDir = GeneralUtil.derotateFacing(GeneralUtil.getRotation(EnumFacing.NORTH, state.getValue(Const.FACING)), side);
 		if(actualDir == EnumFacing.EAST) {
-			tile.setBoolean(BlockCatwalkBase.I_EAST, value);
+			EAST.set(tile, value);
 		}
 		if(actualDir == EnumFacing.WEST) {
-			tile.setBoolean(BlockCatwalkBase.I_WEST, value);
+			WEST.set(tile, value);
 		}
 		if(side == state.getValue(Const.FACING).getOpposite()) {
-			tile.setBoolean(BlockCatwalkBase.I_SOUTH, value);
+			SOUTH.set(tile, value);
 		}
 	}
 	

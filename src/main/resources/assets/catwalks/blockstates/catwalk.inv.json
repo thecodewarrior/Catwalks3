@@ -12,10 +12,10 @@
 	    		"side": "catwalks:blocks/catwalk/custom/side/base"
 	    	}
 		},
-		"rusty": {
+		"iesteel": {
 	    	"textures": {
-	        	"bottom": "catwalks:blocks/catwalk/rusty/bottom/base",
-	    		"side": "catwalks:blocks/catwalk/rusty/side/base"
+	        	"bottom": "catwalks:blocks/catwalk/iesteel/bottom/base",
+	    		"side": "catwalks:blocks/catwalk/iesteel/side/base"
 	    	}
 		},
 		"steel": {

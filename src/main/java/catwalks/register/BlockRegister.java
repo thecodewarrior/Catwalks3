@@ -9,7 +9,7 @@ import catwalks.block.BlockCatwalkStairTop;
 import catwalks.block.BlockScaffolding;
 import catwalks.block.EnumCatwalkMaterial;
 import catwalks.block.extended.BlockCagedLadder;
-import catwalks.block.extended.TileExtended;
+import catwalks.block.extended.tileprops.TileExtended;
 import catwalks.render.ModelHandler;
 import catwalks.render.cached.CachedSmartModel;
 import catwalks.render.cached.models.CatwalkModel;
@@ -103,7 +103,7 @@ public class BlockRegister {
 		
 		String rl = String.format("%s:%s.inv", Const.MODID, modelName == null ? Item.REGISTRY.getNameForObject(item).getResourcePath() : modelName);
 		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(rl, "material=steel"  ));
-		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl, "material=rusty"  ));
+		ModelLoader.setCustomModelResourceLocation(item, 1, new ModelResourceLocation(rl, "material=iesteel"  ));
 		ModelLoader.setCustomModelResourceLocation(item, 2, new ModelResourceLocation(rl, "material=wood"   ));
 		ModelLoader.setCustomModelResourceLocation(item, 3, new ModelResourceLocation(rl, "material=custom" ));
 	}

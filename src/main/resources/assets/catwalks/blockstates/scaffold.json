@@ -11,10 +11,10 @@
 					"side": "catwalks:blocks/scaffold/steel/side"
 				}
 			},
-			"rusty": {
+			"iesteel": {
 				"textures": {
-					"end": "catwalks:blocks/scaffold/rusty/top",
-					"side": "catwalks:blocks/scaffold/rusty/side"
+					"end": "catwalks:blocks/scaffold/iesteel/top",
+					"side": "catwalks:blocks/scaffold/iesteel/side"
 				}
 			},
 			"wood": {

@@ -35,7 +35,13 @@ public class DecorationRepairRecipeHandler implements IRecipeHandler<RecipeDecor
 	public String getRecipeCategoryUid() {
 		return VanillaRecipeCategoryUid.CRAFTING;
 	}
-
+	
+	@Nonnull
+	@Override
+	public String getRecipeCategoryUid(@Nonnull RecipeDecorationRepair recipe) {
+		return null;
+	}
+	
 	@Override
 	public IRecipeWrapper getRecipeWrapper(@Nonnull RecipeDecorationRepair recipe) {
 		return new Wrapper(helper, recipe);

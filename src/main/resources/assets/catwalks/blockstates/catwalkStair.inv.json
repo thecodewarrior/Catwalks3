@@ -49,9 +49,9 @@
 		        "#Material": "catwalks:blocks/stair/custom/base"
 		    }
 	    },
-	    "rusty": {
+	    "iesteel": {
 		    "textures": {
-		        "#Material": "catwalks:blocks/stair/rusty/base"
+		        "#Material": "catwalks:blocks/stair/iesteel/base"
 		    }
 	    },
 	    "steel": {
