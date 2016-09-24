@@ -20,7 +20,13 @@ import catwalks.block.property.UPropertyBool;
 import catwalks.block.property.UPropertyEnum;
 import catwalks.movement.capability.ICWEntityData;
 
+import static catwalks.util.meta.MetaStorage.bits;
+
 public class Const {
+	
+	{ /* Centeralizing constants */ }
+	
+	public static int MATERIAL_BITS = bits(128);
 	
 	{ /* DRYing constants */ }
 	

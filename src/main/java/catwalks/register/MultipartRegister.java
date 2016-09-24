@@ -1,10 +1,9 @@
 package catwalks.register;
 
 import catwalks.Const;
-import catwalks.part.PartCatwalkBase;
+import catwalks.part.PartCatwalk;
 import catwalks.part.PartScaffold;
 import catwalks.part.converter.PartConverterScaffold;
-import com.sun.org.apache.xpath.internal.operations.Mult;
 import mcmultipart.multipart.MultipartRegistry;
 
 /**
@@ -13,10 +12,14 @@ import mcmultipart.multipart.MultipartRegistry;
 public class MultipartRegister {
 	
 	public static void register() {
+		// scaffold
 		MultipartRegistry.registerPart(PartScaffold.class, Const.MODID + ":scaffold");
 		PartConverterScaffold converter = new PartConverterScaffold();
 		MultipartRegistry.registerPartConverter(converter);
 		MultipartRegistry.registerReversePartConverter(converter);
+		
+		// catwalk
+		MultipartRegistry.registerPart(PartCatwalk.class, Const.MODID + ":catwalk");
 	}
 	
 }

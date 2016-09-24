@@ -4,6 +4,7 @@ import catwalks.Const;
 import catwalks.block.EnumCatwalkMaterial;
 import catwalks.util.GeneralUtil;
 import catwalks.util.meta.ArrayProp;
+import catwalks.util.meta.IDirtyable;
 import catwalks.util.meta.MetaStorage;
 import mcmultipart.MCMultiPartMod;
 import mcmultipart.multipart.*;
@@ -27,14 +28,14 @@ import static net.minecraft.block.Block.NULL_AABB;
 /**
  * Created by TheCodeWarrior
  */
-public class PartScaffold extends Multipart implements ISolidPart {
+public class PartScaffold extends Multipart implements ISolidPart, IDirtyable {
 	
 	protected List<AxisAlignedBB> selectionBoxes = new ArrayList<>();
 	
 	protected static MetaStorage.Allocator allocator = new MetaStorage.Allocator();
-	public static ArrayProp<EnumCatwalkMaterial> MATERIAL = allocator.allocateArray(EnumCatwalkMaterial.values(), 128);
+	public static ArrayProp<EnumCatwalkMaterial> MATERIAL = allocator.allocateArray(EnumCatwalkMaterial.values(), 7);
 	
-	protected MetaStorage storage = new MetaStorage();
+	protected MetaStorage storage = new MetaStorage(this);
 	
 	public PartScaffold() {
 		double p = 1/16f, P = 1-p;
@@ -49,11 +50,6 @@ public class PartScaffold extends Multipart implements ISolidPart {
 	}
 	public EnumCatwalkMaterial getCatwalkMaterial() {
 		return MATERIAL.get(storage);
-	}
-	
-	@Override
-	public void onConverted(TileEntity tile) {
-		super.onConverted(tile);
 	}
 	
 	@Override
@@ -123,5 +119,10 @@ public class PartScaffold extends Multipart implements ISolidPart {
 	@Override
 	public boolean occlusionTest(IMultipart part) {
 		return super.occlusionTest(part) || part instanceof PartScaffold;
+	}
+	
+	@Override
+	public void markDirty() {
+		super.markDirty();
 	}
 }
