@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Random;
 
 import catwalks.block.extended.tileprops.BoolProp;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 

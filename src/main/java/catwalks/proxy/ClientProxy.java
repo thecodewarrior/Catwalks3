@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import catwalks.register.RenderRegister;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -61,8 +62,8 @@ public class ClientProxy extends CommonProxy {
 	public static List<Tuple<Vector3, Double>> hits = new ArrayList<>();
 	
 	public void preInit() {
-		BlockRegister.initRender();
-		ItemRegister.initRender();
+		RenderRegister.Blocks.initRender();
+		RenderRegister.Items.initRender();
 		MinecraftForge.EVENT_BUS.register(new Conf());
 		OBJLoader.INSTANCE.addDomain(Const.MODID);
 		ShaderHelper.initShaders();

@@ -29,6 +29,7 @@ public class CommonProxy {
 	public EntityPlayer getPlayerLooking(Vec3d start, Vec3d end) {
 		EntityPlayer player = null;
 		List<EntityPlayerMP> players = FMLServerHandler.instance().getServer().getPlayerList().getPlayerList();
+		float fudge = 0.1f;
 		
 		for (final EntityPlayerMP p : players) { // for each player
 			Vec3d lookStart = RayTracer.getStartVec(p);
@@ -41,8 +42,11 @@ public class CommonProxy {
 			double dStart_ = lookStart.distanceTo(end);
 			double dEnd_   = lookEnd  .distanceTo(end);
 			
+			double dSumStart = dStart + dEnd;
+			double dSumEnd = dStart_ + dEnd_;
 			
-			if(dStart + dEnd == lookDistance && dStart_ + dEnd_ == lookDistance) {
+			if(dSumStart <= lookDistance+fudge && dSumStart >= lookDistance-fudge &&
+				dSumEnd <= lookDistance+fudge && dSumEnd >= lookDistance-fudge) {
 				player = p; break;
 			}
 		}

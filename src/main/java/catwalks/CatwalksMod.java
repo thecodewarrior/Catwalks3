@@ -4,6 +4,7 @@ import catwalks.movement.MovementHandler;
 import catwalks.proxy.CommonProxy;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
+import catwalks.register.MultipartRegister;
 import catwalks.register.RecipeRegister;
 import catwalks.util.WrenchChecker;
 import net.minecraft.creativetab.CreativeTabs;
@@ -36,7 +37,8 @@ public class CatwalksMod {
     	BlockRegister.register();
     	ItemRegister.register();
     	RecipeRegister.register();
-    	
+    	MultipartRegister.register();
+	    
     	Conf.loadConfigsFromFile(event.getSuggestedConfigurationFile());
     	MinecraftForge.EVENT_BUS.register(proxy);
     	proxy.preInit();

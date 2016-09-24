@@ -1,19 +1,27 @@
 package catwalks.block;
 
-import java.util.*;
-import java.util.function.Function;
-
+import catwalks.Const;
+import catwalks.block.extended.BlockExtended;
+import catwalks.block.extended.ITileStateProvider;
 import catwalks.block.extended.tileprops.ArrayProp;
 import catwalks.block.extended.tileprops.BoolProp;
-import catwalks.block.extended.tileprops.ExtendedTileProperties;
+import catwalks.block.extended.tileprops.TileExtended;
+import catwalks.block.property.UPropertyBool;
+import catwalks.raytrace.RayTraceUtil;
+import catwalks.raytrace.RayTraceUtil.IRenderableFace;
+import catwalks.raytrace.RayTraceUtil.ITraceResult;
+import catwalks.raytrace.RayTraceUtil.ITraceable;
+import catwalks.raytrace.RayTraceUtil.VertexList;
+import catwalks.register.ItemRegister;
+import catwalks.shade.ccl.vec.Cuboid6;
+import catwalks.shade.ccl.vec.Matrix4;
+import catwalks.util.CustomFaceRayTraceResult;
+import catwalks.util.GeneralUtil;
+import catwalks.util.Logs;
+import catwalks.util.WrenchChecker;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -35,31 +43,18 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
-
-import com.google.common.collect.ImmutableList;
-
-import catwalks.Const;
-import catwalks.block.extended.BlockExtended;
-import catwalks.block.extended.ITileStateProvider;
-import catwalks.block.extended.tileprops.TileExtended;
-import catwalks.block.property.UPropertyBool;
-import catwalks.raytrace.RayTraceUtil;
-import catwalks.raytrace.RayTraceUtil.IRenderableFace;
-import catwalks.raytrace.RayTraceUtil.ITraceResult;
-import catwalks.raytrace.RayTraceUtil.ITraceable;
-import catwalks.raytrace.RayTraceUtil.VertexList;
-import catwalks.register.ItemRegister;
-import catwalks.shade.ccl.vec.Cuboid6;
-import catwalks.shade.ccl.vec.Matrix4;
-import catwalks.util.CustomFaceRayTraceResult;
-import catwalks.util.GeneralUtil;
-import catwalks.util.Logs;
-import catwalks.util.Trimap;
-import catwalks.util.WrenchChecker;
-
-import static com.sun.tools.javac.jvm.ByteCodes.ret;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.function.Function;
 
 public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalkConnect, IDecoratable, ITileStateProvider {
 	
@@ -86,7 +81,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 //		IBlockState state = this.blockState.getBaseState();
 //		this.setDefaultState(state.withProperty(Const.FACING, EnumFacing.NORTH));
 		
-		MATERIAL = allocator.allocateArray(EnumCatwalkMaterial.values(), 16);
+		MATERIAL = allocator.allocateArray(EnumCatwalkMaterial.values(), 128);
 		
 		sideState.put(EnumFacing.DOWN, Const.BOTTOM);
 		sideState.put(EnumFacing.UP, Const.TOP);
@@ -361,7 +356,15 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	public Item getItemDroppedExtended(IExtendedBlockState state, Random rand, int fortune) {
 		return Item.getItemFromBlock(this);
 	}
-
+	
+	@Override
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+		IExtendedBlockState estate = (IExtendedBlockState) getExtendedState(state, world, pos);
+		
+		Item item = Item.getItemFromBlock(this);
+		return item == null ? null : new ItemStack(item, 1, this.damageDroppedExtended(estate));
+	}
+	
 	@Override
 	public boolean canHarvestBlock(IBlockAccess world, BlockPos pos, EntityPlayer player) {
 		return true;

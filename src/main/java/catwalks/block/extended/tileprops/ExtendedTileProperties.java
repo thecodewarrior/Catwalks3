@@ -6,6 +6,10 @@ package catwalks.block.extended.tileprops;
 public class ExtendedTileProperties {
 	protected int index = 0;
 	
+	public void bufferBits(int bits) {
+		index += bits;
+	}
+	
 	public BoolProp allocateBool() {
 		BoolProp p = new BoolProp(index);
 		index++;
@@ -32,6 +36,18 @@ public class ExtendedTileProperties {
 	
 	public <T> ArrayProp<T> allocateArray(T[] values, int ensureSize) {
 		ArrayProp<T> p = new ArrayProp(index, values, ensureSize);
+		index += p.getBits();
+		return p;
+	}
+	
+	public <T> BoolArrayProp<T> allocateBoolArray(T[] values) {
+		BoolArrayProp<T> p = new BoolArrayProp(index, values);
+		index += p.getBits();
+		return p;
+	}
+	
+	public <T> BoolArrayProp<T> allocateBoolArray(T[] values, int ensureSize) {
+		BoolArrayProp<T> p = new BoolArrayProp(index, values, ensureSize);
 		index += p.getBits();
 		return p;
 	}
