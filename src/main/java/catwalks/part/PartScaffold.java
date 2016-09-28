@@ -29,13 +29,14 @@ import static net.minecraft.block.Block.NULL_AABB;
  * Created by TheCodeWarrior
  */
 public class PartScaffold extends Multipart implements ISolidPart, IDirtyable {
+	public static final String ID = Const.MODID + ":scaffold";
 	
 	protected List<AxisAlignedBB> selectionBoxes = new ArrayList<>();
 	
 	protected static MetaStorage.Allocator allocator = new MetaStorage.Allocator();
-	public static ArrayProp<EnumCatwalkMaterial> MATERIAL = allocator.allocateArray(EnumCatwalkMaterial.values(), 7);
+	public static ArrayProp<EnumCatwalkMaterial> MATERIAL = allocator.allocateArray("material", EnumCatwalkMaterial.values(), 7);
 	
-	protected MetaStorage storage = new MetaStorage(this);
+	protected MetaStorage storage = new MetaStorage(allocator, this);
 	
 	public PartScaffold() {
 		double p = 1/16f, P = 1-p;

@@ -1,10 +1,13 @@
 package catwalks.util;
 
-import java.util.BitSet;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Predicate;
 
+import catwalks.part.PartCatwalk;
+import com.google.common.collect.ImmutableList;
+import mcmultipart.multipart.IMultipart;
+import mcmultipart.multipart.IMultipartContainer;
+import mcmultipart.multipart.MultipartHelper;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import net.minecraft.block.state.IBlockState;
@@ -32,6 +35,42 @@ import catwalks.shade.ccl.vec.Vector3;
 
 public class GeneralUtil {
 	private static final Random RANDOM = new Random();
+	
+	public static <T extends IMultipart> List<T> getParts(Class<T> clazz, IBlockAccess world, BlockPos pos, boolean exact) {
+		IMultipartContainer container = MultipartHelper.getPartContainer(world, pos);
+		if (container != null) {
+			List<T> list = new ArrayList<T>();
+			Collection<? extends IMultipart> parts = container.getParts();
+			for(IMultipart part : parts) {
+				if(exact) {
+					if(clazz == part.getClass()) {
+						list.add( (T) part );
+					}
+				} else {
+					if(clazz.isAssignableFrom(part.getClass())) {
+						list.add( (T) part );
+					}
+				}
+			}
+			return list;
+		}
+		return ImmutableList.of();
+	}
+	
+	public static <T extends IMultipart> T getPart(Class<T> clazz, IBlockAccess world, BlockPos pos, boolean exact) {
+		List<T> list = getParts(clazz, world, pos, exact);
+		if(list.size() == 0)
+			return null;
+		return list.get(0);
+	}
+	
+	public static <T extends IMultipart> List<T> getParts(Class<T> clazz, IBlockAccess world, BlockPos pos) {
+		return getParts(clazz, world, pos, false);
+	}
+	
+	public static <T extends IMultipart> T getPart(Class<T> clazz, IBlockAccess world, BlockPos pos) {
+		return getPart(clazz, world, pos, false);
+	}
 	
 	public static boolean isHolding(EntityPlayer player, Predicate<ItemStack> test) {
 		if(player.getHeldItemMainhand() != null && test.test(player.getHeldItemMainhand()))

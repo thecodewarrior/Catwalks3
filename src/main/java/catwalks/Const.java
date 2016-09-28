@@ -4,6 +4,8 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Random;
 
+import catwalks.block.property.UPropertyObject;
+import catwalks.part.data.CatwalkRenderData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
@@ -96,6 +98,8 @@ public class Const {
 
 	public static final String COMMAND_OPTIONS = "options";
 	
+	public static final UPropertyObject<CatwalkRenderData> CATWALK_RENDER_DATA = new UPropertyObject<CatwalkRenderData>("renderdata", CatwalkRenderData.class);
+	
 	static {
 		sideProperties.put(EnumFacing.UP, TOP);
 		sideProperties.put(EnumFacing.DOWN, BOTTOM);
@@ -116,5 +120,9 @@ public class Const {
 	
 	public static class GUI {
 		public static int NODE_MANIPULATOR = -1;
+	}
+	
+	public static ResourceLocation location(String path) {
+		return new ResourceLocation(MODID, path);
 	}
 }

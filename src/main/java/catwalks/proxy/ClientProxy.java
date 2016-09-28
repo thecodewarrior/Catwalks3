@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import catwalks.register.RenderRegister;
+import catwalks.render.ModelHandle;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -64,9 +65,11 @@ public class ClientProxy extends CommonProxy {
 	public void preInit() {
 		RenderRegister.Blocks.initRender();
 		RenderRegister.Items.initRender();
+		RenderRegister.Parts.initRender();
 		MinecraftForge.EVENT_BUS.register(new Conf());
 		OBJLoader.INSTANCE.addDomain(Const.MODID);
 		ShaderHelper.initShaders();
+		ModelHandle.init();
 	}
 	
 	public void reloadConfigs() {

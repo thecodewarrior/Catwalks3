@@ -3,16 +3,21 @@ package catwalks.register;
 import catwalks.Const;
 import catwalks.block.EnumCatwalkMaterial;
 import catwalks.item.ItemBase;
+import catwalks.part.PartScaffold;
 import catwalks.render.ModelHandler;
 import catwalks.render.cached.CachedSmartModel;
 import catwalks.render.cached.models.CatwalkModel;
 import catwalks.render.cached.models.LadderModel;
 import catwalks.render.cached.models.StairBottomModel;
 import catwalks.render.cached.models.StairTopModel;
+import catwalks.render.part.CatwalkBakedModel;
+import mcmultipart.client.multipart.MultipartRegistryClient;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -24,6 +29,12 @@ import static catwalks.register.ItemRegister.renderRegsiterItems;
  */
 @SideOnly(Side.CLIENT)
 public class RenderRegister {
+	public static class Parts {
+		public static void initRender() {
+			ModelLoaderRegistry.registerLoader(new CatwalkBakedModel.ModelLoader());
+//			MultipartRegistryClient.registerSpecialPartStateMapper(new ResourceLocation(PartScaffold.ID), new CatwalkBakedModel.Statemapper());
+		}
+	}
 	public static class Blocks {
 		private static void registerTextureAllMaterials(String path) {
 			for (EnumCatwalkMaterial mat : EnumCatwalkMaterial.values()) {

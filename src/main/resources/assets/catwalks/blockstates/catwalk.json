@@ -1,0 +1,17 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "particle": "blocks/hopper_outside"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [{
+      "model": "catwalks:catwalk"
+    }],
+    "multipart": [{
+      "model": "catwalks:internal/catwalk"
+    }]
+  }
+}

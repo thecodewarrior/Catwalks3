@@ -13,13 +13,13 @@ public class MultipartRegister {
 	
 	public static void register() {
 		// scaffold
-		MultipartRegistry.registerPart(PartScaffold.class, Const.MODID + ":scaffold");
+		MultipartRegistry.registerPart(PartScaffold.class, PartScaffold.ID);
 		PartConverterScaffold converter = new PartConverterScaffold();
 		MultipartRegistry.registerPartConverter(converter);
 		MultipartRegistry.registerReversePartConverter(converter);
 		
 		// catwalk
-		MultipartRegistry.registerPart(PartCatwalk.class, Const.MODID + ":catwalk");
+		MultipartRegistry.registerPart(PartCatwalk.class, PartCatwalk.ID);
 	}
 	
 }
