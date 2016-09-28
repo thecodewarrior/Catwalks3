@@ -2,28 +2,24 @@ package catwalks.part;
 
 import catwalks.Const;
 import catwalks.block.EnumCatwalkMaterial;
-import catwalks.util.GeneralUtil;
 import catwalks.util.meta.ArrayProp;
 import catwalks.util.meta.IDirtyable;
 import catwalks.util.meta.MetaStorage;
 import mcmultipart.MCMultiPartMod;
-import mcmultipart.multipart.*;
+import mcmultipart.multipart.IMultipart;
+import mcmultipart.multipart.ISolidPart;
+import mcmultipart.multipart.Multipart;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
-
-import static javax.swing.UIManager.get;
-import static net.minecraft.block.Block.NULL_AABB;
 
 /**
  * Created by TheCodeWarrior

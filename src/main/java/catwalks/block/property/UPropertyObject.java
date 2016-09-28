@@ -1,7 +1,5 @@
 package catwalks.block.property;
 
-import net.minecraftforge.common.property.IUnlistedProperty;
-
 /**
  * Created by TheCodeWarrior
  */

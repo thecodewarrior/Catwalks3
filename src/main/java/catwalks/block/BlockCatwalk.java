@@ -1,22 +1,5 @@
 package catwalks.block;
 
-import java.util.List;
-
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.property.IExtendedBlockState;
-
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
-
 import catwalks.Const;
 import catwalks.block.extended.CubeEdge;
 import catwalks.block.extended.tileprops.TileExtended;
@@ -27,6 +10,20 @@ import catwalks.raytrace.block.BlockTraceable;
 import catwalks.raytrace.primitives.Quad;
 import catwalks.shade.ccl.vec.Cuboid6;
 import catwalks.util.AABBUtils;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import net.minecraftforge.common.property.IExtendedBlockState;
+
+import java.util.List;
 
 public class BlockCatwalk extends BlockCatwalkBase {
 	

@@ -1,10 +1,9 @@
 package catwalks.block.extended;
 
-import net.minecraftforge.common.property.IExtendedBlockState;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.common.property.IExtendedBlockState;
 
 public interface ITileStateProvider {
 

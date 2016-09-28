@@ -1,15 +1,15 @@
 package catwalks.util;
 
-import java.util.*;
-import java.util.function.Predicate;
-
-import catwalks.part.PartCatwalk;
+import catwalks.Const;
+import catwalks.block.ICatwalkConnect;
+import catwalks.block.extended.CubeEdge;
+import catwalks.block.extended.ITileStateProvider;
+import catwalks.shade.ccl.vec.Cuboid6;
+import catwalks.shade.ccl.vec.Vector3;
 import com.google.common.collect.ImmutableList;
 import mcmultipart.multipart.IMultipart;
 import mcmultipart.multipart.IMultipartContainer;
 import mcmultipart.multipart.MultipartHelper;
-import net.minecraftforge.common.property.IExtendedBlockState;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,13 +25,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.IExtendedBlockState;
 
-import catwalks.Const;
-import catwalks.block.ICatwalkConnect;
-import catwalks.block.extended.CubeEdge;
-import catwalks.block.extended.ITileStateProvider;
-import catwalks.shade.ccl.vec.Cuboid6;
-import catwalks.shade.ccl.vec.Vector3;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class GeneralUtil {
 	private static final Random RANDOM = new Random();

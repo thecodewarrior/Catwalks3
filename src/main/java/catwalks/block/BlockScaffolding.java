@@ -1,11 +1,14 @@
 package catwalks.block;
 
-import java.util.List;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import net.minecraft.block.Block;
+import catwalks.Conf;
+import catwalks.Const;
+import catwalks.block.extended.ICustomLadder;
+import catwalks.item.ItemBlockScaffold;
+import catwalks.register.ItemRegister;
+import catwalks.shade.ccl.raytracer.RayTracer;
+import catwalks.util.ExtendUtils;
+import catwalks.util.GeneralUtil;
+import catwalks.util.Logs;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
@@ -24,16 +27,10 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import catwalks.Conf;
-import catwalks.Const;
-import catwalks.block.extended.ICustomLadder;
-import catwalks.item.ItemBlockScaffold;
-import catwalks.register.ItemRegister;
-import catwalks.shade.ccl.raytracer.RayTracer;
-import catwalks.util.ExtendUtils;
-import catwalks.util.GeneralUtil;
-import catwalks.util.Logs;
+import java.util.List;
 
 public class BlockScaffolding extends BlockBase implements ICustomLadder {
 		

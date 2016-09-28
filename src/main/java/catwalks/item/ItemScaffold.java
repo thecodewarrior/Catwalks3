@@ -3,7 +3,6 @@ package catwalks.item;
 import catwalks.block.EnumCatwalkMaterial;
 import catwalks.part.PartScaffold;
 import mcmultipart.multipart.IMultipart;
-import mcmultipart.multipart.PartSlot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;

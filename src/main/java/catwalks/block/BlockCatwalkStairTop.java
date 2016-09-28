@@ -1,15 +1,14 @@
 package catwalks.block;
 
-import java.util.List;
-import java.util.Random;
-
+import catwalks.Const;
 import catwalks.block.extended.BlockExtended;
+import catwalks.block.extended.CubeEdge;
 import catwalks.block.extended.tileprops.ArrayProp;
-import catwalks.block.extended.tileprops.BoolProp;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
-
+import catwalks.block.extended.tileprops.TileExtended;
+import catwalks.register.BlockRegister;
+import catwalks.util.GeneralUtil;
+import catwalks.util.Logs;
+import catwalks.util.WrenchChecker;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -28,14 +27,12 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
-import catwalks.Const;
-import catwalks.block.extended.CubeEdge;
-import catwalks.block.extended.tileprops.TileExtended;
-import catwalks.register.BlockRegister;
-import catwalks.util.GeneralUtil;
-import catwalks.util.Logs;
-import catwalks.util.WrenchChecker;
+import java.util.List;
+import java.util.Random;
 
 import static catwalks.Const.EAST_TOP;
 

@@ -1,19 +1,18 @@
 package catwalks.raytrace.block;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
-
-import com.google.common.collect.ImmutableList;
-
 import catwalks.block.BlockCatwalkBase.BlockTraceParam;
 import catwalks.raytrace.RayTraceUtil.TraceablePrimitive;
 import catwalks.util.GeneralUtil;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.property.IUnlistedProperty;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 
 public class BlockTraceFactory {
 

@@ -1,7 +1,5 @@
 package catwalks.block.extended.tileprops;
 
-import static javax.swing.UIManager.getBoolean;
-
 /**
  * Created by TheCodeWarrior
  */

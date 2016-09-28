@@ -1,7 +1,6 @@
 package catwalks.part.converter;
 
 import catwalks.Const;
-import catwalks.block.BlockScaffolding;
 import catwalks.block.EnumCatwalkMaterial;
 import catwalks.part.PartScaffold;
 import catwalks.register.BlockRegister;
@@ -17,8 +16,6 @@ import net.minecraft.world.IBlockAccess;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-
-import static com.sun.tools.doclint.Entity.part;
 
 /**
  * Created by TheCodeWarrior

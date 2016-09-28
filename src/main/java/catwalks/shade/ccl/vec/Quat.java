@@ -1,11 +1,11 @@
 package catwalks.shade.ccl.vec;
 
+import catwalks.shade.ccl.math.MathHelper;
+import catwalks.shade.ccl.util.Copyable;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-
-import catwalks.shade.ccl.math.MathHelper;
-import catwalks.shade.ccl.util.Copyable;
 
 public class Quat implements Copyable<Quat>
 {

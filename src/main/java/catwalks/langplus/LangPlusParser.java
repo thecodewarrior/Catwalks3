@@ -1,5 +1,11 @@
 package catwalks.langplus;
 
+import catwalks.util.Logs;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.IOUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,14 +15,6 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-
-import org.apache.commons.io.Charsets;
-import org.apache.commons.io.IOUtils;
-
-import catwalks.util.Logs;
 
 public class LangPlusParser {
 

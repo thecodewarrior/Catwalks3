@@ -1,17 +1,15 @@
 package catwalks.item;
 
-import java.text.MessageFormat;
-import java.util.List;
-
-import net.minecraftforge.fml.common.registry.GameRegistry;
-
+import catwalks.CatwalksMod;
+import catwalks.register.ItemRegister;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import catwalks.CatwalksMod;
-import catwalks.register.ItemRegister;
+import java.text.MessageFormat;
+import java.util.List;
 
 public class ItemBase extends Item{
 	public String name;

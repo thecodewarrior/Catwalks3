@@ -1,10 +1,9 @@
 package catwalks.shade.ccl.raytracer;
 
-import java.util.List;
-
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
+import catwalks.shade.ccl.math.MathHelper;
+import catwalks.shade.ccl.vec.BlockCoord;
+import catwalks.shade.ccl.vec.Cuboid6;
+import catwalks.shade.ccl.vec.Vector3;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -15,11 +14,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import catwalks.shade.ccl.math.MathHelper;
-import catwalks.shade.ccl.vec.BlockCoord;
-import catwalks.shade.ccl.vec.Cuboid6;
-import catwalks.shade.ccl.vec.Vector3;
+import java.util.List;
 
 public class RayTracer
 {

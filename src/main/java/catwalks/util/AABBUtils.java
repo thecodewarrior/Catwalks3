@@ -1,10 +1,9 @@
 package catwalks.util;
 
+import catwalks.shade.ccl.vec.Cuboid6;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.AxisAlignedBB;
-
-import catwalks.shade.ccl.vec.Cuboid6;
 
 public class AABBUtils {
 	/**

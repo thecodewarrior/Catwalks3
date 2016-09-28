@@ -1,17 +1,5 @@
 package catwalks.render.cached.models;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import net.minecraftforge.common.property.IExtendedBlockState;
-
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
-
 import catwalks.Const;
 import catwalks.block.BlockCatwalkStair;
 import catwalks.block.EnumCatwalkMaterial;
@@ -19,6 +7,16 @@ import catwalks.render.ModelUtils;
 import catwalks.render.ModelUtils.SpritelessQuad;
 import catwalks.render.cached.SimpleModel;
 import catwalks.util.GeneralUtil;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.property.IExtendedBlockState;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class StairBottomModel extends SimpleModel {
 

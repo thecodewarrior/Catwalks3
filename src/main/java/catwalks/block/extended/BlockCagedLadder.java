@@ -1,33 +1,11 @@
 package catwalks.block.extended;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import catwalks.block.EnumCatwalkMaterial;
-import catwalks.block.extended.tileprops.TileExtended;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
-
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
-
 import catwalks.Conf;
 import catwalks.Const;
 import catwalks.block.BlockCatwalkBase;
+import catwalks.block.EnumCatwalkMaterial;
 import catwalks.block.ICatwalkConnect;
+import catwalks.block.extended.tileprops.TileExtended;
 import catwalks.block.property.UPropertyBool;
 import catwalks.item.ItemBlockCatwalk;
 import catwalks.raytrace.RayTraceUtil;
@@ -38,6 +16,25 @@ import catwalks.raytrace.primitives.Quad;
 import catwalks.shade.ccl.vec.Cuboid6;
 import catwalks.util.GeneralUtil;
 import catwalks.util.Logs;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder {
 

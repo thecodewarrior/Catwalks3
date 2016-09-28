@@ -1,10 +1,9 @@
 package catwalks.item;
 
+import catwalks.block.EnumCatwalkMaterial;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-
-import catwalks.block.EnumCatwalkMaterial;
 
 public class ItemBlockCatwalk extends ItemBlock {
 	public ItemBlockCatwalk(Block block)

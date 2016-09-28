@@ -1,15 +1,12 @@
 package catwalks.raytrace;
 
-import java.util.List;
-
+import catwalks.shade.ccl.vec.Matrix4;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.google.common.collect.ImmutableList;
-
-import catwalks.shade.ccl.vec.Matrix4;
+import java.util.List;
 
 public class RayTraceUtil {
 	

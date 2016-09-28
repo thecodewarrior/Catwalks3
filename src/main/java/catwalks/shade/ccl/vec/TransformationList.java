@@ -1,12 +1,11 @@
 package catwalks.shade.ccl.vec;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import net.minecraft.util.math.Vec3d;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class TransformationList extends Transformation
 {

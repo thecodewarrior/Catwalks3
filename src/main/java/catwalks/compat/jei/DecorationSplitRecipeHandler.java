@@ -1,8 +1,11 @@
 package catwalks.compat.jei;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import catwalks.item.crafting.RecipeDecorationSplit;
+import mezz.jei.api.IGuiHelper;
+import mezz.jei.api.recipe.IRecipeHandler;
+import mezz.jei.api.recipe.IRecipeWrapper;
+import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
+import mezz.jei.plugins.vanilla.crafting.AbstractShapelessRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -10,13 +13,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
-
-import catwalks.item.crafting.RecipeDecorationSplit;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.recipe.IRecipeHandler;
-import mezz.jei.api.recipe.IRecipeWrapper;
-import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
-import mezz.jei.plugins.vanilla.crafting.AbstractShapelessRecipeWrapper;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DecorationSplitRecipeHandler implements IRecipeHandler<RecipeDecorationSplit> {
 

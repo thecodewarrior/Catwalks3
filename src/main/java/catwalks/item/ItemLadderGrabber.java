@@ -1,7 +1,6 @@
 package catwalks.item;
 
-import java.util.List;
-
+import catwalks.Conf;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -10,7 +9,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
-import catwalks.Conf;
+import java.util.List;
 
 public class ItemLadderGrabber extends ItemBase {
 	

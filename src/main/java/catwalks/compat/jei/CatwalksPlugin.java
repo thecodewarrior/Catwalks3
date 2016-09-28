@@ -1,10 +1,6 @@
 package catwalks.compat.jei;
 
-import mezz.jei.api.BlankModPlugin;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.IItemRegistry;
-import mezz.jei.api.IJeiHelpers;
-import mezz.jei.api.IModRegistry;
+import mezz.jei.api.*;
 
 @mezz.jei.api.JEIPlugin
 public class CatwalksPlugin extends BlankModPlugin {

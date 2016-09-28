@@ -1,14 +1,9 @@
 package catwalks.register;
 
+import catwalks.item.*;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import catwalks.item.*;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 
 public class ItemRegister {
 	

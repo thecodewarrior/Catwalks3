@@ -1,13 +1,12 @@
 package catwalks.raytrace;
 
+import catwalks.raytrace.RayTraceUtil.ITraceResult;
+import catwalks.raytrace.RayTraceUtil.ITraceable;
+import catwalks.util.AABB;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-
-import catwalks.raytrace.RayTraceUtil.ITraceResult;
-import catwalks.raytrace.RayTraceUtil.ITraceable;
-import catwalks.util.AABB;
 
 public class CustomAABBCollide extends AABB {
 

@@ -1,21 +1,17 @@
 package catwalks.raytrace.block;
 
-import java.util.function.Predicate;
-
 import catwalks.block.BlockCatwalkBase.BlockTraceParam;
 import catwalks.block.BlockCatwalkBase.BlockTraceResult;
 import catwalks.raytrace.RayTraceUtil;
-import catwalks.raytrace.RayTraceUtil.IRenderableFace;
-import catwalks.raytrace.RayTraceUtil.TraceablePrimitive;
-import catwalks.raytrace.RayTraceUtil.ITraceResult;
-import catwalks.raytrace.RayTraceUtil.ITraceable;
-import catwalks.raytrace.RayTraceUtil.SimpleRenderableTraceResult;
+import catwalks.raytrace.RayTraceUtil.*;
 import catwalks.util.GeneralUtil;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.property.IUnlistedProperty;
+
+import java.util.function.Predicate;
 
 public class BlockTraceable implements ITraceable<BlockTraceParam, BlockTraceResult> {
 	

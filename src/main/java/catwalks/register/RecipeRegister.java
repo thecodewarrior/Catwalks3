@@ -1,7 +1,5 @@
 package catwalks.register;
 
-import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
-
 import catwalks.Const;
 import catwalks.item.crafting.RecipeDecorationRepair;
 import catwalks.item.crafting.RecipeDecorationSplit;
@@ -14,6 +12,8 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+
+import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
 
 public class RecipeRegister {
 

@@ -25,8 +25,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static com.sun.tools.internal.xjc.reader.Ring.add;
-
 /**
  * Created by TheCodeWarrior
  */

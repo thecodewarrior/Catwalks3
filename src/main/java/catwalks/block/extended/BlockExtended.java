@@ -1,7 +1,6 @@
 package catwalks.block.extended;
 
-import java.util.function.Function;
-
+import catwalks.block.BlockBase;
 import catwalks.block.extended.tileprops.ExtendedTileProperties;
 import catwalks.block.extended.tileprops.TileExtended;
 import net.minecraft.block.Block;
@@ -11,7 +10,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import catwalks.block.BlockBase;
+import java.util.function.Function;
 
 public abstract class BlockExtended extends BlockBase {
 

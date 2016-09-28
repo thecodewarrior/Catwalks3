@@ -2,7 +2,6 @@ package catwalks.item;
 
 import catwalks.block.EnumCatwalkMaterial;
 import catwalks.part.PartCatwalk;
-import catwalks.part.PartScaffold;
 import mcmultipart.multipart.IMultipart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

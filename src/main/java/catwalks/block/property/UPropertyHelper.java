@@ -1,8 +1,7 @@
 package catwalks.block.property;
 
-import net.minecraftforge.common.property.IUnlistedProperty;
-
 import com.google.common.base.Objects;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 public abstract class UPropertyHelper<T extends Comparable<T>> implements IUnlistedProperty<T>
 {

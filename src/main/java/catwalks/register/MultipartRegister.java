@@ -1,6 +1,5 @@
 package catwalks.register;
 
-import catwalks.Const;
 import catwalks.part.PartCatwalk;
 import catwalks.part.PartScaffold;
 import catwalks.part.converter.PartConverterScaffold;

@@ -1,19 +1,14 @@
 package catwalks.movement;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Predicate;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-
+import catwalks.Conf;
+import catwalks.Const;
+import catwalks.block.IDecoratable;
+import catwalks.block.extended.ICustomLadder;
+import catwalks.movement.capability.CWEntityDataProvider;
+import catwalks.movement.capability.ICWEntityData;
+import catwalks.movement.capability.ICWEntityData.CWEntityData;
+import catwalks.register.ItemRegister;
+import catwalks.shade.ccl.vec.Vector3;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -32,16 +27,19 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import catwalks.Conf;
-import catwalks.Const;
-import catwalks.block.IDecoratable;
-import catwalks.block.extended.ICustomLadder;
-import catwalks.movement.capability.CWEntityDataProvider;
-import catwalks.movement.capability.ICWEntityData;
-import catwalks.movement.capability.ICWEntityData.CWEntityData;
-import catwalks.register.ItemRegister;
-import catwalks.shade.ccl.vec.Vector3;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Predicate;
 
 public class MovementHandler {
 

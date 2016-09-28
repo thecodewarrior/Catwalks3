@@ -1,14 +1,13 @@
 package catwalks.shade.ccl.vec;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.math.Vec3d;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 public class Scale extends Transformation {
     public Vector3 factor;
