@@ -10,8 +10,19 @@
     "inventory": [{
       "model": "catwalks:catwalk"
     }],
-    "multipart": [{
-      "model": "catwalks:internal/catwalk"
-    }]
+    "material": {
+		"custom": {
+			"model": "catwalks:internal/catwalk/custom1"
+		},
+		"steel": {
+			"model": "catwalks:internal/catwalk/steel"
+		},
+		"iesteel": {
+			"model": "catwalks:internal/catwalk/iesteel"
+		},
+		"wood": {
+			"model": "catwalks:internal/catwalk/wood"
+		}
+    }
   }
 }

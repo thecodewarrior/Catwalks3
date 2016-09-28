@@ -1,5 +1,6 @@
 package catwalks.render;
 
+import catwalks.CatwalksMod;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
@@ -21,6 +22,7 @@ import net.minecraftforge.common.model.IModelState;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
+import java.io.FileNotFoundException;
 import java.util.Map;
 
 /**
@@ -233,7 +235,7 @@ public class ModelHandle
 		
 		try
 		{
-			IModel mod = ModelLoaderRegistry.getModel(handle.getModel());
+			IModel mod = ModelLoaderRegistry.getModelOrMissing(handle.getModel());
 			if (mod instanceof IRetexturableModel && handle.getTextureReplacements().size() > 0)
 			{
 				IRetexturableModel rtm = (IRetexturableModel) mod;

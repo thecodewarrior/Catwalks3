@@ -3,12 +3,16 @@ package catwalks.item;
 import catwalks.block.EnumCatwalkMaterial;
 import catwalks.part.PartScaffold;
 import mcmultipart.multipart.IMultipart;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 /**
  * Created by TheCodeWarrior
@@ -19,6 +23,18 @@ public class ItemScaffold extends ItemMultiPartBase {
 		super(name);
 		setHasSubtypes(true);
 		setMaxDamage(0);
+	}
+	
+	@Override
+	public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+		for(EnumCatwalkMaterial mat : EnumCatwalkMaterial.values()) {
+			subItems.add(new ItemStack(itemIn, 1, mat.ordinal()));
+		}
+	}
+	
+	@Override
+	public String getUnlocalizedName(ItemStack stack) {
+		return super.getUnlocalizedName(stack) + "." + EnumCatwalkMaterial.values()[stack.getItemDamage()].getName().toLowerCase();
 	}
 	
 	/**

@@ -11,6 +11,7 @@ public class CatwalkRenderData implements Comparable<CatwalkRenderData> {
 	
 	public EnumMap<EnumFacing, CatwalkSideRenderData> sides = new EnumMap<EnumFacing, CatwalkSideRenderData>(EnumFacing.class);
 	
+	public boolean bottom;
 	public boolean corner_ne, corner_nw, corner_se, corner_sw;
 	
 	public static class CatwalkSideRenderData {

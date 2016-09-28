@@ -46,14 +46,14 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 	public static final String ID = Const.MODID + ":catwalk";
 	
 	@SuppressWarnings("unchecked")
-	public static List<AxisAlignedBB> sideBoxes = Arrays.asList(new AxisAlignedBB[]{
+	public static List<AxisAlignedBB> sideBoxes = Arrays.asList(
 		new AxisAlignedBB(0, 0, 0, /**/ 1, 0, 1), // down
 		new AxisAlignedBB(0, 0, 0, /**/ 0, 0, 0), // up
 		new AxisAlignedBB(0, 0, 0, /**/ 1, 1, 0), // north
 		new AxisAlignedBB(0, 0, 1, /**/ 1, 1, 1), // south
 		new AxisAlignedBB(0, 0, 0, /**/ 0, 1, 1), // west
 		new AxisAlignedBB(1, 0, 0, /**/ 1, 1, 1)  // east
-	});
+	);
 	
 	public static EnumFacing[] SIDE_LIST = new EnumFacing[]{EnumFacing.DOWN, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST};
 	
@@ -227,9 +227,16 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 	
 	@Override
 	public BlockStateContainer createBlockState() {
-		return new ExtendedBlockState(MCMultiPartMod.multipart, new IProperty[0], new IUnlistedProperty[]{
+		return new ExtendedBlockState(MCMultiPartMod.multipart, new IProperty[] {
+			Const.MATERIAL_META
+		}, new IUnlistedProperty[]{
 			Const.CATWALK_RENDER_DATA
 		});
+	}
+	
+	@Override
+	public IBlockState getActualState(IBlockState state) {
+		return state.withProperty(Const.MATERIAL_META, MATERIAL.get(storage));
 	}
 	
 	@Override
@@ -257,6 +264,8 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 		renderData.corner_nw = cornerLogic(cache, EnumFacing.NORTH, EnumFacing.WEST);
 		renderData.corner_se = cornerLogic(cache, EnumFacing.SOUTH, EnumFacing.EAST);
 		renderData.corner_sw = cornerLogic(cache, EnumFacing.SOUTH, EnumFacing.WEST);
+		
+		renderData.bottom = getSide(EnumFacing.DOWN);
 		
 		return estate.withProperty(Const.CATWALK_RENDER_DATA, renderData);
 	}
