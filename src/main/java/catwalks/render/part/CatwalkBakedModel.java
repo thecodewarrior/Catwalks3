@@ -34,13 +34,15 @@ public class CatwalkBakedModel implements IBakedModel
 {
 	public static final ResourceLocation FAKE_LOCATION = Const.location("models/block/internal/catwalk");
 	
-	public static final ResourceLocation CATWALK_SIDE_LEFT_CONNECTED = Const.location("block/catwalk/custom1/left_connected");
+	public static final ResourceLocation CATWALK_SIDE_LEFT_MERGE = Const.location("block/catwalk/custom1/left_merge");
 	public static final ResourceLocation CATWALK_SIDE_LEFT_END = Const.location("block/catwalk/custom1/left_end");
 	public static final ResourceLocation CATWALK_SIDE_LEFT_CORNER = Const.location("block/catwalk/custom1/left_corner");
+	public static final ResourceLocation CATWALK_SIDE_LEFT_CONNECT = Const.location("block/catwalk/custom1/left_connect");
 	
-	public static final ResourceLocation CATWALK_SIDE_RIGHT_CONNECTED = Const.location("block/catwalk/custom1/right_connected");
+	public static final ResourceLocation CATWALK_SIDE_RIGHT_MERGE = Const.location("block/catwalk/custom1/right_merge");
 	public static final ResourceLocation CATWALK_SIDE_RIGHT_END = Const.location("block/catwalk/custom1/right_end");
 	public static final ResourceLocation CATWALK_SIDE_RIGHT_CORNER = Const.location("block/catwalk/custom1/right_corner");
+	public static final ResourceLocation CATWALK_SIDE_RIGHT_CONNECT = Const.location("block/catwalk/custom1/right_connect");
 	
 	public static final ResourceLocation CATWALK_CORNER = Const.location("block/catwalk/custom1/corner");
 	public static final ResourceLocation CATWALK_BOTTOM = Const.location("block/catwalk/custom1/bottom");
@@ -50,10 +52,10 @@ public class CatwalkBakedModel implements IBakedModel
 	private final ModelHandle handle_corner_nw = ModelHandle.of(CATWALK_CORNER).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 270)));
 	private final ModelHandle handle_corner_se = ModelHandle.of(CATWALK_CORNER).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 90)));
 	
-	private final ModelHandle handle_side_left_connected_n = ModelHandle.of(CATWALK_SIDE_LEFT_CONNECTED);
-	private final ModelHandle handle_side_left_connected_s = ModelHandle.of(CATWALK_SIDE_LEFT_CONNECTED).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 180)));
-	private final ModelHandle handle_side_left_connected_w = ModelHandle.of(CATWALK_SIDE_LEFT_CONNECTED).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 270)));
-	private final ModelHandle handle_side_left_connected_e = ModelHandle.of(CATWALK_SIDE_LEFT_CONNECTED).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 90)));
+	private final ModelHandle handle_side_left_merge_n = ModelHandle.of(CATWALK_SIDE_LEFT_MERGE);
+	private final ModelHandle handle_side_left_merge_s = ModelHandle.of(CATWALK_SIDE_LEFT_MERGE).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 180)));
+	private final ModelHandle handle_side_left_merge_w = ModelHandle.of(CATWALK_SIDE_LEFT_MERGE).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 270)));
+	private final ModelHandle handle_side_left_merge_e = ModelHandle.of(CATWALK_SIDE_LEFT_MERGE).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 90)));
 	
 	private final ModelHandle handle_side_left_end_n = ModelHandle.of(CATWALK_SIDE_LEFT_END);
 	private final ModelHandle handle_side_left_end_s = ModelHandle.of(CATWALK_SIDE_LEFT_END).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 180)));
@@ -65,10 +67,15 @@ public class CatwalkBakedModel implements IBakedModel
 	private final ModelHandle handle_side_left_corner_w = ModelHandle.of(CATWALK_SIDE_LEFT_CORNER).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 270)));
 	private final ModelHandle handle_side_left_corner_e = ModelHandle.of(CATWALK_SIDE_LEFT_CORNER).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 90)));
 	
-	private final ModelHandle handle_side_right_connected_n = ModelHandle.of(CATWALK_SIDE_RIGHT_CONNECTED);
-	private final ModelHandle handle_side_right_connected_s = ModelHandle.of(CATWALK_SIDE_RIGHT_CONNECTED).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 180)));
-	private final ModelHandle handle_side_right_connected_w = ModelHandle.of(CATWALK_SIDE_RIGHT_CONNECTED).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 270)));
-	private final ModelHandle handle_side_right_connected_e = ModelHandle.of(CATWALK_SIDE_RIGHT_CONNECTED).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 90)));
+	private final ModelHandle handle_side_left_connect_n = ModelHandle.of(CATWALK_SIDE_LEFT_CONNECT);
+	private final ModelHandle handle_side_left_connect_s = ModelHandle.of(CATWALK_SIDE_LEFT_CONNECT).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 180)));
+	private final ModelHandle handle_side_left_connect_w = ModelHandle.of(CATWALK_SIDE_LEFT_CONNECT).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 270)));
+	private final ModelHandle handle_side_left_connect_e = ModelHandle.of(CATWALK_SIDE_LEFT_CONNECT).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 90)));
+	
+	private final ModelHandle handle_side_right_connected_n = ModelHandle.of(CATWALK_SIDE_RIGHT_MERGE);
+	private final ModelHandle handle_side_right_connected_s = ModelHandle.of(CATWALK_SIDE_RIGHT_MERGE).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 180)));
+	private final ModelHandle handle_side_right_connected_w = ModelHandle.of(CATWALK_SIDE_RIGHT_MERGE).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 270)));
+	private final ModelHandle handle_side_right_connected_e = ModelHandle.of(CATWALK_SIDE_RIGHT_MERGE).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 90)));
 	
 	private final ModelHandle handle_side_right_end_n = ModelHandle.of(CATWALK_SIDE_RIGHT_END);
 	private final ModelHandle handle_side_right_end_s = ModelHandle.of(CATWALK_SIDE_RIGHT_END).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 180)));
@@ -79,6 +86,11 @@ public class CatwalkBakedModel implements IBakedModel
 	private final ModelHandle handle_side_right_corner_s = ModelHandle.of(CATWALK_SIDE_RIGHT_CORNER).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 180)));
 	private final ModelHandle handle_side_right_corner_w = ModelHandle.of(CATWALK_SIDE_RIGHT_CORNER).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 270)));
 	private final ModelHandle handle_side_right_corner_e = ModelHandle.of(CATWALK_SIDE_RIGHT_CORNER).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 90)));
+	
+	private final ModelHandle handle_side_right_connect_n = ModelHandle.of(CATWALK_SIDE_RIGHT_CONNECT);
+	private final ModelHandle handle_side_right_connect_s = ModelHandle.of(CATWALK_SIDE_RIGHT_CONNECT).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 180)));
+	private final ModelHandle handle_side_right_connect_w = ModelHandle.of(CATWALK_SIDE_RIGHT_CONNECT).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 270)));
+	private final ModelHandle handle_side_right_connect_e = ModelHandle.of(CATWALK_SIDE_RIGHT_CONNECT).state(new TRSRTransformation(ModelRotation.getModelRotation(0, 90)));
 	
 	private final TextureAtlasSprite particle;
 	
@@ -102,68 +114,84 @@ public class CatwalkBakedModel implements IBakedModel
 				CatwalkRenderData.CatwalkSideRenderData sideData = data.sides.get(EnumFacing.NORTH);
 				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.END)
 					quads.add(handle_side_left_end_n);
-				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT)
-					quads.add(handle_side_left_connected_n);
+				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.MERGE)
+					quads.add(handle_side_left_merge_n);
 				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CORNER)
 					quads.add(handle_side_left_corner_n);
+				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT)
+					quads.add(handle_side_left_connect_n);
 				
 				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.END)
 					quads.add(handle_side_right_end_n);
-				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT)
+				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.MERGE)
 					quads.add(handle_side_right_connected_n);
 				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CORNER)
 					quads.add(handle_side_right_corner_n);
+				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT)
+					quads.add(handle_side_right_connect_n);
 			}
 			
 			if(data.sides.get(EnumFacing.SOUTH) != null) {
 				CatwalkRenderData.CatwalkSideRenderData sideData = data.sides.get(EnumFacing.SOUTH);
 				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.END)
 					quads.add(handle_side_left_end_s);
-				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT)
-					quads.add(handle_side_left_connected_s);
+				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.MERGE)
+					quads.add(handle_side_left_merge_s);
 				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CORNER)
 					quads.add(handle_side_left_corner_s);
+				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT)
+					quads.add(handle_side_left_connect_s);
 				
 				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.END)
 					quads.add(handle_side_right_end_s);
-				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT)
+				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.MERGE)
 					quads.add(handle_side_right_connected_s);
 				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CORNER)
 					quads.add(handle_side_right_corner_s);
+				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT)
+					quads.add(handle_side_right_connect_s);
 			}
 			
 			if(data.sides.get(EnumFacing.EAST) != null) {
 				CatwalkRenderData.CatwalkSideRenderData sideData = data.sides.get(EnumFacing.EAST);
 				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.END)
 					quads.add(handle_side_left_end_e);
-				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT)
-					quads.add(handle_side_left_connected_e);
+				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.MERGE)
+					quads.add(handle_side_left_merge_e);
 				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CORNER)
 					quads.add(handle_side_left_corner_e);
+				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT)
+					quads.add(handle_side_left_connect_e);
 				
 				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.END)
 					quads.add(handle_side_right_end_e);
-				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT)
+				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.MERGE)
 					quads.add(handle_side_right_connected_e);
 				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CORNER)
 					quads.add(handle_side_right_corner_e);
+				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT)
+					quads.add(handle_side_right_connect_e);
 			}
 			
 			if(data.sides.get(EnumFacing.WEST) != null) {
 				CatwalkRenderData.CatwalkSideRenderData sideData = data.sides.get(EnumFacing.WEST);
 				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.END)
 					quads.add(handle_side_left_end_w);
-				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT)
-					quads.add(handle_side_left_connected_w);
+				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.MERGE)
+					quads.add(handle_side_left_merge_w);
 				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CORNER)
 					quads.add(handle_side_left_corner_w);
+				if(sideData.left == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT)
+					quads.add(handle_side_left_connect_w);
 				
 				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.END)
 					quads.add(handle_side_right_end_w);
-				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT)
+				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.MERGE)
 					quads.add(handle_side_right_connected_w);
 				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CORNER)
 					quads.add(handle_side_right_corner_w);
+				if(sideData.right == CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT)
+					quads.add(handle_side_right_connect_w);
 			}
 			
 			if(data.corner_ne) {
@@ -261,11 +289,13 @@ public class CatwalkBakedModel implements IBakedModel
 			List<ResourceLocation> dependencies = Lists.newArrayList();
 			dependencies.add(CATWALK_BOTTOM);
 			dependencies.add(CATWALK_SIDE_LEFT_END);
-			dependencies.add(CATWALK_SIDE_LEFT_CONNECTED);
+			dependencies.add(CATWALK_SIDE_LEFT_MERGE);
 			dependencies.add(CATWALK_SIDE_LEFT_CORNER);
+			dependencies.add(CATWALK_SIDE_LEFT_CONNECT);
 			dependencies.add(CATWALK_SIDE_RIGHT_END);
-			dependencies.add(CATWALK_SIDE_RIGHT_CONNECTED);
+			dependencies.add(CATWALK_SIDE_RIGHT_MERGE);
 			dependencies.add(CATWALK_SIDE_RIGHT_CORNER);
+			dependencies.add(CATWALK_SIDE_RIGHT_CONNECT);
 			dependencies.add(CATWALK_CORNER);
 			return dependencies;
 		}

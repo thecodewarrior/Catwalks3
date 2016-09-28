@@ -17,7 +17,7 @@ public class CatwalkRenderData implements Comparable<CatwalkRenderData> {
 		public EnumCatwalkEndRenderType left, right;
 		
 		public enum EnumCatwalkEndRenderType {
-			END, CONNECT, CORNER
+			END, MERGE, CORNER, CONNECT
 		}
 	}
 	
