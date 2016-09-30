@@ -6,6 +6,7 @@ import catwalks.raytrace.RayTraceUtil.VertexList;
 import catwalks.register.RenderRegister;
 import catwalks.render.ModelHandle;
 import catwalks.render.ShaderHelper;
+import catwalks.render.StateHandle;
 import catwalks.shade.ccl.raytracer.RayTracer;
 import catwalks.shade.ccl.vec.Vector3;
 import catwalks.util.CustomFaceRayTraceResult;
@@ -63,6 +64,7 @@ public class ClientProxy extends CommonProxy {
 		OBJLoader.INSTANCE.addDomain(Const.MODID);
 		ShaderHelper.initShaders();
 		ModelHandle.init();
+		StateHandle.init();
 	}
 	
 	public void reloadConfigs() {

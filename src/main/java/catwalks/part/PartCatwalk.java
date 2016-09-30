@@ -44,6 +44,12 @@ import static catwalks.util.meta.MetaStorage.bits;
  */
 public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOccludingPart, ISolidPart, IDirtyable, IFastMSRPart {
 	public static final String ID = Const.MODID + ":catwalk";
+	public static final ThreadLocal<NeighborCache<PartCatwalk>> caches = new ThreadLocal<NeighborCache<PartCatwalk>>() {
+		@Override
+		protected NeighborCache<PartCatwalk> initialValue() {
+			return new NeighborCache<>();
+		}
+	};
 	
 	@SuppressWarnings("unchecked")
 	public static List<AxisAlignedBB> sideBoxes = Arrays.asList(
@@ -194,6 +200,11 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 		return SIDES.get(storage, side);
 	}
 	
+	@Override
+	public boolean occlusionTest(IMultipart part) {
+		return super.occlusionTest(part) && !(part instanceof PartCatwalk);
+	}
+	
 	// endregion
 	
 	//region nbt and packet stuff
@@ -244,7 +255,8 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 		IExtendedBlockState estate = (IExtendedBlockState) state;
 		CatwalkRenderData renderData = new CatwalkRenderData();
 		
-		NeighborCache<PartCatwalk> cache = new NeighborCache<>(getPos(), (pos) -> GeneralUtil.getPart(PartCatwalk.class, getWorld(), pos));
+		NeighborCache<PartCatwalk> cache = caches.get();
+		cache.init(getPos(), (pos) -> GeneralUtil.getPart(PartCatwalk.class, getWorld(), pos));
 		
 		for (EnumFacing d : EnumFacing.HORIZONTALS) {
 			if (!getSide(d))
@@ -267,6 +279,7 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 		
 		renderData.bottom = getSide(EnumFacing.DOWN);
 		
+		cache.clear();
 		return estate.withProperty(Const.CATWALK_RENDER_DATA, renderData);
 	}
 	
