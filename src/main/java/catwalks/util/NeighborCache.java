@@ -12,17 +12,16 @@ import java.util.function.Function;
  */
 public class NeighborCache<T> {
 	
-	Map<BlockPos, T> cache = new HashMap<>();
+	final Map<BlockPos, T> cache = new HashMap<>();
 	Function<BlockPos, T> generator;
 	BlockPos basePos;
 	
-	public NeighborCache(BlockPos pos, Function<BlockPos, T> generator) {
-		this.basePos = pos;
-		this.generator = generator;
-	}
-	
 	public T get(int x, int y, int z) {
 		return get(new BlockPos(x,y,z));
+	}
+	
+	public T getAbsolute(BlockPos absolutePos) {
+		return  getOrPut(absolutePos.subtract(basePos));
 	}
 	
 	public T get(BlockPos relPos) {
@@ -42,9 +41,24 @@ public class NeighborCache<T> {
 	}
 	
 	private T getOrPut(BlockPos relPos) {
+		if(generator == null || basePos == null) {
+			throw new IllegalStateException("You must initialize the cache before using it!");
+		}
 		if(!cache.containsKey(relPos))
 			cache.put(relPos, generator.apply(relPos.add(basePos)));
 		return cache.get(relPos);
+	}
+	
+	public void clear() {
+		cache.clear();
+		generator = null;
+		basePos = null;
+	}
+	
+	public void init(BlockPos pos, Function<BlockPos, T> generator) {
+		clear();
+		this.basePos = pos;
+		this.generator = generator;
 	}
 	
 }
