@@ -1,8 +1,8 @@
 {
 "__comment": "Designed by Winddelay with BDcraft Cubik PRO 0.96 Beta - http://bdcraft.net",
 "textures": {
-    "particle": "blocks/catwalk/steel/base",
-    "all": "blocks/catwalk/steel/base"
+    "particle": "catwalks:blocks/catwalk/steel/base",
+    "all": "catwalks:blocks/catwalk/steel/base"
 },
 "elements": [ 
 {
