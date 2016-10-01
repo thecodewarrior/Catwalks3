@@ -28,6 +28,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static catwalks.CatwalksMod.SCREAM_AT_DEV;
+
 /**
  * Created by TheCodeWarrior
  */
@@ -44,24 +46,29 @@ public class CatwalkBakedModel implements IBakedModel
 		
 		CATWALK_BLOCKSTATE_LOC = Const.location("internal/catwalk/" + mat);
 		
-		handle_bottom = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "bottom");
+		handle_bottom = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "bottom").load();
 		
-		handle_corner_ne = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_ne");
-		handle_corner_sw = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_sw");
-		handle_corner_nw = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_nw");
-		handle_corner_se = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_se");
+		handle_corner_ne = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_ne").load();
+		handle_corner_sw = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_sw").load();
+		handle_corner_nw = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_nw").load();
+		handle_corner_se = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_se").load();
+		
+		handle_corner_ne_180 = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_ne_180").load();
+		handle_corner_sw_180 = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_sw_180").load();
+		handle_corner_nw_180 = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_nw_180").load();
+		handle_corner_se_180 = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_se_180").load();
 		
 		sideModels = new HierarchyMap<>(3);
 		
 		for(EnumLeftRight leftRight : EnumLeftRight.values()) {
 			for(CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType end : CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.values()) {
-				sideModels.put(StateHandle.of(CATWALK_BLOCKSTATE_LOC, String.format("%s=%s_%s", "north", leftRight.name(), end.name()).toLowerCase()),
+				sideModels.put(StateHandle.of(CATWALK_BLOCKSTATE_LOC, String.format("%s_%s=%s", "north", leftRight.name(), end.name()).toLowerCase()).load(),
 					EnumFacing.NORTH, leftRight, end);
-				sideModels.put(StateHandle.of(CATWALK_BLOCKSTATE_LOC, String.format("%s=%s_%s", "south", leftRight.name(), end.name()).toLowerCase()),
+				sideModels.put(StateHandle.of(CATWALK_BLOCKSTATE_LOC, String.format("%s_%s=%s", "south", leftRight.name(), end.name()).toLowerCase()).load(),
 					EnumFacing.SOUTH, leftRight, end);
-				sideModels.put(StateHandle.of(CATWALK_BLOCKSTATE_LOC, String.format("%s=%s_%s", "east", leftRight.name(), end.name()).toLowerCase()),
+				sideModels.put(StateHandle.of(CATWALK_BLOCKSTATE_LOC, String.format("%s_%s=%s", "east", leftRight.name(), end.name()).toLowerCase()).load(),
 					EnumFacing.EAST, leftRight, end);
-				sideModels.put(StateHandle.of(CATWALK_BLOCKSTATE_LOC, String.format("%s=%s_%s", "west", leftRight.name(), end.name()).toLowerCase()),
+				sideModels.put(StateHandle.of(CATWALK_BLOCKSTATE_LOC, String.format("%s_%s=%s", "west", leftRight.name(), end.name()).toLowerCase()).load(),
 					EnumFacing.WEST, leftRight, end);
 			}
 		}
@@ -70,9 +77,13 @@ public class CatwalkBakedModel implements IBakedModel
 	private final StateHandle handle_bottom;
 	
 	private final StateHandle handle_corner_ne;
+	private final StateHandle handle_corner_ne_180;
 	private final StateHandle handle_corner_sw;
+	private final StateHandle handle_corner_sw_180;
 	private final StateHandle handle_corner_nw;
+	private final StateHandle handle_corner_nw_180;
 	private final StateHandle handle_corner_se;
+	private final StateHandle handle_corner_se_180;
 	
 	private final HierarchyMap<StateHandle> sideModels; // side, left/right, endType
 	
@@ -94,28 +105,35 @@ public class CatwalkBakedModel implements IBakedModel
 					StateHandle left = sideModels.get(facing, EnumLeftRight.LEFT, sideData.left);
 					StateHandle right = sideModels.get(facing, EnumLeftRight.RIGHT, sideData.right);
 					
-					if(left != null)
+					if(sideData.left != null)
 						quads.add(left);
-					if(right != null)
+					if(sideData.right != null)
 						quads.add(right);
 				}
 			}
 			
-			if(data.corner_ne) {
+			if(data.corner_ne == CatwalkRenderData.EnumCatwalkCornerType.CORNER) {
 				quads.add(handle_corner_ne);
+			} else if(data.corner_ne == CatwalkRenderData.EnumCatwalkCornerType.CORNER_180) {
+				quads.add(handle_corner_ne_180);
 			}
-			if(data.corner_nw) {
+			if(data.corner_nw == CatwalkRenderData.EnumCatwalkCornerType.CORNER) {
 				quads.add(handle_corner_nw);
+			} else if(data.corner_nw == CatwalkRenderData.EnumCatwalkCornerType.CORNER_180) {
+				quads.add(handle_corner_nw_180);
 			}
-			if(data.corner_se) {
+			if(data.corner_se == CatwalkRenderData.EnumCatwalkCornerType.CORNER) {
 				quads.add(handle_corner_se);
+			} else if(data.corner_se == CatwalkRenderData.EnumCatwalkCornerType.CORNER_180) {
+				quads.add(handle_corner_se_180);
 			}
-			if(data.corner_sw) {
+			if(data.corner_sw == CatwalkRenderData.EnumCatwalkCornerType.CORNER) {
 				quads.add(handle_corner_sw);
+			} else if(data.corner_sw == CatwalkRenderData.EnumCatwalkCornerType.CORNER_180) {
+				quads.add(handle_corner_sw_180);
 			}
-			if(data.bottom) {
+			if(data.bottom)
 				quads.add(handle_bottom);
-			}
 		}
 		
 		return quads.getQuads();
@@ -134,11 +152,21 @@ public class CatwalkBakedModel implements IBakedModel
 		}
 		
 		public void add(ModelHandle handle) {
-			quads.addAll(handle.get().getQuads(state, side, rand));
+			if(handle == null)
+				SCREAM_AT_DEV();
+			add(handle.get());
 		}
 		
 		public void add(StateHandle handle) {
-			quads.addAll(handle.get().getQuads(state, side, rand));
+			if(handle == null)
+				SCREAM_AT_DEV();
+			add(handle.get());
+		}
+		
+		public void add(IBakedModel model) {
+			if(model == null)
+				SCREAM_AT_DEV();
+			quads.addAll(model.getQuads(state, side, rand));
 		}
 		
 		public List<BakedQuad> getQuads() {
@@ -258,17 +286,6 @@ public class CatwalkBakedModel implements IBakedModel
 		public void onResourceManagerReload(IResourceManager resourceManager)
 		{
 			// Nothing to do
-		}
-	}
-	
-	public static class Statemapper extends StateMapperBase
-	{
-		public static final ModelResourceLocation LOCATION = new ModelResourceLocation(Const.location("catwalkpart"), "normal");
-		
-		@Override
-		protected ModelResourceLocation getModelResourceLocation(IBlockState state)
-		{
-			return LOCATION;
 		}
 	}
 }

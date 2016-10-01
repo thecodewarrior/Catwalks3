@@ -3,53 +3,66 @@
         "bottom": { "model": "catwalks:catwalk/custom1/bottom" },
 		
 		
-        "north=left_connect": { "model": "catwalks:catwalk/custom1/left_connect" },
-        "north=left_corner":  { "model": "catwalks:catwalk/custom1/left_corner"  },
-        "north=left_end":     { "model": "catwalks:catwalk/custom1/left_end"     },
-        "north=left_merge":   { "model": "catwalks:catwalk/custom1/left_merge"   },
+        "north_left=outer_corner": { "model": "catwalks:catwalk/custom1/left_connect" },        
+		"north_left=outer_corner_180": { "model": "catwalks:catwalk/custom1/left_connect" },
+        "north_left=inner_corner":  { "model": "catwalks:catwalk/custom1/left_corner"  },
+        "north_left=end":     { "model": "catwalks:catwalk/custom1/left_end"     },
+        "north_left=merge":   { "model": "catwalks:catwalk/custom1/left_merge"   },
 
-        "north=right_connect": { "model": "catwalks:catwalk/custom1/right_connect" },
-        "north=right_corner":  { "model": "catwalks:catwalk/custom1/right_corner"  },
-        "north=right_end":     { "model": "catwalks:catwalk/custom1/right_end"     },
-        "north=right_merge":   { "model": "catwalks:catwalk/custom1/right_merge"   },
+        "north_right=outer_corner": { "model": "catwalks:catwalk/custom1/right_connect" },        
+		"north_right=outer_corner_180": { "model": "catwalks:catwalk/custom1/right_connect" },
+        "north_right=inner_corner":  { "model": "catwalks:catwalk/custom1/right_corner"  },
+        "north_right=end":     { "model": "catwalks:catwalk/custom1/right_end"     },
+        "north_right=merge":   { "model": "catwalks:catwalk/custom1/right_merge"   },
 		
 		
-        "east=left_connect": { "model": "catwalks:catwalk/custom1/left_connect" , "y": 90},
-        "east=left_corner":  { "model": "catwalks:catwalk/custom1/left_corner"  , "y": 90},
-        "east=left_end":     { "model": "catwalks:catwalk/custom1/left_end"     , "y": 90},
-        "east=left_merge":   { "model": "catwalks:catwalk/custom1/left_merge"   , "y": 90},
+        "east_left=outer_corner": { "model": "catwalks:catwalk/custom1/left_connect" , "y": 90},        
+		"east_left=outer_corner_180": { "model": "catwalks:catwalk/custom1/left_connect" , "y": 90},
+        "east_left=inner_corner":  { "model": "catwalks:catwalk/custom1/left_corner"  , "y": 90},
+        "east_left=end":     { "model": "catwalks:catwalk/custom1/left_end"     , "y": 90},
+        "east_left=merge":   { "model": "catwalks:catwalk/custom1/left_merge"   , "y": 90},
 
-        "east=right_connect": { "model": "catwalks:catwalk/custom1/right_connect" , "y": 90},
-        "east=right_corner":  { "model": "catwalks:catwalk/custom1/right_corner"  , "y": 90},
-        "east=right_end":     { "model": "catwalks:catwalk/custom1/right_end"     , "y": 90},
-        "east=right_merge":   { "model": "catwalks:catwalk/custom1/right_merge"   , "y": 90},
+        "east_right=outer_corner": { "model": "catwalks:catwalk/custom1/right_connect" , "y": 90},        
+		"east_right=outer_corner_180": { "model": "catwalks:catwalk/custom1/right_connect" , "y": 90},
+        "east_right=inner_corner":  { "model": "catwalks:catwalk/custom1/right_corner"  , "y": 90},
+        "east_right=end":     { "model": "catwalks:catwalk/custom1/right_end"     , "y": 90},
+        "east_right=merge":   { "model": "catwalks:catwalk/custom1/right_merge"   , "y": 90},
 		
 		
-        "south=left_connect": { "model": "catwalks:catwalk/custom1/left_connect" , "y": 180},
-        "south=left_corner":  { "model": "catwalks:catwalk/custom1/left_corner"  , "y": 180},
-        "south=left_end":     { "model": "catwalks:catwalk/custom1/left_end"     , "y": 180},
-        "south=left_merge":   { "model": "catwalks:catwalk/custom1/left_merge"   , "y": 180},
+        "south_left=outer_corner": { "model": "catwalks:catwalk/custom1/left_connect" , "y": 180},        
+		"south_left=outer_corner_180": { "model": "catwalks:catwalk/custom1/left_connect" , "y": 180},
+        "south_left=inner_corner":  { "model": "catwalks:catwalk/custom1/left_corner"  , "y": 180},
+        "south_left=end":     { "model": "catwalks:catwalk/custom1/left_end"     , "y": 180},
+        "south_left=merge":   { "model": "catwalks:catwalk/custom1/left_merge"   , "y": 180},
 
-        "south=right_connect": { "model": "catwalks:catwalk/custom1/right_connect" , "y": 180},
-        "south=right_corner":  { "model": "catwalks:catwalk/custom1/right_corner"  , "y": 180},
-        "south=right_end":     { "model": "catwalks:catwalk/custom1/right_end"     , "y": 180},
-        "south=right_merge":   { "model": "catwalks:catwalk/custom1/right_merge"   , "y": 180},
+        "south_right=outer_corner": { "model": "catwalks:catwalk/custom1/right_connect" , "y": 180},        
+		"south_right=outer_corner_180": { "model": "catwalks:catwalk/custom1/right_connect" , "y": 180},
+        "south_right=inner_corner":  { "model": "catwalks:catwalk/custom1/right_corner"  , "y": 180},
+        "south_right=end":     { "model": "catwalks:catwalk/custom1/right_end"     , "y": 180},
+        "south_right=merge":   { "model": "catwalks:catwalk/custom1/right_merge"   , "y": 180},
 		
 		
-        "west=left_connect": { "model": "catwalks:catwalk/custom1/left_connect" , "y": 270},
-        "west=left_corner":  { "model": "catwalks:catwalk/custom1/left_corner"  , "y": 270},
-        "west=left_end":     { "model": "catwalks:catwalk/custom1/left_end"     , "y": 270},
-        "west=left_merge":   { "model": "catwalks:catwalk/custom1/left_merge"   , "y": 270},
+        "west_left=outer_corner": { "model": "catwalks:catwalk/custom1/left_connect" , "y": 270},        
+		"west_left=outer_corner_180": { "model": "catwalks:catwalk/custom1/left_connect" , "y": 270},
+        "west_left=inner_corner":  { "model": "catwalks:catwalk/custom1/left_corner"  , "y": 270},
+        "west_left=end":     { "model": "catwalks:catwalk/custom1/left_end"     , "y": 270},
+        "west_left=merge":   { "model": "catwalks:catwalk/custom1/left_merge"   , "y": 270},
 
-        "west=right_connect": { "model": "catwalks:catwalk/custom1/right_connect" , "y": 270},
-        "west=right_corner":  { "model": "catwalks:catwalk/custom1/right_corner"  , "y": 270},
-        "west=right_end":     { "model": "catwalks:catwalk/custom1/right_end"     , "y": 270},
-        "west=right_merge":   { "model": "catwalks:catwalk/custom1/right_merge"   , "y": 270},
+        "west_right=outer_corner": { "model": "catwalks:catwalk/custom1/right_connect" , "y": 270},        
+		"west_right=outer_corner_180": { "model": "catwalks:catwalk/custom1/right_connect" , "y": 270},
+        "west_right=inner_corner":  { "model": "catwalks:catwalk/custom1/right_corner"  , "y": 270},
+        "west_right=end":     { "model": "catwalks:catwalk/custom1/right_end"     , "y": 270},
+        "west_right=merge":   { "model": "catwalks:catwalk/custom1/right_merge"   , "y": 270},
 		
 		
         "corner_ne": { "model": "catwalks:catwalk/custom1/corner" },
         "corner_se": { "model": "catwalks:catwalk/custom1/corner" , "y": 90},
         "corner_sw": { "model": "catwalks:catwalk/custom1/corner" , "y": 180},
-        "corner_nw": { "model": "catwalks:catwalk/custom1/corner" , "y": 270}
+        "corner_nw": { "model": "catwalks:catwalk/custom1/corner" , "y": 270},
+		
+        "corner_ne_180": { "model": "catwalks:catwalk/custom1/corner" },
+        "corner_se_180": { "model": "catwalks:catwalk/custom1/corner" , "y": 90},
+        "corner_sw_180": { "model": "catwalks:catwalk/custom1/corner" , "y": 180},
+        "corner_nw_180": { "model": "catwalks:catwalk/custom1/corner" , "y": 270}
     }
 }

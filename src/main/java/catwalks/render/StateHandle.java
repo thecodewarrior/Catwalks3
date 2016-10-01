@@ -32,8 +32,14 @@ public class StateHandle {
 		this.loc = loc;
 	}
 	
+	@Nonnull
 	public IBakedModel get() {
 		return loadModel(this);
+	}
+	
+	public StateHandle load() {
+		loadModel(this);
+		return this;
 	}
 	
 	// ========================================================= STATIC METHODS
@@ -50,6 +56,7 @@ public class StateHandle {
 		return new StateHandle(new ModelResourceLocation(model, variant));
 	}
 	
+	@Nonnull
 	private static IBakedModel loadModel(StateHandle handle)
 	{
 		IBakedModel model = cache.get(handle.loc);
@@ -74,14 +81,7 @@ public class StateHandle {
 		IResourceManager rm = Minecraft.getMinecraft().getResourceManager();
 		if (rm instanceof IReloadableResourceManager)
 		{
-			((IReloadableResourceManager) rm).registerReloadListener(new IResourceManagerReloadListener()
-			{
-				@Override
-				public void onResourceManagerReload(IResourceManager __)
-				{
-					cache.clear();
-				}
-			});
+			((IReloadableResourceManager) rm).registerReloadListener(__ -> cache.clear());
 		}
 	}
 }

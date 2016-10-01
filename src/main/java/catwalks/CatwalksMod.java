@@ -58,4 +58,19 @@ public class CatwalksMod {
 			return Item.getItemFromBlock( BlockRegister.catwalk );
 		}
 	};
+	
+	public static void YELL_AT_DEV() {
+		Object.class.getClass(); // BREAKPOINT HERE OR YOU ARE A HORRIBLE PERSON!!!!!
+	}
+	
+	public static void SCREAM_AT_DEV() {
+		YELL_AT_DEV();
+		throw new DEV_SCREAMING_EXCEPTION();
+	}
+	
+	public static class DEV_SCREAMING_EXCEPTION extends RuntimeException {
+		public DEV_SCREAMING_EXCEPTION() {
+			super("I'M SCREAMING AT YOU CAUSE YOU DIDN'T DO GOOD!!!!");
+		}
+	}
 }

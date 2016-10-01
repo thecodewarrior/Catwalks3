@@ -19,7 +19,7 @@ public class HierarchyMap<T> {
 		if(keys.length != depth) {
 			throw new IllegalArgumentException(String.format("Provided key length %d doesn't match depth %d", keys.length, depth));
 		}
-		map.put(HierarchyKey.ACCESS_KEY.get().set(keys), value);
+		map.put(new HierarchyKey(keys), value);
 	}
 	
 	public T get(Object... keys) {

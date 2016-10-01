@@ -283,21 +283,21 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 		return estate.withProperty(Const.CATWALK_RENDER_DATA, renderData);
 	}
 	
-	private boolean cornerLogic(NeighborCache<PartCatwalk> cache, EnumFacing front, EnumFacing side) {
+	private CatwalkRenderData.EnumCatwalkCornerType cornerLogic(NeighborCache<PartCatwalk> cache, EnumFacing front, EnumFacing side) {
 		
 		if (getSide(front) || getSide(side))
-			return false;
+			return null;
 		
 		PartCatwalk ahead = cache.get(front);
 		PartCatwalk adjacent = cache.get(side);
 		
 		if (ahead == null || adjacent == null)
-			return false;
+			return null;
 		
 		if (adjacent.getSide(front) && !adjacent.getSide(side.getOpposite()) &&
 			!ahead.getSide(front.getOpposite()) && ahead.getSide(side)
 			) {
-			return true;
+			return CatwalkRenderData.EnumCatwalkCornerType.CORNER;
 		}
 		
 		PartCatwalk diagonal = cache.get(side, front);
@@ -307,22 +307,22 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 				!diagonal.getSide(front.getOpposite()) && diagonal.getSide(side.getOpposite()) &&
 				!ahead.getSide(front.getOpposite()) && ahead.getSide(side)
 				) {
-				return true;
+				return CatwalkRenderData.EnumCatwalkCornerType.CORNER_180;
 			}
 			
 			if (!adjacent.getSide(side.getOpposite()) && adjacent.getSide(front) &&
 				!ahead.getSide(side) && !ahead.getSide(front.getOpposite()) &&
 				diagonal.getSide(front.getOpposite()) && !diagonal.getSide(side.getOpposite())
 				) {
-				return true;
+				return CatwalkRenderData.EnumCatwalkCornerType.CORNER_180;
 			}
 		}
-		return false;
+		return null;
 	}
 	
 	private CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType sideLogic(NeighborCache<PartCatwalk> cache, EnumFacing front, EnumFacing side) {
 		if (getSide(side)) {
-			return CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CORNER;
+			return CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.INNER_CORNER;
 		}
 		
 		PartCatwalk adjacent = cache.get(side);
@@ -341,7 +341,7 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 					!adjacent.getSide(front) && !adjacent.getSide(side.getOpposite()) &&
 						diagonal.getSide(side.getOpposite()) && !diagonal.getSide(front.getOpposite())
 					) {
-					return CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT;
+					return CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.OUTER_CORNER;
 				}
 			}
 		}
@@ -354,7 +354,7 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 				!adjacent.getSide(side.getOpposite()) && !adjacent.getSide(front) &&
 				!diagonal.getSide(front.getOpposite()) && !diagonal.getSide(side.getOpposite())
 				) {
-				return CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.CONNECT;
+				return CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.OUTER_CORNER_180;
 			}
 		}
 		return CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.END;

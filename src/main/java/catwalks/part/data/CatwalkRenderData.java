@@ -12,18 +12,22 @@ public class CatwalkRenderData implements Comparable<CatwalkRenderData> {
 	public EnumMap<EnumFacing, CatwalkSideRenderData> sides = new EnumMap<EnumFacing, CatwalkSideRenderData>(EnumFacing.class);
 	
 	public boolean bottom;
-	public boolean corner_ne, corner_nw, corner_se, corner_sw;
+	public EnumCatwalkCornerType corner_ne, corner_nw, corner_se, corner_sw;
 	
 	public static class CatwalkSideRenderData {
 		public EnumCatwalkEndRenderType left, right;
 		
 		public enum EnumCatwalkEndRenderType {
-			END, MERGE, CORNER, CONNECT
+			END, MERGE, CONNECT, INNER_CORNER, OUTER_CORNER_180, OUTER_CORNER
 		}
 	}
 	
 	@Override
 	public int compareTo(CatwalkRenderData o) {
 		return 0;
+	}
+	
+	public enum EnumCatwalkCornerType {
+		CORNER, CORNER_180
 	}
 }
