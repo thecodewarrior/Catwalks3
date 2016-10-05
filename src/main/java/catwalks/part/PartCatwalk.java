@@ -2,7 +2,7 @@ package catwalks.part;
 
 import catwalks.CatwalksMod;
 import catwalks.Const;
-import catwalks.block.EnumCatwalkMaterial;
+import catwalks.EnumCatwalkMaterial;
 import catwalks.block.EnumDecoration;
 import catwalks.part.data.CatwalkRenderData;
 import catwalks.register.ItemRegister;
@@ -10,7 +10,6 @@ import catwalks.util.GeneralUtil;
 import catwalks.util.NeighborCache;
 import catwalks.util.meta.*;
 import mcmultipart.MCMultiPartMod;
-import mcmultipart.client.multipart.IFastMSRPart;
 import mcmultipart.multipart.*;
 import mcmultipart.raytrace.PartMOP;
 import mcmultipart.raytrace.RayTraceUtils;
@@ -35,8 +34,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
-
-import static catwalks.util.meta.MetaStorage.bits;
 
 /**
  * Created by TheCodeWarrior

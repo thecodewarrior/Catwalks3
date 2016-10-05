@@ -1,7 +1,7 @@
 package catwalks.render.cached.models;
 
 import catwalks.Const;
-import catwalks.block.EnumCatwalkMaterial;
+import catwalks.block.EnumCatwalkMaterialOld;
 import catwalks.render.ModelUtils;
 import catwalks.render.ModelUtils.SpritelessQuad;
 import catwalks.render.cached.SimpleModel;
@@ -23,7 +23,7 @@ public class StairTopModel extends SimpleModel {
 	public List<Object> getKey(IBlockState rawstate) {
 		IExtendedBlockState state = (IExtendedBlockState) rawstate;
 		return Arrays.asList(new Object[] {
-				state.getValue(Const.MATERIAL),
+				state.getValue(Const.MATERIAL_OLD),
 				state.getValue(Const.NORTH),
 				state.getValue(Const.WEST_TOP),
 				state.getValue(Const.EAST_TOP),
@@ -41,7 +41,7 @@ public class StairTopModel extends SimpleModel {
 		
 		int i = 0;
 		
-		EnumCatwalkMaterial material = (EnumCatwalkMaterial) list.get(i++);
+		EnumCatwalkMaterialOld material = (EnumCatwalkMaterialOld) list.get(i++);
 		boolean north   = (boolean) list.get(i++),
 				westtop = (boolean) list.get(i++),
 				easttop = (boolean) list.get(i++),

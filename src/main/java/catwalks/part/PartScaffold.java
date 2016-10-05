@@ -1,7 +1,8 @@
 package catwalks.part;
 
 import catwalks.Const;
-import catwalks.block.EnumCatwalkMaterial;
+import catwalks.EnumCatwalkMaterial;
+import catwalks.block.EnumCatwalkMaterialOld;
 import catwalks.register.ItemRegister;
 import catwalks.util.meta.ArrayProp;
 import catwalks.util.meta.IDirtyable;

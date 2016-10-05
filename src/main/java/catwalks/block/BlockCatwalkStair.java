@@ -104,7 +104,7 @@ public class BlockCatwalkStair extends BlockCatwalkBase {
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
 		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
-		MATERIAL.set(tile, EnumCatwalkMaterial.values()[stack.getItemDamage()]);
+		MATERIAL.set(tile, EnumCatwalkMaterialOld.values()[stack.getItemDamage()]);
 		
 		EAST_TOP.set(tile, true);
 		WEST_TOP.set(tile, true);

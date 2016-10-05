@@ -1,7 +1,8 @@
 package catwalks.part.converter;
 
 import catwalks.Const;
-import catwalks.block.EnumCatwalkMaterial;
+import catwalks.EnumCatwalkMaterial;
+import catwalks.block.EnumCatwalkMaterialOld;
 import catwalks.part.PartScaffold;
 import catwalks.register.BlockRegister;
 import mcmultipart.multipart.IMultipart;

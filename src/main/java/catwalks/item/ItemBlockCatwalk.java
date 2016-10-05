@@ -1,6 +1,6 @@
 package catwalks.item;
 
-import catwalks.block.EnumCatwalkMaterial;
+import catwalks.block.EnumCatwalkMaterialOld;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -15,7 +15,7 @@ public class ItemBlockCatwalk extends ItemBlock {
     
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-    	return super.getUnlocalizedName(stack) + "." + EnumCatwalkMaterial.values()[stack.getItemDamage()].getName().toLowerCase();
+    	return super.getUnlocalizedName(stack) + "." + EnumCatwalkMaterialOld.values()[stack.getItemDamage()].getName().toLowerCase();
     }
     
 }

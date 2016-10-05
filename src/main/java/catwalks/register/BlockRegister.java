@@ -1,5 +1,6 @@
 package catwalks.register;
 
+import catwalks.EnumCatwalkMaterial;
 import catwalks.block.*;
 import catwalks.block.extended.BlockCagedLadder;
 import catwalks.block.extended.tileprops.TileExtended;

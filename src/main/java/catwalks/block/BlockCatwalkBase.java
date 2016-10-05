@@ -65,7 +65,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	public BoolProp TAPE, SPEED;
 	public BoolProp DECOR_1, DECOR_2, DECOR_3, DECOR_4, DECOR_5, DECOR_6, DECOR_7; // a max of 10 decorations
 	public ArrayProp<EnumFacing> FACING;
-	public ArrayProp<EnumCatwalkMaterial> MATERIAL;
+	public ArrayProp<EnumCatwalkMaterialOld> MATERIAL;
 	
 	public BlockCatwalkBase(Material material, String name) {
 		super(material, name);
@@ -81,7 +81,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 //		IBlockState state = this.blockState.getBaseState();
 //		this.setDefaultState(state.withProperty(Const.FACING, EnumFacing.NORTH));
 		
-		MATERIAL = allocator.allocateArray(EnumCatwalkMaterial.values(), 128);
+		MATERIAL = allocator.allocateArray(EnumCatwalkMaterialOld.values(), 128);
 		
 		sideState.put(EnumFacing.DOWN, Const.BOTTOM);
 		sideState.put(EnumFacing.UP, Const.TOP);
@@ -218,7 +218,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 			return state;
 		
 		state = state
-				.withProperty(Const.MATERIAL, MATERIAL.get(tile))
+				.withProperty(Const.MATERIAL_OLD, MATERIAL.get(tile))
 				.withProperty(Const.BOTTOM, BOTTOM.get(tile))
 				.withProperty(Const.NORTH,  NORTH.get(tile) )
 				.withProperty(Const.SOUTH,  SOUTH.get(tile) )
@@ -252,7 +252,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	protected BlockStateContainer createBlockState() {
 		List<IUnlistedProperty> unlistedProperties = new ArrayList<>();
 		unlistedProperties.addAll(Arrays.asList(
-			Const.MATERIAL, Const.FACING, Const.TAPE, Const.SPEED,
+			Const.MATERIAL_OLD, Const.FACING, Const.TAPE, Const.SPEED,
 			Const.BOTTOM, Const.TOP, Const.NORTH, Const.SOUTH, Const.WEST, Const.EAST
 		));
 		addFunctionalProperties(unlistedProperties);
@@ -350,7 +350,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	}
 	
 	public int damageDroppedExtended(IExtendedBlockState state) {
-	    return state.getValue(Const.MATERIAL).ordinal();
+	    return state.getValue(Const.MATERIAL_OLD).ordinal();
 	}
 
 	public Item getItemDroppedExtended(IExtendedBlockState state, Random rand, int fortune) {
@@ -374,7 +374,7 @@ public abstract class BlockCatwalkBase extends BlockExtended implements ICatwalk
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list)
 	{
-	    for (EnumCatwalkMaterial enumdyecolor : EnumCatwalkMaterial.values())
+	    for (EnumCatwalkMaterialOld enumdyecolor : EnumCatwalkMaterialOld.values())
 	    {
 	        list.add(new ItemStack(itemIn, 1, enumdyecolor.ordinal()));
 	    }

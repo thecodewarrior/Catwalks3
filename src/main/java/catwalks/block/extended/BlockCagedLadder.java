@@ -3,7 +3,7 @@ package catwalks.block.extended;
 import catwalks.Conf;
 import catwalks.Const;
 import catwalks.block.BlockCatwalkBase;
-import catwalks.block.EnumCatwalkMaterial;
+import catwalks.block.EnumCatwalkMaterialOld;
 import catwalks.block.ICatwalkConnect;
 import catwalks.block.extended.tileprops.TileExtended;
 import catwalks.block.property.UPropertyBool;
@@ -406,7 +406,7 @@ public class BlockCagedLadder extends BlockCatwalkBase implements ICustomLadder 
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
-		MATERIAL.set(tile, EnumCatwalkMaterial.values()[stack.getItemDamage()]);
+		MATERIAL.set(tile, EnumCatwalkMaterialOld.values()[stack.getItemDamage()]);
 	}
 	
 	{ /* ICatwalkConnect */ }

@@ -1,6 +1,6 @@
 package catwalks.item;
 
-import catwalks.block.EnumCatwalkMaterial;
+import catwalks.block.EnumCatwalkMaterialOld;
 import catwalks.movement.MovementHandler;
 import catwalks.util.ExtendUtils;
 import catwalks.util.GeneralUtil;
@@ -39,7 +39,7 @@ public class ItemBlockScaffold extends ItemBlock {
     
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-    	return super.getUnlocalizedName(stack) + "." + EnumCatwalkMaterial.values()[stack.getItemDamage()].getName().toLowerCase();
+    	return super.getUnlocalizedName(stack) + "." + EnumCatwalkMaterialOld.values()[stack.getItemDamage()].getName().toLowerCase();
     }
 	
     @Override
@@ -56,7 +56,7 @@ public class ItemBlockScaffold extends ItemBlock {
 		Entity checkPlayer = null;
 		
 		if(oldFacing == facing) { // we didn't extend
-			if( stack.getMetadata() == EnumCatwalkMaterial.WOOD.ordinal()) {
+			if( stack.getMetadata() == EnumCatwalkMaterialOld.WOOD.ordinal()) {
 				if( facing == EnumFacing.UP && playerIn.getEntityBoundingBox().intersectsWith(new AxisAlignedBB(pos.offset(EnumFacing.UP))) ) {
 					double moveUpAmount = (pos.getY()+2) - playerIn.posY;
 					MovementHandler.INSTANCE.setPlayerNerdPoleMove(playerIn, moveUpAmount, 2);
@@ -115,7 +115,7 @@ public class ItemBlockScaffold extends ItemBlock {
 		
 		if(oldSide == side) { // we aren't extending
 			
-			if( stack.getMetadata() == EnumCatwalkMaterial.WOOD.ordinal()) {
+			if( stack.getMetadata() == EnumCatwalkMaterialOld.WOOD.ordinal()) {
 				if( side == EnumFacing.UP && player.getEntityBoundingBox().intersectsWith(new AxisAlignedBB(pos.offset(EnumFacing.UP))) ) {
 					Vec3d moveUpAmount = new Vec3d( 0, (pos.getY()+2) - player.posY, 0 );
 					if(moveUpAmount.equals( GeneralUtil.simulateEntityMove(player, moveUpAmount)) ) {

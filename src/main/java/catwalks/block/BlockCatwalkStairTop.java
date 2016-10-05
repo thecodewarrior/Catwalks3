@@ -38,14 +38,14 @@ import static catwalks.Const.EAST_TOP;
 
 public class BlockCatwalkStairTop extends BlockExtended implements ICatwalkConnect, IDecoratable {
 
-	public ArrayProp<EnumCatwalkMaterial> MATERIAL;
+	public ArrayProp<EnumCatwalkMaterialOld> MATERIAL;
 	
 	public BlockCatwalkStairTop() {
 		super(Material.IRON, "catwalkStairTop");
 		this.setTickRandomly(true);
 		setDefaultState(this.blockState.getBaseState());
 		
-		MATERIAL = allocator.allocateArray(EnumCatwalkMaterial.values(), 16);
+		MATERIAL = allocator.allocateArray(EnumCatwalkMaterialOld.values(), 16);
 	}
 	
 	
@@ -60,7 +60,7 @@ public class BlockCatwalkStairTop extends BlockExtended implements ICatwalkConne
 	protected BlockStateContainer createBlockState() {
 	    return new ExtendedBlockState(this,
 	    		new IProperty[]{ Const.LIGHTS},
-	    		new IUnlistedProperty[] { Const.MATERIAL, Const.FACING, Const.TAPE, Const.SPEED, Const.NORTH, Const.WEST_TOP, EAST_TOP }
+	    		new IUnlistedProperty[] { Const.MATERIAL_OLD, Const.FACING, Const.TAPE, Const.SPEED, Const.NORTH, Const.WEST_TOP, EAST_TOP }
 	    );
 	}
 	
@@ -98,7 +98,7 @@ public class BlockCatwalkStairTop extends BlockExtended implements ICatwalkConne
 		TileExtended tile = (TileExtended) worldIn.getTileEntity(pos);
 		
 		return (IExtendedBlockState) state
-				.withProperty(Const.MATERIAL, MATERIAL.get(tile))
+				.withProperty(Const.MATERIAL_OLD, MATERIAL.get(tile))
 				.withProperty(Const.WEST_TOP, westTop)
 				.withProperty(EAST_TOP, eastTop)
 				.withProperty(Const.NORTH, north)

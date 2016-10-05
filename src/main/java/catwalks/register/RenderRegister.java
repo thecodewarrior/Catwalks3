@@ -1,7 +1,7 @@
 package catwalks.register;
 
 import catwalks.Const;
-import catwalks.block.EnumCatwalkMaterial;
+import catwalks.block.EnumCatwalkMaterialOld;
 import catwalks.item.ItemBase;
 import catwalks.render.ModelHandler;
 import catwalks.render.cached.CachedSmartModel;
@@ -34,7 +34,7 @@ public class RenderRegister {
 	}
 	public static class Blocks {
 		private static void registerTextureAllMaterials(String path) {
-			for (EnumCatwalkMaterial mat : EnumCatwalkMaterial.values()) {
+			for (EnumCatwalkMaterialOld mat : EnumCatwalkMaterialOld.values()) {
 				ModelHandler.INSTANCE.registerTexture(path.replace("<mat>", mat.getName().toLowerCase()));
 			}
 		}

@@ -1,7 +1,6 @@
 package catwalks;
 
-import catwalks.block.EnumCatwalkMaterial;
-import catwalks.block.EnumDecoration;
+import catwalks.block.EnumCatwalkMaterialOld;
 import catwalks.movement.MovementHandler;
 import catwalks.proxy.CommonProxy;
 import catwalks.register.BlockRegister;
@@ -11,7 +10,6 @@ import catwalks.register.RecipeRegister;
 import catwalks.util.WrenchChecker;
 import catwalks.util.meta.ArrayProp;
 import catwalks.util.meta.BoolArrayProp;
-import catwalks.util.meta.BoolMapProp;
 import catwalks.util.meta.MetaStorage;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;

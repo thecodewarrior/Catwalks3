@@ -1,6 +1,6 @@
 package catwalks;
 
-import catwalks.block.EnumCatwalkMaterial;
+import catwalks.block.EnumCatwalkMaterialOld;
 import catwalks.block.property.UPropertyBool;
 import catwalks.block.property.UPropertyEnum;
 import catwalks.block.property.UPropertyObject;
@@ -47,8 +47,10 @@ public class Const {
 	{	/* blockstate properties*/	}
 	
 	public static final PropertyBool LIGHTS = PropertyBool.create("lights");
+	public static final PropertyEnum<EnumCatwalkMaterialOld> MATERIAL_META_OLD = PropertyEnum.create("material", EnumCatwalkMaterialOld.class);
 	public static final PropertyEnum<EnumCatwalkMaterial> MATERIAL_META = PropertyEnum.create("material", EnumCatwalkMaterial.class);
 	
+	public static final UPropertyEnum<EnumCatwalkMaterialOld> MATERIAL_OLD = UPropertyEnum.create("material", EnumCatwalkMaterialOld.class);
 	public static final UPropertyEnum<EnumCatwalkMaterial> MATERIAL = UPropertyEnum.create("material", EnumCatwalkMaterial.class);
 	
 	public static final UPropertyBool IS_TOP    = UPropertyBool.create("istop");

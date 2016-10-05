@@ -1,6 +1,7 @@
 package catwalks.item;
 
-import catwalks.block.EnumCatwalkMaterial;
+import catwalks.EnumCatwalkMaterial;
+import catwalks.block.EnumCatwalkMaterialOld;
 import catwalks.part.PartCatwalk;
 import mcmultipart.multipart.IMultipart;
 import net.minecraft.creativetab.CreativeTabs;
