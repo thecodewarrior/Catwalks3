@@ -57,7 +57,7 @@ public class StateHandle {
 	}
 	
 	@Nonnull
-	private static IBakedModel loadModel(StateHandle handle)
+	private static IBakedModel loadModel(@Nonnull StateHandle handle)
 	{
 		IBakedModel model = cache.get(handle.loc);
 		if (model != null)

@@ -2,6 +2,7 @@ package catwalks.register;
 
 import catwalks.part.PartCatwalk;
 import catwalks.part.PartScaffold;
+import catwalks.part.PartStair;
 import catwalks.part.converter.PartConverterScaffold;
 import mcmultipart.multipart.MultipartRegistry;
 
@@ -19,6 +20,10 @@ public class MultipartRegister {
 		
 		// catwalk
 		MultipartRegistry.registerPart(PartCatwalk.class, PartCatwalk.ID);
+		
+		
+		// catwalk
+		MultipartRegistry.registerPart(PartStair.class, PartStair.ID);
 	}
 	
 }

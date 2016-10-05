@@ -22,7 +22,7 @@ import java.util.Collections;
  */
 public class PartConverterScaffold implements IPartConverter, IReversePartConverter {
 	
-	Collection<Block> collection = Arrays.asList(BlockRegister.scaffold);
+	Collection<Block> collection = Arrays.asList(BlockRegister.scaffolds);
 	
 	@Override
 	public Collection<Block> getConvertableBlocks() {
@@ -47,7 +47,7 @@ public class PartConverterScaffold implements IPartConverter, IReversePartConver
 				PartScaffold part = (PartScaffold) firstPart;
 				EnumCatwalkMaterial mat = part.getCatwalkMaterial();
 				container.removePart(part);
-				container.getWorldIn().setBlockState(container.getPosIn(), BlockRegister.scaffold.getDefaultState().withProperty(Const.MATERIAL_META, mat));
+				container.getWorldIn().setBlockState(container.getPosIn(), BlockRegister.getScaffold(mat).getDefaultState().withProperty(Const.MATERIAL_META, mat));
 			}
 		}
 		return false;

@@ -13,6 +13,7 @@ public class ItemRegister {
 	public static ItemLadderGrabber ladderGrabber;
 	public static ItemScaffold scaffold;
 	public static ItemCatwalk catwalk;
+	public static ItemStair stair;
 	
 	public static void register() {
 		lights = new ItemDecoration("lights");
@@ -23,6 +24,7 @@ public class ItemRegister {
 		ladderGrabber = new ItemLadderGrabber();
 		scaffold = new ItemScaffold("scaffoldpart");
 		catwalk = new ItemCatwalk("catwalkpart");
+		stair = new ItemStair("stairpart");
 	}
 	
 	public static List<ItemBase> renderRegsiterItems = new ArrayList<>();

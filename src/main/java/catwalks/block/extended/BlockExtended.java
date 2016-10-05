@@ -17,7 +17,7 @@ public abstract class BlockExtended extends BlockBase {
 	protected ExtendedTileProperties allocator = new ExtendedTileProperties();
 	
 	public BlockExtended(Material material, String name) {
-		super(material, name);
+		super(material, name, null);
 	}
 	
 	public BlockExtended(Material materialIn, String name, Function<Block, ItemBlock> item) {

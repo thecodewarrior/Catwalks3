@@ -1,5 +1,6 @@
 package catwalks.part;
 
+import catwalks.CatwalksMod;
 import catwalks.Const;
 import catwalks.block.EnumCatwalkMaterial;
 import catwalks.block.EnumDecoration;
@@ -7,10 +8,7 @@ import catwalks.part.data.CatwalkRenderData;
 import catwalks.register.ItemRegister;
 import catwalks.util.GeneralUtil;
 import catwalks.util.NeighborCache;
-import catwalks.util.meta.ArrayProp;
-import catwalks.util.meta.BoolMapProp;
-import catwalks.util.meta.IDirtyable;
-import catwalks.util.meta.MetaStorage;
+import catwalks.util.meta.*;
 import mcmultipart.MCMultiPartMod;
 import mcmultipart.client.multipart.IFastMSRPart;
 import mcmultipart.multipart.*;
@@ -24,6 +22,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -42,7 +41,7 @@ import static catwalks.util.meta.MetaStorage.bits;
 /**
  * Created by TheCodeWarrior
  */
-public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOccludingPart, ISolidPart, IDirtyable, IFastMSRPart {
+public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOccludingPart, ISolidPart, IDirtyable, IDecoratable {
 	public static final String ID = Const.MODID + ":catwalk";
 	public static final ThreadLocal<NeighborCache<PartCatwalk>> caches = new ThreadLocal<NeighborCache<PartCatwalk>>() {
 		@Override
@@ -64,9 +63,9 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 	public static EnumFacing[] SIDE_LIST = new EnumFacing[]{EnumFacing.DOWN, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST};
 	
 	protected static MetaStorage.Allocator allocator = new MetaStorage.Allocator();
-	public static ArrayProp<EnumCatwalkMaterial> MATERIAL = allocator.allocateArray("material", EnumCatwalkMaterial.values(), bits(128));
+	public static ArrayProp<EnumCatwalkMaterial> MATERIAL = CatwalksMod.allocate_material(allocator);
+	public static BoolArrayProp DECOR = CatwalksMod.allocate_decor(allocator);
 	public static BoolMapProp<EnumFacing> SIDES = allocator.allocateBoolMap("sides", EnumFacing.values(), 6);
-	public static BoolMapProp<EnumDecoration> DECOR = allocator.allocateBoolMap("decor", EnumDecoration.values(), 15);
 	
 	protected MetaStorage storage = new MetaStorage(allocator, this);
 	
@@ -81,6 +80,45 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 		return false;
 	}
 	
+	//endregion
+	
+	//region decoration stuff
+	
+	@Override
+	public boolean addDecoration(EnumDecoration decor) {
+		EnumCatwalkMaterial mat = getCatwalkMaterial();
+		int id = mat.getID(decor);
+		if(id < 0)
+			return false;
+		if(DECOR.get(storage, id))
+			return false;
+		DECOR.set(storage, id, true);
+		return true;
+	}
+	
+	@Override
+	public boolean removeDecoration(EnumDecoration decor) {
+		EnumCatwalkMaterial mat = getCatwalkMaterial();
+		int id = mat.getID(decor);
+		if(id < 0)
+			return false;
+		if(DECOR.get(storage, id))
+			return false;
+		DECOR.set(storage, id, true);
+		return true;
+	}
+	
+	@Override
+	public boolean hasDecoration(EnumDecoration decor) {
+		EnumCatwalkMaterial mat = getCatwalkMaterial();
+		int id = mat.getID(decor);
+		if(id < 0)
+			return false;
+		if(DECOR.get(storage, id))
+			return false;
+		DECOR.set(storage, id, true);
+		return true;
+	}
 	
 	//endregion
 	
@@ -236,6 +274,12 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 	
 	//region model
 	
+	
+	@Override
+	public boolean canRenderInLayer(BlockRenderLayer layer) {
+		return layer == BlockRenderLayer.CUTOUT;
+	}
+	
 	@Override
 	public BlockStateContainer createBlockState() {
 		return new ExtendedBlockState(MCMultiPartMod.multipart, new IProperty[] {
@@ -388,10 +432,5 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 	public void markDirty() {
 		super.markDirty();
 		sendUpdatePacket(true);
-	}
-	
-	@Override
-	public boolean hasFastRenderer() {
-		return true;
 	}
 }

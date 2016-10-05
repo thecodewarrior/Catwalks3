@@ -122,9 +122,18 @@ public class MetaStorage {
 			return p;
 		}
 		
-		public void addBits(MetaProperty prop, int bits) {
-			prop.addBits(index, bits);
+		public BoolArrayProp allocateBoolArray(String name, int bits) {
+			BoolArrayProp p = new BoolArrayProp(index, bits);
 			index += bits;
+			props.put(name, p);
+			return p;
+		}
+		
+		public void addBits(MetaProperty prop, int bits) {
+			if(prop.addBits(index, bits))
+				index += bits;
+			else
+				throw new IllegalArgumentException("Prop class " + prop.getClass() + " can not have bits added to it!");
 		}
 		
 		public String toString(MetaStorage storage) {

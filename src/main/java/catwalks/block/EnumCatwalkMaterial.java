@@ -3,6 +3,8 @@ package catwalks.block;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.IStringSerializable;
 
+import java.util.*;
+
 /**
  * Planned expansion:
  * 000 - Custom 0
@@ -11,25 +13,25 @@ import net.minecraft.util.IStringSerializable;
  * 003 - Custom 3
  *
  * 004 - Normal
+ * 005 - Nyan
  *
- * 005 - IE Steel
- * 006 - Wood
+ * 006 - IE Steel
+ * 007 - Wood
  *
- * 007 - Oak
- * 008 - Spruce
- * 009 - Birch
- * 010 - Jungle
- * 011 - Acacia
- * 012 - Dark Oak
+ * 008 - Oak
+ * 009 - Spruce
+ * 010 - Birch
+ * 011 - Jungle
+ * 012 - Acacia
+ * 013 - Dark Oak
  *
- * 013 - Glass
+ * 014 - Glass
  *
- * 014 - Livingrock
- * 015 - Livingwood
- * 016 - Managlass
- * 017 - Alfglass
+ * 015 - Livingrock
+ * 016 - Livingwood
+ * 017 - Managlass
+ * 018 - Alfglass
  *
- * 018 - N/A
  * 019 - N/A
  * 020 - N/A
  * 021 - N/A
@@ -147,10 +149,19 @@ public enum EnumCatwalkMaterial implements IStringSerializable {
 	WOOD(BlockRenderLayer.CUTOUT);
 
 	public final BlockRenderLayer LAYER;
+	public final List<EnumDecoration> DECORATIONS;
 	
-
-	EnumCatwalkMaterial(BlockRenderLayer layer) {
+	EnumCatwalkMaterial(BlockRenderLayer layer, EnumDecoration... decorations) {
 		LAYER = layer;
+		DECORATIONS = Arrays.asList(decorations);
+	}
+	
+	public int getID(EnumDecoration decor) {
+		return DECORATIONS.indexOf(decor);
+	}
+	
+	public EnumDecoration getDecor(int id) {
+		return DECORATIONS.get(id);
 	}
 	
 	@Override

@@ -36,7 +36,7 @@ public class RecipeRegister {
 			catwalk = BlockRegister.catwalk,
 			stair = BlockRegister.catwalkStair,
 			ladder = BlockRegister.cagedLadder,
-			scaffold = BlockRegister.scaffold,
+			scaffold = BlockRegister.scaffolds[0],
 			pPlateWood = Blocks.WOODEN_PRESSURE_PLATE,
 			vladder = Blocks.LADDER;
 		String

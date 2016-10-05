@@ -70,8 +70,7 @@ public class RenderRegister {
 			registerTextureAllMaterials("blocks/ladder/<mat>/lights");
 			registerTextureAllMaterials("blocks/ladder/<mat>/speed");
 			
-			registerMaterialModels(scaffold, null);
-			registerMaterialModels(catwalk,      "catwalk");
+ 			registerMaterialModels(catwalk,      "catwalk");
 			registerMaterialModels(catwalkStair, "catwalkStair");
 			registerMaterialModels(cagedLadder,  "cagedLadder");
 			

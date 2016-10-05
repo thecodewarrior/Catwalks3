@@ -34,8 +34,11 @@ import java.util.List;
 
 public class BlockScaffolding extends BlockBase implements ICustomLadder {
 		
-	public BlockScaffolding() {
-		super(Material.IRON, "scaffold", (c) -> new ItemBlockScaffold(c));
+	public final int page;
+	
+	public BlockScaffolding(int page) {
+		super(Material.IRON, "scaffold" + page);
+		this.page = page;
 		setHardness(0.1f);
 	}
 	
@@ -61,6 +64,11 @@ public class BlockScaffolding extends BlockBase implements ICustomLadder {
 				}
 			}
 		}
+	}
+	
+	@Override
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+		return new ItemStack(ItemRegister.scaffold, 1, state.getValue(Const.MATERIAL_META).ordinal());
 	}
 	
 	@Override
@@ -136,30 +144,22 @@ public class BlockScaffolding extends BlockBase implements ICustomLadder {
 	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, Const.MATERIAL_META);
 	}
-	
-	@Override
-	public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
-		list.add(new ItemStack(itemIn, 1, 0));
-		list.add(new ItemStack(itemIn, 1, 1));
-		list.add(new ItemStack(itemIn, 1, 2));
-		list.add(new ItemStack(itemIn, 1, 3));
-	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState().withProperty(Const.MATERIAL_META, EnumCatwalkMaterial.values()[meta]);
+		return getDefaultState().withProperty(Const.MATERIAL_META, EnumCatwalkMaterial.values()[page << 4 & meta]);
 	}
 	
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		return state.getValue(Const.MATERIAL_META).ordinal();
+		return state.getValue(Const.MATERIAL_META).ordinal() & 0b1111;
 	}
 	
 	{ /* rendering stuff */ }
 	
 	@Override
 	public BlockRenderLayer getBlockLayer() {
-		return BlockRenderLayer.CUTOUT_MIPPED;
+		return BlockRenderLayer.CUTOUT;
 	}
 	
 	@Override

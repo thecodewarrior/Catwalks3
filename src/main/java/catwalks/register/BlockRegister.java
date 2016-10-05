@@ -1,9 +1,6 @@
 package catwalks.register;
 
-import catwalks.block.BlockCatwalk;
-import catwalks.block.BlockCatwalkStair;
-import catwalks.block.BlockCatwalkStairTop;
-import catwalks.block.BlockScaffolding;
+import catwalks.block.*;
 import catwalks.block.extended.BlockCagedLadder;
 import catwalks.block.extended.tileprops.TileExtended;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -15,7 +12,7 @@ public class BlockRegister {
 	public static BlockCatwalkStair catwalkStair;
 	public static BlockCatwalkStairTop stairTop;
 	public static BlockCagedLadder cagedLadder;
-	public static BlockScaffolding scaffold;
+	public static BlockScaffolding[] scaffolds;
 	
 	public static void register() {
 		GameRegistry.registerTileEntity(TileExtended.class, "tileExtended");
@@ -23,6 +20,13 @@ public class BlockRegister {
 		catwalkStair = new BlockCatwalkStair();
 		stairTop = new BlockCatwalkStairTop();
 		cagedLadder = new BlockCagedLadder();
-		scaffold = new BlockScaffolding();
+		scaffolds = new BlockScaffolding[(int)Math.ceil(EnumCatwalkMaterial.values().length/16f)];
+		for(int i = 0; i < scaffolds.length; i++) {
+			scaffolds[i] = new BlockScaffolding(i);
+		}
+	}
+	
+	public static BlockScaffolding getScaffold(EnumCatwalkMaterial mat) {
+		return scaffolds[mat.ordinal() >> 4];
 	}
 }

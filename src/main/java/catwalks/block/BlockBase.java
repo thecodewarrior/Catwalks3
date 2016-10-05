@@ -18,17 +18,17 @@ public class BlockBase extends Block {
 
 	
 	public BlockBase(Material material, String name) {
-		this(material, name, null);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public BlockBase(Material materialIn, String name, Function<Block, ItemBlock> item) {
-		super(materialIn);
+		super(material);
 		setUnlocalizedName(name);
 		setRegistryName(name);
 		setCreativeTab(CatwalksMod.tab);
 		initPreRegister();
 		GameRegistry.register(this);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public BlockBase(Material materialIn, String name, Function<Block, ItemBlock> item) {
+		this(materialIn, name);
 		if(item == null) {
 			GameRegistry.register(new ItemBlock(this).setRegistryName(getRegistryName()));
 		} else {

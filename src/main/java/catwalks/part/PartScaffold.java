@@ -2,6 +2,7 @@ package catwalks.part;
 
 import catwalks.Const;
 import catwalks.block.EnumCatwalkMaterial;
+import catwalks.register.ItemRegister;
 import catwalks.util.meta.ArrayProp;
 import catwalks.util.meta.IDirtyable;
 import catwalks.util.meta.MetaStorage;
@@ -9,9 +10,12 @@ import mcmultipart.MCMultiPartMod;
 import mcmultipart.multipart.IMultipart;
 import mcmultipart.multipart.ISolidPart;
 import mcmultipart.multipart.Multipart;
+import mcmultipart.raytrace.PartMOP;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.BlockRenderLayer;
@@ -121,5 +125,10 @@ public class PartScaffold extends Multipart implements ISolidPart, IDirtyable {
 	@Override
 	public void markDirty() {
 		super.markDirty();
+	}
+	
+	@Override
+	public ItemStack getPickBlock(EntityPlayer player, PartMOP hit) {
+		return new ItemStack(ItemRegister.scaffold, 1, getCatwalkMaterial().ordinal());
 	}
 }

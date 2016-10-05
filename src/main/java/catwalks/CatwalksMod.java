@@ -1,5 +1,7 @@
 package catwalks;
 
+import catwalks.block.EnumCatwalkMaterial;
+import catwalks.block.EnumDecoration;
 import catwalks.movement.MovementHandler;
 import catwalks.proxy.CommonProxy;
 import catwalks.register.BlockRegister;
@@ -7,6 +9,10 @@ import catwalks.register.ItemRegister;
 import catwalks.register.MultipartRegister;
 import catwalks.register.RecipeRegister;
 import catwalks.util.WrenchChecker;
+import catwalks.util.meta.ArrayProp;
+import catwalks.util.meta.BoolArrayProp;
+import catwalks.util.meta.BoolMapProp;
+import catwalks.util.meta.MetaStorage;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
@@ -18,6 +24,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import static catwalks.util.meta.MetaStorage.bits;
 
 @Mod(modid = CatwalksMod.MODID, version = CatwalksMod.VERSION,
 	guiFactory = "catwalks.gui.CatwalksModConfGuiFactory",
@@ -63,7 +71,7 @@ public class CatwalksMod {
 		Object.class.getClass(); // BREAKPOINT HERE OR YOU ARE A HORRIBLE PERSON!!!!!
 	}
 	
-	public static void SCREAM_AT_DEV() {
+	public static void SCREAM_AT_DEV() throws DEV_SCREAMING_EXCEPTION {
 		YELL_AT_DEV();
 		throw new DEV_SCREAMING_EXCEPTION();
 	}
@@ -72,5 +80,13 @@ public class CatwalksMod {
 		public DEV_SCREAMING_EXCEPTION() {
 			super("I'M SCREAMING AT YOU CAUSE YOU DIDN'T DO GOOD!!!!");
 		}
+	}
+	
+	public static ArrayProp<EnumCatwalkMaterial> allocate_material(MetaStorage.Allocator allocator) {
+		return allocator.allocateArray("material", EnumCatwalkMaterial.values(), bits(128));
+	}
+	
+	public static BoolArrayProp allocate_decor(MetaStorage.Allocator allocator) {
+		return allocator.allocateBoolArray("decor", 15);
 	}
 }
