@@ -15,6 +15,8 @@ public class Conf {
 	public static int catwalkSpeed = 1;
 	public static boolean showScaffoldInsideFaces = false;
 	
+	public static boolean[] CUSTOM_ENABLED = new boolean[8];
+	
 	public static boolean logPackets = false;
 	
 	public static File file;

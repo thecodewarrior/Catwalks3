@@ -48,6 +48,8 @@ public class CatwalkBakedModel implements IBakedModel {
 		
 		CATWALK_BLOCKSTATE_LOC = Const.location("internal/catwalk/" + mat);
 		
+		handle_bottom = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "bottom").loadNull();
+		
 		handles_bottom = new StateHandle[16];
 		for (boolean north : TF) {
 			for (boolean south : TF) {
@@ -88,6 +90,7 @@ public class CatwalkBakedModel implements IBakedModel {
 		}
 	}
 	
+	private final StateHandle handle_bottom;
 	private final StateHandle handles_bottom[];
 	
 	private final StateHandle handle_corner_ne;
@@ -152,8 +155,12 @@ public class CatwalkBakedModel implements IBakedModel {
 			} else if (data.corner_sw == CatwalkRenderData.EnumCatwalkCornerType.CORNER_180) {
 				quads.add(handle_corner_sw_180);
 			}
-			if (data.bottom)
-				quads.add(handles_bottom[encodeSides(data.bottomNorth, data.bottomSouth, data.bottomEast, data.bottomWest)]);
+			if (data.bottom) {
+				if(handle_bottom.getNull() == null)
+					quads.add(handles_bottom[encodeSides(data.bottomNorth, data.bottomSouth, data.bottomEast, data.bottomWest)]);
+				else
+					quads.add(handle_bottom);
+			}
 		}
 		
 		return quads.getQuads();

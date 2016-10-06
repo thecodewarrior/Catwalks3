@@ -14,10 +14,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.fml.common.FMLLog;
+import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by TheCodeWarrior
@@ -25,6 +30,7 @@ import java.util.Map;
 public class StateHandle {
 	
 	protected static Map<ModelResourceLocation, IBakedModel> cache = new HashMap<>();
+	protected static Map<ModelResourceLocation, IBakedModel> nullcache = new HashMap<>();
 	
 	public final ModelResourceLocation loc;
 	
@@ -34,11 +40,21 @@ public class StateHandle {
 	
 	@Nonnull
 	public IBakedModel get() {
-		return loadModel(this);
+		return loadModel(this.loc);
+	}
+	
+	@Nullable
+	public IBakedModel getNull() {
+		return loadModelNullable(this.loc);
 	}
 	
 	public StateHandle load() {
-		loadModel(this);
+		loadModel(this.loc);
+		return this;
+	}
+	
+	public StateHandle loadNull() {
+		loadModelNullable(this.loc);
 		return this;
 	}
 	
@@ -57,22 +73,44 @@ public class StateHandle {
 	}
 	
 	@Nonnull
-	private static IBakedModel loadModel(@Nonnull StateHandle handle)
+	private static IBakedModel loadModel(@Nonnull ModelResourceLocation loc)
 	{
-		IBakedModel model = cache.get(handle.loc);
-		if (model != null)
-			return model;
+		if (cache.containsKey(loc))
+			return cache.get(loc);
+		IBakedModel model = null;
 		
 		try
 		{
-			IModel mod = ModelLoaderRegistry.getModelOrMissing(handle.loc);
+			IModel mod = ModelLoaderRegistry.getModelOrMissing(loc);
 			model = mod.bake(mod.getDefaultState(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
-			cache.put(handle.loc, model);
+			cache.put(loc, model);
 			return model;
 		}
 		catch (Exception e)
 		{
-			throw new ReportedException(new CrashReport("Error loading custom model " + handle.loc, e));
+			throw new ReportedException(new CrashReport("Error loading custom model " + loc, e));
+		}
+	}
+	
+	@Nullable
+	private static IBakedModel loadModelNullable(@Nonnull ModelResourceLocation loc)
+	{
+		if (nullcache.containsKey(loc))
+			return nullcache.get(loc);
+		IBakedModel model = null;
+		
+		try
+		{
+			IModel mod = ModelLoaderRegistry.getModel(loc);
+			model = mod.bake(mod.getDefaultState(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
+			nullcache.put(loc, model);
+			return model;
+		}
+		catch (Exception e)
+		{
+			FMLLog.log("Catwalks", Level.WARN, new ReportedException(new CrashReport("Error loading custom model " + loc + ", defaulting to null", e)), "");
+			nullcache.put(loc, null);
+			return null;
 		}
 	}
 	
@@ -81,7 +119,10 @@ public class StateHandle {
 		IResourceManager rm = Minecraft.getMinecraft().getResourceManager();
 		if (rm instanceof IReloadableResourceManager)
 		{
-			((IReloadableResourceManager) rm).registerReloadListener(__ -> cache.clear());
+			((IReloadableResourceManager) rm).registerReloadListener(__ -> {
+				cache.clear();
+				nullcache.clear();
+			});
 		}
 	}
 }

@@ -29,7 +29,8 @@ public class ItemScaffold extends ItemMultiPartBase {
 	@Override
 	public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 		for(EnumCatwalkMaterial mat : EnumCatwalkMaterial.values()) {
-			subItems.add(new ItemStack(itemIn, 1, mat.ordinal()));
+			if(mat.show())
+				subItems.add(new ItemStack(itemIn, 1, mat.ordinal()));
 		}
 	}
 	

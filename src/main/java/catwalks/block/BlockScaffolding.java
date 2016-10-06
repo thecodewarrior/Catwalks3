@@ -82,9 +82,9 @@ public class BlockScaffolding extends BlockBase implements ICustomLadder {
 				return 1;
 			}
 		}
-		if(state.getValue(Const.MATERIAL_META) == EnumCatwalkMaterial.WOOD) {
-			return 1;
-		}
+//		if(state.getValue(Const.MATERIAL_META) == EnumCatwalkMaterial.WOOD) {
+//			return 1;
+//		}
 		return super.getPlayerRelativeBlockHardness(state, playerIn, worldIn, pos);
 	}
 	
@@ -182,12 +182,12 @@ public class BlockScaffolding extends BlockBase implements ICustomLadder {
 	
 	@Override
 	public boolean shouldApplyClimbing(World world, BlockPos pos, EntityLivingBase entity) {
-		return ( entity.moveForward != 0 || entity.moveStrafing != 0 ) && world.getBlockState(pos).getValue(Const.MATERIAL_META) == EnumCatwalkMaterial.WOOD;
+		return ( entity.moveForward != 0 || entity.moveStrafing != 0 );// && world.getBlockState(pos).getValue(Const.MATERIAL_META) == EnumCatwalkMaterial.WOOD;
 	}
 
 	@Override
 	public boolean shouldApplyFalling(World world, BlockPos pos, EntityLivingBase entity) {
-		return world.getBlockState(pos).getValue(Const.MATERIAL_META) == EnumCatwalkMaterial.WOOD;
+		return true;//world.getBlockState(pos).getValue(Const.MATERIAL_META) == EnumCatwalkMaterial.WOOD;
 	}
 
 	@Override
