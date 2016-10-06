@@ -319,9 +319,28 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 		renderData.corner_sw = cornerLogic(cache, EnumFacing.SOUTH, EnumFacing.WEST);
 		
 		renderData.bottom = getSide(EnumFacing.DOWN);
-		
+		if(renderData.bottom) {
+			renderData.bottomNorth = bottomLogic(cache, EnumFacing.NORTH);
+			renderData.bottomSouth = bottomLogic(cache, EnumFacing.SOUTH);
+			renderData.bottomEast  = bottomLogic(cache, EnumFacing.EAST );
+			renderData.bottomWest  = bottomLogic(cache, EnumFacing.WEST );
+		}
 		cache.clear();
 		return estate.withProperty(Const.CATWALK_RENDER_DATA, renderData);
+	}
+	
+	private boolean bottomLogic(NeighborCache<PartCatwalk> cache, EnumFacing dir) {
+		if(getSide(dir))
+			return false;
+		PartCatwalk adjacent = cache.get(dir);
+		
+		if(adjacent != null) {
+			if(!adjacent.getSide(dir.getOpposite()) && adjacent.getSide(EnumFacing.DOWN)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	private CatwalkRenderData.EnumCatwalkCornerType cornerLogic(NeighborCache<PartCatwalk> cache, EnumFacing front, EnumFacing side) {

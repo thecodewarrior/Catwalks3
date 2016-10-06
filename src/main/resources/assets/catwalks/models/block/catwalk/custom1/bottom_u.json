@@ -2,18 +2,6 @@
 "__comment": "Designed by Cleverpanda with BDcraft Cubik PRO 0.76 Beta - http://bdcraft.net",
 "elements": [ 
 {
-    "from": [ 2, 0, 0 ],
-    "to": [ 14, 2, 2 ],
-    "faces": {
-        "down":  { "uv": [ 2, 2, 14, 0 ], "texture": "#texture" },
-        "up":    { "uv": [ 2, 0, 14, 2 ], "texture": "#texture" },
-        "north": { "uv": [ 2, 14, 14, 16 ], "texture": "#texture" },
-        "south": { "uv": [ 2, 14, 14, 16 ], "texture": "#texture" },
-        "west":  { "uv": [ 0, 14, 2, 16 ], "texture": "#texture" },
-        "east":  { "uv": [ 14, 14, 16, 16 ], "texture": "#texture" }
-    }
-},
-{
     "from": [ 2, 0, 14 ],
     "to": [ 14, 2, 16 ],
     "faces": {
@@ -26,15 +14,15 @@
     }
 },
 {
-    "from": [ 2, 0.5, 2 ],
+    "from": [ 2, 0.5, 0 ],
     "to": [ 14, 1.5, 14 ],
     "faces": {
-        "down":  { "uv": [ 2, 14, 14, 2 ], "texture": "#texture" },
-        "up":    { "uv": [ 2, 2, 14, 14 ], "texture": "#texture" },
+        "down":  { "uv": [ 2, 14, 14, 0 ], "texture": "#texture" },
+        "up":    { "uv": [ 2, 0, 14, 14 ], "texture": "#texture" },
         "north": { "uv": [ 2, 14.5, 14, 15.5 ], "texture": "#texture" },
         "south": { "uv": [ 2, 14.5, 14, 15.5 ], "texture": "#texture" },
-        "west":  { "uv": [ 2, 14.5, 14, 15.5 ], "texture": "#texture" },
-        "east":  { "uv": [ 2, 14.5, 14, 15.5 ], "texture": "#texture" }
+        "west":  { "uv": [ 0, 14.5, 14, 15.5 ], "texture": "#texture" },
+        "east":  { "uv": [ 2, 14.5, 16, 15.5 ], "texture": "#texture" }
     }
 },
 {
