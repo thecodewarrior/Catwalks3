@@ -1,12 +1,30 @@
-tile.catwalk.steel.name=Catwalk
-tile.catwalk.wood.name=Wooden Catwalk
-tile.catwalk.iesteel.name=IE Steel Catwalk
-tile.catwalk.custom.name=Custom Catwalk
+tile.catwalk.steel.name=Steel Catwalk Depreciated
+tile.catwalk.wood.name=Wooden Catwalk Depreciated
+tile.catwalk.iesteel.name=IE Steel Catwalk Depreciated
+tile.catwalk.custom.name=Custom Catwalk Depreciated
 
-tile.catwalkStair.steel.name=Catwalk Stair
-tile.catwalkStair.wood.name=Wooden Catwalk Stair
-tile.catwalkStair.iesteel.name=IE Steel Catwalk Stair
-tile.catwalkStair.custom.name=Custom Catwalk Stair
+tile.catwalkStair.steel.name=Steel Catwalk Stair Depreciated
+tile.catwalkStair.wood.name=Wooden Catwalk Stair Depreciated
+tile.catwalkStair.iesteel.name=IE Steel Catwalk Stair Depreciated
+tile.catwalkStair.custom.name=Custom Catwalk Stair Depreciated
+
+tile.cagedLadder.wood.name=Wooden Caged Ladder Depreciated
+tile.cagedLadder.iesteel.name=IE Steel Caged Ladder Depreciated
+tile.cagedLadder.steel.name=Steel Caged Ladder Depreciated
+tile.cagedLadder.custom.name=Custom Caged Ladder Depreciated
+
+item.catwalkpart.steel.name=Steel Catwalk
+item.catwalkpart.wood.name=Wood Catwalk
+item.catwalkpart.iesteel.name=IE Steel Catwalk
+item.catwalkpart.custom.name=Custom Catwalk
+
+item.stairpart.name=Stair
+item.stairpart.info.0=§8§Dont Touch! It's Buggy
+
+item.scaffoldpart.custom.name=Custom Scaffold, WIP
+item.scaffoldpart.steel.name=Steel Scaffold, WIP
+item.scaffoldpart.iesteel.name=IE Steel Scaffold, WIP
+item.scaffoldpart.wood.name=Wood Scaffold, WIP
 
 item.decoration.lights.name=Rope Lights
 item.decoration.tape.name=Caution Tape
