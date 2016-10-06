@@ -1,0 +1,56 @@
+{
+"__comment": "Designed by Winddelay with BDcraft Cubik PRO 0.96 Beta - http://bdcraft.net",
+"textures": {
+    "all": "catwalks:blocks/catwalk/custom/base"
+},
+"elements": [ 
+{
+    "from": [ 15, 0, 0 ],
+    "to": [ 16, 16, 1 ],
+    "faces": {
+        "down":  { "uv": [ 15, 10, 16, 12 ], "rotation": 270, "texture": "#all" },
+        "up":    { "uv": [ 0, 10, 1, 12 ], "rotation": 270, "texture": "#all" },
+        "north": { "uv": [ 0, 13, 16, 15 ], "rotation": 270, "texture": "#all" },
+        "south": { "uv": [ 0, 13, 16, 15 ], "rotation": 270, "texture": "#all" },
+        "west":  { "uv": [ 0, 15, 16, 16 ], "rotation": 270, "texture": "#all" },
+        "east":  { "uv": [ 0, 12, 16, 13 ], "rotation": 270, "texture": "#all" }
+    }
+},
+{
+    "from": [ 8, 8, 1 ],
+    "to": [ 16, 8.5, 1.5 ],
+    "faces": {
+        "down":  { "uv": [ 8, 9, 15, 10 ], "texture": "#all" },
+        "up":    { "uv": [ 8, 8, 15, 9 ], "texture": "#all" },
+        "north": { "uv": [ 8, 9, 15, 10 ], "rotation": 180, "texture": "#all" },
+        "south": { "uv": [ 8, 9, 15, 10 ], "texture": "#all" },
+        "west":  { "uv": [ 8, 9, 9, 10 ], "texture": "#all" },
+        "east":  { "uv": [ 14, 9, 15, 10 ], "texture": "#all" }
+    }
+},
+{
+    "from": [ 8, 12, 1 ],
+    "to": [ 16, 14, 2 ],
+    "faces": {
+        "down":  { "uv": [ 15, 4, 8, 3 ], "texture": "#all" },
+        "up":    { "uv": [ 8, 0, 15, 1 ], "texture": "#all" },
+        "north": { "uv": [ 8, 1, 15, 3 ], "texture": "#all" },
+        "south": { "uv": [ 8, 1, 15, 3 ], "texture": "#all" },
+        "west":  { "uv": [ 5, 10, 6, 12 ], "texture": "#all" },
+        "east":  { "uv": [ 7, 10, 8, 12 ], "texture": "#all" }
+    }
+},
+{
+    "from": [ 8, 6, 1 ],
+    "to": [ 16, 8, 2 ],
+    "faces": {
+        "down":  { "uv": [ 15, 8, 8, 7 ], "texture": "#all" },
+        "up":    { "uv": [ 8, 4, 15, 5 ], "texture": "#all" },
+        "north": { "uv": [ 8, 5, 15, 7 ], "texture": "#all" },
+        "south": { "uv": [ 8, 5, 15, 7 ], "texture": "#all" },
+        "west":  { "uv": [ 5, 10, 6, 12 ], "texture": "#all" },
+        "east":  { "uv": [ 7, 10, 8, 12 ], "texture": "#all" }
+    }
+}
+]
+}
