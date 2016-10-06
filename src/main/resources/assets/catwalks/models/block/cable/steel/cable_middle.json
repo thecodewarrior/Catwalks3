@@ -1,0 +1,30 @@
+{
+"__comment": "Designed by Winddelay with BDcraft Cubik PRO 0.96 Beta - http://bdcraft.net",
+"textures": {
+    "all": "catwalks:blocks/cable/steel/cable"
+},
+"elements": [ 
+{
+    "from": [ 7.625, 8, 7.625 ],
+    "to": [ 8.375, 16, 8.375 ],
+    "faces": {
+        "up":    { "uv": [ 1, 0, 2, 1 ], "rotation": 90, "texture": "#all" },
+        "north": { "uv": [ 0, 0, 3, 16 ], "texture": "#all" },
+        "south": { "uv": [ 0, 0, 3, 16 ], "texture": "#all" },
+        "west":  { "uv": [ 0, 0, 3, 16 ], "texture": "#all" },
+        "east":  { "uv": [ 0, 0, 3, 16 ], "texture": "#all" }
+    }
+},
+{
+    "from": [ 7.625, 0, 7.625 ],
+    "to": [ 8.375, 8, 8.375 ],
+    "faces": {
+        "down":  { "uv": [ 1, 0, 2, 1 ], "rotation": 270, "texture": "#all" },
+        "north": { "uv": [ 0, 0, 3, 16 ], "texture": "#all" },
+        "south": { "uv": [ 0, 0, 3, 16 ], "texture": "#all" },
+        "west":  { "uv": [ 0, 0, 3, 16 ], "texture": "#all" },
+        "east":  { "uv": [ 0, 0, 3, 16 ], "texture": "#all" }
+    }
+}
+]
+}
