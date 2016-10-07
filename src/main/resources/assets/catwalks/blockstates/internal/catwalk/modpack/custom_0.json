@@ -1,229 +1,86 @@
 {
-	"multipart": [
-		{	"when": { "north_left":"outer_corner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_connect" }
-		},
-		{	"when": { "north_left":"outer_corner_180" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_connect" }
-		},
-		{	"when": { "north_left":"inner_corner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_corner" }
-		},
-		{	"when": { "north_left":"end" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_end" }
-		},
-		{	"when": { "north_left":"merge" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_merge" }
-		},
+    "variants": {
+        "bottom=": { "model": "catwalks:catwalk/modpack/custom_0/bottom" },
+        "bottom=nsew": { "model": "catwalks:catwalk/modpack/custom_0/bottom_open" },
 		
-		{	"when": { "north_right":"outer_corner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_connect" }
-		},
-		{	"when": { "north_right":"outer_corner_180" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_connect" }
-		},
-		{	"when": { "north_right":"inner_corner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_corner" }
-		},
-		{	"when": { "north_right":"end" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_end" }
-		},
-		{	"when": { "north_right":"merge" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_merge" }
-		},
+        "bottom=n": { "model": "catwalks:catwalk/modpack/custom_0/bottom_u" },
+        "bottom=s": { "model": "catwalks:catwalk/modpack/custom_0/bottom_u", "y":180 },
+        "bottom=e": { "model": "catwalks:catwalk/modpack/custom_0/bottom_u", "y":90 },
+        "bottom=w": { "model": "catwalks:catwalk/modpack/custom_0/bottom_u", "y":270 },
 		
+        "bottom=ns": { "model": "catwalks:catwalk/modpack/custom_0/bottom_line" },
+        "bottom=ew": { "model": "catwalks:catwalk/modpack/custom_0/bottom_line", "y":90 },
 		
+        "bottom=nw": { "model": "catwalks:catwalk/modpack/custom_0/bottom_l" },
+        "bottom=ne": { "model": "catwalks:catwalk/modpack/custom_0/bottom_l", "y":90 },
+        "bottom=se": { "model": "catwalks:catwalk/modpack/custom_0/bottom_l", "y":180 },
+        "bottom=sw": { "model": "catwalks:catwalk/modpack/custom_0/bottom_l", "y":270 },
 		
-		{	"when": { "east_left":"outer_corner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_connect", "y": 90 }
-		},
-		{	"when": { "east_left":"outer_corner_180" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_connect", "y": 90 }
-		},
-		{	"when": { "east_left":"inner_corner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_corner", "y": 90 }
-		},
-		{	"when": { "east_left":"end" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_end", "y": 90 }
-		},
-		{	"when": { "east_left":"merge" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_merge", "y": 90 }
-		},
+        "bottom=nsw": { "model": "catwalks:catwalk/modpack/custom_0/bottom_t" },
+        "bottom=nse": { "model": "catwalks:catwalk/modpack/custom_0/bottom_t", "y":180 },
+        "bottom=new": { "model": "catwalks:catwalk/modpack/custom_0/bottom_t", "y":90 },
+        "bottom=sew": { "model": "catwalks:catwalk/modpack/custom_0/bottom_t", "y":270 },
 		
-		{	"when": { "east_right":"outer_corner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_connect", "y": 90 }
-		},
-		{	"when": { "east_right":"outer_corner_180" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_connect", "y": 90 }
-		},
-		{	"when": { "east_right":"inner_corner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_corner", "y": 90 }
-		},
-		{	"when": { "east_right":"end" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_end", "y": 90 }
-		},
-		{	"when": { "east_right":"merge" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_merge", "y": 90 }
-		},
+        "north_left=outer_corner": { "model": "catwalks:catwalk/modpack/custom_0/left_connect" },        
+		"north_left=outer_corner_180": { "model": "catwalks:catwalk/modpack/custom_0/left_connect" },
+        "north_left=inner_corner":  { "model": "catwalks:catwalk/modpack/custom_0/left_corner"  },
+        "north_left=end":     { "model": "catwalks:catwalk/modpack/custom_0/left_end"     },
+        "north_left=merge":   { "model": "catwalks:catwalk/modpack/custom_0/left_merge"   },
+
+        "north_right=outer_corner": { "model": "catwalks:catwalk/modpack/custom_0/right_connect" },        
+		"north_right=outer_corner_180": { "model": "catwalks:catwalk/modpack/custom_0/right_connect" },
+        "north_right=inner_corner":  { "model": "catwalks:catwalk/modpack/custom_0/right_corner"  },
+        "north_right=end":     { "model": "catwalks:catwalk/modpack/custom_0/right_end"     },
+        "north_right=merge":   { "model": "catwalks:catwalk/modpack/custom_0/right_merge"   },
 		
 		
-		
-		{	"when": { "south_left":"outer_corner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_connect", "y": 180 }
-		},
-		{	"when": { "south_left":"outer_corner_180" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_connect", "y": 180 }
-		},
-		{	"when": { "south_left":"inner_corner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_corner", "y": 180 }
-		},
-		{	"when": { "south_left":"end" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_end", "y": 180 }
-		},
-		{	"when": { "south_left":"merge" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_merge", "y": 180 }
-		},
-		
-		{	"when": { "south_right":"outer_corner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_connect", "y": 180 }
-		},
-		{	"when": { "south_right":"outer_corner_180" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_connect", "y": 180 }
-		},
-		{	"when": { "south_right":"inner_corner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_corner", "y": 180 }
-		},
-		{	"when": { "south_right":"end" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_end", "y": 180 }
-		},
-		{	"when": { "south_right":"merge" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_merge", "y": 180 }
-		},
+        "east_left=outer_corner": { "model": "catwalks:catwalk/modpack/custom_0/left_connect" , "y": 90},        
+		"east_left=outer_corner_180": { "model": "catwalks:catwalk/modpack/custom_0/left_connect" , "y": 90},
+        "east_left=inner_corner":  { "model": "catwalks:catwalk/modpack/custom_0/left_corner"  , "y": 90},
+        "east_left=end":     { "model": "catwalks:catwalk/modpack/custom_0/left_end"     , "y": 90},
+        "east_left=merge":   { "model": "catwalks:catwalk/modpack/custom_0/left_merge"   , "y": 90},
+
+        "east_right=outer_corner": { "model": "catwalks:catwalk/modpack/custom_0/right_connect" , "y": 90},        
+		"east_right=outer_corner_180": { "model": "catwalks:catwalk/modpack/custom_0/right_connect" , "y": 90},
+        "east_right=inner_corner":  { "model": "catwalks:catwalk/modpack/custom_0/right_corner"  , "y": 90},
+        "east_right=end":     { "model": "catwalks:catwalk/modpack/custom_0/right_end"     , "y": 90},
+        "east_right=merge":   { "model": "catwalks:catwalk/modpack/custom_0/right_merge"   , "y": 90},
 		
 		
-		
-		{	"when": { "west_left":"outer_corner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_connect", "y": 270 }
-		},
-		{	"when": { "west_left":"outer_corner_180" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_connect", "y": 270 }
-		},
-		{	"when": { "west_left":"inner_corner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_corner", "y": 270 }
-		},
-		{	"when": { "west_left":"end" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_end", "y": 270 }
-		},
-		{	"when": { "west_left":"merge" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/left_merge", "y": 270 }
-		},
-		
-		{	"when": { "west_right":"outer_corner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_connect", "y": 270 }
-		},
-		{	"when": { "west_right":"outer_corner_180" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_connect", "y": 270 }
-		},
-		{	"when": { "west_right":"inner_corner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_corner", "y": 270 }
-		},
-		{	"when": { "west_right":"end" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_end", "y": 270 }
-		},
-		{	"when": { "west_right":"merge" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/right_merge", "y": 270 }
-		},
+        "south_left=outer_corner": { "model": "catwalks:catwalk/modpack/custom_0/left_connect" , "y": 180},        
+		"south_left=outer_corner_180": { "model": "catwalks:catwalk/modpack/custom_0/left_connect" , "y": 180},
+        "south_left=inner_corner":  { "model": "catwalks:catwalk/modpack/custom_0/left_corner"  , "y": 180},
+        "south_left=end":     { "model": "catwalks:catwalk/modpack/custom_0/left_end"     , "y": 180},
+        "south_left=merge":   { "model": "catwalks:catwalk/modpack/custom_0/left_merge"   , "y": 180},
+
+        "south_right=outer_corner": { "model": "catwalks:catwalk/modpack/custom_0/right_connect" , "y": 180},        
+		"south_right=outer_corner_180": { "model": "catwalks:catwalk/modpack/custom_0/right_connect" , "y": 180},
+        "south_right=inner_corner":  { "model": "catwalks:catwalk/modpack/custom_0/right_corner"  , "y": 180},
+        "south_right=end":     { "model": "catwalks:catwalk/modpack/custom_0/right_end"     , "y": 180},
+        "south_right=merge":   { "model": "catwalks:catwalk/modpack/custom_0/right_merge"   , "y": 180},
 		
 		
+        "west_left=outer_corner": { "model": "catwalks:catwalk/modpack/custom_0/left_connect" , "y": 270},        
+		"west_left=outer_corner_180": { "model": "catwalks:catwalk/modpack/custom_0/left_connect" , "y": 270},
+        "west_left=inner_corner":  { "model": "catwalks:catwalk/modpack/custom_0/left_corner"  , "y": 270},
+        "west_left=end":     { "model": "catwalks:catwalk/modpack/custom_0/left_end"     , "y": 270},
+        "west_left=merge":   { "model": "catwalks:catwalk/modpack/custom_0/left_merge"   , "y": 270},
+
+        "west_right=outer_corner": { "model": "catwalks:catwalk/modpack/custom_0/right_connect" , "y": 270},        
+		"west_right=outer_corner_180": { "model": "catwalks:catwalk/modpack/custom_0/right_connect" , "y": 270},
+        "west_right=inner_corner":  { "model": "catwalks:catwalk/modpack/custom_0/right_corner"  , "y": 270},
+        "west_right=end":     { "model": "catwalks:catwalk/modpack/custom_0/right_end"     , "y": 270},
+        "west_right=merge":   { "model": "catwalks:catwalk/modpack/custom_0/right_merge"   , "y": 270},
 		
-		{
-			"when": { "bottom":"true" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/bottom" }
-		},
 		
-		{
-			"when": { "bottom_n":"true" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/bottom_edge" }
-		},
-		{
-			"when": { "bottom_s":"true" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/bottom_edge", "y":180 }
-		},
-		{
-			"when": { "bottom_e":"true" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/bottom_edge", "y":90 }
-		},
-		{
-			"when": { "bottom_w":"true" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/bottom_edge", "y":270 }
-		},
+        "corner_ne": { "model": "catwalks:catwalk/modpack/custom_0/corner" },
+        "corner_se": { "model": "catwalks:catwalk/modpack/custom_0/corner" , "y": 90},
+        "corner_sw": { "model": "catwalks:catwalk/modpack/custom_0/corner" , "y": 180},
+        "corner_nw": { "model": "catwalks:catwalk/modpack/custom_0/corner" , "y": 270},
 		
-		{
-			"when": { "bottom_nw":"true" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/bottom_corner" }
-		},
-		{
-			"when": { "bottom_ne":"true" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/bottom_corner", "y":90 }
-		},
-		{
-			"when": { "bottom_se":"true" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/bottom_corner", "y":180 }
-		},
-		{
-			"when": { "bottom_sw":"true" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/bottom_corner", "y":270 }
-		},
-		
-		{
-			"when": { "corner_nw":"outer" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/corner_outer" }
-		},
-		{
-			"when": { "corner_ne":"outer" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/corner_outer", "y":90 }
-		},
-		{
-			"when": { "corner_se":"outer" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/corner_outer", "y":180 }
-		},
-		{
-			"when": { "corner_sw":"outer" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/corner_outer", "y":270 }
-		},
-		
-		{
-			"when": { "corner_nw":"outer_180" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/corner_outer_180" }
-		},
-		{
-			"when": { "corner_ne":"outer_180" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/corner_outer_180", "y":90 }
-		},
-		{
-			"when": { "corner_se":"outer_180" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/corner_outer_180", "y":180 }
-		},
-		{
-			"when": { "corner_sw":"outer_180" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/corner_outer_180", "y":270 }
-		},
-		
-		{
-			"when": { "corner_nw":"inner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/corner_inner" }
-		},
-		{
-			"when": { "corner_ne":"inner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/corner_inner", "y":90 }
-		},
-		{
-			"when": { "corner_se":"inner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/corner_inner", "y":180 }
-		},
-		{
-			"when": { "corner_sw":"inner" },
-			"apply": { "model": "catwalks:catwalk/modpack/custom_0/corner_inner", "y":270 }
-		}
-	]
+        "corner_ne_180": { "model": "catwalks:catwalk/modpack/custom_0/corner" },
+        "corner_se_180": { "model": "catwalks:catwalk/modpack/custom_0/corner" , "y": 90},
+        "corner_sw_180": { "model": "catwalks:catwalk/modpack/custom_0/corner" , "y": 180},
+        "corner_nw_180": { "model": "catwalks:catwalk/modpack/custom_0/corner" , "y": 270}
+    }
 }

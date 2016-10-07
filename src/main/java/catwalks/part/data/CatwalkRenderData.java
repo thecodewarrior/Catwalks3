@@ -13,7 +13,6 @@ public class CatwalkRenderData implements Comparable<CatwalkRenderData> {
 	
 	public boolean bottom;
 	public boolean bottomNorth, bottomSouth, bottomEast, bottomWest;
-	public boolean bottomNE, bottomNW, bottomSE, bottomSW;
 	public EnumCatwalkCornerType corner_ne, corner_nw, corner_se, corner_sw;
 	
 	public static class CatwalkSideRenderData {
@@ -30,6 +29,6 @@ public class CatwalkRenderData implements Comparable<CatwalkRenderData> {
 	}
 	
 	public enum EnumCatwalkCornerType {
-		CORNER, CORNER_180, INNER_CORNER
+		CORNER, CORNER_180
 	}
 }

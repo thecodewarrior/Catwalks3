@@ -130,6 +130,6 @@ public enum EnumCatwalkMaterial implements IStringSerializable {
 	
 	@Override
 	public String getName() {
-		return this.GROUP.name().toLowerCase() + "__" + this.name().toLowerCase();
+		return this.LAYER.name().toLowerCase() + "__" + this.name().toLowerCase();
 	}
 }

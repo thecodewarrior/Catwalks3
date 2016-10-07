@@ -4,7 +4,6 @@ import catwalks.Const;
 import catwalks.part.data.CatwalkRenderData;
 import catwalks.render.ModelHandle;
 import catwalks.render.StateHandle;
-import catwalks.util.BooleanCombos;
 import catwalks.util.EnumLeftRight;
 import catwalks.util.nestedmap.HierarchyMap;
 import com.google.common.base.Function;
@@ -42,90 +41,74 @@ public class CatwalkBakedModel implements IBakedModel {
 	final ResourceLocation CATWALK_BLOCKSTATE_LOC;
 	
 	public CatwalkBakedModel(String mat, TextureAtlasSprite particle) {
+		boolean[] TF = new boolean[]{true, false};
+		
 		this.mat = mat;
 		this.particle = particle;
 		
 		CATWALK_BLOCKSTATE_LOC = Const.location("internal/catwalk/" + mat);
 		
-		handles_bottom = new StateHandle[256];
+		handle_bottom = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "bottom").loadNull();
 		
-		BooleanCombos.loop(8, (arr) -> {
-			handles_bottom[encodeSides(arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7])] =
-				StateHandle.of(CATWALK_BLOCKSTATE_LOC,
-					"bottom=true," +
-					"bottom_n=" + ( arr[0] ? "true" : "false" ) +
-						",bottom_s=" + ( arr[1] ? "true" : "false" ) +
-						",bottom_e=" + ( arr[2] ? "true" : "false" ) +
-						",bottom_w=" + ( arr[3] ? "true" : "false" ) +
+		handles_bottom = new StateHandle[16];
+		for (boolean north : TF) {
+			for (boolean south : TF) {
+				for (boolean east : TF) {
+					for (boolean west : TF) {
 						
-						",bottom_ne=" + ( arr[4] ? "true" : "false" ) +
-						",bottom_nw=" + ( arr[5] ? "true" : "false" ) +
-						",bottom_se=" + ( arr[6] ? "true" : "false" ) +
-						",bottom_sw=" + ( arr[7] ? "true" : "false" )
-				);
-		});
+						handles_bottom[encodeSides(north, south, east, west)] = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "bottom=" + ( north ? "n" : "" ) + ( south ? "s" : "" ) + ( east ? "e" : "" ) + ( west ? "w" : "" )).load();
+						
+					}
+				}
+			}
+		}
 		
-		handle_corner_ne_outer = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_ne=outer");
-		handle_corner_sw_outer = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_sw=outer");
-		handle_corner_nw_outer = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_nw=outer");
-		handle_corner_se_outer = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_se=outer");
 		
-		handle_corner_ne_outer_180 = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_ne=outer_180");
-		handle_corner_sw_outer_180 = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_sw=outer_180");
-		handle_corner_nw_outer_180 = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_nw=outer_180");
-		handle_corner_se_outer_180 = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_se=outer_180");
+		handle_corner_ne = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_ne").load();
+		handle_corner_sw = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_sw").load();
+		handle_corner_nw = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_nw").load();
+		handle_corner_se = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_se").load();
 		
-		handle_corner_ne_inner = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_ne=inner");
-		handle_corner_sw_inner = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_sw=inner");
-		handle_corner_nw_inner = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_nw=inner");
-		handle_corner_se_inner = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_se=inner");
+		handle_corner_ne_180 = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_ne_180").load();
+		handle_corner_sw_180 = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_sw_180").load();
+		handle_corner_nw_180 = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_nw_180").load();
+		handle_corner_se_180 = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_se_180").load();
 		
 		sideModels = new HierarchyMap<>(3);
 		
 		for (EnumLeftRight leftRight : EnumLeftRight.values()) {
 			for (CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType end : CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.values()) {
-				sideModels.put(StateHandle.of(CATWALK_BLOCKSTATE_LOC, String.format("side=%s,%s=%s", "north", leftRight.name(), end.name()).toLowerCase()),
+				sideModels.put(StateHandle.of(CATWALK_BLOCKSTATE_LOC, String.format("%s_%s=%s", "north", leftRight.name(), end.name()).toLowerCase()).load(),
 					EnumFacing.NORTH, leftRight, end);
-				sideModels.put(StateHandle.of(CATWALK_BLOCKSTATE_LOC, String.format("side=%s,%s=%s", "south", leftRight.name(), end.name()).toLowerCase()),
+				sideModels.put(StateHandle.of(CATWALK_BLOCKSTATE_LOC, String.format("%s_%s=%s", "south", leftRight.name(), end.name()).toLowerCase()).load(),
 					EnumFacing.SOUTH, leftRight, end);
-				sideModels.put(StateHandle.of(CATWALK_BLOCKSTATE_LOC, String.format("side=%s,%s=%s", "east", leftRight.name(), end.name()).toLowerCase()),
+				sideModels.put(StateHandle.of(CATWALK_BLOCKSTATE_LOC, String.format("%s_%s=%s", "east", leftRight.name(), end.name()).toLowerCase()).load(),
 					EnumFacing.EAST, leftRight, end);
-				sideModels.put(StateHandle.of(CATWALK_BLOCKSTATE_LOC, String.format("side=%s,%s=%s", "west", leftRight.name(), end.name()).toLowerCase()),
+				sideModels.put(StateHandle.of(CATWALK_BLOCKSTATE_LOC, String.format("%s_%s=%s", "west", leftRight.name(), end.name()).toLowerCase()).load(),
 					EnumFacing.WEST, leftRight, end);
 			}
 		}
 	}
 	
+	private final StateHandle handle_bottom;
 	private final StateHandle handles_bottom[];
 	
-	private final StateHandle handle_corner_ne_outer;
-	private final StateHandle handle_corner_ne_outer_180;
-	private final StateHandle handle_corner_ne_inner;
-	
-	private final StateHandle handle_corner_nw_outer;
-	private final StateHandle handle_corner_nw_outer_180;
-	private final StateHandle handle_corner_nw_inner;
-	
-	private final StateHandle handle_corner_se_outer;
-	private final StateHandle handle_corner_se_outer_180;
-	private final StateHandle handle_corner_se_inner;
-	
-	private final StateHandle handle_corner_sw_outer;
-	private final StateHandle handle_corner_sw_outer_180;
-	private final StateHandle handle_corner_sw_inner;
+	private final StateHandle handle_corner_ne;
+	private final StateHandle handle_corner_ne_180;
+	private final StateHandle handle_corner_sw;
+	private final StateHandle handle_corner_sw_180;
+	private final StateHandle handle_corner_nw;
+	private final StateHandle handle_corner_nw_180;
+	private final StateHandle handle_corner_se;
+	private final StateHandle handle_corner_se_180;
 	
 	private final HierarchyMap<StateHandle> sideModels; // side, left/right, endType
 	
-	private static int encodeSides(boolean north, boolean south, boolean east, boolean west, boolean ne, boolean nw, boolean se, boolean sw) {
+	private static int encodeSides(boolean north, boolean south, boolean east, boolean west) {
 		return ( ( ( north ? 1 : 0 ) ) |
 			( ( south ? 1 : 0 ) << 1 ) |
 			( ( east ? 1 : 0 ) << 2 ) |
-			( ( west ? 1 : 0 ) << 3 ) |
-			
-			( ( ne ? 1 : 0 ) << 4 ) |
-			( ( nw ? 1 : 0 ) << 5 ) |
-			( ( se ? 1 : 0 ) << 6 ) |
-			( ( sw ? 1 : 0 ) << 7 )
+			( ( west ? 1 : 0 ) << 3 )
 		);
 	}
 	
@@ -153,39 +136,31 @@ public class CatwalkBakedModel implements IBakedModel {
 			}
 			
 			if (data.corner_ne == CatwalkRenderData.EnumCatwalkCornerType.CORNER) {
-				quads.add(handle_corner_ne_outer);
+				quads.add(handle_corner_ne);
 			} else if (data.corner_ne == CatwalkRenderData.EnumCatwalkCornerType.CORNER_180) {
-				quads.add(handle_corner_ne_outer_180);
-			}  else if (data.corner_ne == CatwalkRenderData.EnumCatwalkCornerType.INNER_CORNER) {
-				quads.add(handle_corner_ne_inner);
+				quads.add(handle_corner_ne_180);
 			}
-			
 			if (data.corner_nw == CatwalkRenderData.EnumCatwalkCornerType.CORNER) {
-				quads.add(handle_corner_nw_outer);
+				quads.add(handle_corner_nw);
 			} else if (data.corner_nw == CatwalkRenderData.EnumCatwalkCornerType.CORNER_180) {
-				quads.add(handle_corner_nw_outer_180);
-			}  else if (data.corner_nw == CatwalkRenderData.EnumCatwalkCornerType.INNER_CORNER) {
-				quads.add(handle_corner_nw_inner);
+				quads.add(handle_corner_nw_180);
 			}
-			
 			if (data.corner_se == CatwalkRenderData.EnumCatwalkCornerType.CORNER) {
-				quads.add(handle_corner_se_outer);
+				quads.add(handle_corner_se);
 			} else if (data.corner_se == CatwalkRenderData.EnumCatwalkCornerType.CORNER_180) {
-				quads.add(handle_corner_se_outer_180);
-			}  else if (data.corner_se == CatwalkRenderData.EnumCatwalkCornerType.INNER_CORNER) {
-				quads.add(handle_corner_se_inner);
+				quads.add(handle_corner_se_180);
 			}
-			
 			if (data.corner_sw == CatwalkRenderData.EnumCatwalkCornerType.CORNER) {
-				quads.add(handle_corner_sw_outer);
+				quads.add(handle_corner_sw);
 			} else if (data.corner_sw == CatwalkRenderData.EnumCatwalkCornerType.CORNER_180) {
-				quads.add(handle_corner_sw_outer_180);
-			}  else if (data.corner_sw == CatwalkRenderData.EnumCatwalkCornerType.INNER_CORNER) {
-				quads.add(handle_corner_sw_inner);
+				quads.add(handle_corner_sw_180);
 			}
-			
-			if (data.bottom)
-				quads.add(handles_bottom[encodeSides(data.bottomNorth, data.bottomSouth, data.bottomEast, data.bottomWest, data.bottomNE, data.bottomNW, data.bottomSE, data.bottomSW)]);
+			if (data.bottom) {
+				if(handle_bottom.getNull() == null)
+					quads.add(handles_bottom[encodeSides(data.bottomNorth, data.bottomSouth, data.bottomEast, data.bottomWest)]);
+				else
+					quads.add(handle_bottom);
+			}
 		}
 		
 		return quads.getQuads();
@@ -274,7 +249,6 @@ public class CatwalkBakedModel implements IBakedModel {
 		@Override
 		public Collection<ResourceLocation> getDependencies() {
 			List<ResourceLocation> dependencies = Lists.newArrayList();
-			dependencies.add(Const.location("internal/catwalk/" + mat));
 			return dependencies;
 		}
 		
