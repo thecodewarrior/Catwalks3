@@ -24,13 +24,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static com.sun.tools.internal.xjc.reader.Ring.add;
+import static net.minecraftforge.client.model.ModelLoaderRegistry.getModel;
+
 /**
  * Created by TheCodeWarrior
  */
 public class StateHandle {
 	
 	protected static Map<ModelResourceLocation, IBakedModel> cache = new HashMap<>();
-	protected static Map<ModelResourceLocation, IBakedModel> nullcache = new HashMap<>();
+	protected static Set<ModelResourceLocation> missingModels = new HashSet<>();
 	
 	public final ModelResourceLocation loc;
 	
@@ -40,77 +43,93 @@ public class StateHandle {
 	
 	@Nonnull
 	public IBakedModel get() {
-		return loadModel(this.loc);
-	}
-	
-	@Nullable
-	public IBakedModel getNull() {
-		return loadModelNullable(this.loc);
+		return getModel(this.loc);
 	}
 	
 	public StateHandle load() {
+		getModel(this.loc);
+		return this;
+	}
+	
+	public StateHandle reload() {
 		loadModel(this.loc);
 		return this;
 	}
 	
-	public StateHandle loadNull() {
-		loadModelNullable(this.loc);
-		return this;
+	public boolean isMissing() {
+		getModel(this.loc);
+		return missingModels.contains(this.loc);
 	}
 	
 	// ========================================================= STATIC METHODS
 	
+	//region creators
+	
 	@Nonnull
 	public static StateHandle of(String model, String variant)
 	{
-		return new StateHandle(new ModelResourceLocation(new ResourceLocation(model), variant));
+		return of(new ResourceLocation(model), variant);
 	}
 	
 	@Nonnull
 	public static StateHandle of(ResourceLocation model, String variant)
 	{
-		return new StateHandle(new ModelResourceLocation(model, variant));
+		return of(new ModelResourceLocation(model, variant));
 	}
 	
 	@Nonnull
-	private static IBakedModel loadModel(@Nonnull ModelResourceLocation loc)
+	public static StateHandle ofLazy(String model, String variant)
 	{
-		if (cache.containsKey(loc))
-			return cache.get(loc);
-		IBakedModel model = null;
+		return ofLazy(new ResourceLocation(model), variant);
+	}
+	
+	@Nonnull
+	public static StateHandle ofLazy(ResourceLocation model, String variant)
+	{
+		return ofLazy(new ModelResourceLocation(model, variant));
+	}
+	
+	@Nonnull
+	public static StateHandle ofLazy(ModelResourceLocation loc)
+	{
+		return new StateHandle(loc);
+	}
+	
+	@Nonnull
+	public static StateHandle of(ModelResourceLocation loc)
+	{
+		return new StateHandle(loc).reload();
+	}
+	
+	//endregion
+	
+	@Nonnull
+	private static IBakedModel getModel(@Nonnull ModelResourceLocation loc)
+	{
+		IBakedModel model = cache.get(loc);
+		if(model != null)
+			return model;
 		
+		loadModel(loc);
+		model = cache.get(loc);
+		if(model == null)
+			throw new IllegalStateException("Cache contained null even after loading for model " + loc);
+		return model;
+	}
+	
+	private static void loadModel(@Nonnull ModelResourceLocation loc)
+	{
 		try
 		{
 			IModel mod = ModelLoaderRegistry.getModelOrMissing(loc);
-			model = mod.bake(mod.getDefaultState(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
+			if(mod == ModelLoaderRegistry.getMissingModel())
+				missingModels.add(loc);
+			IBakedModel model = mod.bake(mod.getDefaultState(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
 			cache.put(loc, model);
-			return model;
 		}
 		catch (Exception e)
 		{
 			throw new ReportedException(new CrashReport("Error loading custom model " + loc, e));
-		}
-	}
-	
-	@Nullable
-	private static IBakedModel loadModelNullable(@Nonnull ModelResourceLocation loc)
-	{
-		if (nullcache.containsKey(loc))
-			return nullcache.get(loc);
-		IBakedModel model = null;
-		
-		try
-		{
-			IModel mod = ModelLoaderRegistry.getModel(loc);
-			model = mod.bake(mod.getDefaultState(), DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
-			nullcache.put(loc, model);
-			return model;
-		}
-		catch (Exception e)
-		{
-			FMLLog.log("Catwalks", Level.WARN, new ReportedException(new CrashReport("Error loading custom model " + loc + ", defaulting to null", e)), "");
-			nullcache.put(loc, null);
-			return null;
 		}
 	}
 	
@@ -121,7 +140,7 @@ public class StateHandle {
 		{
 			((IReloadableResourceManager) rm).registerReloadListener(__ -> {
 				cache.clear();
-				nullcache.clear();
+				missingModels.clear();
 			});
 		}
 	}

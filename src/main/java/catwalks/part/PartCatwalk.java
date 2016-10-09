@@ -318,12 +318,21 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 		renderData.corner_se = cornerLogic(cache, EnumFacing.SOUTH, EnumFacing.EAST);
 		renderData.corner_sw = cornerLogic(cache, EnumFacing.SOUTH, EnumFacing.WEST);
 		
-		renderData.bottom = getSide(EnumFacing.DOWN);
-		if(renderData.bottom) {
+		renderData.bottom = getSide(EnumFacing.DOWN) ? EnumFacing.Axis.Z : null;
+		if(renderData.bottom != null) {
 			renderData.bottomNorth = bottomLogic(cache, EnumFacing.NORTH);
 			renderData.bottomSouth = bottomLogic(cache, EnumFacing.SOUTH);
 			renderData.bottomEast  = bottomLogic(cache, EnumFacing.EAST );
 			renderData.bottomWest  = bottomLogic(cache, EnumFacing.WEST );
+			
+			renderData.bottomNE = renderData.bottomNorth || renderData.bottomEast || bottomCornerLogic(cache, EnumFacing.NORTH, EnumFacing.EAST);
+			renderData.bottomNW = renderData.bottomNorth || renderData.bottomWest || bottomCornerLogic(cache, EnumFacing.NORTH, EnumFacing.WEST);
+			renderData.bottomSE = renderData.bottomSouth || renderData.bottomEast || bottomCornerLogic(cache, EnumFacing.SOUTH, EnumFacing.EAST);
+			renderData.bottomSW = renderData.bottomSouth || renderData.bottomWest || bottomCornerLogic(cache, EnumFacing.SOUTH, EnumFacing.WEST);
+			
+			if(renderData.bottomEast && renderData.bottomWest && !(renderData.bottomNorth && renderData.bottomSouth)) {
+				renderData.bottom = EnumFacing.Axis.X;
+			}
 		}
 		cache.clear();
 		return estate.withProperty(Const.CATWALK_RENDER_DATA, renderData);
@@ -343,7 +352,33 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 		return false;
 	}
 	
+	private boolean bottomCornerLogic(NeighborCache<PartCatwalk> cache, EnumFacing front, EnumFacing side) {
+		if(getSide(front) || getSide(side))
+			return true;
+		PartCatwalk ahead = cache.get(front);
+		PartCatwalk adjacent = cache.get(side);
+		PartCatwalk diagonal = cache.get(side, front);
+		
+		if(adjacent != null && ahead != null && diagonal != null) {
+			
+			if(
+				adjacent.getSide(EnumFacing.DOWN) && ahead.getSide(EnumFacing.DOWN) && diagonal.getSide(EnumFacing.DOWN) &&
+				!(
+					adjacent.getSide(front) || diagonal.getSide(front.getOpposite()) ||
+						ahead.getSide(side) || diagonal.getSide(side.getOpposite())
+				)
+				) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 	private CatwalkRenderData.EnumCatwalkCornerType cornerLogic(NeighborCache<PartCatwalk> cache, EnumFacing front, EnumFacing side) {
+		
+		if (getSide(front) && getSide(side))
+			return CatwalkRenderData.EnumCatwalkCornerType.INNER_CORNER;
 		
 		if (getSide(front) || getSide(side))
 			return null;
