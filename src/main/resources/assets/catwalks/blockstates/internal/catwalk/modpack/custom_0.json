@@ -3,10 +3,6 @@
         "bottom_zaxis": { "model": "catwalks:catwalk/modpack/custom_0/bottom" },
         "bottom_xaxis": { "model": "catwalks:catwalk/modpack/custom_0/bottom", "y":90 },
 		
-        "bottom_zaxis_nsEW": { "model": "catwalks:catwalk/modpack/custom_0/bottom_wide" },
-		"bottom_xaxis_NSew": { "model": "catwalks:catwalk/modpack/custom_0/bottom_wide", "y":90 },
-		
-		
 		"bottom_edge_north": { "model": "catwalks:catwalk/modpack/custom_0/bottom_edge" },
 		"bottom_edge_east": { "model": "catwalks:catwalk/modpack/custom_0/bottom_edge", "y":90 },
 		"bottom_edge_south": { "model": "catwalks:catwalk/modpack/custom_0/bottom_edge", "y":180 },
