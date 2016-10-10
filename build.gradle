@@ -41,8 +41,8 @@ minecraft {
 }
 
 dependencies {
-    deobfCompile "mezz.jei:jei_1.10.2:3.9.+:api"
-    runtime "mezz.jei:jei_1.10.2:3.9.+"
+    deobfCompile "mezz.jei:jei_1.10.2:3.12.+:api"
+    runtime "mezz.jei:jei_1.10.2:3.12.+"
     deobfCompile "MCMultiPart:MCMultiPart:1.2.1:universal"
 
     // you may put jars on which you depend on in ./libs
