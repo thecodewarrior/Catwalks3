@@ -13,7 +13,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "0.3.0"
+version = "0.3.0" + ( System.getenv().containsKey("bamboo_buildNumber") ? "." + System.getenv("bamboo_buildNumber") : "" )
 group = "thecodewarrior.catwalks" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "catwalks"
 
@@ -41,8 +41,8 @@ minecraft {
 }
 
 dependencies {
-    deobfCompile "mezz.jei:jei_1.10.2:3.12.+:api"
-    runtime "mezz.jei:jei_1.10.2:3.12.+"
+    deobfCompile "mezz.jei:jei_1.10.2:3.12.6.307:api"
+    runtime "mezz.jei:jei_1.10.2:3.12.6.307"
     deobfCompile "MCMultiPart:MCMultiPart:1.2.1:universal"
 
     // you may put jars on which you depend on in ./libs

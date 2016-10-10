@@ -2,10 +2,12 @@ package catwalks.compat.jei;
 
 import catwalks.item.crafting.RecipeDecorationSplit;
 import mezz.jei.api.IGuiHelper;
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.BlankRecipeWrapper;
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
-import mezz.jei.plugins.vanilla.crafting.AbstractShapelessRecipeWrapper;
+import mezz.jei.api.recipe.wrapper.ICraftingRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -53,13 +55,12 @@ public class DecorationSplitRecipeHandler implements IRecipeHandler<RecipeDecora
 		return true;
 	}
 	
-	public static class Wrapper extends AbstractShapelessRecipeWrapper {
+	public static class Wrapper extends BlankRecipeWrapper implements ICraftingRecipeWrapper {
 
 		List inputs, outputs;
 		
 		@SuppressWarnings("unchecked")
 		public Wrapper(IGuiHelper guiHelper, RecipeDecorationSplit recipe) {
-			super(guiHelper);
 			Item item = recipe.getTargetItem();
 			inputs =  new ArrayList<>();
 			outputs = new ArrayList<>();
@@ -67,7 +68,13 @@ public class DecorationSplitRecipeHandler implements IRecipeHandler<RecipeDecora
 			inputs.add(new ItemStack(item));
 			outputs.add(new ItemStack(item, 1, item.getMaxDamage() - (item.getMaxDamage()/2)));
 		}
-
+		
+		@Override
+		public void getIngredients(IIngredients ingredients) {
+			ingredients.setInputs(ItemStack.class, inputs);
+			ingredients.setOutputs(ItemStack.class, outputs);
+		}
+		
 		@Nonnull
 		@Override
 		public List getInputs() {
