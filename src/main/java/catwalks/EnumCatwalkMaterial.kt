@@ -3,8 +3,7 @@ package catwalks
 import catwalks.block.EnumDecoration
 import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.IStringSerializable
-
-import java.util.Arrays
+import java.util.*
 
 /**
  * Created by TheCodeWarrior
@@ -119,6 +118,6 @@ enum class EnumCatwalkMaterial constructor(val ALLOCATED: Boolean, val WIP: Bool
     }
 
     override fun getName(): String {
-        return this.LAYER.name.toLowerCase() + "__" + this.name.toLowerCase()
+        return this.GROUP.name.toLowerCase() + "_" + this.name.toLowerCase()
     }
 }

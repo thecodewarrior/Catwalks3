@@ -11,74 +11,74 @@
       "model": "catwalks:catwalk"
     }],
     "material": {
-		"modpack__custom_0": {
+		"modpack_custom_0": {
 			"model": "catwalks:internal/catwalk/modpack/custom_0"
 		},
-		"modpack__custom_1": {
+		"modpack_custom_1": {
 			"model": "catwalks:internal/catwalk/modpack/custom_1"
 		},
-		"modpack__custom_2": {
+		"modpack_custom_2": {
 			"model": "catwalks:internal/catwalk/modpack/custom_2"
 		},
-		"modpack__custom_3": {
+		"modpack_custom_3": {
 			"model": "catwalks:internal/catwalk/modpack/custom_3"
 		},
-		"modpack__custom_4": {
+		"modpack_custom_4": {
 			"model": "catwalks:internal/catwalk/modpack/custom_4"
 		},
-		"modpack__custom_5": {
+		"modpack_custom_5": {
 			"model": "catwalks:internal/catwalk/modpack/custom_5"
 		},
-		"modpack__custom_6": {
+		"modpack_custom_6": {
 			"model": "catwalks:internal/catwalk/modpack/custom_6"
 		},
-		"modpack__custom_7": {
+		"modpack_custom_7": {
 			"model": "catwalks:internal/catwalk/modpack/custom_7"
 		},
 		
-		"catwalks__normal": {
+		"catwalks_normal": {
 			"model": "catwalks:internal/catwalk/catwalks/normal"
 		},
-		"catwalks__glass": {
+		"catwalks_glass": {
 			"model": "catwalks:internal/catwalk/catwalks/glass"
 		},
-		"catwalks__nyan": {
+		"catwalks_nyan": {
 			"model": "catwalks:internal/catwalk/catwalks/nyan"
 		},
-		"catwalks__bamboo": {
+		"catwalks_bamboo": {
 			"model": "catwalks:internal/catwalk/catwalks/bamboo"
 		},
 		
-		"immersive_engineering__steel": {
+		"immersive_engineering_steel": {
 			"model": "catwalks:internal/catwalk/immersive_engineering/steel"
 		},
-		"immersive_engineering__treated_wood": {
+		"immersive_engineering_treated_wood": {
 			"model": "catwalks:internal/catwalk/immersive_engineering/treated_wood"
 		},
-		"immersive_engineering__aluminum": {
+		"immersive_engineering_aluminum": {
 			"model": "catwalks:internal/catwalk/immersive_engineering/aluminum"
 		},
 		
-		"botania__livingrock": {
+		"botania_livingrock": {
 			"model": "catwalks:internal/catwalk/botania/livingrock"
 		},
-		"botania__livingwood": {
+		"botania_livingwood": {
 			"model": "catwalks:internal/catwalk/botania/livingwood"
 		},
-		"botania__dreamwood": {
+		"botania_dreamwood": {
 			"model": "catwalks:internal/catwalk/botania/dreamwood"
 		},
-		"botania__managlass": {
+		"botania_managlass": {
 			"model": "catwalks:internal/catwalk/botania/managlass"
 		},
-		"botania__alfglass": {
+		"botania_alfglass": {
 			"model": "catwalks:internal/catwalk/botania/alfglass"
 		},
 		
-		"chisel__factory": {
+		"chisel_factory": {
 			"model": "catwalks:internal/catwalk/chisel/factory"
 		},
-		"chisel__laboratory": {
+		"chisel_laboratory": {
 			"model": "catwalks:internal/catwalk/chisel/laboratory"
 		}
     }

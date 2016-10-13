@@ -13,17 +13,16 @@ object MultipartRegister {
 
     fun register() {
         // scaffold
-        MultipartRegistry.registerPart(PartScaffold::class.java!!, PartScaffold.ID)
+        MultipartRegistry.registerPart(PartScaffold::class.java, PartScaffold.ID)
         val converter = PartConverterScaffold()
         MultipartRegistry.registerPartConverter(converter)
         MultipartRegistry.registerReversePartConverter(converter)
 
         // catwalk
-        MultipartRegistry.registerPart(PartCatwalk::class.java!!, PartCatwalk.ID)
+        MultipartRegistry.registerPart(PartCatwalk::class.java, PartCatwalk.ID)
 
-
-        // catwalk
-        MultipartRegistry.registerPart(PartStair::class.java!!, PartStair.ID)
+        // stair
+        MultipartRegistry.registerPart(PartStair::class.java, PartStair.ID)
     }
 
 }

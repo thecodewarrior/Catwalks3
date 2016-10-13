@@ -1,8 +1,12 @@
 package catwalks.register
 
+import catwalks.CatwalksMod
 import catwalks.register.ItemRegister.renderRegsiterItems
 import catwalks.render.part.CatwalkBakedModel
+import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
+import net.minecraft.client.renderer.block.statemap.StateMapperBase
+import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.fml.relauncher.Side
@@ -22,7 +26,14 @@ class RenderRegister {
 
     object Blocks {
         fun initRender() {
-
+            val rl = ResourceLocation(CatwalksMod.MODID, "scaffold")
+            BlockRegister.scaffolds.forEach {
+                ModelLoader.setCustomStateMapper(it, object : StateMapperBase() {
+                    override fun getModelResourceLocation(state: IBlockState?): ModelResourceLocation {
+                        return ModelResourceLocation(rl, this.getPropertyString(state?.getProperties()))
+                    }
+                })
+            }
         }
     }
 
