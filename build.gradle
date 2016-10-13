@@ -13,7 +13,15 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "0.3.0" + ( System.getenv().containsKey("bamboo_buildNumber") ? "." + System.getenv("bamboo_buildNumber") : "" )
+ext.configFile = file "build.properties"
+
+configFile.withReader {
+    def prop = new Properties()
+    prop.load(it)
+    project.ext.config = new ConfigSlurper().parse prop
+}
+
+version = config.minecraft_version + "-" + config.majorversion + "." + config.majorapi + "." + config.minor + "." + config.patch + ( System.getenv().containsKey("bamboo_buildNumber") ? "b" + System.getenv("bamboo_buildNumber") : "" )
 group = "thecodewarrior.catwalks" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "catwalks"
 
