@@ -6,10 +6,11 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEve
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Conf {
 	
-	public static boolean shouldHaveLaddeyGrabbey = Const.RAND.nextDouble() <= ( 5 / 100.0 ); // 5% chance
+	public static boolean shouldHaveLaddeyGrabbey = ThreadLocalRandom.current().nextDouble() <= ( 5 / 100.0 ); // 5% chance
 	
 	public static float ladderSpeed  = 2;
 	public static int catwalkSpeed = 1;
