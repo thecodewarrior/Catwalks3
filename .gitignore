@@ -20,3 +20,7 @@ build
 # other
 eclipse
 run
+
+lib/kotlin-reflect.jar
+lib/kotlin-runtime-sources.jar
+lib/kotlin-runtime.jar
