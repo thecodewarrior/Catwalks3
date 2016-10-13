@@ -1,9 +1,10 @@
 package catwalks.register
 
 import catwalks.item.*
-import java.util.*
 
 object ItemRegister {
+
+    val renderRegsiterItems: MutableList<ItemBase> = mutableListOf()
 
     var lights = ItemDecoration("lights")
     var tape = ItemDecoration("tape")
@@ -14,6 +15,4 @@ object ItemRegister {
     var scaffold = ItemScaffold("scaffoldpart")
     var catwalk = ItemCatwalk("catwalkpart")
     var stair = ItemStair("stairpart")
-
-    var renderRegsiterItems: MutableList<ItemBase> = mutableListOf()
 }
