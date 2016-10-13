@@ -1,5 +1,6 @@
 // For those who want the bleeding edge
 buildscript {
+    ext.kotlin_version = '1.0.2'
     repositories {
         jcenter()
         maven {
@@ -9,9 +10,15 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'org.ajoberstar:gradle-git:1.1.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'kotlin'
+
+import org.ajoberstar.grgit.*
+ext.repo = Grgit.open(project.file('.'))
 
 ext.configFile = file "build.properties"
 
@@ -21,7 +28,10 @@ configFile.withReader {
     project.ext.config = new ConfigSlurper().parse prop
 }
 
-version = config.minecraft_version + "-" + config.majorversion + "." + config.majorapi + "." + config.minor + "." + config.patch + ( System.getenv().containsKey("bamboo_buildNumber") ? "b" + System.getenv("bamboo_buildNumber") : "" )
+version = config.minecraft_version + "-" +
+        config.majorversion + "." + config.majorapi + "." + config.minor + "." + config.patch +
+        ( System.getenv().containsKey("bamboo_buildNumber") ? "b" + System.getenv("bamboo_buildNumber") : "" ) +
+        ( ext.repo.branch.current.name == "master" ? "" : "-$ext.repo.branch.current.name")
 group = "thecodewarrior.catwalks" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "catwalks"
 
@@ -52,6 +62,8 @@ dependencies {
     deobfCompile "mezz.jei:jei_1.10.2:3.12.6.307:api"
     runtime "mezz.jei:jei_1.10.2:3.12.6.307"
     deobfCompile "MCMultiPart:MCMultiPart:1.2.1:universal"
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..

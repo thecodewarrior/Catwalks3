@@ -222,7 +222,7 @@ class PartCatwalk : Multipart(), ISlottedPart, INormallyOccludingPart, ISolidPar
 
 
     override fun canRenderInLayer(layer: BlockRenderLayer?): Boolean {
-        return layer == BlockRenderLayer.CUTOUT
+        return layer == catwalkMaterial.LAYER
     }
 
     override fun createBlockState(): BlockStateContainer {
