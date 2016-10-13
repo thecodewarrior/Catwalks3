@@ -1,7 +1,5 @@
 package catwalks;
 
-import catwalks.block.EnumCatwalkMaterialOld;
-import catwalks.movement.MovementHandler;
 import catwalks.proxy.CommonProxy;
 import catwalks.register.BlockRegister;
 import catwalks.register.ItemRegister;
@@ -12,6 +10,7 @@ import catwalks.util.meta.ArrayProp;
 import catwalks.util.meta.BoolArrayProp;
 import catwalks.util.meta.MetaStorage;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -54,14 +53,14 @@ public class CatwalksMod {
     public void init(FMLInitializationEvent event) {
     	WrenchChecker.init();
     	// just to load the classes and their instances
-		MovementHandler.INSTANCE.getClass();
+//		MovementHandler.INSTANCE.getClass();
     }
     
     public static CreativeTabs tab = new CreativeTabs("tabCatwalks") {
 		@Override
 		@SideOnly(Side.CLIENT)
 		public Item getTabIconItem() {
-			return Item.getItemFromBlock( BlockRegister.catwalk );
+			return Item.getItemFromBlock(Blocks.BRICK_BLOCK );
 		}
 	};
 	

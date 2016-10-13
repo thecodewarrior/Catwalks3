@@ -2,14 +2,9 @@ package catwalks.proxy;
 
 import catwalks.Conf;
 import catwalks.Const;
-import catwalks.raytrace.RayTraceUtil.VertexList;
 import catwalks.register.RenderRegister;
 import catwalks.render.ModelHandle;
-import catwalks.render.ShaderHelper;
 import catwalks.render.StateHandle;
-import catwalks.shade.ccl.raytracer.RayTracer;
-import catwalks.shade.ccl.vec.Vector3;
-import catwalks.util.CustomFaceRayTraceResult;
 import catwalks.util.GeneralUtil;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.state.IBlockState;
@@ -18,17 +13,13 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.model.obj.OBJLoader;
@@ -39,8 +30,6 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class ClientProxy extends CommonProxy {
@@ -50,19 +39,12 @@ public class ClientProxy extends CommonProxy {
 		return FMLClientHandler.instance().getServer();
 	}
 	
-	public EntityPlayer getPlayerLooking(Vec3d start, Vec3d end) {
-		return Minecraft.getMinecraft().thePlayer;
-	}
-	
-	public static List<Tuple<Vector3, Double>> hits = new ArrayList<>();
-	
 	public void preInit() {
 		RenderRegister.Blocks.initRender();
 		RenderRegister.Items.initRender();
 		RenderRegister.Parts.initRender();
 		MinecraftForge.EVENT_BUS.register(new Conf());
 		OBJLoader.INSTANCE.addDomain(Const.MODID);
-		ShaderHelper.initShaders();
 		ModelHandle.init();
 		StateHandle.init();
 	}
@@ -70,78 +52,6 @@ public class ClientProxy extends CommonProxy {
 	public void reloadConfigs() {
 		if(Minecraft.getMinecraft().renderGlobal != null)
 			Minecraft.getMinecraft().renderGlobal.loadRenderers();
-	}
-	
-	@SubscribeEvent
-	public void highlight(DrawBlockHighlightEvent event) {
-		BlockPos pos = event.getTarget().getBlockPos();
-		
-		if(event.getTarget() instanceof CustomFaceRayTraceResult) {
-			event.setCanceled(true);
-			
-			CustomFaceRayTraceResult mop = (CustomFaceRayTraceResult) event.getTarget();
-			
-			GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-            GlStateManager.color(0.0F, 0.0F, 0.0F, 0.4F);
-            GL11.glLineWidth(2.0F);
-            GlStateManager.disableTexture2D();
-            GlStateManager.depthMask(false);
-            GlStateManager.pushMatrix();
-            
-            double d0 = event.getPlayer().lastTickPosX + (event.getPlayer().posX - event.getPlayer().lastTickPosX) * (double)event.getPartialTicks();
-            double d1 = event.getPlayer().lastTickPosY + (event.getPlayer().posY - event.getPlayer().lastTickPosY) * (double)event.getPartialTicks();
-            double d2 = event.getPlayer().lastTickPosZ + (event.getPlayer().posZ - event.getPlayer().lastTickPosZ) * (double)event.getPartialTicks();
-            
-            GlStateManager.translate(pos.getX()-d0, pos.getY()-d1, pos.getZ()-d2);
-            
-            
-            Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer worldrenderer = tessellator.getBuffer();
-            
-            
-            List<VertexList> points = mop.quad.getVertices();
-            
-            double s = 1.005, centering = ((1-s)/2)/s; // ( (1m size difference) / 2 ) / adjust for previous scale
-            GlStateManager.scale(s, s, s);
-            GlStateManager.translate(centering, centering, centering);
-            
-            GlStateManager.translate(-mop.offset.getX(), -mop.offset.getY(), -mop.offset.getZ());
-            
-            for (VertexList drawList : points) {
-				
-                worldrenderer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
-            	
-                Vec3d prev = null;
-                
-                for (int i = 0; i < drawList.vertices.length; i++) {
-                	if(i == 0)
-                		prev = drawList.vertices[drawList.vertices.length-1];
-    				Vec3d point = drawList.vertices[i];
-    				
-            		worldrenderer.pos( prev.xCoord,  prev.yCoord,  prev.zCoord).endVertex();
-    				worldrenderer.pos(point.xCoord, point.yCoord, point.zCoord).endVertex();
-    				
-    				if(drawList.shouldHaveNetting) {
-    					for(int j = i+1; j < drawList.vertices.length; j++) {
-    						Vec3d netPoint = drawList.vertices[j];
-    	    				worldrenderer.pos(   point.xCoord,    point.yCoord,    point.zCoord).endVertex();
-    						worldrenderer.pos(netPoint.xCoord, netPoint.yCoord, netPoint.zCoord).endVertex();
-    					}
-    				}
-    				
-    				prev = point;
-				}
-            	
-                tessellator.draw();
-                
-			}
-            
-            GlStateManager.popMatrix();
-            GlStateManager.depthMask(true);
-            GlStateManager.enableTexture2D();
-            GlStateManager.disableBlend();
-		}
 	}
 	
 	{ /* dev only */ }
@@ -264,60 +174,6 @@ public class ClientProxy extends CommonProxy {
 		        vertexbuffer.pos(p1.xCoord, p1.yCoord, p1.zCoord).color(127, 127, 255, 255).endVertex();
 		        vertexbuffer.pos(p2.xCoord, p2.yCoord, p2.zCoord).color(127, 127, 255, 255).endVertex();
 		        tessellator.draw();
-			}
-		}
-		
-		mc.mcProfiler.endStartSection("hitDist");
-		
-		if(Minecraft.getMinecraft().gameSettings.showDebugInfo && rootPlayer.isSneaking()) {
-		
-			if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK) {
-			
-				
-                if(hits.isEmpty()) {
-                	Vector3 vec = new Vector3(mc.objectMouseOver.hitVec);
-                	Vector3 eyepos = new Vector3(RayTracer.getStartVec(rootPlayer));
-                	hits.add(new Tuple<Vector3, Double>(vec, vec.copy().sub(eyepos).mag()));
-                }
-				
-		        GlStateManager.enableTexture2D();
-				
-				RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-				hits.sort(new Comparator<Tuple<Vector3, Double>>() {
-					@Override
-					public int compare(Tuple<Vector3, Double> o1, Tuple<Vector3, Double> o2) {
-						if(o1.getSecond() < o2.getSecond())
-							return 1;
-						if(o1.getSecond() == o2.getSecond())
-							return 0;
-						if(o1.getSecond() > o2.getSecond())
-							return -1;
-						return 0;
-					}
-				});
-				int height = 9;
-				int i = 0;
-				if(mc.objectMouseOver.sideHit == EnumFacing.UP) {
-					height = -9;
-					i = 1;
-				}
-				for (Tuple<Vector3, Double> tuple : hits) {
-					Vector3 v = tuple.getFirst();
-					GlStateManager.pushMatrix();
-					GlStateManager.translate(v.x, v.y, v.z);
-					GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-					GlStateManager.rotate(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-					GlStateManager.scale(0.007, 0.007, 0.007);
-					GlStateManager.rotate(180, 0, 0, 1);
-					GlStateManager.translate(5, i*height, 0);
-					
-					mc.fontRendererObj.drawString(String.format("%.6f", tuple.getSecond() ), 0, 0, 0xFFFFFF);
-					
-					GlStateManager.popMatrix();
-					i++;
-				}
-				
-            	hits.clear();
 			}
 		}
 		mc.mcProfiler.endSection();

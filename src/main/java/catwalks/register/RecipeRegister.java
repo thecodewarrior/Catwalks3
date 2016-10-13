@@ -18,6 +18,9 @@ import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
 public class RecipeRegister {
 
 	public static void register() {
+		if(1==1) {
+			return;
+		}
 		
 		RecipeSorter.register(Const.MODID + ":decorationCombine",  RecipeDecorationRepair.class, SHAPELESS, "before:minecraft:repair");
 		RecipeSorter.register(Const.MODID + ":decorationSplit",    RecipeDecorationSplit.class,  SHAPELESS, "after:minecraft:shapeless");
@@ -33,9 +36,9 @@ public class RecipeRegister {
 			sugar = Items.SUGAR,
 			flintNsteel = Items.FLINT_AND_STEEL;
 		Block
-			catwalk = BlockRegister.catwalk,
-			stair = BlockRegister.catwalkStair,
-			ladder = BlockRegister.cagedLadder,
+			catwalk = null,
+			stair = null,
+			ladder = null,
 			scaffold = BlockRegister.scaffolds[0],
 			pPlateWood = Blocks.WOODEN_PRESSURE_PLATE,
 			vladder = Blocks.LADDER;

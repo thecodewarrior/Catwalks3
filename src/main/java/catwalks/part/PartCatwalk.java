@@ -280,7 +280,7 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 	@Override
 	public BlockStateContainer createBlockState() {
 		return new ExtendedBlockState(MCMultiPartMod.multipart, new IProperty[] {
-			Const.MATERIAL_META
+			Const.MATERIAL
 		}, new IUnlistedProperty[]{
 			Const.CATWALK_RENDER_DATA
 		});
@@ -288,7 +288,7 @@ public class PartCatwalk extends Multipart implements ISlottedPart, INormallyOcc
 	
 	@Override
 	public IBlockState getActualState(IBlockState state) {
-		return state.withProperty(Const.MATERIAL_META, MATERIAL.get(storage));
+		return state.withProperty(Const.MATERIAL, MATERIAL.get(storage));
 	}
 	
 	@Override

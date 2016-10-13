@@ -2,7 +2,6 @@ package catwalks.part.converter;
 
 import catwalks.Const;
 import catwalks.EnumCatwalkMaterial;
-import catwalks.block.EnumCatwalkMaterialOld;
 import catwalks.part.PartScaffold;
 import catwalks.register.BlockRegister;
 import mcmultipart.multipart.IMultipart;
@@ -35,7 +34,7 @@ public class PartConverterScaffold implements IPartConverter, IReversePartConver
 		IBlockState state = world.getBlockState(pos);
 //		BlockScaffolding block = state.getBlock();
 		PartScaffold part = new PartScaffold();
-		part.setCatwalkMaterial(state.getValue(Const.MATERIAL_META));
+		part.setCatwalkMaterial(state.getValue(Const.MATERIAL));
 		return Collections.singletonList(part);
 	}
 	
@@ -48,7 +47,7 @@ public class PartConverterScaffold implements IPartConverter, IReversePartConver
 				PartScaffold part = (PartScaffold) firstPart;
 				EnumCatwalkMaterial mat = part.getCatwalkMaterial();
 				container.removePart(part);
-				container.getWorldIn().setBlockState(container.getPosIn(), BlockRegister.getScaffold(mat).getDefaultState().withProperty(Const.MATERIAL_META, mat));
+				container.getWorldIn().setBlockState(container.getPosIn(), BlockRegister.getScaffold(mat).getDefaultState().withProperty(Const.MATERIAL, mat));
 			}
 		}
 		return false;

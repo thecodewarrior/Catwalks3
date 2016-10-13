@@ -1,19 +1,13 @@
 package catwalks.proxy;
 
 import catwalks.item.ItemDecoration;
-import catwalks.shade.ccl.raytracer.RayTracer;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.server.FMLServerHandler;
-
-import java.util.List;
 
 public class CommonProxy {
 	public void preInit() {}
@@ -22,33 +16,6 @@ public class CommonProxy {
 	
 	public MinecraftServer getServer() {
 		return FMLServerHandler.instance().getServer();
-	}
-	
-	public EntityPlayer getPlayerLooking(Vec3d start, Vec3d end) {
-		EntityPlayer player = null;
-		List<EntityPlayerMP> players = FMLServerHandler.instance().getServer().getPlayerList().getPlayerList();
-		float fudge = 0.1f;
-		
-		for (final EntityPlayerMP p : players) { // for each player
-			Vec3d lookStart = RayTracer.getStartVec(p);
-			Vec3d lookEnd   = RayTracer.getEndVec(p);
-			double lookDistance = RayTracer.getBlockReachDistance(p);
-			
-			double dStart  = lookStart.distanceTo(start);
-			double dEnd    = lookEnd  .distanceTo(start);
-			
-			double dStart_ = lookStart.distanceTo(end);
-			double dEnd_   = lookEnd  .distanceTo(end);
-			
-			double dSumStart = dStart + dEnd;
-			double dSumEnd = dStart_ + dEnd_;
-			
-			if(dSumStart <= lookDistance+fudge && dSumStart >= lookDistance-fudge &&
-				dSumEnd <= lookDistance+fudge && dSumEnd >= lookDistance-fudge) {
-				player = p; break;
-			}
-		}
-		return player;
 	}
 	
 	@SubscribeEvent

@@ -3,24 +3,16 @@ package catwalks.block;
 import catwalks.Conf;
 import catwalks.Const;
 import catwalks.EnumCatwalkMaterial;
-import catwalks.block.extended.ICustomLadder;
 import catwalks.register.ItemRegister;
-import catwalks.shade.ccl.raytracer.RayTracer;
-import catwalks.util.ExtendUtils;
-import catwalks.util.GeneralUtil;
-import catwalks.util.Logs;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -29,7 +21,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockScaffolding extends BlockBase implements ICustomLadder {
+public class BlockScaffolding extends BlockBase {
 		
 	public final int page;
 	
@@ -40,32 +32,8 @@ public class BlockScaffolding extends BlockBase implements ICustomLadder {
 	}
 	
 	@Override
-	public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) {
-		RayTraceResult hit = RayTracer.retrace(playerIn);
-		if(hit == null) { // don't want to NPE
-			Logs.error("Hit was null in Scaffold onBlockClicked at (%d, %d, %d)", pos.getX(), pos.getY(), pos.getZ());
-			return;
-		}
-		
-		if(playerIn.isSneaking() && playerIn.inventory.getCurrentItem() != null && playerIn.inventory.getCurrentItem().getItem() == Item.getItemFromBlock(this)) {
-			BlockPos retractPos = ExtendUtils.getRetractPos(worldIn, pos, hit.sideHit, worldIn.getBlockState(pos));
-			if(retractPos != null) {
-				ItemStack stack = getDrops(worldIn, retractPos, worldIn.getBlockState(retractPos), 0).get(0);
-                SoundType soundtype = getSoundType();
-                worldIn.playSound(playerIn, pos, soundtype.getBreakSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
-				worldIn.setBlockToAir(retractPos);
-				playerIn.inventory.addItemStackToInventory(stack);
-				if(stack.stackSize > 0) {
-					BlockPos spawnPos = retractPos.offset(hit.sideHit);
-					GeneralUtil.spawnItemStack(worldIn, spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), stack);
-				}
-			}
-		}
-	}
-	
-	@Override
 	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
-		return new ItemStack(ItemRegister.scaffold, 1, state.getValue(Const.MATERIAL_META).ordinal());
+		return new ItemStack(ItemRegister.scaffold, 1, state.getValue(Const.MATERIAL).ordinal());
 	}
 	
 	@Override
@@ -139,17 +107,17 @@ public class BlockScaffolding extends BlockBase implements ICustomLadder {
 	
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, Const.MATERIAL_META);
+		return new BlockStateContainer(this, Const.MATERIAL);
 	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState().withProperty(Const.MATERIAL_META, EnumCatwalkMaterial.values()[page << 4 & meta]);
+		return getDefaultState().withProperty(Const.MATERIAL, EnumCatwalkMaterial.values()[page << 4 & meta]);
 	}
 	
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		return state.getValue(Const.MATERIAL_META).ordinal() & 0b1111;
+		return state.getValue(Const.MATERIAL).ordinal() & 0b1111;
 	}
 	
 	{ /* rendering stuff */ }
@@ -180,28 +148,28 @@ public class BlockScaffolding extends BlockBase implements ICustomLadder {
 
 	{ /* ladder */ }
 	
-	@Override
-	public boolean shouldApplyClimbing(World world, BlockPos pos, EntityLivingBase entity) {
-		return ( entity.moveForward != 0 || entity.moveStrafing != 0 );// && world.getBlockState(pos).getValue(Const.MATERIAL_META) == EnumCatwalkMaterial.WOOD;
-	}
-
-	@Override
-	public boolean shouldApplyFalling(World world, BlockPos pos, EntityLivingBase entity) {
-		return true;//world.getBlockState(pos).getValue(Const.MATERIAL_META) == EnumCatwalkMaterial.WOOD;
-	}
-
-	@Override
-	public double climbSpeed(World world, BlockPos pos, EntityLivingBase entity) {
-		return 1;
-	}
-
-	@Override
-	public double fallSpeed(World world, BlockPos pos, EntityLivingBase entity) {
-		return 1;
-	}
-
-	@Override
-	public double horizontalSpeed(World world, BlockPos pos, EntityLivingBase entity) {
-		return Double.POSITIVE_INFINITY;
-	}
+//	@Override
+//	public boolean shouldApplyClimbing(World world, BlockPos pos, EntityLivingBase entity) {
+//		return ( entity.moveForward != 0 || entity.moveStrafing != 0 );// && world.getBlockState(pos).getValue(Const.MATERIAL_META) == EnumCatwalkMaterial.WOOD;
+//	}
+//
+//	@Override
+//	public boolean shouldApplyFalling(World world, BlockPos pos, EntityLivingBase entity) {
+//		return true;//world.getBlockState(pos).getValue(Const.MATERIAL_META) == EnumCatwalkMaterial.WOOD;
+//	}
+//
+//	@Override
+//	public double climbSpeed(World world, BlockPos pos, EntityLivingBase entity) {
+//		return 1;
+//	}
+//
+//	@Override
+//	public double fallSpeed(World world, BlockPos pos, EntityLivingBase entity) {
+//		return 1;
+//	}
+//
+//	@Override
+//	public double horizontalSpeed(World world, BlockPos pos, EntityLivingBase entity) {
+//		return Double.POSITIVE_INFINITY;
+//	}
 }

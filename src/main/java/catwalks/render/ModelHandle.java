@@ -1,6 +1,5 @@
 package catwalks.render;
 
-import catwalks.CatwalksMod;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
@@ -22,7 +21,6 @@ import net.minecraftforge.common.model.IModelState;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
-import java.io.FileNotFoundException;
 import java.util.Map;
 
 /**

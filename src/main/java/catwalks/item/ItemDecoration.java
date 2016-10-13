@@ -1,6 +1,5 @@
 package catwalks.item;
 
-import catwalks.block.IDecoratable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -46,12 +45,13 @@ public class ItemDecoration extends ItemBase {
 		
 		IBlockState state = worldIn.getBlockState(pos);
 		
-		if(state.getBlock() instanceof IDecoratable) {
-			if( ((IDecoratable) state.getBlock()).putDecoration(worldIn, pos, name, !playerIn.isSneaking()) ) {
-				stack.damageItem(playerIn.isSneaking() ? -1 : 1, playerIn);
-				return EnumActionResult.SUCCESS;
-			}
-		}
+		// TODO
+//		if(state.getBlock() instanceof IDecoratable) {
+//			if( ((IDecoratable) state.getBlock()).putDecoration(worldIn, pos, name, !playerIn.isSneaking()) ) {
+//				stack.damageItem(playerIn.isSneaking() ? -1 : 1, playerIn);
+//				return EnumActionResult.SUCCESS;
+//			}
+//		}
 		
 		return EnumActionResult.PASS;
 	}

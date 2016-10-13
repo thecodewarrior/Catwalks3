@@ -1,8 +1,6 @@
 package catwalks.util;
 
-import catwalks.shade.ccl.vec.Cuboid6;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.AxisAlignedBB;
 
 public class AABBUtils {
@@ -46,42 +44,5 @@ public class AABBUtils {
 		default:
 			return aabb;
 		}
-	}
-	
-	/**
-	 * Offset side of a Cuboid6
-	 * @param side Side to change
-	 * @param amount amount to offset, positive expands the cuboid
-	 */
-	public static void offsetSide(Cuboid6 cuboid, EnumFacing side, double amount) {
-		if(side.getAxisDirection() == AxisDirection.POSITIVE) {
-			cuboid.setSide(side.ordinal(), cuboid.getSide(side.ordinal()) + amount);
-		}
-		if(side.getAxisDirection() == AxisDirection.NEGATIVE) {
-			cuboid.setSide(side.ordinal(), cuboid.getSide(side.ordinal()) - amount);
-		}
-		
-//		switch (side) {
-//		case UP:
-//			cuboid.max.y += amount;
-//			break;
-//		case DOWN:
-//			cuboid.min.y -= amount;
-//			break;
-//		case NORTH:
-//			cuboid.min.z -= amount;
-//			break;
-//		case SOUTH:
-//			cuboid.max.z += amount;
-//			break;
-//		case EAST:
-//			cuboid.max.x += amount;
-//			break;
-//		case WEST:
-//			cuboid.min.x -= amount;
-//			break;
-//		default:
-//			return;
-//		}
 	}
 }

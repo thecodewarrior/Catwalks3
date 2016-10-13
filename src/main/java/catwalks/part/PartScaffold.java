@@ -2,7 +2,6 @@ package catwalks.part;
 
 import catwalks.Const;
 import catwalks.EnumCatwalkMaterial;
-import catwalks.block.EnumCatwalkMaterialOld;
 import catwalks.register.ItemRegister;
 import catwalks.util.meta.ArrayProp;
 import catwalks.util.meta.IDirtyable;
@@ -88,12 +87,12 @@ public class PartScaffold extends Multipart implements ISolidPart, IDirtyable {
 	
 	@Override
 	public BlockStateContainer createBlockState() {
-		return new BlockStateContainer(MCMultiPartMod.multipart, Const.MATERIAL_META);
+		return new BlockStateContainer(MCMultiPartMod.multipart, Const.MATERIAL);
 	}
 	
 	@Override
 	public IBlockState getActualState(IBlockState state) {
-		return state.withProperty(Const.MATERIAL_META, MATERIAL.get(storage));
+		return state.withProperty(Const.MATERIAL, MATERIAL.get(storage));
 	}
 	
 	//endregion

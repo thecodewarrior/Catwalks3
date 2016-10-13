@@ -16,7 +16,6 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DecorationRepairRecipeHandler implements IRecipeHandler<RecipeDecorationRepair> {
