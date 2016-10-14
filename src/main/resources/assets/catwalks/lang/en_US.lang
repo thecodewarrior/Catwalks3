@@ -1,30 +1,39 @@
-tile.catwalk.steel.name=Steel Catwalk Depreciated
-tile.catwalk.wood.name=Wooden Catwalk Depreciated
-tile.catwalk.iesteel.name=IE Steel Catwalk Depreciated
-tile.catwalk.custom.name=Custom Catwalk Depreciated
-
-tile.catwalkStair.steel.name=Steel Catwalk Stair Depreciated
-tile.catwalkStair.wood.name=Wooden Catwalk Stair Depreciated
-tile.catwalkStair.iesteel.name=IE Steel Catwalk Stair Depreciated
-tile.catwalkStair.custom.name=Custom Catwalk Stair Depreciated
-
-tile.cagedLadder.wood.name=Wooden Caged Ladder Depreciated
-tile.cagedLadder.iesteel.name=IE Steel Caged Ladder Depreciated
-tile.cagedLadder.steel.name=Steel Caged Ladder Depreciated
-tile.cagedLadder.custom.name=Custom Caged Ladder Depreciated
-
-item.catwalkpart.steel.name=Steel Catwalk
-item.catwalkpart.wood.name=Wood Catwalk
-item.catwalkpart.iesteel.name=IE Steel Catwalk
-item.catwalkpart.custom.name=Custom Catwalk
+item.catwalkpart.modpack_custom_0.name=Custom Catwalk 0
+item.catwalkpart.modpack_custom_1.name=Custom Catwalk 1
+item.catwalkpart.modpack_custom_2.name=Custom Catwalk 2
+item.catwalkpart.modpack_custom_3.name=Custom Catwalk 3
+item.catwalkpart.modpack_custom_4.name=Custom Catwalk 4
+item.catwalkpart.modpack_custom_5.name=Custom Catwalk 5
+item.catwalkpart.modpack_custom_6.name=Custom Catwalk 6
+item.catwalkpart.modpack_custom_7.name=Custom Catwalk 7
+item.catwalkpart.catwalks_normal.name=Steel Catwalk
+item.catwalkpart.catwalks_glass.name=Glass Catwalk
+item.catwalkpart.catwalks_nyan.name=Nyan Catwalk
+item.catwalkpart.catwalks_bamboo.name=Bamboo Catwalk
+item.catwalkpart.catwalks_oak.name=Oak Catwalk
+item.catwalkpart.immersive_engineering_steel.name=IE Steel Catwalk
+item.catwalkpart.immersive_engineering_treated_wood.name=Treated Wood Catwalk
+item.catwalkpart.immersive_engineering_aluminum.name=Aluminum Catwalk
 
 item.stairpart.name=Stair
-item.stairpart.info.0=§8§Dont Touch! It's Buggy
+item.stairpart.info.0=§8§DDont Touch! It's Buggy
 
-item.scaffoldpart.custom.name=Custom Scaffold, WIP
-item.scaffoldpart.steel.name=Steel Scaffold, WIP
-item.scaffoldpart.iesteel.name=IE Steel Scaffold, WIP
-item.scaffoldpart.wood.name=Wood Scaffold, WIP
+item.scaffoldpart.modpack_custom_0.name=Custom Scaffold 0, WIP
+item.scaffoldpart.modpack_custom_1.name=Custom Scaffold 1, WIP
+item.scaffoldpart.modpack_custom_2.name=Custom Scaffold 2, WIP
+item.scaffoldpart.modpack_custom_3.name=Custom Scaffold 3, WIP
+item.scaffoldpart.modpack_custom_4.name=Custom Scaffold 4, WIP
+item.scaffoldpart.modpack_custom_5.name=Custom Scaffold 5, WIP
+item.scaffoldpart.modpack_custom_6.name=Custom Scaffold 6, WIP
+item.scaffoldpart.modpack_custom_7.name=Custom Scaffold 7, WIP
+item.scaffoldpart.catwalks_normal.name=Steel Scaffold, WIP
+item.scaffoldpart.catwalks_glass.name=Glass Scaffold, WIP
+item.scaffoldpart.catwalks_nyan.name=Nyan Scaffold, WIP
+item.scaffoldpart.catwalks_bamboo.name=Bamboo Scaffold, WIP
+item.scaffoldpart.catwalks_oak.name=Oak Scaffold, WIP
+item.scaffoldpart.immersive_engineering_steel.name=IE Steel Scaffold, WIP
+item.scaffoldpart.immersive_engineering_treated_wood.name=Treated Wood Scaffold, WIP
+item.scaffoldpart.immersive_engineering_aluminum.name=Aluminum Scaffold, WIP
 
 item.decoration.lights.name=Rope Lights
 item.decoration.tape.name=Caution Tape
