@@ -17,9 +17,11 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'kotlin'
 
+// git branch
 import org.ajoberstar.grgit.*
 ext.repo = Grgit.open(project.file('.'))
 
+// .properties file
 ext.configFile = file "build.properties"
 
 configFile.withReader {
@@ -28,9 +30,15 @@ configFile.withReader {
     project.ext.config = new ConfigSlurper().parse prop
 }
 
+// build number tracker
+File buildfile = new File('.gradle/build.txt')
+int build = buildfile.exists() ? buildfile.text.toInteger() : 0
+buildfile.text = "" + (build+1)
+
+// version string
 version = config.minecraft_version + "-" +
         config.majorversion + "." + config.majorapi + "." + config.minor + "." + config.patch +
-        ( System.getenv().containsKey("bamboo_buildNumber") ? "b" + System.getenv("bamboo_buildNumber") : "" ) +
+        ( System.getenv().containsKey("bamboo_buildNumber") ? "b" + System.getenv("bamboo_buildNumber") : String.format("b%03d", build) ) +
         ( ext.repo.branch.current.name == "master" ? "" : "-$ext.repo.branch.current.name")
 group = "thecodewarrior.catwalks" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "catwalks"
