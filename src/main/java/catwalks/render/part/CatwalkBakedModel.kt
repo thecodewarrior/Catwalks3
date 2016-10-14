@@ -88,10 +88,10 @@ class CatwalkBakedModel(private val mat: String, private val particle: TextureAt
         corner_south_west = EnumMap<CatwalkRenderData.EnumCatwalkCornerType, StateHandle>(CatwalkRenderData.EnumCatwalkCornerType::class.java)
 
         for (corner in CatwalkRenderData.EnumCatwalkCornerType.values()) {
-            corner_north_east.put(corner, StateHandle.of(CATWALK_BLOCKSTATE_LOC, "bottom_corner_north_east_" + corner.name.toLowerCase()))
-            corner_north_west.put(corner, StateHandle.of(CATWALK_BLOCKSTATE_LOC, "bottom_corner_north_west_" + corner.name.toLowerCase()))
-            corner_south_east.put(corner, StateHandle.of(CATWALK_BLOCKSTATE_LOC, "bottom_corner_south_east_" + corner.name.toLowerCase()))
-            corner_south_west.put(corner, StateHandle.of(CATWALK_BLOCKSTATE_LOC, "bottom_corner_south_west_" + corner.name.toLowerCase()))
+            corner_north_east.put(corner, StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_north_east_" + corner.name.toLowerCase()))
+            corner_north_west.put(corner, StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_north_west_" + corner.name.toLowerCase()))
+            corner_south_east.put(corner, StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_south_east_" + corner.name.toLowerCase()))
+            corner_south_west.put(corner, StateHandle.of(CATWALK_BLOCKSTATE_LOC, "corner_south_west_" + corner.name.toLowerCase()))
         }
 
         bottom_edge_north = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "bottom_edge_north")
@@ -161,12 +161,14 @@ class CatwalkBakedModel(private val mat: String, private val particle: TextureAt
             }
             // endregion
 
+            var hadCombo = false
             // region bottom middle
             if (data.bottom == EnumFacing.Axis.X) {
                 val handle = bottom_xaxis_nsew[encodeSides(data.bottomNorth, data.bottomSouth, data.bottomEast, data.bottomWest)]
                 if (handle == null || handle.isMissing) {
                     quads.add(bottom_xaxis)
                 } else {
+                    hadCombo = true
                     quads.add(handle)
                 }
             }
@@ -175,41 +177,43 @@ class CatwalkBakedModel(private val mat: String, private val particle: TextureAt
                 if (handle == null || handle.isMissing) {
                     quads.add(bottom_zaxis)
                 } else {
+                    hadCombo = true
                     quads.add(handle)
                 }
             }
             // endregion
 
-            // region bottom edges
-            if (data.bottomNorth && !bottom_edge_north.isMissing) {
-                quads.add(bottom_edge_north)
-            }
-            if (data.bottomSouth && !bottom_edge_south.isMissing) {
-                quads.add(bottom_edge_south)
-            }
-            if (data.bottomEast && !bottom_edge_east.isMissing) {
-                quads.add(bottom_edge_east)
-            }
-            if (data.bottomWest && !bottom_edge_west.isMissing) {
-                quads.add(bottom_edge_west)
-            }
-            // endregion
+            if(!hadCombo) {
+                // region bottom edges
+                if (data.bottomNorth && !bottom_edge_north.isMissing) {
+                    quads.add(bottom_edge_north)
+                }
+                if (data.bottomSouth && !bottom_edge_south.isMissing) {
+                    quads.add(bottom_edge_south)
+                }
+                if (data.bottomEast && !bottom_edge_east.isMissing) {
+                    quads.add(bottom_edge_east)
+                }
+                if (data.bottomWest && !bottom_edge_west.isMissing) {
+                    quads.add(bottom_edge_west)
+                }
+                // endregion
 
-            // region bottom corners
-            if (data.bottomNE && !bottom_corner_north_east.isMissing) {
-                quads.add(bottom_corner_north_east)
+                // region bottom corners
+                if (data.bottomNE && !bottom_corner_north_east.isMissing) {
+                    quads.add(bottom_corner_north_east)
+                }
+                if (data.bottomNW && !bottom_corner_north_west.isMissing) {
+                    quads.add(bottom_corner_north_west)
+                }
+                if (data.bottomSE && !bottom_corner_south_east.isMissing) {
+                    quads.add(bottom_corner_south_east)
+                }
+                if (data.bottomSW && !bottom_corner_south_west.isMissing) {
+                    quads.add(bottom_corner_south_west)
+                }
+                // endregion
             }
-            if (data.bottomNW && !bottom_corner_north_west.isMissing) {
-                quads.add(bottom_corner_north_west)
-            }
-            if (data.bottomSE && !bottom_corner_south_east.isMissing) {
-                quads.add(bottom_corner_south_east)
-            }
-            if (data.bottomSW && !bottom_corner_south_west.isMissing) {
-                quads.add(bottom_corner_south_west)
-            }
-            // endregion
-
             return quads.getQuads()
         }
 
@@ -220,21 +224,27 @@ class CatwalkBakedModel(private val mat: String, private val particle: TextureAt
         internal var quads: MutableList<BakedQuad> = Lists.newArrayList<BakedQuad>()
 
         fun add(handle: ModelHandle?) {
-            if (handle == null)
+            if (handle == null) {
                 SCREAM_AT_DEV()
-            add(handle!!.get())
+                return
+            }
+            add(handle.get())
         }
 
         fun add(handle: StateHandle?) {
-            if (handle == null)
+            if (handle == null) {
                 SCREAM_AT_DEV()
-            add(handle!!.get())
+                return
+            }
+            add(handle.get())
         }
 
         fun add(model: IBakedModel?) {
-            if (model == null)
+            if (model == null) {
                 SCREAM_AT_DEV()
-            quads.addAll(model!!.getQuads(state, side, rand))
+                return
+            }
+            quads.addAll(model.getQuads(state, side, rand))
         }
 
         fun getQuads(): List<BakedQuad> {

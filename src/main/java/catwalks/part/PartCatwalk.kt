@@ -281,16 +281,16 @@ class PartCatwalk : Multipart(), ISlottedPart, INormallyOccludingPart, ISolidPar
 
     private fun bottomLogic(cache: NeighborCache<PartCatwalk?>, dir: EnumFacing): Boolean {
         if (getSide(dir))
-            return false
+            return true
         val adjacent = cache.get(dir)
 
         if (adjacent != null) {
             if (!adjacent.getSide(dir.opposite) && adjacent.getSide(EnumFacing.DOWN)) {
-                return true
+                return false
             }
         }
 
-        return false
+        return true
     }
 
     private fun bottomCornerLogic(cache: NeighborCache<PartCatwalk?>, front: EnumFacing, side: EnumFacing): Boolean {
@@ -315,7 +315,7 @@ class PartCatwalk : Multipart(), ISlottedPart, INormallyOccludingPart, ISolidPar
     private fun cornerLogic(cache: NeighborCache<PartCatwalk?>, front: EnumFacing, side: EnumFacing): CatwalkRenderData.EnumCatwalkCornerType? {
 
         if (getSide(front) && getSide(side))
-            return CatwalkRenderData.EnumCatwalkCornerType.INNER_CORNER
+            return CatwalkRenderData.EnumCatwalkCornerType.INNER
 
         if (getSide(front) || getSide(side))
             return null
@@ -328,7 +328,7 @@ class PartCatwalk : Multipart(), ISlottedPart, INormallyOccludingPart, ISolidPar
 
         if (adjacent.getSide(front) && !adjacent.getSide(side.opposite) &&
                 !ahead.getSide(front.opposite) && ahead.getSide(side)) {
-            return CatwalkRenderData.EnumCatwalkCornerType.CORNER
+            return CatwalkRenderData.EnumCatwalkCornerType.OUTER
         }
 
         val diagonal = cache.get(side, front)
@@ -337,13 +337,13 @@ class PartCatwalk : Multipart(), ISlottedPart, INormallyOccludingPart, ISolidPar
             if (!adjacent.getSide(side.opposite) && !adjacent.getSide(front) &&
                     !diagonal.getSide(front.opposite) && diagonal.getSide(side.opposite) &&
                     !ahead.getSide(front.opposite) && ahead.getSide(side)) {
-                return CatwalkRenderData.EnumCatwalkCornerType.CORNER_180
+                return CatwalkRenderData.EnumCatwalkCornerType.OUTER_180
             }
 
             if (!adjacent.getSide(side.opposite) && adjacent.getSide(front) &&
                     !ahead.getSide(side) && !ahead.getSide(front.opposite) &&
                     diagonal.getSide(front.opposite) && !diagonal.getSide(side.opposite)) {
-                return CatwalkRenderData.EnumCatwalkCornerType.CORNER_180
+                return CatwalkRenderData.EnumCatwalkCornerType.OUTER_180
             }
         }
         return null

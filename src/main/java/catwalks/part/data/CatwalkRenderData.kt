@@ -1,8 +1,7 @@
 package catwalks.part.data
 
 import net.minecraft.util.EnumFacing
-
-import java.util.EnumMap
+import java.util.*
 
 /**
  * Created by TheCodeWarrior
@@ -39,6 +38,6 @@ class CatwalkRenderData : Comparable<CatwalkRenderData> {
     }
 
     enum class EnumCatwalkCornerType {
-        CORNER, CORNER_180, INNER_CORNER
+        OUTER, OUTER_180, INNER
     }
 }

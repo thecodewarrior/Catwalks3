@@ -8,6 +8,8 @@ import net.minecraft.launchwrapper.Launch
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.Vec3d
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import java.util.*
 
 object Const {
@@ -20,9 +22,11 @@ object Const {
     init { /* DRYing constants */
     }
 
-    var RAND = Random()
+    val log: Logger = LogManager.getLogger(CatwalksMod.MODID)
 
-    var HORIZONTALS_FROM_NORTH = arrayOf(EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.WEST)
+    val RAND = Random()
+
+    val HORIZONTALS_FROM_NORTH = arrayOf(EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.WEST)
 
     var developmentEnvironment = Launch.blackboard["fml.deobfuscatedEnvironment"] as Boolean
     val MODID = CatwalksMod.MODID

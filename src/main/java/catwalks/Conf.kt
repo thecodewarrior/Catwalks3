@@ -25,8 +25,6 @@ object Conf {
 
     var CUSTOM_ENABLED = BooleanArray(8)
 
-    var logPackets = false
-
     lateinit var file: File
     lateinit var config: Configuration
 
@@ -56,13 +54,13 @@ object Conf {
         prop.comment = "Whether the faces of scaffolds should show if they are next to another scaffold"
         showScaffoldInsideFaces = prop.boolean
 
-        prop = conf.get(CATEGORY_DEV, "Log packet handling", false).setRequiresMcRestart(false)
-        prop.comment = "Useful to see if more packets are being sent than needed"
-        logPackets = prop.boolean
+        prop = conf.get(CATEGORY_GENERAL, "Development mode", Const.developmentEnvironment).setRequiresMcRestart(false)
+        prop.comment = "Enables development mode, some features require a restart"
+        Const.developmentEnvironment = prop.boolean
 
         if (conf.hasChanged() == true) {
             conf.save()
-            CatwalksMod.proxy!!.reloadConfigs()
+            CatwalksMod.proxy.reloadConfigs()
         }
     }
 

@@ -1,5 +1,6 @@
 package catwalks.render
 
+import catwalks.Const
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.IBakedModel
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
@@ -10,7 +11,8 @@ import net.minecraft.util.ReportedException
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.model.ModelLoader
 import net.minecraftforge.client.model.ModelLoaderRegistry
-import java.util.*
+import java.io.PrintWriter
+import java.io.StringWriter
 
 /**
  * Created by TheCodeWarrior
@@ -39,8 +41,9 @@ class StateHandle(val loc: ModelResourceLocation) {
 
     companion object {
 
-        protected var cache: MutableMap<ModelResourceLocation, IBakedModel> = HashMap()
-        protected var missingModels: MutableSet<ModelResourceLocation> = HashSet()
+        protected var cache: MutableMap<ModelResourceLocation, IBakedModel> = mutableMapOf()
+        protected var missingModels: MutableSet<ModelResourceLocation> = mutableSetOf()
+        protected var errors: MutableMap<ResourceLocation, Int> = mutableMapOf()
 
         // ========================================================= STATIC METHODS
 
@@ -86,9 +89,32 @@ class StateHandle(val loc: ModelResourceLocation) {
 
         private fun loadModel(loc: ModelResourceLocation) {
             try {
-                val mod = ModelLoaderRegistry.getModelOrMissing(loc)
-                if (mod === ModelLoaderRegistry.getMissingModel())
+                val mod = if(Const.developmentEnvironment) {
+                    val baseLoc = ResourceLocation(loc.resourcePath, loc.resourceDomain)
+                    val m = try {
+                        ModelLoaderRegistry.getModel(loc)
+                    } catch (e: Exception) {
+                        errors[baseLoc] = (errors[baseLoc] ?: 0) + 1
+
+                        if(errors[baseLoc] ?: 10 < 2) {
+                            val sw = StringWriter()
+                            e.printStackTrace(PrintWriter(sw))
+                            Const.log.warn("Unable to load model `$loc`\n${sw.toString()}")
+                        } else {
+                            Const.log.warn("Unable to load model `$loc` ${e.cause}")
+                        }
+
+                        ModelLoaderRegistry.getMissingModel()
+                    }
+
+                    m
+                } else {
+                    ModelLoaderRegistry.getModelOrMissing(loc)
+                }
+
+                if (mod === ModelLoaderRegistry.getMissingModel()) {
                     missingModels.add(loc)
+                }
                 val model = mod.bake(mod.defaultState, DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter())
                 cache.put(loc, model)
             } catch (e: Exception) {
@@ -103,6 +129,7 @@ class StateHandle(val loc: ModelResourceLocation) {
                 rm.registerReloadListener {
                     cache.clear()
                     missingModels.clear()
+                    errors.clear()
                 }
             }
         }
