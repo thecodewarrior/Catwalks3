@@ -1,0 +1,20 @@
+{
+"__comment": "Designed by Winddelay with BDcraft Cubik PRO 0.96 Beta - http://bdcraft.net",
+"textures": {
+    "all": "catwalks:blocks/catwalk/immersive_engineering/treated_wood/sides"
+},
+"elements": [ 
+{
+    "from": [ -1, -1.125, -1 ],
+    "to": [ 1, 0.125, 1 ],
+    "faces": {
+        "down":  { "uv": [ 7.5, 10, 5.5, 8 ], "texture": "#all" },
+        "up":    { "uv": [ 5.5, 8, 7.5, 10 ], "texture": "#all" },
+        "north": { "uv": [ 6, 8, 8, 9 ], "texture": "#all" },
+        "south": { "uv": [ 5.5, 8, 7.5, 9 ], "texture": "#all" },
+        "west":  { "uv": [ 5.5, 8, 7.5, 9 ], "texture": "#all" },
+        "east":  { "uv": [ 5.5, 8, 7.5, 9 ], "texture": "#all" }
+    }
+}
+]
+}

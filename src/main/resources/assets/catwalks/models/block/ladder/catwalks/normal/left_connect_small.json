@@ -1,0 +1,28 @@
+{
+"__comment": "Designed by Winddelay with BDcraft Cubik PRO 0.96 Beta - http://bdcraft.net",
+"textures": {
+    "sides": "catwalks:blocks/ladder/catwalks/normal/ladder_rails"
+},
+"elements": [ 
+{
+    "from": [ 1, 15, 0 ],
+    "to": [ 8, 16, 1 ],
+    "faces": {
+        "down":  { "uv": [ 1, 1, 8, 2 ], "texture": "#sides" },
+        "up":    { "uv": [ 1, 0, 8, 1 ], "texture": "#sides" },
+        "north": { "uv": [ 1, 0, 8, 1 ], "texture": "#sides" },
+        "south": { "uv": [ 1, 0, 8, 1 ], "texture": "#sides" }
+    }
+},
+{
+    "from": [ 1, 7, 0 ],
+    "to": [ 8, 8, 1 ],
+    "faces": {
+        "down":  { "uv": [ 1, 1, 8, 2 ], "texture": "#sides" },
+        "up":    { "uv": [ 1, 0, 8, 1 ], "texture": "#sides" },
+        "north": { "uv": [ 1, 0, 8, 1 ], "texture": "#sides" },
+        "south": { "uv": [ 1, 0, 8, 1 ], "texture": "#sides" }
+    }
+}
+]
+}
