@@ -21,7 +21,7 @@ enum class EnumCatwalkMaterial constructor(val ALLOCATED: Boolean, val WIP: Bool
     CUSTOM_7(true, Conf.CUSTOM_ENABLED[7], _Group.MODPACK, BlockRenderLayer.CUTOUT),
 
     // CATWALKS
-    NORMAL(true, false, _Group.CATWALKS),
+    NORMAL(true, false, _Group.CATWALKS, BlockRenderLayer.CUTOUT),
     GLASS(true, false, _Group.CATWALKS, BlockRenderLayer.CUTOUT),
     NYAN(true, false, _Group.CATWALKS, BlockRenderLayer.CUTOUT),
     BAMBOO(true, false, _Group.CATWALKS),
@@ -41,12 +41,12 @@ enum class EnumCatwalkMaterial constructor(val ALLOCATED: Boolean, val WIP: Bool
 
     // VANILLA
 
-    OAK(true, true, _Group.VANILLA),
-    SPRUCE(true, true, _Group.VANILLA),
-    BIRCH(true, true, _Group.VANILLA),
-    JUNGLE(true, true, _Group.VANILLA),
-    ACACIA(true, true, _Group.VANILLA),
-    DARK_OAK(true, true, _Group.VANILLA),
+    OAK(true, false, _Group.VANILLA, BlockRenderLayer.CUTOUT),
+    SPRUCE(true, false, _Group.VANILLA, BlockRenderLayer.CUTOUT),
+    BIRCH(true, false, _Group.VANILLA, BlockRenderLayer.CUTOUT),
+    JUNGLE(true, false, _Group.VANILLA, BlockRenderLayer.CUTOUT),
+    ACACIA(true, false, _Group.VANILLA, BlockRenderLayer.CUTOUT),
+    DARK_OAK(true, false, _Group.VANILLA, BlockRenderLayer.CUTOUT),
 
     TBA_MC_00(false, true, _Group.VANILLA),
     TBA_MC_01(false, true, _Group.VANILLA),
