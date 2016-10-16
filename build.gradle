@@ -72,6 +72,7 @@ dependencies {
     deobfCompile "MCMultiPart:MCMultiPart:1.2.1:universal"
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-runtime:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     // you may put jars on which you depend on in ./libs
