@@ -22,7 +22,7 @@ enum class EnumCatwalkMaterial constructor(val ALLOCATED: Boolean, val WIP: Bool
 
     // CATWALKS
     NORMAL(true, false, _Group.CATWALKS, BlockRenderLayer.CUTOUT),
-    GLASS(true, false, _Group.CATWALKS, BlockRenderLayer.CUTOUT),
+    GLASS(true, false, _Group.CATWALKS, BlockRenderLayer.TRANSLUCENT),
     NYAN(true, false, _Group.CATWALKS, BlockRenderLayer.CUTOUT),
     BAMBOO(true, false, _Group.CATWALKS),
 
