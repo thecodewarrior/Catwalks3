@@ -66,8 +66,8 @@
 		},
 		"vanilla_dark_oak": {
 			"model": "catwalks:internal/catwalk/vanilla/dark_oak"
+		},
 
-		},		
 		"immersive_engineering_steel": {
 			"model": "catwalks:internal/catwalk/immersive_engineering/steel"
 		},
