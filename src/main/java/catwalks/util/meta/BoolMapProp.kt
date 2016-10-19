@@ -10,8 +10,6 @@ class BoolMapProp<T>(index: Int, protected var array: Array<T>, bits: Int) : Met
     protected var prop: BoolArrayProp
 
     init {
-        if (bits < array.size)
-            throw IllegalArgumentException("Can't fit array of length " + array.size + " in " + bits + " bits!")
         prop = BoolArrayProp(index, bits)
     }
 

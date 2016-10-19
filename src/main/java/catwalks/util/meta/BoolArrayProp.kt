@@ -20,40 +20,40 @@ class BoolArrayProp(index: Int, bits: Int) : MetaMapProperty<Int, Boolean>() {
         return true
     }
 
-    override fun set(storage: MetaStorage, v: Int, value: Boolean) {
+    override fun set(storage: MetaStorage, key: Int, value: Boolean) {
 
-        if (v < 0)
+        if (key < 0)
             throw IndexOutOfBoundsException("Can't have negative array index!")
 
         var beginningBitIndex = 0
         for (i in indices.indices) {
             val index = indices[i]
             val len = bits[i]
-            if (beginningBitIndex <= v && beginningBitIndex + len > v) {
-                val subindex = v - beginningBitIndex
+            if (beginningBitIndex <= key && beginningBitIndex + len > key) {
+                val subindex = key - beginningBitIndex
                 storage.set(index + subindex, value)
                 storage.notifyIfDirty()
                 return
             }
             beginningBitIndex += len
         }
-        throw NoSuchElementException("Couldn't find an allocated bit for array element " + v + "! Allocated bits can only fit " + (beginningBitIndex + 1) + " values!")
+        throw NoSuchElementException("Couldn't find an allocated bit for array element " + key + "! Allocated bits can only fit " + (beginningBitIndex + 1) + " values!")
     }
 
-    override fun get(storage: MetaStorage, v: Int): Boolean {
-        if (v < 0)
+    override fun get(storage: MetaStorage, key: Int): Boolean {
+        if (key < 0)
             throw IndexOutOfBoundsException("Can't have negative array index!")
         var beginningBitIndex = 0
         for (i in indices.indices) {
             val index = indices[i]
             val len = bits[i]
-            if (beginningBitIndex <= v && beginningBitIndex + len > v) {
-                val subindex = v - beginningBitIndex
+            if (beginningBitIndex <= key && beginningBitIndex + len > key) {
+                val subindex = key - beginningBitIndex
                 return storage.get(index + subindex)
             }
             beginningBitIndex += len
         }
-        throw NoSuchElementException("Couldn't find an allocated bit for array element " + v + "! Allocated bits can only fit " + (beginningBitIndex + 1) + " values!")
+        throw NoSuchElementException("Couldn't find an allocated bit for array element " + key + "! Allocated bits can only fit " + (beginningBitIndex + 1) + " values!")
     }
 
     override fun getValue(storage: MetaStorage): String {

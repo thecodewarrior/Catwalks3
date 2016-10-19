@@ -1,9 +1,7 @@
 package catwalks.util.meta
 
 import org.apache.commons.lang3.ArrayUtils
-
-import java.util.Arrays
-import java.util.NoSuchElementException
+import java.util.*
 
 /**
  * Created by TheCodeWarrior
@@ -30,7 +28,7 @@ class ArrayProp<T>(index: Int, protected var array: Array<T>, bits: Int) : MetaV
     }
 
     override fun get(storage: MetaStorage): T {
-        val i = this.intProp.get(storage)!!
+        val i = this.intProp.get(storage)
         if (i < 0 || i >= array.size)
             throw IndexOutOfBoundsException("Error getting array property! " + i + " isn't a valid index in source array " + Arrays.toString(array))
         return array[i]
