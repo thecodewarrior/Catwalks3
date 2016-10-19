@@ -1,15 +1,14 @@
 {
 "__comment": "Designed by Winddelay with BDcraft Cubik PRO 0.96 Beta - http://bdcraft.net",
 "textures": {
-    "sides": "catwalks:blocks/catwalk/catwalks/glass/sides",
-    "base": "catwalks:blocks/catwalk/catwalks/glass/base"
+    "sides": "catwalks:blocks/catwalk/catwalks/normal/sides"
 },
 "elements": [ 
 {
-    "from": [ 0, 0, 0 ],
-    "to": [ 1, 16, 1 ],
+    "from": [ 15, 0, 0 ],
+    "to": [ 16, 16, 1 ],
     "faces": {
-        "down":  { "uv": [ 16, 1, 15, 0 ], "texture": "#sides" },
+        "down":  { "uv": [ 0, 0, 1, 1 ], "texture": "#sides" },
         "up":    { "uv": [ 0, 0, 1, 1 ], "texture": "#sides" },
         "north": { "uv": [ 0, 0, 1, 16 ], "texture": "#sides" },
         "south": { "uv": [ 0, 0, 1, 16 ], "texture": "#sides" },

@@ -1,20 +1,20 @@
 {
 "__comment": "Designed by Winddelay with BDcraft Cubik PRO 0.96 Beta - http://bdcraft.net",
 "textures": {
-    "catwalksides": "blocks/anvil_base",
-    "catwalkbase": "blocks/glass_gray"
+    "sides": "catwalks:blocks/catwalk/catwalks/glass/sides",
+    "base": "catwalks:blocks/catwalk/catwalks/glass/base"
 },
 "elements": [ 
 {
     "from": [ 0, 0, 0 ],
     "to": [ 1, 16, 1 ],
     "faces": {
-        "down":  { "uv": [ 16, 1, 15, 0 ], "texture": "#catwalksides" },
-        "up":    { "uv": [ 0, 0, 1, 1 ], "texture": "#catwalksides" },
-        "north": { "uv": [ 0, 0, 1, 16 ], "texture": "#catwalksides" },
-        "south": { "uv": [ 0, 0, 1, 16 ], "texture": "#catwalksides" },
-        "west":  { "uv": [ 0, 0, 1, 16 ], "texture": "#catwalksides" },
-        "east":  { "uv": [ 0, 0, 1, 16 ], "texture": "#catwalksides" }
+        "down":  { "uv": [ 16, 1, 15, 0 ], "texture": "#sides" },
+        "up":    { "uv": [ 0, 0, 1, 1 ], "texture": "#sides" },
+        "north": { "uv": [ 0, 0, 1, 16 ], "texture": "#sides" },
+        "south": { "uv": [ 0, 0, 1, 16 ], "texture": "#sides" },
+        "west":  { "uv": [ 0, 0, 1, 16 ], "texture": "#sides" },
+        "east":  { "uv": [ 0, 0, 1, 16 ], "texture": "#sides" }
     }
 }
 ]

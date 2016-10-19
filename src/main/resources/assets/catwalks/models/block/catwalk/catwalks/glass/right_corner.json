@@ -1,0 +1,40 @@
+{
+"__comment": "Designed by Winddelay with BDcraft Cubik PRO 0.96 Beta - http://bdcraft.net",
+"textures": {
+    "sides": "catwalks:blocks/catwalk/catwalks/normal/sides"
+},
+"elements": [ 
+{
+    "from": [ 15, 0, 0 ],
+    "to": [ 16, 16, 1 ],
+    "faces": {
+        "down":  { "uv": [ 0, 0, 1, 1 ], "texture": "#sides" },
+        "up":    { "uv": [ 0, 0, 1, 1 ], "texture": "#sides" },
+        "north": { "uv": [ 0, 0, 1, 16 ], "texture": "#sides" },
+        "south": { "uv": [ 0, 0, 1, 16 ], "texture": "#sides" },
+        "west":  { "uv": [ 0, 0, 1, 16 ], "texture": "#sides" },
+        "east":  { "uv": [ 0, 0, 1, 16 ], "texture": "#sides" }
+    }
+},
+{
+    "from": [ 8, 14, 0 ],
+    "to": [ 15, 16, 1 ],
+    "faces": {
+        "down":  { "uv": [ 8, 10, 15, 11 ], "texture": "#sides" },
+        "up":    { "uv": [ 8, 7, 15, 8 ], "texture": "#sides" },
+        "north": { "uv": [ 8, 0, 15, 2 ], "texture": "#sides" },
+        "south": { "uv": [ 8, 0, 15, 2 ], "texture": "#sides" }
+    }
+},
+{
+    "from": [ 8, 6, 0 ],
+    "to": [ 15, 8, 1 ],
+    "faces": {
+        "down":  { "uv": [ 8, 10, 15, 11 ], "texture": "#sides" },
+        "up":    { "uv": [ 8, 7, 15, 8 ], "texture": "#sides" },
+        "north": { "uv": [ 8, 8, 15, 10 ], "texture": "#sides" },
+        "south": { "uv": [ 8, 8, 15, 10 ], "texture": "#sides" }
+    }
+}
+]
+}
