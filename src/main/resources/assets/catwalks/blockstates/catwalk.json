@@ -48,7 +48,26 @@
 		"catwalks_bamboo": {
 			"model": "catwalks:internal/catwalk/catwalks/bamboo"
 		},
-		
+
+		"vanilla_oak": {
+			"model": "catwalks:internal/catwalk/vanilla/oak"
+		},
+		"vanilla_acacia": {
+			"model": "catwalks:internal/catwalk/vanilla/acacia"
+		},
+		"vanilla_birch": {
+			"model": "catwalks:internal/catwalk/vanilla/birch"
+		},
+		"vanilla_jungle": {
+			"model": "catwalks:internal/catwalk/vanilla/jungle"
+		},
+		"vanilla_spruce": {
+			"model": "catwalks:internal/catwalk/vanilla/spruce"
+		},
+		"vanilla_dark_oak": {
+			"model": "catwalks:internal/catwalk/vanilla/dark_oak"
+
+		},		
 		"immersive_engineering_steel": {
 			"model": "catwalks:internal/catwalk/immersive_engineering/steel"
 		},
