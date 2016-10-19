@@ -27,7 +27,7 @@ object Conf {
     lateinit var config: Configuration
 
     val CATEGORY_GENERAL = "general"
-    val CATEGORY_MODPACK = "general"
+    val CATEGORY_MODPACK = "modpack"
     val CATEGORY_DEV = "developer options"
 
     fun loadConfigsFromFile(configFile: File) {
@@ -49,8 +49,8 @@ object Conf {
         prop.comment = "Enables development mode, some features require a restart"
         Const.developmentEnvironment = prop.boolean
 
-        prop = conf.get(CATEGORY_MODPACK, "Custom catwalk enabled", CUSTOM_ENABLED).setRequiresMcRestart(true)
-        prop.comment = "Sets which of the 8 custom catwalks are enabled"
+        prop = conf.get(CATEGORY_MODPACK, "Custom materials enabled", CUSTOM_ENABLED).setRequiresMcRestart(true)
+        prop.comment = "Sets which of the 8 custom materials are enabled"
         CUSTOM_ENABLED = prop.booleanList
 
         if (conf.hasChanged() == true) {
