@@ -49,6 +49,10 @@ class PartCatwalk : Multipart(), ISlottedPart, INormallyOccludingPart, ISolidPar
         return false
     }
 
+    override fun getPickBlock(player: EntityPlayer?, hit: PartMOP?): ItemStack {
+        return ItemStack(ItemRegister.catwalk, catwalkMaterial.ordinal)
+    }
+
     //endregion
 
     //region decoration stuff
