@@ -33,7 +33,7 @@ class CatwalkRenderData : Comparable<CatwalkRenderData> {
         }
     }
 
-    override fun compareTo(o: CatwalkRenderData): Int {
+    override fun compareTo(other: CatwalkRenderData): Int {
         return 0
     }
 

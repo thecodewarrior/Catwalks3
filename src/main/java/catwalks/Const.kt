@@ -3,6 +3,7 @@ package catwalks
 import catwalks.block.property.UPropertyEnum
 import catwalks.block.property.UPropertyObject
 import catwalks.part.data.CatwalkRenderData
+import catwalks.part.data.ScaffoldRenderData
 import net.minecraft.block.properties.PropertyEnum
 import net.minecraft.launchwrapper.Launch
 import net.minecraft.util.EnumFacing
@@ -48,21 +49,8 @@ object Const {
     init { /* render-only properties (unlisted properties) */
     }
 
-    val COMMAND_OPTIONS = "options"
-
     val CATWALK_RENDER_DATA = UPropertyObject<CatwalkRenderData>("renderdata", CatwalkRenderData::class.java)
-
-    object NODE {
-        private var i = -1
-        val PITCH = i--
-        val YAW = i--
-        val CONNECT_POINT = i--
-        val OPEN_GUI = i--
-    }
-
-    object GUI {
-        var NODE_MANIPULATOR = -1
-    }
+    val SCAFFOLD_RENDER_DATA = UPropertyObject<ScaffoldRenderData>("renderdata", ScaffoldRenderData::class.java)
 
     fun location(path: String): ResourceLocation {
         return ResourceLocation(MODID, path)

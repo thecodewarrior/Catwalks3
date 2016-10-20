@@ -1,6 +1,7 @@
 package catwalks.item
 
 import catwalks.CatwalksMod
+import catwalks.register.ItemRegister
 import mcmultipart.item.ItemMultiPart
 import net.minecraft.client.resources.I18n
 import net.minecraft.entity.player.EntityPlayer
@@ -12,13 +13,13 @@ import java.text.MessageFormat
 /**
  * Created by TheCodeWarrior
  */
-abstract class ItemMultiPartBase(var name: String) : ItemMultiPart() {
+abstract class ItemMultiPartBase(var name: String) : ItemMultiPart(), IItemBase {
 
     init {
         unlocalizedName = name
         this.setRegistryName(name)
         GameRegistry.register(this)
-        //		ItemRegister.renderRegsiterItems.add(this);
+        ItemRegister.renderRegsiterItems.add(this);
         creativeTab = CatwalksMod.tab
     }
 
@@ -26,7 +27,7 @@ abstract class ItemMultiPartBase(var name: String) : ItemMultiPart() {
         return arrayOfNulls(0)
     }
 
-    override fun addInformation(stack: ItemStack?, playerIn: EntityPlayer?, tooltip: MutableList<String>?, advanced: Boolean) {
+    override fun addInformation(stack: ItemStack?, playerIn: EntityPlayer?, tooltip: MutableList<String>, advanced: Boolean) {
         var i = 0
         val unloc = unlocalizedName + ".info."
         val arguments = getInformationArguments(stack, playerIn)
@@ -40,13 +41,13 @@ abstract class ItemMultiPartBase(var name: String) : ItemMultiPart() {
             if (translated.length == 0)
                 break
 
-            tooltip!!.add(MessageFormat.format(translated, *arguments))
+            tooltip.add(MessageFormat.format(translated, *arguments))
             i += 1
         }
 
         super.addInformation(stack, playerIn, tooltip, advanced)
     }
 
-    val customRenderVariants: Array<String>?
+    override val customRenderVariants: Array<String>?
         get() = null
 }

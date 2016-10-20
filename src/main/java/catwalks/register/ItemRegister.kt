@@ -4,7 +4,7 @@ import catwalks.item.*
 
 object ItemRegister {
 
-    val renderRegsiterItems: MutableList<ItemBase> = mutableListOf()
+    val renderRegsiterItems: MutableList<IItemBase> = mutableListOf()
 
     var lights = ItemDecoration("lights")
     var tape = ItemDecoration("tape")
@@ -12,7 +12,7 @@ object ItemRegister {
     var tool = ItemCatwalkTool()
     var grate = ItemBase("steelgrate")
     var ladderGrabber = ItemLadderGrabber()
-    var scaffold = ItemScaffold("scaffoldpart")
-    var catwalk = ItemCatwalk("catwalkpart")
-    var stair = ItemStair("stairpart")
+    var scaffold = ItemScaffold("scaffold")
+    var catwalk = ItemCatwalk("catwalk")
+    var stair = ItemStair("stair")
 }

@@ -46,4 +46,7 @@ class ItemCatwalk(name: String) : ItemMultiPartBase(name) {
         p.catwalkMaterial = EnumCatwalkMaterial.values()[stack.metadata]
         return p
     }
+
+    override val customRenderVariants: Array<String>?
+        get() = EnumCatwalkMaterial.values().map { "catwalk.inv#material=${it.GROUP.name.toLowerCase()}_${it.name.toLowerCase()}" }.toTypedArray()
 }

@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry
 
 import java.text.MessageFormat
 
-open class ItemBase(var name: String) : Item() {
+open class ItemBase(var name: String) : Item(), IItemBase {
 
     init {
         unlocalizedName = name
@@ -44,6 +44,6 @@ open class ItemBase(var name: String) : Item() {
         super.addInformation(stack, playerIn, tooltip, advanced)
     }
 
-    open val customRenderVariants: Array<String>?
+    override val customRenderVariants: Array<String>?
         get() = null
 }

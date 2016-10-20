@@ -1,6 +1,5 @@
 package catwalks
 
-import catwalks.block.EnumDecoration
 import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.IStringSerializable
 import java.util.*
@@ -9,16 +8,16 @@ import catwalks.EnumMaterialGroup as _Group
 /**
  * Created by TheCodeWarrior
  */
-enum class EnumCatwalkMaterial constructor(val ALLOCATED: Boolean, val WIP: Boolean, val GROUP: catwalks.EnumMaterialGroup, val LAYER: BlockRenderLayer = BlockRenderLayer.SOLID, vararg decorations: EnumDecoration) : IStringSerializable {
+enum class EnumCatwalkMaterial constructor(val ALLOCATED: Boolean, _WIP: Boolean, val GROUP: catwalks.EnumMaterialGroup, val LAYER: BlockRenderLayer = BlockRenderLayer.SOLID, vararg decorations: EnumDecoration) : IStringSerializable {
     // MODPACK
-    CUSTOM_0(true, Conf.CUSTOM_ENABLED[0], _Group.MODPACK, BlockRenderLayer.CUTOUT),
-    CUSTOM_1(true, Conf.CUSTOM_ENABLED[1], _Group.MODPACK, BlockRenderLayer.CUTOUT),
-    CUSTOM_2(true, Conf.CUSTOM_ENABLED[2], _Group.MODPACK, BlockRenderLayer.CUTOUT),
-    CUSTOM_3(true, Conf.CUSTOM_ENABLED[3], _Group.MODPACK, BlockRenderLayer.CUTOUT),
-    CUSTOM_4(true, Conf.CUSTOM_ENABLED[4], _Group.MODPACK, BlockRenderLayer.CUTOUT),
-    CUSTOM_5(true, Conf.CUSTOM_ENABLED[5], _Group.MODPACK, BlockRenderLayer.CUTOUT),
-    CUSTOM_6(true, Conf.CUSTOM_ENABLED[6], _Group.MODPACK, BlockRenderLayer.CUTOUT),
-    CUSTOM_7(true, Conf.CUSTOM_ENABLED[7], _Group.MODPACK, BlockRenderLayer.CUTOUT),
+    CUSTOM_0(true, true, _Group.MODPACK, BlockRenderLayer.CUTOUT),
+    CUSTOM_1(true, true, _Group.MODPACK, BlockRenderLayer.CUTOUT),
+    CUSTOM_2(true, true, _Group.MODPACK, BlockRenderLayer.CUTOUT),
+    CUSTOM_3(true, true, _Group.MODPACK, BlockRenderLayer.CUTOUT),
+    CUSTOM_4(true, true, _Group.MODPACK, BlockRenderLayer.CUTOUT),
+    CUSTOM_5(true, true, _Group.MODPACK, BlockRenderLayer.CUTOUT),
+    CUSTOM_6(true, true, _Group.MODPACK, BlockRenderLayer.CUTOUT),
+    CUSTOM_7(true, true, _Group.MODPACK, BlockRenderLayer.CUTOUT),
 
     // CATWALKS
     NORMAL(true, false, _Group.CATWALKS, BlockRenderLayer.CUTOUT),
@@ -101,6 +100,7 @@ enum class EnumCatwalkMaterial constructor(val ALLOCATED: Boolean, val WIP: Bool
     TBA_CH_05(false, true, _Group.CHISEL);
 
     val DECORATIONS: List<EnumDecoration>
+    val WIP = _WIP && (GROUP.name.toLowerCase() + "_" + name.toLowerCase()) !in Conf.ENABLED
 
     init {
         DECORATIONS = Arrays.asList(*decorations)

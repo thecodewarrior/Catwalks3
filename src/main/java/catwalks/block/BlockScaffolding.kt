@@ -10,7 +10,6 @@ import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
 import net.minecraft.entity.item.EntityItem
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.EnumFacing
@@ -32,55 +31,8 @@ class BlockScaffolding(val page: Int) : BlockBase(Material.IRON, "scaffold" + pa
         return ItemStack(ItemRegister.scaffold, 1, state.getValue(Const.MATERIAL).ordinal)
     }
 
-    override fun getPlayerRelativeBlockHardness(state: IBlockState, playerIn: EntityPlayer, worldIn: World, pos: BlockPos): Float {
-
-        if (playerIn.inventory.getCurrentItem() != null) {
-            val item = playerIn.inventory.getCurrentItem()!!.item
-
-            if (item === Item.getItemFromBlock(this) && playerIn.isSneaking) {
-                return super.getPlayerRelativeBlockHardness(state, playerIn, worldIn, pos)
-            }
-
-            if (item === ItemRegister.tool) {
-                return 1f
-            }
-        }
-        //		if(state.getValue(Const.MATERIAL_META) == EnumCatwalkMaterial.WOOD) {
-        //			return 1;
-        //		}
-        return super.getPlayerRelativeBlockHardness(state, playerIn, worldIn, pos)
-    }
-
-    override fun dropBlockAsItemWithChance(worldIn: World, pos: BlockPos, state: IBlockState, chance: Float, fortune: Int) {
-        var chance = chance
-        if (this.harvesters.get() == null) {
-            super.dropBlockAsItemWithChance(worldIn, pos, state, chance, fortune)
-            return
-        }
-
-        if (!worldIn.isRemote && !worldIn.restoringBlockSnapshots)
-        // do not drop items while restoring blockstates, prevents item dupe
-        {
-            val items = getDrops(worldIn, pos, state, fortune)
-            chance = net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(items, worldIn, pos, state, fortune, chance, false, harvesters.get())
-
-            for (item in items) {
-                if (worldIn.rand.nextFloat() <= chance) {
-                    spawnAsEntityNoPickupDelayExactPos(worldIn, this.harvesters.get().positionVector.addVector(0.0, 0.25, 0.0), item)
-                }
-            }
-        }
-    }
-
-    override fun damageDropped(state: IBlockState?): Int {
-        return getMetaFromState(state)
-    }
-
-    override fun canHarvestBlock(world: IBlockAccess, pos: BlockPos, player: EntityPlayer): Boolean {
-        return true
-    }
-
-    init { /* state stuff */
+    override fun damageDropped(state: IBlockState): Int {
+        return state.getValue(Const.MATERIAL).ordinal
     }
 
     override fun createBlockState(): BlockStateContainer {
@@ -91,11 +43,8 @@ class BlockScaffolding(val page: Int) : BlockBase(Material.IRON, "scaffold" + pa
         return defaultState.withProperty(Const.MATERIAL, EnumCatwalkMaterial.values()[page shl 4 and meta])
     }
 
-    override fun getMetaFromState(state: IBlockState?): Int {
-        return state!!.getValue(Const.MATERIAL).ordinal and 15
-    }
-
-    init { /* rendering stuff */
+    override fun getMetaFromState(state: IBlockState): Int {
+        return state.getValue(Const.MATERIAL).ordinal and 15
     }
 
     override fun getBlockLayer(): BlockRenderLayer {

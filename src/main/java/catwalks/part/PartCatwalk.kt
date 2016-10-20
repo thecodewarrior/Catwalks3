@@ -3,7 +3,7 @@ package catwalks.part
 import catwalks.CatwalksMod
 import catwalks.Const
 import catwalks.EnumCatwalkMaterial
-import catwalks.block.EnumDecoration
+import catwalks.EnumDecoration
 import catwalks.part.data.CatwalkRenderData
 import catwalks.register.ItemRegister
 import catwalks.util.GeneralUtil

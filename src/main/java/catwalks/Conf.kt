@@ -21,7 +21,7 @@ object Conf {
 
     var showScaffoldInsideFaces = false
 
-    var CUSTOM_ENABLED = BooleanArray(8)
+    var ENABLED = arrayOf<String>()
 
     lateinit var file: File
     lateinit var config: Configuration
@@ -49,9 +49,9 @@ object Conf {
         prop.comment = "Enables development mode, some features require a restart"
         Const.developmentEnvironment = prop.boolean
 
-        prop = conf.get(CATEGORY_MODPACK, "Custom materials enabled", CUSTOM_ENABLED).setRequiresMcRestart(true)
+        prop = conf.get(CATEGORY_MODPACK, "Materials force enabled", ENABLED).setRequiresMcRestart(true)
         prop.comment = "Sets which of the 8 custom materials are enabled"
-        CUSTOM_ENABLED = prop.booleanList
+        ENABLED = prop.stringList
 
         if (conf.hasChanged() == true) {
             conf.save()

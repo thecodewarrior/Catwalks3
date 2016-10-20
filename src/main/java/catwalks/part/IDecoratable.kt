@@ -1,6 +1,6 @@
 package catwalks.part
 
-import catwalks.block.EnumDecoration
+import catwalks.EnumDecoration
 
 /**
  * Created by TheCodeWarrior
