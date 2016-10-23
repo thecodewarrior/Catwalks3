@@ -15,7 +15,6 @@
 		
 		
 		
-		
 		"corner_north_west_outer": { "model": "catwalks:catwalk/immersive_engineering/steel/corner_all" },
 		"corner_north_east_outer": { "model": "catwalks:catwalk/immersive_engineering/steel/corner_all", "y":90 },
 		"corner_south_east_outer": { "model": "catwalks:catwalk/immersive_engineering/steel/corner_all", "y":180 },
