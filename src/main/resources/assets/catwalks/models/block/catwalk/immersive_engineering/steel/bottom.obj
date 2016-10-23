@@ -1,6 +1,7 @@
 # worgenthal 2016
 
 mtllib IEsteel.mtl
+usemtl 02___Default
 
 o bottom
 
@@ -16,8 +17,5 @@ vt 0.0156 0.5156 0.0000
 vt 0.4844 0.0469 0.0000
 vt 0.9531 0.5156 0.0000
 vt 0.4844 0.9844 0.0000
-usemtl 02___Default
 f 1/1 2/2 3/3 4/4 
 f 5/2 6/3 7/4 8/1 
-# 2 polygons
-

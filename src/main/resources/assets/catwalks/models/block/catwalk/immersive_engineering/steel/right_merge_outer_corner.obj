@@ -1,6 +1,7 @@
 # worgenthal 2016
 
 mtllib IEsteel.mtl
+usemtl 03___Default
 
 o right_merge_outer_corner
 
@@ -48,7 +49,6 @@ vt 0.7188 0.2813 0.0000
 vt 0.9531 0.5156 0.0000
 vt 0.7188 0.7500 0.0000
 vt 0.4844 0.5156 0.0000
-usemtl 03___Default
 f 1/1 2/2 3/3 4/4 
 f 5/5 6/6 7/7 8/8 
 f 3/9 2/10 8/7 7/8 
@@ -64,5 +64,3 @@ f 12/11 11/12 15/13 14/14
 usemtl 02___Default
 f 17/17 18/18 19/19 20/20 
 f 21/17 22/18 23/19 24/20 
-# 14 polygons
-
