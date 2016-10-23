@@ -59,7 +59,7 @@ enum class EnumCatwalkMaterial constructor(val ALLOCATED: Boolean, _WIP: Boolean
     TBA_MC_09(false, true, _Group.VANILLA),
 
     // IMMERSIVE_ENGINEERING
-    STEEL(true, false, _Group.IMMERSIVE_ENGINEERING),
+    STEEL(true, false, _Group.IMMERSIVE_ENGINEERING, BlockRenderLayer.CUTOUT),
     TREATED_WOOD(true, false, _Group.IMMERSIVE_ENGINEERING),
     ALUMINUM(true, false, _Group.IMMERSIVE_ENGINEERING),
 

@@ -1,0 +1,7 @@
+# worgenthal 2016
+
+newmtl 03___Default
+map_Ka catwalks:blocks/catwalk/immersive_engineering/steel/sides.png
+
+newmtl 02___Default
+map_Ka catwalks:blocks/catwalk/immersive_engineering/steel/base.png

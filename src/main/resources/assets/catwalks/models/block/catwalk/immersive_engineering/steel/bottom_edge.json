@@ -1,0 +1,20 @@
+{
+"__comment": "Designed by Winddelay with BDcraft Cubik PRO 0.96 Beta - http://bdcraft.net",
+"textures": {
+    "sides": "blocks/catwalk/iesteel/sides"
+},
+"elements": [ 
+{
+    "from": [ 1, -1, 0 ],
+    "to": [ 15, 0, 1 ],
+    "faces": {
+        "down":  { "uv": [ 15, 10, 1, 9 ], "texture": "#sides" },
+        "up":    { "uv": [ 1, 9, 15, 10 ], "texture": "#sides" },
+        "north": { "uv": [ 1, 9, 15, 10 ], "texture": "#sides" },
+        "south": { "uv": [ 1, 9, 15, 10 ], "texture": "#sides" },
+        "west":  { "uv": [ 0, 9, 1, 10 ], "texture": "#sides" },
+        "east":  { "uv": [ 0, 9, 1, 10 ], "texture": "#sides" }
+    }
+}
+]
+}
