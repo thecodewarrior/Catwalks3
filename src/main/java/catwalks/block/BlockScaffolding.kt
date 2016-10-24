@@ -3,7 +3,10 @@ package catwalks.block
 import catwalks.Conf
 import catwalks.Const
 import catwalks.EnumCatwalkMaterial
+import catwalks.part.PartScaffold
+import catwalks.part.data.ScaffoldRenderData
 import catwalks.register.ItemRegister
+import catwalks.util.GeneralUtil
 import net.minecraft.block.Block
 import net.minecraft.block.material.Material
 import net.minecraft.block.state.BlockStateContainer
@@ -18,6 +21,8 @@ import net.minecraft.util.math.RayTraceResult
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
+import net.minecraftforge.common.property.ExtendedBlockState
+import net.minecraftforge.common.property.IExtendedBlockState
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 
@@ -36,7 +41,38 @@ class BlockScaffolding(val page: Int) : BlockBase(Material.IRON, "scaffold" + pa
     }
 
     override fun createBlockState(): BlockStateContainer {
-        return BlockStateContainer(this, Const.MATERIAL)
+        return ExtendedBlockState(this, arrayOf(Const.MATERIAL), arrayOf(Const.SCAFFOLD_RENDER_DATA))
+    }
+
+    override fun getActualState(state: IBlockState, worldIn: IBlockAccess, pos: BlockPos): IBlockState {
+        if(state !is IExtendedBlockState)
+            return state
+
+        val arr = BooleanArray(EnumFacing.values().size) { true }
+
+        for(dir in EnumFacing.values()) {
+            val poff = pos.offset(dir)
+            if(worldIn.isSideSolid(poff, dir.opposite, false)) {
+                arr[dir.ordinal] = false
+            }
+            if(arr[dir.ordinal]) {
+                val adjacent = worldIn.getBlockState(poff)
+                val block = adjacent.block
+                if(block is BlockScaffolding) {
+                    if(adjacent.getValue(Const.MATERIAL) == state.getValue(Const.MATERIAL)) {
+                        arr[dir.ordinal] = false
+                    }
+                }
+            }
+            if(arr[dir.ordinal]) {
+                val part = GeneralUtil.getPart(PartScaffold::class.java, worldIn, poff)
+                if(part != null && part.catwalkMaterial == state.getValue(Const.MATERIAL)) {
+                    arr[dir.ordinal] = false
+                }
+            }
+        }
+
+        return state.withProperty(Const.SCAFFOLD_RENDER_DATA, ScaffoldRenderData(arr))
     }
 
     override fun getStateFromMeta(meta: Int): IBlockState {

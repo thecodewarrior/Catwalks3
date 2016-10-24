@@ -1,9 +1,8 @@
 package catwalks.render.part
 
 import catwalks.Const
-import catwalks.SCREAM_AT_DEV
 import catwalks.part.data.CatwalkRenderData
-import catwalks.render.ModelHandle
+import catwalks.render.QuadManager
 import catwalks.render.StateHandle
 import catwalks.util.EnumLeftRight
 import catwalks.util.nestedmap.HierarchyMap
@@ -72,7 +71,11 @@ class CatwalkBakedModel(private val mat: String, private val particle: TextureAt
                 for (east in TF) {
                     for (west in TF) {
                         val i = encodeSides(north, south, east, west)
-                        val nsew = (if (north) "N" else "n") + (if (south) "S" else "s") + (if (east) "E" else "e") + if (west) "W" else "w"
+                        var nsew = ""
+                        if (north) nsew += "N" else nsew += "n"
+                        if (south) nsew += "S" else nsew += "s"
+                        if (east) nsew += "E" else nsew += "e"
+                        if (west) nsew += "W" else nsew += "w"
 
                         bottom_xaxis_nsew[i] = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "bottom_xaxis_" + nsew)
                         bottom_zaxis_nsew[i] = StateHandle.of(CATWALK_BLOCKSTATE_LOC, "bottom_zaxis_" + nsew)
@@ -218,38 +221,6 @@ class CatwalkBakedModel(private val mat: String, private val particle: TextureAt
         }
 
         return emptyList()
-    }
-
-    private class QuadManager(internal var state: IBlockState, internal var side: EnumFacing?, internal var rand: Long) {
-        internal var quads: MutableList<BakedQuad> = Lists.newArrayList<BakedQuad>()
-
-        fun add(handle: ModelHandle?) {
-            if (handle == null) {
-                SCREAM_AT_DEV()
-                return
-            }
-            add(handle.get())
-        }
-
-        fun add(handle: StateHandle?) {
-            if (handle == null) {
-                SCREAM_AT_DEV()
-                return
-            }
-            add(handle.get())
-        }
-
-        fun add(model: IBakedModel?) {
-            if (model == null) {
-                SCREAM_AT_DEV()
-                return
-            }
-            quads.addAll(model.getQuads(state, side, rand))
-        }
-
-        fun getQuads(): List<BakedQuad> {
-            return quads
-        }
     }
 
     override fun isAmbientOcclusion(): Boolean {

@@ -1,34 +1,105 @@
 {
-	"forge_marker": 1,
-	"defaults": {
-		"model": "catwalks:scaffold"
-	},
-	"variants": {
-		"material": {
-			"custom": {
-				"textures": {
-					"end": "catwalks:blocks/scaffold/top/custom",
-					"side": "catwalks:blocks/scaffold/side/custom"
-				}
-			},
-			"steel": {
-				"textures": {
-					"end": "catwalks:blocks/scaffold/top/steel",
-					"side": "catwalks:blocks/scaffold/side/steel"
-				}
-			},
-			"iesteel": {
-				"textures": {
-					"end": "catwalks:blocks/scaffold/top/iesteel",
-					"side": "catwalks:blocks/scaffold/side/iesteel"
-				}
-			},
-			"wood": {
-				"textures": {
-					"end": "catwalks:blocks/scaffold/top/wood",
-					"side": "catwalks:blocks/scaffold/side/wood"
-				}
-			}
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "particle": "blocks_hopper_outside"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "inventory": [{
+      "model": "catwalks:catwalk"
+    }],
+    "material": {
+		"modpack_custom_0": {
+			"model": "catwalks:internal/scaffold/modpack_custom_0"
+		},
+		"modpack_custom_1": {
+			"model": "catwalks:internal/scaffold/modpack_custom_1"
+		},
+		"modpack_custom_2": {
+			"model": "catwalks:internal/scaffold/modpack_custom_2"
+		},
+		"modpack_custom_3": {
+			"model": "catwalks:internal/scaffold/modpack_custom_3"
+		},
+		"modpack_custom_4": {
+			"model": "catwalks:internal/scaffold/modpack_custom_4"
+		},
+		"modpack_custom_5": {
+			"model": "catwalks:internal/scaffold/modpack_custom_5"
+		},
+		"modpack_custom_6": {
+			"model": "catwalks:internal/scaffold/modpack_custom_6"
+		},
+		"modpack_custom_7": {
+			"model": "catwalks:internal/scaffold/modpack_custom_7"
+		},
+		
+		"catwalks_normal": {
+			"model": "catwalks:internal/scaffold/catwalks_normal"
+		},
+		"catwalks_glass": {
+			"model": "catwalks:internal/scaffold/catwalks_glass"
+		},
+		"catwalks_nyan": {
+			"model": "catwalks:internal/scaffold/catwalks_nyan"
+		},
+		"catwalks_bamboo": {
+			"model": "catwalks:internal/scaffold/catwalks_bamboo"
+		},
+
+		"vanilla_oak": {
+			"model": "catwalks:internal/scaffold/vanilla_oak"
+		},
+		"vanilla_acacia": {
+			"model": "catwalks:internal/scaffold/vanilla_acacia"
+		},
+		"vanilla_birch": {
+			"model": "catwalks:internal/scaffold/vanilla_birch"
+		},
+		"vanilla_jungle": {
+			"model": "catwalks:internal/scaffold/vanilla_jungle"
+		},
+		"vanilla_spruce": {
+			"model": "catwalks:internal/scaffold/vanilla_spruce"
+		},
+		"vanilla_dark_oak": {
+			"model": "catwalks:internal/scaffold/vanilla_dark_oak"
+		},
+
+		"immersive_engineering_steel": {
+			"model": "catwalks:internal/scaffold/immersive_engineering_steel"
+		},
+		"immersive_engineering_treated_wood": {
+			"model": "catwalks:internal/scaffold/immersive_engineering_treated_wood"
+		},
+		"immersive_engineering_aluminum": {
+			"model": "catwalks:internal/scaffold/immersive_engineering_aluminum"
+		},
+		
+		"botania_livingrock": {
+			"model": "catwalks:internal/scaffold/botania_livingrock"
+		},
+		"botania_livingwood": {
+			"model": "catwalks:internal/scaffold/botania_livingwood"
+		},
+		"botania_dreamwood": {
+			"model": "catwalks:internal/scaffold/botania_dreamwood"
+		},
+		"botania_managlass": {
+			"model": "catwalks:internal/scaffold/botania_managlass"
+		},
+		"botania_alfglass": {
+			"model": "catwalks:internal/scaffold/botania_alfglass"
+		},
+		
+		"chisel_factory": {
+			"model": "catwalks:internal/scaffold/chisel_factory"
+		},
+		"chisel_laboratory": {
+			"model": "catwalks:internal/scaffold/chisel_laboratory"
 		}
-	}
+    }
+  }
 }

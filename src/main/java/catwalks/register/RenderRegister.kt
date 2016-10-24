@@ -4,6 +4,7 @@ import catwalks.CatwalksMod
 import catwalks.register.ItemRegister.renderRegsiterItems
 import catwalks.render.part.CatwalkBakedModel
 import catwalks.render.part.ScaffoldModel
+import mcmultipart.client.multipart.MultipartRegistryClient
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
 import net.minecraft.client.renderer.block.statemap.StateMapperBase
@@ -23,6 +24,7 @@ object RenderRegister {
         fun initRender() {
             ModelLoaderRegistry.registerLoader(CatwalkBakedModel.ModelLoader())
             ModelLoaderRegistry.registerLoader(ScaffoldModel.ModelLoader())
+
             //			MultipartRegistryClient.registerSpecialPartStateMapper(new ResourceLocation(PartScaffold.ID), new CatwalkBakedModel.Statemapper());
         }
     }

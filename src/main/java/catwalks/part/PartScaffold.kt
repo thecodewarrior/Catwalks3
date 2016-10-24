@@ -2,8 +2,10 @@ package catwalks.part
 
 import catwalks.Const
 import catwalks.EnumCatwalkMaterial
+import catwalks.block.BlockScaffolding
+import catwalks.part.data.ScaffoldRenderData
 import catwalks.register.ItemRegister
-import catwalks.util.meta.ArrayProp
+import catwalks.util.GeneralUtil
 import catwalks.util.meta.IDirtyable
 import catwalks.util.meta.MetaStorage
 import mcmultipart.MCMultiPartMod
@@ -21,8 +23,9 @@ import net.minecraft.network.PacketBuffer
 import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.AxisAlignedBB
-
-import java.util.ArrayList
+import net.minecraftforge.common.property.ExtendedBlockState
+import net.minecraftforge.common.property.IExtendedBlockState
+import java.util.*
 
 /**
  * Created by TheCodeWarrior
@@ -77,11 +80,40 @@ class PartScaffold : Multipart(), ISolidPart, IDirtyable {
     //region Here be blockstates
 
     override fun createBlockState(): BlockStateContainer {
-        return BlockStateContainer(MCMultiPartMod.multipart, Const.MATERIAL)
+        return ExtendedBlockState(MCMultiPartMod.multipart, arrayOf(Const.MATERIAL), arrayOf(Const.SCAFFOLD_RENDER_DATA))
     }
 
     override fun getActualState(state: IBlockState): IBlockState {
-        return state.withProperty(Const.MATERIAL, MATERIAL.get(storage))
+        if(state !is IExtendedBlockState)
+            return state.withProperty(Const.MATERIAL, MATERIAL.get(storage))
+
+        val arr = BooleanArray(EnumFacing.values().size) { true }
+
+        for(dir in EnumFacing.values()) {
+            val poff = pos.offset(dir)
+            if(world.isSideSolid(poff, dir.opposite)) {
+                arr[dir.ordinal] = false
+            }
+            if(arr[dir.ordinal]) {
+                val adjacent = world.getBlockState(poff)
+                val block = adjacent.block
+                if(block is BlockScaffolding) {
+                    if(adjacent.getValue(Const.MATERIAL) == catwalkMaterial) {
+                        arr[dir.ordinal] = false
+                    }
+                }
+            }
+            if(arr[dir.ordinal]) {
+                val part = GeneralUtil.getPart(PartScaffold::class.java, world, poff)
+                if(part != null && part.catwalkMaterial == catwalkMaterial) {
+                    arr[dir.ordinal] = false
+                }
+            }
+        }
+
+        return state
+                .withProperty(Const.SCAFFOLD_RENDER_DATA, ScaffoldRenderData(arr))
+                .withProperty(Const.MATERIAL, MATERIAL.get(storage))
     }
 
     //endregion
