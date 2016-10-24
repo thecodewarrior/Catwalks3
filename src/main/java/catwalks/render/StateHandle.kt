@@ -43,7 +43,7 @@ class StateHandle(val loc: ModelResourceLocation) {
 
         protected var cache: MutableMap<ModelResourceLocation, IBakedModel> = mutableMapOf()
         protected var missingModels: MutableSet<ModelResourceLocation> = mutableSetOf()
-        protected var errors: MutableMap<ResourceLocation, Int> = mutableMapOf()
+        protected var errors: MutableMap<ResourceLocation, MutableList<String>> = mutableMapOf()
 
         // ========================================================= STATIC METHODS
 
@@ -94,15 +94,11 @@ class StateHandle(val loc: ModelResourceLocation) {
                     val m = try {
                         ModelLoaderRegistry.getModel(loc)
                     } catch (e: Exception) {
-                        errors[baseLoc] = (errors[baseLoc] ?: 0) + 1
+                        errors.getOrPut(baseLoc) { mutableListOf() }
 
-                        if(errors[baseLoc] ?: 10 < 2) {
-                            val sw = StringWriter()
-                            e.printStackTrace(PrintWriter(sw))
-                            Const.log.warn("Unable to load model `$loc`\n${sw.toString()}")
-                        } else {
-                            Const.log.warn("Unable to load model `$loc` ${e.cause}")
-                        }
+                        val sw = StringWriter()
+                        e.printStackTrace(PrintWriter(sw))
+                        errors[baseLoc]?.add("`#${loc.variant}`\n${sw.toString()}")
 
                         ModelLoaderRegistry.getMissingModel()
                     }

@@ -84,8 +84,12 @@ class PartScaffold : Multipart(), ISolidPart, IDirtyable {
     }
 
     override fun getActualState(state: IBlockState): IBlockState {
+        return state.withProperty(Const.MATERIAL, MATERIAL.get(storage))
+    }
+
+    override fun getExtendedState(state: IBlockState): IBlockState {
         if(state !is IExtendedBlockState)
-            return state.withProperty(Const.MATERIAL, MATERIAL.get(storage))
+            return state
 
         val arr = BooleanArray(EnumFacing.values().size) { true }
 
@@ -111,9 +115,7 @@ class PartScaffold : Multipart(), ISolidPart, IDirtyable {
             }
         }
 
-        return state
-                .withProperty(Const.SCAFFOLD_RENDER_DATA, ScaffoldRenderData(arr))
-                .withProperty(Const.MATERIAL, MATERIAL.get(storage))
+        return state.withProperty(Const.SCAFFOLD_RENDER_DATA, ScaffoldRenderData(arr))
     }
 
     //endregion

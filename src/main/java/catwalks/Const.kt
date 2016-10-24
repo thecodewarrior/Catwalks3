@@ -44,7 +44,9 @@ object Const {
     }
 
     val FACING = UPropertyEnum.create<EnumFacing>("facing", EnumFacing::class.java)
-    val MATERIAL = PropertyEnum.create<EnumCatwalkMaterial>("material", EnumCatwalkMaterial::class.java!!)
+    val MATERIAL = PropertyEnum.create<EnumCatwalkMaterial>("material", EnumCatwalkMaterial::class.java) {
+        it?.ALLOCATED ?: false
+    }
 
     init { /* render-only properties (unlisted properties) */
     }

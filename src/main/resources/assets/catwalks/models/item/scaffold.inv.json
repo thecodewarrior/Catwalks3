@@ -1,0 +1,102 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "particle": "blocks_hopper_outside"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "material": {
+		"modpack_custom_0": {
+			"model": "catwalks:blocks/scaffold/modpack_custom_0"
+		},
+		"modpack_custom_1": {
+			"model": "catwalks:blocks/scaffold/modpack_custom_1"
+		},
+		"modpack_custom_2": {
+			"model": "catwalks:blocks/scaffold/modpack_custom_2"
+		},
+		"modpack_custom_3": {
+			"model": "catwalks:blocks/scaffold/modpack_custom_3"
+		},
+		"modpack_custom_4": {
+			"model": "catwalks:blocks/scaffold/modpack_custom_4"
+		},
+		"modpack_custom_5": {
+			"model": "catwalks:blocks/scaffold/modpack_custom_5"
+		},
+		"modpack_custom_6": {
+			"model": "catwalks:blocks/scaffold/modpack_custom_6"
+		},
+		"modpack_custom_7": {
+			"model": "catwalks:blocks/scaffold/modpack_custom_7"
+		},
+		
+		"catwalks_normal": {
+			"model": "catwalks:blocks/scaffold/catwalks_normal"
+		},
+		"catwalks_glass": {
+			"model": "catwalks:blocks/scaffold/catwalks_glass"
+		},
+		"catwalks_nyan": {
+			"model": "catwalks:blocks/scaffold/catwalks_nyan"
+		},
+		"catwalks_bamboo": {
+			"model": "catwalks:blocks/scaffold/catwalks_bamboo"
+		},
+
+		"vanilla_oak": {
+			"model": "catwalks:blocks/scaffold/vanilla_oak"
+		},
+		"vanilla_acacia": {
+			"model": "catwalks:blocks/scaffold/vanilla_acacia"
+		},
+		"vanilla_birch": {
+			"model": "catwalks:blocks/scaffold/vanilla_birch"
+		},
+		"vanilla_jungle": {
+			"model": "catwalks:blocks/scaffold/vanilla_jungle"
+		},
+		"vanilla_spruce": {
+			"model": "catwalks:blocks/scaffold/vanilla_spruce"
+		},
+		"vanilla_dark_oak": {
+			"model": "catwalks:blocks/scaffold/vanilla_dark_oak"
+		},
+
+		"immersive_engineering_steel": {
+			"model": "catwalks:blocks/scaffold/immersive_engineering_steel"
+		},
+		"immersive_engineering_treated_wood": {
+			"model": "catwalks:blocks/scaffold/immersive_engineering_treated_wood"
+		},
+		"immersive_engineering_aluminum": {
+			"model": "catwalks:blocks/scaffold/immersive_engineering_aluminum"
+		},
+		
+		"botania_livingrock": {
+			"model": "catwalks:blocks/scaffold/botania_livingrock"
+		},
+		"botania_livingwood": {
+			"model": "catwalks:blocks/scaffold/botania_livingwood"
+		},
+		"botania_dreamwood": {
+			"model": "catwalks:blocks/scaffold/botania_dreamwood"
+		},
+		"botania_managlass": {
+			"model": "catwalks:blocks/scaffold/botania_managlass"
+		},
+		"botania_alfglass": {
+			"model": "catwalks:blocks/scaffold/botania_alfglass"
+		},
+		
+		"chisel_factory": {
+			"model": "catwalks:blocks/scaffold/chisel_factory"
+		},
+		"chisel_laboratory": {
+			"model": "catwalks:blocks/scaffold/chisel_laboratory"
+		}
+    }
+  }
+}

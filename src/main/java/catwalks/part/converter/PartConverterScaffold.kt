@@ -1,7 +1,6 @@
 package catwalks.part.converter
 
 import catwalks.Const
-import catwalks.EnumCatwalkMaterial
 import catwalks.part.PartScaffold
 import catwalks.register.BlockRegister
 import mcmultipart.multipart.IMultipart
@@ -9,12 +8,9 @@ import mcmultipart.multipart.IMultipartContainer
 import mcmultipart.multipart.IPartConverter
 import mcmultipart.multipart.IReversePartConverter
 import net.minecraft.block.Block
-import net.minecraft.block.state.IBlockState
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.IBlockAccess
-
-import java.util.Arrays
-import java.util.Collections
+import java.util.*
 
 /**
  * Created by TheCodeWarrior
@@ -42,7 +38,11 @@ class PartConverterScaffold : IPartConverter, IReversePartConverter {
             if (firstPart is PartScaffold) {
                 val mat = firstPart.catwalkMaterial
                 container.removePart(firstPart)
-                container.worldIn.setBlockState(container.posIn, BlockRegister.getScaffold(mat).defaultState.withProperty(Const.MATERIAL, mat))
+                val old = container.worldIn.getBlockState(container.posIn)
+                val new = BlockRegister.getScaffold(mat).defaultState.withProperty(Const.MATERIAL, mat)
+                container.worldIn.setBlockState(container.posIn, new)
+//                container.worldIn.notifyBlockUpdate(container.posIn, old, new, 3)
+                return true
             }
         }
         return false

@@ -48,5 +48,5 @@ class ItemCatwalk(name: String) : ItemMultiPartBase(name) {
     }
 
     override val customRenderVariants: Array<String>?
-        get() = EnumCatwalkMaterial.values().map { "catwalk.inv#material=${it.GROUP.name.toLowerCase()}_${it.name.toLowerCase()}" }.toTypedArray()
+        get() = EnumCatwalkMaterial.values().filter { it.ALLOCATED }.map { "catwalk.inv#material=${it.GROUP.name.toLowerCase()}_${it.name.toLowerCase()}" }.toTypedArray()
 }
