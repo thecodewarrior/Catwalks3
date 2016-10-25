@@ -23,3 +23,5 @@ fun Int.bits(): Int {
     }
     return count
 }
+
+fun String.splitOn(index: Int) = Pair(this.substring(0, index), this.substring(index+1, this.length))

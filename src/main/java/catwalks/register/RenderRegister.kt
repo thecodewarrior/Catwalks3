@@ -2,9 +2,9 @@ package catwalks.register
 
 import catwalks.CatwalksMod
 import catwalks.register.ItemRegister.renderRegsiterItems
+import catwalks.render.CustomModelHandler
 import catwalks.render.part.CatwalkBakedModel
-import catwalks.render.part.ScaffoldModel
-import mcmultipart.client.multipart.MultipartRegistryClient
+import catwalks.render.part.ScaffoldBakedModel
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
 import net.minecraft.client.renderer.block.statemap.StateMapperBase
@@ -22,8 +22,9 @@ import net.minecraftforge.fml.relauncher.SideOnly
 object RenderRegister {
     object Parts {
         fun initRender() {
-            ModelLoaderRegistry.registerLoader(CatwalkBakedModel.ModelLoader())
-            ModelLoaderRegistry.registerLoader(ScaffoldModel.ModelLoader())
+            ModelLoaderRegistry.registerLoader(CustomModelHandler)
+            CustomModelHandler.register("catwalksDynamic", ::CatwalkBakedModel)
+            CustomModelHandler.register("scaffoldSides", ::ScaffoldBakedModel)
 
             //			MultipartRegistryClient.registerSpecialPartStateMapper(new ResourceLocation(PartScaffold.ID), new CatwalkBakedModel.Statemapper());
         }
