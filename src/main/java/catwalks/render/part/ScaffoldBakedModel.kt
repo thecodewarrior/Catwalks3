@@ -1,12 +1,12 @@
 package catwalks.render.part
 
 import catwalks.Const
+import catwalks.render.ModelHandle
 import catwalks.render.QuadManager
-import catwalks.render.StateHandle
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.BakedQuad
-import net.minecraft.client.renderer.block.model.ModelResourceLocation
 import net.minecraft.util.EnumFacing
+import net.minecraft.util.ResourceLocation
 import net.minecraftforge.common.property.IExtendedBlockState
 
 /**
@@ -14,7 +14,13 @@ import net.minecraftforge.common.property.IExtendedBlockState
  */
 class ScaffoldBakedModel(loc: String) : BaseBakedModel(loc) {
 
-    private val handle: StateHandle = StateHandle.of(ModelResourceLocation(loc))
+    private val handle: ModelHandle
+
+    init {
+        val rl = ResourceLocation(loc)
+        val newrl = ResourceLocation(rl.resourceDomain, rl.resourcePath.substring("models/".length))
+        handle = ModelHandle.of(newrl)
+    }
 
     override fun getQuads(normalState: IBlockState?, side: EnumFacing?, rand: Long): List<BakedQuad> {
         if (normalState == null || normalState !is IExtendedBlockState)

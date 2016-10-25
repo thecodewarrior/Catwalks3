@@ -3,11 +3,10 @@ package catwalks.register
 import catwalks.CatwalksMod
 import catwalks.register.ItemRegister.renderRegsiterItems
 import catwalks.render.CustomModelHandler
+import catwalks.render.StateMapperOverrideBlockName
 import catwalks.render.part.CatwalkBakedModel
 import catwalks.render.part.ScaffoldBakedModel
-import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
-import net.minecraft.client.renderer.block.statemap.StateMapperBase
 import net.minecraft.item.Item
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.model.ModelLoader
@@ -22,23 +21,20 @@ import net.minecraftforge.fml.relauncher.SideOnly
 object RenderRegister {
     object Parts {
         fun initRender() {
-            ModelLoaderRegistry.registerLoader(CustomModelHandler)
-            CustomModelHandler.register("catwalksDynamic", ::CatwalkBakedModel)
-            CustomModelHandler.register("scaffoldSides", ::ScaffoldBakedModel)
-
             //			MultipartRegistryClient.registerSpecialPartStateMapper(new ResourceLocation(PartScaffold.ID), new CatwalkBakedModel.Statemapper());
         }
     }
 
     object Blocks {
         fun initRender() {
+
+            ModelLoaderRegistry.registerLoader(CustomModelHandler)
+            CustomModelHandler.register("catwalksDynamic", ::CatwalkBakedModel)
+            CustomModelHandler.register("scaffoldSides", ::ScaffoldBakedModel)
+
             val rl = ResourceLocation(CatwalksMod.MODID, "scaffold")
             BlockRegister.scaffolds.forEach {
-                ModelLoader.setCustomStateMapper(it, object : StateMapperBase() {
-                    override fun getModelResourceLocation(state: IBlockState?): ModelResourceLocation {
-                        return ModelResourceLocation(rl, this.getPropertyString(state?.getProperties()))
-                    }
-                })
+                ModelLoader.setCustomStateMapper(it, StateMapperOverrideBlockName(rl))
             }
         }
     }

@@ -30,6 +30,7 @@ class ClientProxy : CommonProxy() {
         get() = FMLClientHandler.instance().server
 
     override fun preInit() {
+        super.preInit()
         RenderRegister.Blocks.initRender()
         RenderRegister.Items.initRender()
         RenderRegister.Parts.initRender()
