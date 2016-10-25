@@ -50,7 +50,7 @@ class PartCatwalk : Multipart(), ISlottedPart, INormallyOccludingPart, ISolidPar
     }
 
     override fun getPickBlock(player: EntityPlayer?, hit: PartMOP?): ItemStack {
-        return ItemStack(ItemRegister.catwalk, catwalkMaterial.ordinal)
+        return ItemStack(ItemRegister.catwalk, 1, catwalkMaterial.ordinal)
     }
 
     //endregion
@@ -291,7 +291,7 @@ class PartCatwalk : Multipart(), ISlottedPart, INormallyOccludingPart, ISolidPar
         val adjacent = cache.get(dir)
 
         if (adjacent != null) {
-            if (!adjacent.getSide(dir.opposite) && adjacent.getSide(EnumFacing.DOWN)) {
+            if (adjacent.catwalkMaterial == catwalkMaterial && !adjacent.getSide(dir.opposite) && adjacent.getSide(EnumFacing.DOWN)) {
                 return false
             }
         }
@@ -308,7 +308,8 @@ class PartCatwalk : Multipart(), ISlottedPart, INormallyOccludingPart, ISolidPar
 
         if (adjacent != null && ahead != null && diagonal != null) {
 
-            if (adjacent.getSide(EnumFacing.DOWN) && ahead.getSide(EnumFacing.DOWN) && diagonal.getSide(EnumFacing.DOWN) &&
+            if (adjacent.catwalkMaterial == catwalkMaterial && ahead.catwalkMaterial == catwalkMaterial && diagonal.catwalkMaterial == catwalkMaterial &&
+                    adjacent.getSide(EnumFacing.DOWN) && ahead.getSide(EnumFacing.DOWN) && diagonal.getSide(EnumFacing.DOWN) &&
                     !(adjacent.getSide(front) || diagonal.getSide(front.opposite) ||
                             ahead.getSide(side) || diagonal.getSide(side.opposite))) {
                 return false
@@ -331,6 +332,8 @@ class PartCatwalk : Multipart(), ISlottedPart, INormallyOccludingPart, ISolidPar
 
         if (ahead == null || adjacent == null)
             return null
+        if(adjacent.catwalkMaterial != catwalkMaterial || ahead.catwalkMaterial != catwalkMaterial)
+            return null
 
         if (adjacent.getSide(front) && !adjacent.getSide(side.opposite) &&
                 !ahead.getSide(front.opposite) && ahead.getSide(side)) {
@@ -340,6 +343,8 @@ class PartCatwalk : Multipart(), ISlottedPart, INormallyOccludingPart, ISolidPar
         val diagonal = cache.get(side, front)
 
         if (diagonal != null) {
+            if(diagonal.catwalkMaterial != catwalkMaterial)
+                return null
             if (!adjacent.getSide(side.opposite) && !adjacent.getSide(front) &&
                     !diagonal.getSide(front.opposite) && diagonal.getSide(side.opposite) &&
                     !ahead.getSide(front.opposite) && ahead.getSide(side)) {
@@ -364,12 +369,17 @@ class PartCatwalk : Multipart(), ISlottedPart, INormallyOccludingPart, ISolidPar
         var diagonal: PartCatwalk? = null
 
         if (adjacent != null) {
+            if(adjacent.catwalkMaterial != catwalkMaterial)
+                return CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.END
+
             if (adjacent.getSide(front) && !adjacent.getSide(side.opposite)) {
                 return CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.MERGE
             }
             diagonal = cache.get(front, side) // moved here for efficiency
             // corner end logic
             if (diagonal != null) {
+                if(diagonal.catwalkMaterial != catwalkMaterial)
+                    return CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.END
                 if (!adjacent.getSide(front) && !adjacent.getSide(side.opposite) &&
                         diagonal.getSide(side.opposite) && !diagonal.getSide(front.opposite)) {
                     return CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.OUTER_CORNER
@@ -381,6 +391,8 @@ class PartCatwalk : Multipart(), ISlottedPart, INormallyOccludingPart, ISolidPar
 
         // 180° wrap around end logic
         if (adjacent != null && diagonal != null && ahead != null) {
+            if(ahead.catwalkMaterial != catwalkMaterial)
+                return CatwalkRenderData.CatwalkSideRenderData.EnumCatwalkEndRenderType.END
             if (ahead.getSide(front.opposite) && !ahead.getSide(side) &&
                     !adjacent.getSide(side.opposite) && !adjacent.getSide(front) &&
                     !diagonal.getSide(front.opposite) && !diagonal.getSide(side.opposite)) {
