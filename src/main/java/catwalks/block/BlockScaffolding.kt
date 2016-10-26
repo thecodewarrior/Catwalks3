@@ -73,7 +73,13 @@ class BlockScaffolding(val page: Int) : BlockBase(Material.IRON, "scaffold" + pa
     }
 
     override fun getStateFromMeta(meta: Int): IBlockState {
-        return defaultState.withProperty(Const.MATERIAL, EnumCatwalkMaterial.values()[page shl 4 and meta])
+        var i = (page shl 4) or meta
+        if(i >= EnumCatwalkMaterial.values().size)
+            i = 0
+        var mat = EnumCatwalkMaterial.values()[i]
+        if(mat !in Const.MATERIAL.allowedValues)
+            mat = EnumCatwalkMaterial.CUSTOM_0
+        return defaultState.withProperty(Const.MATERIAL, mat)
     }
 
     override fun getMetaFromState(state: IBlockState): Int {

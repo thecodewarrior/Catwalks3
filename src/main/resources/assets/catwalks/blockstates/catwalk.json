@@ -48,6 +48,9 @@
 		"catwalks_bamboo": {
 			"model": "catwalks:internal/catwalk/catwalks/bamboo@catwalksDynamic"
 		},
+		"catwalks_sugar_cane": {
+			"model": "catwalks:internal/catwalk/catwalks/sugar_cane@catwalksDynamic"
+		},
 
 		"vanilla_oak": {
 			"model": "catwalks:internal/catwalk/vanilla/oak@catwalksDynamic"
@@ -66,6 +69,9 @@
 		},
 		"vanilla_dark_oak": {
 			"model": "catwalks:internal/catwalk/vanilla/dark_oak@catwalksDynamic"
+		},
+		"vanilla_stone": {
+			"model": "catwalks:internal/catwalk/vanilla/stone@catwalksDynamic"
 		},
 
 		"immersive_engineering_steel": {

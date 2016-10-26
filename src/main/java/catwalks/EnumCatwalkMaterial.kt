@@ -47,7 +47,7 @@ enum class EnumCatwalkMaterial constructor(val ALLOCATED: Boolean, _WIP: Boolean
     ACACIA(true, false, _Group.VANILLA, BlockRenderLayer.CUTOUT),
     DARK_OAK(true, false, _Group.VANILLA, BlockRenderLayer.CUTOUT),
 
-    TBA_MC_00(false, true, _Group.VANILLA),
+    STONE(true, false, _Group.VANILLA),
     TBA_MC_01(false, true, _Group.VANILLA),
     TBA_MC_02(false, true, _Group.VANILLA),
     TBA_MC_03(false, true, _Group.VANILLA),

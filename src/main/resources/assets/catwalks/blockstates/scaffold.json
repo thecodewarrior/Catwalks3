@@ -45,6 +45,9 @@
 		"catwalks_bamboo": {
 			"model": "catwalks:scaffold/catwalks/bamboo@scaffoldSides"
 		},
+		"catwalks_sugar_cane": {
+			"model": "catwalks:scaffold/catwalks/sugar_cane@scaffoldSides"
+		},
 
 		"vanilla_oak": {
 			"model": "catwalks:scaffold/vanilla/oak@scaffoldSides"
@@ -63,6 +66,9 @@
 		},
 		"vanilla_dark_oak": {
 			"model": "catwalks:scaffold/vanilla/dark_oak@scaffoldSides"
+		},
+		"vanilla_stone": {
+			"model": "catwalks:scaffold/vanilla/stone@scaffoldSides"
 		},
 
 		"immersive_engineering_steel": {
