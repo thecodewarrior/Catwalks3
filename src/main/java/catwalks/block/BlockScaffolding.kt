@@ -1,6 +1,5 @@
 package catwalks.block
 
-import catwalks.Conf
 import catwalks.Const
 import catwalks.EnumCatwalkMaterial
 import catwalks.part.PartScaffold
@@ -23,8 +22,6 @@ import net.minecraft.world.IBlockAccess
 import net.minecraft.world.World
 import net.minecraftforge.common.property.ExtendedBlockState
 import net.minecraftforge.common.property.IExtendedBlockState
-import net.minecraftforge.fml.relauncher.Side
-import net.minecraftforge.fml.relauncher.SideOnly
 
 class BlockScaffolding(val page: Int) : BlockBase(Material.IRON, "scaffold" + page) {
 
@@ -44,7 +41,7 @@ class BlockScaffolding(val page: Int) : BlockBase(Material.IRON, "scaffold" + pa
         return ExtendedBlockState(this, arrayOf(Const.MATERIAL), arrayOf(Const.SCAFFOLD_RENDER_DATA))
     }
 
-    override fun getActualState(state: IBlockState, worldIn: IBlockAccess, pos: BlockPos): IBlockState {
+    override fun getExtendedState(state: IBlockState, world: IBlockAccess, pos: BlockPos): IBlockState {
         if(state !is IExtendedBlockState)
             return state
 
@@ -52,11 +49,11 @@ class BlockScaffolding(val page: Int) : BlockBase(Material.IRON, "scaffold" + pa
 
         for(dir in EnumFacing.values()) {
             val poff = pos.offset(dir)
-            if(worldIn.isSideSolid(poff, dir.opposite, false)) {
+            if(world.isSideSolid(poff, dir.opposite, false)) {
                 arr[dir.ordinal] = false
             }
             if(arr[dir.ordinal]) {
-                val adjacent = worldIn.getBlockState(poff)
+                val adjacent = world.getBlockState(poff)
                 val block = adjacent.block
                 if(block is BlockScaffolding) {
                     if(adjacent.getValue(Const.MATERIAL) == state.getValue(Const.MATERIAL)) {
@@ -65,7 +62,7 @@ class BlockScaffolding(val page: Int) : BlockBase(Material.IRON, "scaffold" + pa
                 }
             }
             if(arr[dir.ordinal]) {
-                val part = GeneralUtil.getPart(PartScaffold::class.java, worldIn, poff)
+                val part = GeneralUtil.getPart(PartScaffold::class.java, world, poff)
                 if(part != null && part.catwalkMaterial == state.getValue(Const.MATERIAL)) {
                     arr[dir.ordinal] = false
                 }
@@ -93,16 +90,6 @@ class BlockScaffolding(val page: Int) : BlockBase(Material.IRON, "scaffold" + pa
 
     override fun isFullCube(state: IBlockState?): Boolean {
         return false
-    }
-
-    @SideOnly(Side.CLIENT)
-    override fun shouldSideBeRendered(state: IBlockState, worldIn: IBlockAccess, pos: BlockPos, side: EnumFacing): Boolean {
-        if (Conf.showScaffoldInsideFaces)
-            return super.shouldSideBeRendered(state, worldIn, pos, side)
-        return if (worldIn.getBlockState(pos.offset(side)).block === this) false else super.shouldSideBeRendered(state, worldIn, pos, side)
-    }
-
-    init { /* ladder */
     }
 
     companion object {
