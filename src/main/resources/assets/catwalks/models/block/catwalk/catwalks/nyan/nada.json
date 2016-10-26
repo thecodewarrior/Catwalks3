@@ -1,0 +1,13 @@
+{
+"__comment": "Designed by Winddelay with BDcraft Cubik PRO 0.96 Beta - http://bdcraft.net",
+"elements": [ 
+{
+    "from": [ 0, -0.0625, 0 ],
+    "to": [ 1, 0, 1 ],
+    "faces": {
+        "down":  { "uv": [ 16, 1, 15, 0 ], "texture": "#nyanelements" },
+        "up":    { "uv": [ 0, 0, 1, 1 ], "texture": "#nyanelements" }
+    }
+}
+]
+}

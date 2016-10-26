@@ -1,0 +1,16 @@
+{
+"__comment": "Designed by Winddelay with BDcraft Cubik PRO 0.96 Beta - http://bdcraft.net",
+"textures": {
+    "rainbow": "catwalks:blocks/catwalks/nyan/rainbowanim"
+},
+"elements": [ 
+{
+    "from": [ 0, 0, 0 ],
+    "to": [ 8, 15, 0.0625 ],
+    "faces": {
+        "north": { "uv": [ 7.5, 0, 0, 12 ], "texture": "#rainbow" },
+        "south": { "uv": [ 0, 0, 7.5, 12 ], "texture": "#rainbow" }
+    }
+}
+]
+}
