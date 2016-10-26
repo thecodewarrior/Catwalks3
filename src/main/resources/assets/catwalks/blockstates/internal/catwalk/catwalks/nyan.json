@@ -16,15 +16,15 @@
 		
 		
 		
-		"corner_north_west_outer": { "model": "catwalks:catwalk/catwalks/nyan/nada" },
-		"corner_north_east_outer": { "model": "catwalks:catwalk/catwalks/nyan/nada", "y":90 },
-		"corner_south_east_outer": { "model": "catwalks:catwalk/catwalks/nyan/nada", "y":180 },
-		"corner_south_west_outer": { "model": "catwalks:catwalk/catwalks/nyan/nada", "y":270 },
+		"corner_north_west_outer": { "model": "catwalks:catwalk/catwalks/nyan/corner_outer" },
+		"corner_north_east_outer": { "model": "catwalks:catwalk/catwalks/nyan/corner_outer", "y":90 },
+		"corner_south_east_outer": { "model": "catwalks:catwalk/catwalks/nyan/corner_outer", "y":180 },
+		"corner_south_west_outer": { "model": "catwalks:catwalk/catwalks/nyan/corner_outer", "y":270 },
 		
-		"corner_north_west_outer_180": { "model": "catwalks:catwalk/catwalks/nyan/nada" },
-		"corner_north_east_outer_180": { "model": "catwalks:catwalk/catwalks/nyan/nada", "y":90 },
-		"corner_south_east_outer_180": { "model": "catwalks:catwalk/catwalks/nyan/nada", "y":180 },
-		"corner_south_west_outer_180": { "model": "catwalks:catwalk/catwalks/nyan/nada", "y":270 },
+		"corner_north_west_outer_180": { "model": "catwalks:catwalk/catwalks/nyan/corner_outer" },
+		"corner_north_east_outer_180": { "model": "catwalks:catwalk/catwalks/nyan/corner_outer", "y":90 },
+		"corner_south_east_outer_180": { "model": "catwalks:catwalk/catwalks/nyan/corner_outer", "y":180 },
+		"corner_south_west_outer_180": { "model": "catwalks:catwalk/catwalks/nyan/corner_outer", "y":270 },
 		
 		"corner_north_west_inner": { "model": "catwalks:catwalk/catwalks/nyan/nada" },
 		"corner_north_east_inner": { "model": "catwalks:catwalk/catwalks/nyan/nada", "y":90 },

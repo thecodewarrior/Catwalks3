@@ -1,12 +1,15 @@
 {
 "__comment": "Designed by Winddelay with BDcraft Cubik PRO 0.96 Beta - http://bdcraft.net",
+"textures": {
+    "bigpoptart": "catwalks:blocks/catwalks/nyan/poptart"
+},
 "elements": [ 
 {
-    "from": [ 0, -0.0625, 0 ],
-    "to": [ 1, 0, 1 ],
+    "from": [ 0, -2.0625, 0 ],
+    "to": [ 1, -2, 1 ],
     "faces": {
-        "down":  { "uv": [ 16, 1, 15, 0 ], "texture": "#nyanelements" },
-        "up":    { "uv": [ 0, 0, 1, 1 ], "texture": "#nyanelements" }
+        "down":  { "uv": [ 16, 1, 15, 0 ], "texture": "#bigpoptart" },
+        "up":    { "uv": [ 0, 0, 1, 1 ], "texture": "#bigpoptart" }
     }
 }
 ]
