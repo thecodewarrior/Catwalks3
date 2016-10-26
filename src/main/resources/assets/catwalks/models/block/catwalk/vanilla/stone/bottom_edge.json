@@ -1,0 +1,16 @@
+{
+"__comment": "Designed by Winddelay with BDcraft Cubik PRO 0.96 Beta - http://bdcraft.net",
+"textures": {
+    "base": "catwalks:blocks/vanilla/stone/stone"
+},
+"elements": [ 
+{
+    "from": [ 3, -0.5625, 2 ],
+    "to": [ 4, -0.5, 3 ],
+    "faces": {
+        "down":  { "uv": [ 13, 3, 12, 2 ], "texture": "#base" },
+        "up":    { "uv": [ 3, 2, 4, 3 ], "texture": "#base" }
+    }
+}
+]
+}

@@ -1,0 +1,17 @@
+{
+"__comment": "Designed by Winddelay with BDcraft Cubik PRO",
+"textures": {
+    "sides": "catwalks:blocks/catwalks/sugar_cane/sides",
+    "base": "catwalks:blocks/catwalks/sugar_cane/base"
+},
+"elements": [ 
+{
+    "from": [ 0, -0.5625, 0 ],
+    "to": [ 16, -0.5, 16 ],
+    "faces": {
+        "down":  { "uv": [ 16, 16, 4, 4 ], "texture": "#base" },
+        "up":    { "uv": [ 0, 0, 12, 12 ], "texture": "#base" }
+    }
+}
+]
+}

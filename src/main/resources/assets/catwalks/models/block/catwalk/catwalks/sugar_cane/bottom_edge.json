@@ -1,0 +1,21 @@
+{
+"__comment": "Designed by Winddelay with BDcraft Cubik PRO 0.96 Beta - http://bdcraft.net",
+"textures": {
+    "sides": "catwalks:blocks/catwalks/sugar_cane/sides",
+    "base": "catwalks:blocks/catwalks/sugar_cane/base"
+},
+"elements": [ 
+{
+    "from": [ 1.5, -1.5, 0 ],
+    "to": [ 14.5, 0, 1.5 ],
+    "faces": {
+        "down":  { "uv": [ 9, 0, 7, 16 ], "rotation": 270, "texture": "#sides" },
+        "up":    { "uv": [ 9, 0, 7, 16 ], "rotation": 270, "texture": "#sides" },
+        "north": { "uv": [ 7, 0, 9, 16 ], "rotation": 90, "texture": "#sides" },
+        "south": { "uv": [ 7, 0, 9, 16 ], "rotation": 270, "texture": "#sides" },
+        "west":  { "uv": [ 12, 4, 16, 8 ], "rotation": 90, "texture": "#sides" },
+        "east":  { "uv": [ 12, 4, 16, 8 ], "rotation": 180, "texture": "#sides" }
+    }
+}
+]
+}

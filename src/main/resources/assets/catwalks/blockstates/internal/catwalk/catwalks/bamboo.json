@@ -16,35 +16,35 @@
 		
 		
 		
-		"corner_north_west_outer": { "model": "catwalks:catwalk/catwalks/bamboo/corner_outer.obj" },
-		"corner_north_east_outer": { "model": "catwalks:catwalk/catwalks/bamboo/corner_outer.obj", "y":90 },
-		"corner_south_east_outer": { "model": "catwalks:catwalk/catwalks/bamboo/corner_outer.obj", "y":180 },
-		"corner_south_west_outer": { "model": "catwalks:catwalk/catwalks/bamboo/corner_outer.obj", "y":270 },
+		"corner_north_west_outer": { "model": "catwalks:catwalk/catwalks/bamboo/corner_outer.obj", "custom": { "flip-v": true } },
+		"corner_north_east_outer": { "model": "catwalks:catwalk/catwalks/bamboo/corner_outer.obj", "custom": { "flip-v": true }, "y":90 },
+		"corner_south_east_outer": { "model": "catwalks:catwalk/catwalks/bamboo/corner_outer.obj", "custom": { "flip-v": true }, "y":180 },
+		"corner_south_west_outer": { "model": "catwalks:catwalk/catwalks/bamboo/corner_outer.obj", "custom": { "flip-v": true }, "y":270 },
 		
-		"corner_north_west_outer_180": { "model": "catwalks:catwalk/catwalks/bamboo/corner_outer_180.obj" },
-		"corner_north_east_outer_180": { "model": "catwalks:catwalk/catwalks/bamboo/corner_outer_180.obj", "y":90 },
-		"corner_south_east_outer_180": { "model": "catwalks:catwalk/catwalks/bamboo/corner_outer_180.obj", "y":180 },
-		"corner_south_west_outer_180": { "model": "catwalks:catwalk/catwalks/bamboo/corner_outer_180.obj", "y":270 },
+		"corner_north_west_outer_180": { "model": "catwalks:catwalk/catwalks/bamboo/corner_outer_180.obj", "custom": { "flip-v": true } },
+		"corner_north_east_outer_180": { "model": "catwalks:catwalk/catwalks/bamboo/corner_outer_180.obj", "custom": { "flip-v": true }, "y":90 },
+		"corner_south_east_outer_180": { "model": "catwalks:catwalk/catwalks/bamboo/corner_outer_180.obj", "custom": { "flip-v": true }, "y":180 },
+		"corner_south_west_outer_180": { "model": "catwalks:catwalk/catwalks/bamboo/corner_outer_180.obj", "custom": { "flip-v": true }, "y":270 },
 		
-		"corner_north_west_inner": { "model": "catwalks:catwalk/catwalks/bamboo/corner_inner.obj" },
-		"corner_north_east_inner": { "model": "catwalks:catwalk/catwalks/bamboo/corner_inner.obj", "y":90 },
-		"corner_south_east_inner": { "model": "catwalks:catwalk/catwalks/bamboo/corner_inner.obj", "y":180 },
-		"corner_south_west_inner": { "model": "catwalks:catwalk/catwalks/bamboo/corner_inner.obj", "y":270 },
-		
-		
+		"corner_north_west_inner": { "model": "catwalks:catwalk/catwalks/bamboo/corner_inner.obj", "custom": { "flip-v": true } },
+		"corner_north_east_inner": { "model": "catwalks:catwalk/catwalks/bamboo/corner_inner.obj", "custom": { "flip-v": true }, "y":90 },
+		"corner_south_east_inner": { "model": "catwalks:catwalk/catwalks/bamboo/corner_inner.obj", "custom": { "flip-v": true }, "y":180 },
+		"corner_south_west_inner": { "model": "catwalks:catwalk/catwalks/bamboo/corner_inner.obj", "custom": { "flip-v": true }, "y":270 },
 		
 		
-		"side_north_left_end": { "model": "catwalks:catwalk/catwalks/bamboo/left_end.obj" },
+		
+		
+		"side_north_left_end": { "model": "catwalks:catwalk/catwalks/bamboo/left_end.obj", "custom": { "flip-v": true } },
 		"side_north_left_merge": { "model": "catwalks:catwalk/catwalks/bamboo/left_merge" },
 		"side_north_left_connect": { "model": "catwalks:catwalk/catwalks/bamboo/left_connect" },
-		"side_north_left_inner_corner": { "model": "catwalks:catwalk/catwalks/bamboo/left_inner_corner.obj" },
+		"side_north_left_inner_corner": { "model": "catwalks:catwalk/catwalks/bamboo/left_inner_corner.obj", "custom": { "flip-v": true } },
 		"side_north_left_outer_corner": { "model": "catwalks:catwalk/catwalks/bamboo/left_outer_corner" },
 		"side_north_left_outer_corner_180": { "model": "catwalks:catwalk/catwalks/bamboo/left_outer_corner_180" },
 		
-		"side_north_right_end": { "model": "catwalks:catwalk/catwalks/bamboo/right_end.obj" },
+		"side_north_right_end": { "model": "catwalks:catwalk/catwalks/bamboo/right_end.obj", "custom": { "flip-v": true } },
 		"side_north_right_merge": { "model": "catwalks:catwalk/catwalks/bamboo/right_merge" },
 		"side_north_right_connect": { "model": "catwalks:catwalk/catwalks/bamboo/right_connect" },
-		"side_north_right_inner_corner": { "model": "catwalks:catwalk/catwalks/bamboo/right_inner_corner.obj" },
+		"side_north_right_inner_corner": { "model": "catwalks:catwalk/catwalks/bamboo/right_inner_corner.obj", "custom": { "flip-v": true } },
 		"side_north_right_outer_corner": { "model": "catwalks:catwalk/catwalks/bamboo/right_outer_corner" },
 		"side_north_right_outer_corner_180": { "model": "catwalks:catwalk/catwalks/bamboo/right_outer_corner_180" },
 		
@@ -52,17 +52,17 @@
 		
 		
 		
-		"side_east_left_end": { "model": "catwalks:catwalk/catwalks/bamboo/left_end.obj", "y":90 },
+		"side_east_left_end": { "model": "catwalks:catwalk/catwalks/bamboo/left_end.obj", "custom": { "flip-v": true }, "y":90 },
 		"side_east_left_merge": { "model": "catwalks:catwalk/catwalks/bamboo/left_merge", "y":90 },
 		"side_east_left_connect": { "model": "catwalks:catwalk/catwalks/bamboo/left_connect", "y":90 },
-		"side_east_left_inner_corner": { "model": "catwalks:catwalk/catwalks/bamboo/left_inner_corner.obj", "y":90 },
+		"side_east_left_inner_corner": { "model": "catwalks:catwalk/catwalks/bamboo/left_inner_corner.obj", "custom": { "flip-v": true }, "y":90 },
 		"side_east_left_outer_corner": { "model": "catwalks:catwalk/catwalks/bamboo/left_outer_corner", "y":90 },
 		"side_east_left_outer_corner_180": { "model": "catwalks:catwalk/catwalks/bamboo/left_outer_corner_180", "y":90 },
 		
-		"side_east_right_end": { "model": "catwalks:catwalk/catwalks/bamboo/right_end.obj", "y":90 },
+		"side_east_right_end": { "model": "catwalks:catwalk/catwalks/bamboo/right_end.obj", "custom": { "flip-v": true }, "y":90 },
 		"side_east_right_merge": { "model": "catwalks:catwalk/catwalks/bamboo/right_merge", "y":90 },
 		"side_east_right_connect": { "model": "catwalks:catwalk/catwalks/bamboo/right_connect", "y":90 },
-		"side_east_right_inner_corner": { "model": "catwalks:catwalk/catwalks/bamboo/right_inner_corner.obj", "y":90 },
+		"side_east_right_inner_corner": { "model": "catwalks:catwalk/catwalks/bamboo/right_inner_corner.obj", "custom": { "flip-v": true }, "y":90 },
 		"side_east_right_outer_corner": { "model": "catwalks:catwalk/catwalks/bamboo/right_outer_corner", "y":90 },
 		"side_east_right_outer_corner_180": { "model": "catwalks:catwalk/catwalks/bamboo/right_outer_corner_180", "y":90 },
 		
@@ -70,17 +70,17 @@
 		
 		
 		
-		"side_south_left_end": { "model": "catwalks:catwalk/catwalks/bamboo/left_end.obj", "y":180 },
+		"side_south_left_end": { "model": "catwalks:catwalk/catwalks/bamboo/left_end.obj", "custom": { "flip-v": true }, "y":180 },
 		"side_south_left_merge": { "model": "catwalks:catwalk/catwalks/bamboo/left_merge", "y":180 },
 		"side_south_left_connect": { "model": "catwalks:catwalk/catwalks/bamboo/left_connect", "y":180 },
-		"side_south_left_inner_corner": { "model": "catwalks:catwalk/catwalks/bamboo/left_inner_corner.obj", "y":180 },
+		"side_south_left_inner_corner": { "model": "catwalks:catwalk/catwalks/bamboo/left_inner_corner.obj", "custom": { "flip-v": true }, "y":180 },
 		"side_south_left_outer_corner": { "model": "catwalks:catwalk/catwalks/bamboo/left_outer_corner", "y":180 },
 		"side_south_left_outer_corner_180": { "model": "catwalks:catwalk/catwalks/bamboo/left_outer_corner_180", "y":180 },
 		
-		"side_south_right_end": { "model": "catwalks:catwalk/catwalks/bamboo/right_end.obj", "y":180 },
+		"side_south_right_end": { "model": "catwalks:catwalk/catwalks/bamboo/right_end.obj", "custom": { "flip-v": true }, "y":180 },
 		"side_south_right_merge": { "model": "catwalks:catwalk/catwalks/bamboo/right_merge", "y":180 },
 		"side_south_right_connect": { "model": "catwalks:catwalk/catwalks/bamboo/right_connect", "y":180 },
-		"side_south_right_inner_corner": { "model": "catwalks:catwalk/catwalks/bamboo/right_inner_corner.obj", "y":180 },
+		"side_south_right_inner_corner": { "model": "catwalks:catwalk/catwalks/bamboo/right_inner_corner.obj", "custom": { "flip-v": true }, "y":180 },
 		"side_south_right_outer_corner": { "model": "catwalks:catwalk/catwalks/bamboo/right_outer_corner", "y":180 },
 		"side_south_right_outer_corner_180": { "model": "catwalks:catwalk/catwalks/bamboo/right_outer_corner_180", "y":180 },
 		
@@ -88,17 +88,17 @@
 		
 		
 		
-		"side_west_left_end": { "model": "catwalks:catwalk/catwalks/bamboo/left_end.obj", "y":270 },
+		"side_west_left_end": { "model": "catwalks:catwalk/catwalks/bamboo/left_end.obj", "custom": { "flip-v": true }, "y":270 },
 		"side_west_left_merge": { "model": "catwalks:catwalk/catwalks/bamboo/left_merge", "y":270 },
 		"side_west_left_connect": { "model": "catwalks:catwalk/catwalks/bamboo/left_connect", "y":270 },
-		"side_west_left_inner_corner": { "model": "catwalks:catwalk/catwalks/bamboo/left_inner_corner.obj", "y":270 },
+		"side_west_left_inner_corner": { "model": "catwalks:catwalk/catwalks/bamboo/left_inner_corner.obj", "custom": { "flip-v": true }, "y":270 },
 		"side_west_left_outer_corner": { "model": "catwalks:catwalk/catwalks/bamboo/left_outer_corner", "y":270 },
 		"side_west_left_outer_corner_180": { "model": "catwalks:catwalk/catwalks/bamboo/left_outer_corner_180", "y":270 },
 		
-		"side_west_right_end": { "model": "catwalks:catwalk/catwalks/bamboo/right_end.obj", "y":270 },
+		"side_west_right_end": { "model": "catwalks:catwalk/catwalks/bamboo/right_end.obj", "custom": { "flip-v": true }, "y":270 },
 		"side_west_right_merge": { "model": "catwalks:catwalk/catwalks/bamboo/right_merge", "y":270 },
 		"side_west_right_connect": { "model": "catwalks:catwalk/catwalks/bamboo/right_connect", "y":270 },
-		"side_west_right_inner_corner": { "model": "catwalks:catwalk/catwalks/bamboo/right_inner_corner.obj", "y":270 },
+		"side_west_right_inner_corner": { "model": "catwalks:catwalk/catwalks/bamboo/right_inner_corner.obj", "custom": { "flip-v": true }, "y":270 },
 		"side_west_right_outer_corner": { "model": "catwalks:catwalk/catwalks/bamboo/right_outer_corner", "y":270 },
 		"side_west_right_outer_corner_180": { "model": "catwalks:catwalk/catwalks/bamboo/right_outer_corner_180", "y":270 }
     }
