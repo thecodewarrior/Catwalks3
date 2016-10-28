@@ -163,7 +163,7 @@ class PartCatwalk : Multipart(), ISlottedPart, INormallyOccludingPart, ISolidPar
                 SIDES.set(storage, facing, true)
         }
         if(world.isSideSolid(pos.offset(EnumFacing.DOWN), EnumFacing.UP))
-            SIDES.set(storage, EnumFacing.DOWN, true)
+            SIDES.set(storage, EnumFacing.DOWN, false)
         onPlaceUpdateSides()
     }
 
