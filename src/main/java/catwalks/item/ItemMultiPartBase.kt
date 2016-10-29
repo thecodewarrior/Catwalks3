@@ -13,7 +13,7 @@ import java.text.MessageFormat
 /**
  * Created by TheCodeWarrior
  */
-abstract class ItemMultiPartBase(var name: String) : ItemMultiPart(), IItemBase {
+abstract class ItemMultiPartBase(val name: String) : ItemMultiPart(), IItemBase {
 
     init {
         unlocalizedName = name

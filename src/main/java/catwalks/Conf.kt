@@ -22,6 +22,7 @@ object Conf {
     var showScaffoldInsideFaces = false
 
     var ENABLED = arrayOf<String>()
+    var DISABLED = arrayOf<String>()
 
     lateinit var file: File
     lateinit var config: Configuration
@@ -50,8 +51,12 @@ object Conf {
         Const.developmentEnvironment = prop.boolean
 
         prop = conf.get(CATEGORY_MODPACK, "Materials force enabled", ENABLED).setRequiresMcRestart(true)
-        prop.comment = "Sets which of the 8 custom materials are enabled"
+        prop.comment = "Enables materials that otherwise wouldn't be"
         ENABLED = prop.stringList
+
+        prop = conf.get(CATEGORY_MODPACK, "Materials force disabled", DISABLED).setRequiresMcRestart(true)
+        prop.comment = "Disables materials that otherwise would be"
+        DISABLED = prop.stringList
 
         if (conf.hasChanged() == true) {
             conf.save()

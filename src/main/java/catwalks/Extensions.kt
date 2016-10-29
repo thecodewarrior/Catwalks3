@@ -4,7 +4,7 @@ package catwalks
  * Created by TheCodeWarrior
  */
 
-fun Int.combonation_bits(): Int {
+fun Int.combination_bits(): Int {
     var value = this - 1
     var count = 0
     while (value > 0) {

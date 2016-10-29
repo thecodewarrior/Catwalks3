@@ -62,7 +62,7 @@ class CatwalksMod {
         }
 
         fun allocate_material(allocator: MetaStorage.Allocator): ArrayProp<EnumCatwalkMaterial> {
-            return allocator.allocateArray("material", EnumCatwalkMaterial.values(), 128.combonation_bits())
+            return allocator.allocateArray("material", EnumCatwalkMaterial.values(), 128.combination_bits())
         }
 
         fun allocate_decor(allocator: MetaStorage.Allocator): BoolArrayProp {

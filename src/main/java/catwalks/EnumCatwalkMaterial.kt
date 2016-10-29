@@ -3,111 +3,113 @@ package catwalks
 import net.minecraft.util.BlockRenderLayer
 import net.minecraft.util.IStringSerializable
 import java.util.*
-import catwalks.EnumMaterialGroup as _Group
 
-/**
- * Created by TheCodeWarrior
- */
-enum class EnumCatwalkMaterial constructor(val ALLOCATED: Boolean, _WIP: Boolean, val GROUP: catwalks.EnumMaterialGroup, val LAYER: BlockRenderLayer = BlockRenderLayer.SOLID, vararg decorations: EnumDecoration) : IStringSerializable {
+enum class EnumCatwalkMaterial constructor(_STATUS: EnumMaterialStatus = O.statusCache, val GROUP: catwalks.EnumMaterialGroup = O.groupCache, val LAYER: BlockRenderLayer = BlockRenderLayer.CUTOUT_MIPPED, vararg decorations: EnumDecoration) : IStringSerializable {
     // MODPACK
-    CUSTOM_0(true, true, _Group.MODPACK, BlockRenderLayer.CUTOUT),
-    CUSTOM_1(true, true, _Group.MODPACK, BlockRenderLayer.CUTOUT),
-    CUSTOM_2(true, true, _Group.MODPACK, BlockRenderLayer.CUTOUT),
-    CUSTOM_3(true, true, _Group.MODPACK, BlockRenderLayer.CUTOUT),
-    CUSTOM_4(true, true, _Group.MODPACK, BlockRenderLayer.CUTOUT),
-    CUSTOM_5(true, true, _Group.MODPACK, BlockRenderLayer.CUTOUT),
-    CUSTOM_6(true, true, _Group.MODPACK, BlockRenderLayer.CUTOUT),
-    CUSTOM_7(true, true, _Group.MODPACK, BlockRenderLayer.CUTOUT),
+    CUSTOM_0(EnumMaterialStatus.ALLOCATED, EnumMaterialGroup.MODPACK),
+    CUSTOM_1(),
+    CUSTOM_2(),
+    CUSTOM_3(),
+    CUSTOM_4(),
+    CUSTOM_5(),
+    CUSTOM_6(),
+    CUSTOM_7(),
 
     // CATWALKS
-    NORMAL(true, false, _Group.CATWALKS, BlockRenderLayer.CUTOUT),
-    GLASS(true, false, _Group.CATWALKS, BlockRenderLayer.CUTOUT),
-    NYAN(true, false, _Group.CATWALKS, BlockRenderLayer.CUTOUT),
-    BAMBOO(true, false, _Group.CATWALKS, BlockRenderLayer.CUTOUT),
-    SUGAR_CANE(true, false, _Group.CATWALKS, BlockRenderLayer.CUTOUT),
+    NORMAL(EnumMaterialStatus.ENABLED, EnumMaterialGroup.CATWALKS),
+    GLASS(),
+    NYAN(),
+    BAMBOO(),
+    SUGAR_CANE(),
 
-    TBA_CW_01(false, true, _Group.CATWALKS),
-    TBA_CW_02(false, true, _Group.CATWALKS),
-    TBA_CW_03(false, true, _Group.CATWALKS),
-    TBA_CW_04(false, true, _Group.CATWALKS),
-    TBA_CW_05(false, true, _Group.CATWALKS),
-    TBA_CW_06(false, true, _Group.CATWALKS),
-    TBA_CW_07(false, true, _Group.CATWALKS),
-    TBA_CW_08(false, true, _Group.CATWALKS),
-    TBA_CW_09(false, true, _Group.CATWALKS),
-    TBA_CW_10(false, true, _Group.CATWALKS),
-    TBA_CW_11(false, true, _Group.CATWALKS),
+    TBA_CW_01(EnumMaterialStatus.RESERVED),
+    TBA_CW_02(),
+    TBA_CW_03(),
+    TBA_CW_04(),
+    TBA_CW_05(),
+    TBA_CW_06(),
+    TBA_CW_07(),
+    TBA_CW_08(),
+    TBA_CW_09(),
+    TBA_CW_10(),
+    TBA_CW_11(),
 
     // VANILLA
 
-    OAK(true, false, _Group.VANILLA, BlockRenderLayer.CUTOUT),
-    SPRUCE(true, false, _Group.VANILLA, BlockRenderLayer.CUTOUT),
-    BIRCH(true, false, _Group.VANILLA, BlockRenderLayer.CUTOUT),
-    JUNGLE(true, false, _Group.VANILLA, BlockRenderLayer.CUTOUT),
-    ACACIA(true, false, _Group.VANILLA, BlockRenderLayer.CUTOUT),
-    DARK_OAK(true, false, _Group.VANILLA, BlockRenderLayer.CUTOUT),
+    OAK(EnumMaterialStatus.ENABLED, EnumMaterialGroup.VANILLA),
+    SPRUCE(),
+    BIRCH(),
+    JUNGLE(),
+    ACACIA(),
+    DARK_OAK(),
+    STONE(),
 
-    STONE(true, false, _Group.VANILLA),
-    TBA_MC_01(false, true, _Group.VANILLA),
-    TBA_MC_02(false, true, _Group.VANILLA),
-    TBA_MC_03(false, true, _Group.VANILLA),
-    TBA_MC_04(false, true, _Group.VANILLA),
-    TBA_MC_05(false, true, _Group.VANILLA),
-    TBA_MC_06(false, true, _Group.VANILLA),
-    TBA_MC_07(false, true, _Group.VANILLA),
-    TBA_MC_08(false, true, _Group.VANILLA),
-    TBA_MC_09(false, true, _Group.VANILLA),
+    TBA_MC_01(EnumMaterialStatus.RESERVED),
+    TBA_MC_02(),
+    TBA_MC_03(),
+    TBA_MC_04(),
+    TBA_MC_05(),
+    TBA_MC_06(),
+    TBA_MC_07(),
+    TBA_MC_08(),
+    TBA_MC_09(),
 
     // IMMERSIVE_ENGINEERING
-    STEEL(true, false, _Group.IMMERSIVE_ENGINEERING, BlockRenderLayer.CUTOUT),
-    TREATED_WOOD(true, false, _Group.IMMERSIVE_ENGINEERING),
-    ALUMINUM(true, false, _Group.IMMERSIVE_ENGINEERING),
+    STEEL(EnumMaterialStatus.ENABLED, EnumMaterialGroup.IMMERSIVE_ENGINEERING),
+    TREATED_WOOD(),
+    ALUMINUM(EnumMaterialStatus.ALLOCATED),
 
-    TBA_IE_00(false, true, _Group.IMMERSIVE_ENGINEERING),
-    TBA_IE_01(false, true, _Group.IMMERSIVE_ENGINEERING),
-    TBA_IE_02(false, true, _Group.IMMERSIVE_ENGINEERING),
-    TBA_IE_03(false, true, _Group.IMMERSIVE_ENGINEERING),
-    TBA_IE_04(false, true, _Group.IMMERSIVE_ENGINEERING),
-    TBA_IE_05(false, true, _Group.IMMERSIVE_ENGINEERING),
-    TBA_IE_06(false, true, _Group.IMMERSIVE_ENGINEERING),
-    TBA_IE_07(false, true, _Group.IMMERSIVE_ENGINEERING),
-    TBA_IE_08(false, true, _Group.IMMERSIVE_ENGINEERING),
+    TBA_IE_00(EnumMaterialStatus.RESERVED),
+    TBA_IE_01(),
+    TBA_IE_02(),
+    TBA_IE_03(),
+    TBA_IE_04(),
+    TBA_IE_05(),
+    TBA_IE_06(),
+    TBA_IE_07(),
+    TBA_IE_08(),
 
     // BOTANIA
-    LIVINGROCK(true, true, _Group.BOTANIA),
-    LIVINGWOOD(true, true, _Group.BOTANIA),
-    DREAMWOOD(true, true, _Group.BOTANIA),
-    MANAGLASS(true, true, _Group.BOTANIA, BlockRenderLayer.TRANSLUCENT),
-    ALFGLASS(true, true, _Group.BOTANIA, BlockRenderLayer.TRANSLUCENT),
+    LIVINGROCK(EnumMaterialStatus.ALLOCATED, EnumMaterialGroup.BOTANIA),
+    LIVINGWOOD(),
+    DREAMWOOD(),
+    MANAGLASS(),
+    ALFGLASS(),
 
-    TBA_BT_00(false, true, _Group.BOTANIA),
-    TBA_BT_01(false, true, _Group.BOTANIA),
-    TBA_BT_02(false, true, _Group.BOTANIA),
-    TBA_BT_03(false, true, _Group.BOTANIA),
-    TBA_BT_04(false, true, _Group.BOTANIA),
-    TBA_BT_05(false, true, _Group.BOTANIA),
-    TBA_BT_06(false, true, _Group.BOTANIA),
+    TBA_BT_00(EnumMaterialStatus.RESERVED),
+    TBA_BT_01(),
+    TBA_BT_02(),
+    TBA_BT_03(),
+    TBA_BT_04(),
+    TBA_BT_05(),
+    TBA_BT_06(),
 
     // CHISEL
-    FACTORY(true, true, _Group.CHISEL),
-    LABORATORY(true, true, _Group.CHISEL),
+    FACTORY(EnumMaterialStatus.ALLOCATED, EnumMaterialGroup.CHISEL),
+    LABORATORY(),
 
-    TBA_CH_00(false, true, _Group.CHISEL),
-    TBA_CH_01(false, true, _Group.CHISEL),
-    TBA_CH_02(false, true, _Group.CHISEL),
-    TBA_CH_03(false, true, _Group.CHISEL),
-    TBA_CH_04(false, true, _Group.CHISEL),
-    TBA_CH_05(false, true, _Group.CHISEL);
+    TBA_CH_00(EnumMaterialStatus.RESERVED),
+    TBA_CH_01(),
+    TBA_CH_02(),
+    TBA_CH_03(),
+    TBA_CH_04(),
+    TBA_CH_05();
 
     val DECORATIONS: List<EnumDecoration>
-    val WIP = _WIP && (GROUP.name.toLowerCase() + "_" + name.toLowerCase()) !in Conf.ENABLED
+    val FULLNAME = GROUP.name.toLowerCase() + "_" + super.name.toLowerCase()
+
+    val STATUS = if(FULLNAME in Conf.ENABLED) {
+        EnumMaterialStatus.ENABLED
+    } else if(FULLNAME in Conf.DISABLED) {
+        EnumMaterialStatus.ALLOCATED
+    } else {
+        _STATUS
+    }
 
     init {
         DECORATIONS = Arrays.asList(*decorations)
-    }
-
-    fun show(): Boolean {
-        return ALLOCATED && (Const.developmentEnvironment || !WIP)
+        O.statusCache = _STATUS
+        O.groupCache = GROUP
     }
 
     fun getID(decor: EnumDecoration): Int {
@@ -119,6 +121,28 @@ enum class EnumCatwalkMaterial constructor(val ALLOCATED: Boolean, _WIP: Boolean
     }
 
     override fun getName(): String {
-        return this.GROUP.name.toLowerCase() + "_" + this.name.toLowerCase()
+        return FULLNAME
     }
+
+}
+
+enum class EnumMaterialGroup {
+    MODPACK,
+    VANILLA,
+    CATWALKS,
+    IMMERSIVE_ENGINEERING,
+    BOTANIA,
+    CHISEL
+}
+
+enum class EnumMaterialStatus(val shouldShow: Boolean, val shouldRegister: Boolean) {
+    UNALLOCATED(false, false),
+    RESERVED(false, false),
+    ALLOCATED(Const.developmentEnvironment, true),
+    ENABLED(true, true)
+}
+
+private object O {
+    var statusCache = EnumMaterialStatus.UNALLOCATED
+    var groupCache = EnumMaterialGroup.MODPACK
 }

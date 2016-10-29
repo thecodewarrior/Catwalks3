@@ -18,7 +18,7 @@ object Const {
     init { /* Centeralizing constants */
     }
 
-    var MATERIAL_BITS = 128.combonation_bits()
+    var MATERIAL_BITS = 128.combination_bits()
 
     init { /* DRYing constants */
     }
