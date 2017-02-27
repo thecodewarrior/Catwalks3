@@ -27,6 +27,7 @@ class CatwalksMod {
 
     @EventHandler
     fun preInit(event: FMLPreInitializationEvent) {
+        Const
         BlockRegister
         ItemRegister
         RecipeRegister.register()
