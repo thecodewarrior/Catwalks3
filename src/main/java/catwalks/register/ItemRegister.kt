@@ -4,7 +4,7 @@ import catwalks.item.*
 
 object ItemRegister {
 
-    val renderRegsiterItems: MutableList<IItemBase> = mutableListOf()
+    val renderRegisterItems: MutableList<IItemBase> = mutableListOf()
 
     var lights = ItemDecoration("lights")
     var tape = ItemDecoration("tape")

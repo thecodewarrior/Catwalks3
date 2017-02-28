@@ -1,7 +1,7 @@
 package catwalks.register
 
 import catwalks.CatwalksMod
-import catwalks.register.ItemRegister.renderRegsiterItems
+import catwalks.register.ItemRegister.renderRegisterItems
 import catwalks.render.CustomModelHandler
 import catwalks.render.StateMapperOverrideBlockName
 import catwalks.render.part.CatwalkBakedModel
@@ -52,7 +52,7 @@ object RenderRegister {
 
         @SideOnly(Side.CLIENT)
         private fun registerRender() {
-            for (item in renderRegsiterItems) {
+            for (item in renderRegisterItems) {
                 if(item !is Item)
                     continue
                 val customVariants = item.customRenderVariants

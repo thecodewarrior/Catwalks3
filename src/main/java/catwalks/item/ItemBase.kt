@@ -15,7 +15,7 @@ open class ItemBase(var name: String) : Item(), IItemBase {
     init {
         unlocalizedName = name
         GameRegistry.registerItem(this, name)
-        ItemRegister.renderRegsiterItems.add(this)
+        ItemRegister.renderRegisterItems.add(this)
         creativeTab = CatwalksMod.tab
     }
 

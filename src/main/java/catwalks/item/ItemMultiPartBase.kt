@@ -19,7 +19,7 @@ abstract class ItemMultiPartBase(val name: String) : ItemMultiPart(), IItemBase 
         unlocalizedName = name
         this.setRegistryName(name)
         GameRegistry.register(this)
-        ItemRegister.renderRegsiterItems.add(this);
+        ItemRegister.renderRegisterItems.add(this);
         creativeTab = CatwalksMod.tab
     }
 
