@@ -137,7 +137,7 @@ enum class EnumMaterialGroup {
 
 enum class EnumMaterialStatus(val shouldShow: Boolean, val shouldRegister: Boolean) {
     UNALLOCATED(false, false),
-    RESERVED(false, false),
+    RESERVED(false, true),
     ALLOCATED(Const.developmentEnvironment, true),
     ENABLED(true, true)
 }
