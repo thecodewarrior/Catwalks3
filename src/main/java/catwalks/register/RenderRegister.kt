@@ -32,8 +32,6 @@ object RenderRegister {
             CustomModelHandler.register("catwalksDynamic", ::CatwalkBakedModel)
             CustomModelHandler.register("scaffoldSides", ::ScaffoldBakedModel)
 
-
-
             val rl = ResourceLocation(CatwalksMod.MODID, "scaffold")
             BlockRegister.scaffolds.forEach {
                 ModelLoader.setCustomStateMapper(it, StateMapperOverrideBlockName(rl))
@@ -44,9 +42,6 @@ object RenderRegister {
     object Items {
         @SideOnly(Side.CLIENT)
         fun initRender() {
-
-
-
             registerRender()
         }
 

@@ -1,6 +1,9 @@
 package catwalks.render.part
 
 import catwalks.Const
+import catwalks.block.BlockScaffolding
+import catwalks.part.data.ScaffoldRenderData
+import catwalks.register.BlockRegister
 import catwalks.render.ModelHandle
 import catwalks.render.QuadManager
 import net.minecraft.block.state.IBlockState
@@ -24,12 +27,16 @@ class ScaffoldBakedModel(loc: String, modelState: IModelState) : BaseBakedModel(
     }
 
     override fun getQuads(normalState: IBlockState?, side: EnumFacing?, rand: Long): List<BakedQuad> {
-        if (normalState == null || normalState !is IExtendedBlockState)
-            return emptyList()
+        val state = if (normalState == null || normalState !is IExtendedBlockState)
+            BlockRegister.scaffolds[0].defaultState
+        else normalState
 
-        val qm = QuadManager(normalState, side, rand)
+        val data = if(normalState is IExtendedBlockState)
+            normalState.getValue(Const.SCAFFOLD_RENDER_DATA)
+        else ScaffoldRenderData.DEFAULT
 
-        val data = normalState.getValue(Const.SCAFFOLD_RENDER_DATA)
+
+        val qm = QuadManager(state, side, rand)
 
         if(data.sides[side?.ordinal ?: 0])
             qm.add(handle)
