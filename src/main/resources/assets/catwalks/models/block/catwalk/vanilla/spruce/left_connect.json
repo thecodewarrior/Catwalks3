@@ -2,7 +2,7 @@
 "__comment": "Designed by Winddelay with BDcraft Cubik PRO 0.96 Beta - http://bdcraft.net",
 "ambientocclusion": false,
 "textures": {
-    "all": "catwalks:blocks/catwalk/vanilla/spruce/sides"
+    "all": "catwalks:blocks/vanilla/spruce/sides"
 
 },
 "elements": [ 

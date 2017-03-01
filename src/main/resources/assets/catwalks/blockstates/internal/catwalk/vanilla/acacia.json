@@ -1,105 +1,105 @@
 {
     "variants": {
-        "bottom_zaxis": { "model": "catwalks:blocks/catwalk/vanilla/acacia/bottom" },
-        "bottom_xaxis": { "model": "catwalks:blocks/catwalk/vanilla/acacia/bottom" },
+        "bottom_zaxis": { "model": "catwalks:catwalk/vanilla/acacia/bottom" },
+        "bottom_xaxis": { "model": "catwalks:catwalk/vanilla/acacia/bottom" },
 		
-		"bottom_edge_north": { "model": "catwalks:blocks/catwalk/vanilla/acacia/bottom_edge" },
-		"bottom_edge_east": { "model": "catwalks:blocks/catwalk/vanilla/acacia/bottom_edge", "y":90 },
-		"bottom_edge_south": { "model": "catwalks:blocks/catwalk/vanilla/acacia/bottom_edge", "y":180 },
-		"bottom_edge_west": { "model": "catwalks:blocks/catwalk/vanilla/acacia/bottom_edge", "y":270 },
+		"bottom_edge_north": { "model": "catwalks:catwalk/vanilla/acacia/bottom_edge" },
+		"bottom_edge_east": { "model": "catwalks:catwalk/vanilla/acacia/bottom_edge", "y":90 },
+		"bottom_edge_south": { "model": "catwalks:catwalk/vanilla/acacia/bottom_edge", "y":180 },
+		"bottom_edge_west": { "model": "catwalks:catwalk/vanilla/acacia/bottom_edge", "y":270 },
 		
-		"bottom_corner_north_west": { "model": "catwalks:blocks/catwalk/vanilla/acacia/bottom_corner" },
-		"bottom_corner_north_east": { "model": "catwalks:blocks/catwalk/vanilla/acacia/bottom_corner", "y":90 },
-		"bottom_corner_south_east": { "model": "catwalks:blocks/catwalk/vanilla/acacia/bottom_corner", "y":180 },
-		"bottom_corner_south_west": { "model": "catwalks:blocks/catwalk/vanilla/acacia/bottom_corner", "y":270 },
-		
-		
-		
-		
-		"corner_north_west_outer": { "model": "catwalks:blocks/catwalk/vanilla/acacia/corner_outer" },
-		"corner_north_east_outer": { "model": "catwalks:blocks/catwalk/vanilla/acacia/corner_outer", "y":90 },
-		"corner_south_east_outer": { "model": "catwalks:blocks/catwalk/vanilla/acacia/corner_outer", "y":180 },
-		"corner_south_west_outer": { "model": "catwalks:blocks/catwalk/vanilla/acacia/corner_outer", "y":270 },
-		
-		"corner_north_west_outer_180": { "model": "catwalks:blocks/catwalk/vanilla/acacia/corner_outer_180" },
-		"corner_north_east_outer_180": { "model": "catwalks:blocks/catwalk/vanilla/acacia/corner_outer_180", "y":90 },
-		"corner_south_east_outer_180": { "model": "catwalks:blocks/catwalk/vanilla/acacia/corner_outer_180", "y":180 },
-		"corner_south_west_outer_180": { "model": "catwalks:blocks/catwalk/vanilla/acacia/corner_outer_180", "y":270 },
-		
-		"corner_north_west_inner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/corner_inner", "y":270 },
-		"corner_north_east_inner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/corner_inner" },
-		"corner_south_east_inner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/corner_inner", "y":90 },
-		"corner_south_west_inner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/corner_inner", "y":180 },
+		"bottom_corner_north_west": { "model": "catwalks:catwalk/vanilla/acacia/bottom_corner" },
+		"bottom_corner_north_east": { "model": "catwalks:catwalk/vanilla/acacia/bottom_corner", "y":90 },
+		"bottom_corner_south_east": { "model": "catwalks:catwalk/vanilla/acacia/bottom_corner", "y":180 },
+		"bottom_corner_south_west": { "model": "catwalks:catwalk/vanilla/acacia/bottom_corner", "y":270 },
 		
 		
 		
 		
-		"side_north_left_end": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_end" },
-		"side_north_left_merge": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_merge" },
-		"side_north_left_connect": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_connect" },
-		"side_north_left_inner_corner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_inner_corner" },
-		"side_north_left_outer_corner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_outer_corner" },
-		"side_north_left_outer_corner_180": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_outer_corner_180" },
+		"corner_north_west_outer": { "model": "catwalks:catwalk/vanilla/acacia/corner_outer" },
+		"corner_north_east_outer": { "model": "catwalks:catwalk/vanilla/acacia/corner_outer", "y":90 },
+		"corner_south_east_outer": { "model": "catwalks:catwalk/vanilla/acacia/corner_outer", "y":180 },
+		"corner_south_west_outer": { "model": "catwalks:catwalk/vanilla/acacia/corner_outer", "y":270 },
 		
-		"side_north_right_end": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_end" },
-		"side_north_right_merge": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_merge" },
-		"side_north_right_connect": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_connect" },
-		"side_north_right_inner_corner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_inner_corner" },
-		"side_north_right_outer_corner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_outer_corner" },
-		"side_north_right_outer_corner_180": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_outer_corner_180" },
+		"corner_north_west_outer_180": { "model": "catwalks:catwalk/vanilla/acacia/corner_outer_180" },
+		"corner_north_east_outer_180": { "model": "catwalks:catwalk/vanilla/acacia/corner_outer_180", "y":90 },
+		"corner_south_east_outer_180": { "model": "catwalks:catwalk/vanilla/acacia/corner_outer_180", "y":180 },
+		"corner_south_west_outer_180": { "model": "catwalks:catwalk/vanilla/acacia/corner_outer_180", "y":270 },
 		
-		
-		
+		"corner_north_west_inner": { "model": "catwalks:catwalk/vanilla/acacia/corner_inner", "y":270 },
+		"corner_north_east_inner": { "model": "catwalks:catwalk/vanilla/acacia/corner_inner" },
+		"corner_south_east_inner": { "model": "catwalks:catwalk/vanilla/acacia/corner_inner", "y":90 },
+		"corner_south_west_inner": { "model": "catwalks:catwalk/vanilla/acacia/corner_inner", "y":180 },
 		
 		
-		"side_east_left_end": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_end", "y":90 },
-		"side_east_left_merge": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_merge", "y":90 },
-		"side_east_left_connect": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_connect", "y":90 },
-		"side_east_left_inner_corner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_inner_corner", "y":90 },
-		"side_east_left_outer_corner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_outer_corner", "y":90 },
-		"side_east_left_outer_corner_180": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_outer_corner_180", "y":90 },
 		
-		"side_east_right_end": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_end", "y":90 },
-		"side_east_right_merge": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_merge", "y":90 },
-		"side_east_right_connect": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_connect", "y":90 },
-		"side_east_right_inner_corner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_inner_corner", "y":90 },
-		"side_east_right_outer_corner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_outer_corner", "y":90 },
-		"side_east_right_outer_corner_180": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_outer_corner_180", "y":90 },
+		
+		"side_north_left_end": { "model": "catwalks:catwalk/vanilla/acacia/left_end" },
+		"side_north_left_merge": { "model": "catwalks:catwalk/vanilla/acacia/left_merge" },
+		"side_north_left_connect": { "model": "catwalks:catwalk/vanilla/acacia/left_connect" },
+		"side_north_left_inner_corner": { "model": "catwalks:catwalk/vanilla/acacia/left_inner_corner" },
+		"side_north_left_outer_corner": { "model": "catwalks:catwalk/vanilla/acacia/left_outer_corner" },
+		"side_north_left_outer_corner_180": { "model": "catwalks:catwalk/vanilla/acacia/left_outer_corner_180" },
+		
+		"side_north_right_end": { "model": "catwalks:catwalk/vanilla/acacia/right_end" },
+		"side_north_right_merge": { "model": "catwalks:catwalk/vanilla/acacia/right_merge" },
+		"side_north_right_connect": { "model": "catwalks:catwalk/vanilla/acacia/right_connect" },
+		"side_north_right_inner_corner": { "model": "catwalks:catwalk/vanilla/acacia/right_inner_corner" },
+		"side_north_right_outer_corner": { "model": "catwalks:catwalk/vanilla/acacia/right_outer_corner" },
+		"side_north_right_outer_corner_180": { "model": "catwalks:catwalk/vanilla/acacia/right_outer_corner_180" },
 		
 		
 		
 		
 		
-		"side_south_left_end": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_end", "y":180 },
-		"side_south_left_merge": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_merge", "y":180 },
-		"side_south_left_connect": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_connect", "y":180 },
-		"side_south_left_inner_corner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_inner_corner", "y":180 },
-		"side_south_left_outer_corner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_outer_corner", "y":180 },
-		"side_south_left_outer_corner_180": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_outer_corner_180", "y":180 },
+		"side_east_left_end": { "model": "catwalks:catwalk/vanilla/acacia/left_end", "y":90 },
+		"side_east_left_merge": { "model": "catwalks:catwalk/vanilla/acacia/left_merge", "y":90 },
+		"side_east_left_connect": { "model": "catwalks:catwalk/vanilla/acacia/left_connect", "y":90 },
+		"side_east_left_inner_corner": { "model": "catwalks:catwalk/vanilla/acacia/left_inner_corner", "y":90 },
+		"side_east_left_outer_corner": { "model": "catwalks:catwalk/vanilla/acacia/left_outer_corner", "y":90 },
+		"side_east_left_outer_corner_180": { "model": "catwalks:catwalk/vanilla/acacia/left_outer_corner_180", "y":90 },
 		
-		"side_south_right_end": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_end", "y":180 },
-		"side_south_right_merge": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_merge", "y":180 },
-		"side_south_right_connect": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_connect", "y":180 },
-		"side_south_right_inner_corner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_inner_corner", "y":180 },
-		"side_south_right_outer_corner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_outer_corner", "y":180 },
-		"side_south_right_outer_corner_180": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_outer_corner_180", "y":180 },
-		
-		
+		"side_east_right_end": { "model": "catwalks:catwalk/vanilla/acacia/right_end", "y":90 },
+		"side_east_right_merge": { "model": "catwalks:catwalk/vanilla/acacia/right_merge", "y":90 },
+		"side_east_right_connect": { "model": "catwalks:catwalk/vanilla/acacia/right_connect", "y":90 },
+		"side_east_right_inner_corner": { "model": "catwalks:catwalk/vanilla/acacia/right_inner_corner", "y":90 },
+		"side_east_right_outer_corner": { "model": "catwalks:catwalk/vanilla/acacia/right_outer_corner", "y":90 },
+		"side_east_right_outer_corner_180": { "model": "catwalks:catwalk/vanilla/acacia/right_outer_corner_180", "y":90 },
 		
 		
 		
-		"side_west_left_end": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_end", "y":270 },
-		"side_west_left_merge": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_merge", "y":270 },
-		"side_west_left_connect": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_connect", "y":270 },
-		"side_west_left_inner_corner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_inner_corner", "y":270 },
-		"side_west_left_outer_corner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_outer_corner", "y":270 },
-		"side_west_left_outer_corner_180": { "model": "catwalks:blocks/catwalk/vanilla/acacia/left_outer_corner_180", "y":270 },
 		
-		"side_west_right_end": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_end", "y":270 },
-		"side_west_right_merge": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_merge", "y":270 },
-		"side_west_right_connect": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_connect", "y":270 },
-		"side_west_right_inner_corner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_inner_corner", "y":270 },
-		"side_west_right_outer_corner": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_outer_corner", "y":270 },
-		"side_west_right_outer_corner_180": { "model": "catwalks:blocks/catwalk/vanilla/acacia/right_outer_corner_180", "y":270 }
+		
+		"side_south_left_end": { "model": "catwalks:catwalk/vanilla/acacia/left_end", "y":180 },
+		"side_south_left_merge": { "model": "catwalks:catwalk/vanilla/acacia/left_merge", "y":180 },
+		"side_south_left_connect": { "model": "catwalks:catwalk/vanilla/acacia/left_connect", "y":180 },
+		"side_south_left_inner_corner": { "model": "catwalks:catwalk/vanilla/acacia/left_inner_corner", "y":180 },
+		"side_south_left_outer_corner": { "model": "catwalks:catwalk/vanilla/acacia/left_outer_corner", "y":180 },
+		"side_south_left_outer_corner_180": { "model": "catwalks:catwalk/vanilla/acacia/left_outer_corner_180", "y":180 },
+		
+		"side_south_right_end": { "model": "catwalks:catwalk/vanilla/acacia/right_end", "y":180 },
+		"side_south_right_merge": { "model": "catwalks:catwalk/vanilla/acacia/right_merge", "y":180 },
+		"side_south_right_connect": { "model": "catwalks:catwalk/vanilla/acacia/right_connect", "y":180 },
+		"side_south_right_inner_corner": { "model": "catwalks:catwalk/vanilla/acacia/right_inner_corner", "y":180 },
+		"side_south_right_outer_corner": { "model": "catwalks:catwalk/vanilla/acacia/right_outer_corner", "y":180 },
+		"side_south_right_outer_corner_180": { "model": "catwalks:catwalk/vanilla/acacia/right_outer_corner_180", "y":180 },
+		
+		
+		
+		
+		
+		"side_west_left_end": { "model": "catwalks:catwalk/vanilla/acacia/left_end", "y":270 },
+		"side_west_left_merge": { "model": "catwalks:catwalk/vanilla/acacia/left_merge", "y":270 },
+		"side_west_left_connect": { "model": "catwalks:catwalk/vanilla/acacia/left_connect", "y":270 },
+		"side_west_left_inner_corner": { "model": "catwalks:catwalk/vanilla/acacia/left_inner_corner", "y":270 },
+		"side_west_left_outer_corner": { "model": "catwalks:catwalk/vanilla/acacia/left_outer_corner", "y":270 },
+		"side_west_left_outer_corner_180": { "model": "catwalks:catwalk/vanilla/acacia/left_outer_corner_180", "y":270 },
+		
+		"side_west_right_end": { "model": "catwalks:catwalk/vanilla/acacia/right_end", "y":270 },
+		"side_west_right_merge": { "model": "catwalks:catwalk/vanilla/acacia/right_merge", "y":270 },
+		"side_west_right_connect": { "model": "catwalks:catwalk/vanilla/acacia/right_connect", "y":270 },
+		"side_west_right_inner_corner": { "model": "catwalks:catwalk/vanilla/acacia/right_inner_corner", "y":270 },
+		"side_west_right_outer_corner": { "model": "catwalks:catwalk/vanilla/acacia/right_outer_corner", "y":270 },
+		"side_west_right_outer_corner_180": { "model": "catwalks:catwalk/vanilla/acacia/right_outer_corner_180", "y":270 }
     }
 }
