@@ -24,7 +24,7 @@ object CustomModelHandler : ICustomModelLoader {
         models[name] = lambda
     }
 
-    fun register(name: String, lambda: (String) -> IBakedModel) {
+    fun register(name: String, lambda: (String, IModelState) -> IBakedModel) {
         registerModel(name) {
             BasicCustomModel(it, lambda)
         }
@@ -60,7 +60,7 @@ object CustomModelHandler : ICustomModelLoader {
     }
 }
 
-internal class BasicCustomModel(val str: String, val lambda: (String) -> IBakedModel) : IModel, IRetexturableModel {
+internal class BasicCustomModel(val str: String, val lambda: (String, IModelState) -> IBakedModel) : IModel, IRetexturableModel {
 
     override fun getDependencies(): Collection<ResourceLocation> {
         val dependencies = Lists.newArrayList<ResourceLocation>()
@@ -72,7 +72,7 @@ internal class BasicCustomModel(val str: String, val lambda: (String) -> IBakedM
     }
 
     override fun bake(state: IModelState, format: VertexFormat, bakedTextureGetter: Function<ResourceLocation, TextureAtlasSprite>): IBakedModel {
-        return lambda(str)
+        return lambda(str, state)
     }
 
     override fun getDefaultState(): IModelState? {

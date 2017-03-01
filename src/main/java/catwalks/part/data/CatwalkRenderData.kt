@@ -24,6 +24,24 @@ class CatwalkRenderData : Comparable<CatwalkRenderData> {
     var corner_se: EnumCatwalkCornerType? = null
     var corner_sw: EnumCatwalkCornerType? = null
 
+    companion object {
+        val DEFAULT = CatwalkRenderData()
+        init {
+            DEFAULT.bottom = EnumFacing.Axis.X
+            val data = CatwalkRenderData.CatwalkSideRenderData()
+            data.left = CatwalkSideRenderData.EnumCatwalkEndRenderType.INNER_CORNER
+            data.right = CatwalkSideRenderData.EnumCatwalkEndRenderType.INNER_CORNER
+            for (d in EnumFacing.HORIZONTALS) {
+                DEFAULT.sides.put(d, data)
+            }
+            DEFAULT.corner_ne = EnumCatwalkCornerType.INNER
+            DEFAULT.corner_nw = EnumCatwalkCornerType.INNER
+            DEFAULT.corner_se = EnumCatwalkCornerType.INNER
+            DEFAULT.corner_nw = EnumCatwalkCornerType.INNER
+
+        }
+    }
+
     class CatwalkSideRenderData {
         var left: EnumCatwalkEndRenderType? = null
         var right: EnumCatwalkEndRenderType? = null

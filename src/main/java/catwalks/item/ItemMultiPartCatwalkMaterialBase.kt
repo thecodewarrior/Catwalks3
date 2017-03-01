@@ -40,5 +40,5 @@ abstract class ItemMultiPartCatwalkMaterialBase (name: String) : ItemMultiPartBa
     }
 
     override val customRenderVariants: Array<String>?
-        get() = EnumCatwalkMaterial.values().filter { it.STATUS.shouldRegister }.map { name + ".inv#material=${it.GROUP.name.toLowerCase()}_${it.name.toLowerCase()}" }.toTypedArray()
+        get() = EnumCatwalkMaterial.values().filter { it.STATUS.shouldRegister }.map { name + "#material=${it.GROUP.name.toLowerCase()}_${it.name.toLowerCase()}" }.toTypedArray()
 }

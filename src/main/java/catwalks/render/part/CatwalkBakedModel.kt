@@ -6,17 +6,22 @@ import catwalks.render.QuadManager
 import catwalks.render.StateHandle
 import catwalks.util.EnumLeftRight
 import catwalks.util.nestedmap.HierarchyMap
+import mcmultipart.MCMultiPartMod
+import net.minecraft.block.state.BlockStateContainer
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.BakedQuad
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ResourceLocation
+import net.minecraftforge.client.model.MultiModelState
+import net.minecraftforge.common.model.IModelState
 import net.minecraftforge.common.property.IExtendedBlockState
 import java.util.*
 
 /**
  * Created by TheCodeWarrior
  */
-class CatwalkBakedModel(loc: String) : BaseBakedModel(loc) {
+class CatwalkBakedModel(loc: String, modelState: IModelState) : BaseBakedModel(loc, modelState) {
 
     internal val CATWALK_BLOCKSTATE_LOC: ResourceLocation
 
@@ -116,98 +121,95 @@ class CatwalkBakedModel(loc: String) : BaseBakedModel(loc) {
     }
 
     override fun getQuads(normalState: IBlockState?, side: EnumFacing?, rand: Long): List<BakedQuad> {
-        if (normalState != null) {
+        val quads = QuadManager(normalState?:BlockStateContainer(MCMultiPartMod.multipart).baseState, side, rand)
+        val data = if (normalState != null) {
             val state = normalState as IExtendedBlockState
-
-            val quads = QuadManager(normalState, side, rand)
-
-            val data = state.getValue(Const.CATWALK_RENDER_DATA)
-
-            // region sides
-            for (facing in EnumFacing.HORIZONTALS) {
-
-                data.sides[facing]?.let {
-                    it.left?.let {
-                        quads.add(sides.get(facing, EnumLeftRight.LEFT, it))
-                    }
-                    it.right?.let {
-                        quads.add(sides.get(facing, EnumLeftRight.RIGHT, it))
-                    }
-                }
-            }
-            // endregion
-
-            // region corners
-            if (data.corner_ne != null) {
-                quads.add(corner_north_east[data.corner_ne])
-            }
-            if (data.corner_nw != null) {
-                quads.add(corner_north_west[data.corner_nw])
-            }
-            if (data.corner_se != null) {
-                quads.add(corner_south_east[data.corner_se])
-            }
-            if (data.corner_sw != null) {
-                quads.add(corner_south_west[data.corner_sw])
-            }
-            // endregion
-
-            var hadCombo = false
-            // region bottom middle
-            if (data.bottom == EnumFacing.Axis.X) {
-                val handle = bottom_xaxis_nsew[encodeSides(data.bottomNorth, data.bottomSouth, data.bottomEast, data.bottomWest)]
-                if (handle == null || handle.isMissing) {
-                    quads.add(bottom_xaxis)
-                } else {
-                    hadCombo = true
-                    quads.add(handle)
-                }
-            }
-            if (data.bottom == EnumFacing.Axis.Z) {
-                val handle = bottom_zaxis_nsew[encodeSides(data.bottomNorth, data.bottomSouth, data.bottomEast, data.bottomWest)]
-                if (handle == null || handle.isMissing) {
-                    quads.add(bottom_zaxis)
-                } else {
-                    hadCombo = true
-                    quads.add(handle)
-                }
-            }
-            // endregion
-
-            if(!hadCombo) {
-                // region bottom edges
-                if (data.bottomNorth && !bottom_edge_north.isMissing) {
-                    quads.add(bottom_edge_north)
-                }
-                if (data.bottomSouth && !bottom_edge_south.isMissing) {
-                    quads.add(bottom_edge_south)
-                }
-                if (data.bottomEast && !bottom_edge_east.isMissing) {
-                    quads.add(bottom_edge_east)
-                }
-                if (data.bottomWest && !bottom_edge_west.isMissing) {
-                    quads.add(bottom_edge_west)
-                }
-                // endregion
-
-                // region bottom corners
-                if (data.bottomNE && !bottom_corner_north_east.isMissing) {
-                    quads.add(bottom_corner_north_east)
-                }
-                if (data.bottomNW && !bottom_corner_north_west.isMissing) {
-                    quads.add(bottom_corner_north_west)
-                }
-                if (data.bottomSE && !bottom_corner_south_east.isMissing) {
-                    quads.add(bottom_corner_south_east)
-                }
-                if (data.bottomSW && !bottom_corner_south_west.isMissing) {
-                    quads.add(bottom_corner_south_west)
-                }
-                // endregion
-            }
-            return quads.getQuads()
+            state.getValue(Const.CATWALK_RENDER_DATA)
+        } else {
+            CatwalkRenderData.DEFAULT
         }
+        // region sides
+        for (facing in EnumFacing.HORIZONTALS) {
 
-        return emptyList()
+            data.sides[facing]?.let {
+                it.left?.let {
+                    quads.add(sides.get(facing, EnumLeftRight.LEFT, it))
+                }
+                it.right?.let {
+                    quads.add(sides.get(facing, EnumLeftRight.RIGHT, it))
+                }
+            }
+        }
+        // endregion
+
+        // region corners
+        if (data.corner_ne != null) {
+            quads.add(corner_north_east[data.corner_ne])
+        }
+        if (data.corner_nw != null) {
+            quads.add(corner_north_west[data.corner_nw])
+        }
+        if (data.corner_se != null) {
+            quads.add(corner_south_east[data.corner_se])
+        }
+        if (data.corner_sw != null) {
+            quads.add(corner_south_west[data.corner_sw])
+        }
+        // endregion
+
+        var hadCombo = false
+        // region bottom middle
+        if (data.bottom == EnumFacing.Axis.X) {
+            val handle = bottom_xaxis_nsew[encodeSides(data.bottomNorth, data.bottomSouth, data.bottomEast, data.bottomWest)]
+            if (handle == null || handle.isMissing) {
+                quads.add(bottom_xaxis)
+            } else {
+                hadCombo = true
+                quads.add(handle)
+            }
+        }
+        if (data.bottom == EnumFacing.Axis.Z) {
+            val handle = bottom_zaxis_nsew[encodeSides(data.bottomNorth, data.bottomSouth, data.bottomEast, data.bottomWest)]
+            if (handle == null || handle.isMissing) {
+                quads.add(bottom_zaxis)
+            } else {
+                hadCombo = true
+                quads.add(handle)
+            }
+        }
+        // endregion
+
+        if(!hadCombo) {
+            // region bottom edges
+            if (data.bottomNorth && !bottom_edge_north.isMissing) {
+                quads.add(bottom_edge_north)
+            }
+            if (data.bottomSouth && !bottom_edge_south.isMissing) {
+                quads.add(bottom_edge_south)
+            }
+            if (data.bottomEast && !bottom_edge_east.isMissing) {
+                quads.add(bottom_edge_east)
+            }
+            if (data.bottomWest && !bottom_edge_west.isMissing) {
+                quads.add(bottom_edge_west)
+            }
+            // endregion
+
+            // region bottom corners
+            if (data.bottomNE && !bottom_corner_north_east.isMissing) {
+                quads.add(bottom_corner_north_east)
+            }
+            if (data.bottomNW && !bottom_corner_north_west.isMissing) {
+                quads.add(bottom_corner_north_west)
+            }
+            if (data.bottomSE && !bottom_corner_south_east.isMissing) {
+                quads.add(bottom_corner_south_east)
+            }
+            if (data.bottomSW && !bottom_corner_south_west.isMissing) {
+                quads.add(bottom_corner_south_west)
+            }
+            // endregion
+        }
+        return quads.getQuads()
     }
 }

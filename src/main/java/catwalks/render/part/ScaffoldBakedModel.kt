@@ -7,12 +7,13 @@ import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.ResourceLocation
+import net.minecraftforge.common.model.IModelState
 import net.minecraftforge.common.property.IExtendedBlockState
 
 /**
  * Created by TheCodeWarrior
  */
-class ScaffoldBakedModel(loc: String) : BaseBakedModel(loc) {
+class ScaffoldBakedModel(loc: String, modelState: IModelState) : BaseBakedModel(loc, modelState) {
 
     private val handle: ModelHandle
 
