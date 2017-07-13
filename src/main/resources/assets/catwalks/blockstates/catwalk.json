@@ -1,7 +1,7 @@
 {
 	"variants": {
 		"normal": {
-			"model": "catwalks:catwalk/normal!catwalks:catwalk"
+			"model": "catwalks:catwalk/normal!!catwalks:catwalk"
 		}
 	}
 }

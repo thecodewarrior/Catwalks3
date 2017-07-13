@@ -20,16 +20,18 @@ object CatwalkModelLoader : ICustomModelLoader {
 
     private lateinit var manager: IResourceManager
 
+    private val regex = Regex("^(.*)!(.*?)!catwalks:catwalk$")
     override fun accepts(modelLocation: ResourceLocation): Boolean {
-        val v = modelLocation.resourcePath.endsWith("!catwalks:catwalk", true)
-        return v
+        return regex.containsMatchIn(modelLocation.resourcePath)
     }
 
     override fun loadModel(modelLocation: ResourceLocation): IModel {
-        val path = modelLocation.resourcePath
-                .substring(0, modelLocation.resourcePath.length - "!catwalks:catwalk".length)
-                .substring("models/".length)
-        return CatwalkModelWrapper(modelLocation.resourceDomain, path)
+        val match = regex.find(modelLocation.resourcePath)!!
+
+        var (path, postfix) = match.destructured
+        path = path.substring("models/".length)
+
+        return CatwalkModelWrapper(modelLocation.resourceDomain, path, postfix)
     }
 
     override fun onResourceManagerReload(resourceManager: IResourceManager) {
@@ -37,22 +39,24 @@ object CatwalkModelLoader : ICustomModelLoader {
     }
 }
 
-class CatwalkModelWrapper(domain: String, path: String) : IModel {
-    val main_rl = ResourceLocation(domain, path)
-    val cmm_rl = ResourceLocation(domain, if("." in path) path.substring(0, path.lastIndexOf('.')) + ".cmm" + path.substring(path.lastIndexOf('.')) else path + ".cmm")
-    val main: IModel by lazy {
-        ModelLoaderRegistry.getModel(main_rl)
-    }
+class CatwalkModelWrapper(domain: String, path: String, postfix: String) : IModel {
+    val item_rl = ResourceLocation(domain, "$path/complete$postfix")
+    val rails_rl = ResourceLocation(domain, "$path/rails$postfix")
+    val floor_rl = ResourceLocation(domain, "$path/floor$postfix")
 
-    val cmm: IModel by lazy {
-        ModelLoaderRegistry.getModel(cmm_rl)
-    }
+    val item: IModel by lazy { ModelLoaderRegistry.getModelOrMissing(item_rl) }
+    val rails: IModel by lazy { ModelLoaderRegistry.getModelOrMissing(rails_rl) }
+    val floor: IModel by lazy { ModelLoaderRegistry.getModelOrMissing(floor_rl) }
 
     override fun getDependencies(): Collection<ResourceLocation> {
-        return ImmutableList.of(main_rl, cmm_rl)
+        return ImmutableList.of(item_rl, floor_rl, rails_rl)
     }
 
     override fun bake(state: IModelState, format: VertexFormat, bakedTextureGetter: java.util.function.Function<ResourceLocation, TextureAtlasSprite>): IBakedModel {
-        return CatwalkModel(main.bake(state, format, bakedTextureGetter), cmm.bake(state, format, bakedTextureGetter))
+        return CatwalkModel(
+                item.bake(state, format, bakedTextureGetter),
+                rails.bake(state, format, bakedTextureGetter),
+                floor.bake(state, format, bakedTextureGetter)
+        )
     }
 }

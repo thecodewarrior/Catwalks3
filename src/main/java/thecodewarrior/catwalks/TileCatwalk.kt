@@ -8,7 +8,8 @@ import gnu.trove.map.hash.TLongObjectHashMap
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.math.BlockPos
 import thecodewarrior.catwalks.model.CatwalkState
-import thecodewarrior.catwalks.model.SectionType
+import thecodewarrior.catwalks.model.FloorSection
+import thecodewarrior.catwalks.model.RailSection
 
 /**
  * TODO: Document file TileCatwalk
@@ -49,73 +50,84 @@ class TileCatwalk : TileMod() {
             return getCached(pos)?.has(side) ?: false
         }
 
-        fun calculate() = CatwalkState(arrayOf(
-                getCornerState(EnumFacing.WEST, EnumFacing.NORTH),
-                getCornerState(EnumFacing.EAST, EnumFacing.NORTH),
-                getCornerState(EnumFacing.EAST, EnumFacing.SOUTH),
-                getCornerState(EnumFacing.WEST, EnumFacing.SOUTH)
-        ))
+        fun calculate() = CatwalkState(
+                getRailState(EnumFacing.WEST, EnumFacing.NORTH),
+                getRailState(EnumFacing.EAST, EnumFacing.NORTH),
+                getRailState(EnumFacing.WEST, EnumFacing.SOUTH),
+                getRailState(EnumFacing.EAST, EnumFacing.SOUTH),
 
-        private fun getCornerState(xAxis: EnumFacing, zAxis: EnumFacing): SectionType {
-            if(has(xAxis) && has(zAxis)) return SectionType.CLOSED
+                getFloorState(EnumFacing.WEST, EnumFacing.NORTH),
+                getFloorState(EnumFacing.EAST, EnumFacing.NORTH),
+                getFloorState(EnumFacing.WEST, EnumFacing.SOUTH),
+                getFloorState(EnumFacing.EAST, EnumFacing.SOUTH)
+        )
+
+        fun getRailState(xAxis: EnumFacing, zAxis: EnumFacing): RailSection {
+            val posX = pos.offset(xAxis)
+            val posZ = pos.offset(zAxis)
+            val corner = pos.offset(xAxis).offset(zAxis)
+
+            if(has(xAxis) && has(zAxis))
+                return RailSection.OUTER
+
+
             if(has(xAxis)) {
-                val calc = calculateRail(xAxis, zAxis)
-                if(calc == SectionType.X_END) return SectionType.Z_END
-                if(calc == SectionType.X_CONNECT) return SectionType.Z_CONNECT
-                if(calc == SectionType.X_GAP) return SectionType.Z_GAP
-                return calc
+                if(exists(posZ) && !has(zAxis.opposite, posZ)) {
+                    if(has(xAxis, posZ)) {
+                        return RailSection.Z_EDGE
+                    } else if(exists(corner) && has(zAxis.opposite, corner) && !has(xAxis.opposite, corner)) {
+                        return RailSection.Z_EDGE
+                    }
+                }
+                return RailSection.Z_END
             }
             if(has(zAxis)) {
-                val calc = calculateRail(zAxis, xAxis)
-                return calc
+                if(exists(posX) && !has(xAxis.opposite, posX)) {
+                    if (has(zAxis, posX)) {
+                        return RailSection.X_EDGE
+                    } else if(exists(corner) && has(xAxis.opposite, corner) && !has(zAxis.opposite, corner)) {
+                        return RailSection.X_EDGE
+                    }
+                }
+                return RailSection.X_END
             }
-            // if both sides are open, then we have to check surroundings
-            if(!has(xAxis.opposite, pos.offset(xAxis)) && !has(zAxis.opposite, pos.offset(zAxis))) {
-                if(has(xAxis, pos.offset(zAxis)) && has(zAxis, pos.offset(xAxis)))
-                    return SectionType.INNER
-            }
-            if(exists(pos.offset(xAxis)) && exists(pos.offset(zAxis)) &&
-                    !has(xAxis.opposite, pos.offset(xAxis)) && !has(zAxis.opposite, pos.offset(zAxis)) &&
-                    has(xAxis, pos.offset(zAxis)) != has(zAxis, pos.offset(xAxis))
-            )
-                return SectionType.INNER
-            if(!has(xAxis.opposite, pos.offset(xAxis)) && !has(zAxis.opposite, pos.offset(zAxis)) &&
-                    !has(zAxis, pos.offset(xAxis)) && !has(xAxis, pos.offset(zAxis)) &&
-                    !has(zAxis.opposite, pos.offset(xAxis).offset(zAxis)) && !has(xAxis.opposite, pos.offset(xAxis).offset(zAxis)))
-                return SectionType.MIDDLE
-            val calcX = calculateOpenCorner(xAxis, zAxis)
-            var calcZ = calculateOpenCorner(zAxis, xAxis)
-            if(calcZ == SectionType.X_GAP) calcZ = SectionType.Z_GAP
 
-            if(calcX != null && calcZ != null) {
-                // if both X and Z are fighting for some reason, just do an open edge. It's safer that way.
-                return SectionType.OPEN_EDGE
+            if(!has(xAxis) && !has(zAxis)) {
+                if(exists(posX) && !has(xAxis.opposite, posX) && has(zAxis, posX)
+                        && exists(posZ) && !has(zAxis.opposite, posZ) && has(xAxis, posZ)
+                        ) {
+                    return RailSection.INNER
+                }
             }
-            return calcX ?: calcZ ?: SectionType.OPEN_EDGE
+            return RailSection.MIDDLE
         }
+        fun getFloorState(xAxis: EnumFacing, zAxis: EnumFacing): FloorSection {
+            val posX = pos.offset(xAxis)
+            val posZ = pos.offset(zAxis)
+            val corner = pos.offset(xAxis).offset(zAxis)
 
-        private fun calculateRail(rail: EnumFacing, end: EnumFacing): SectionType {
-            val touching = pos.offset(end)
-            val corner = touching.offset(rail)
-            val side = pos.offset(rail)
-            if(exists(touching) && !has(end.opposite, touching))
-                return SectionType.X_CONNECT
-            if(!has(end.opposite, touching) && !has(rail, touching) && !has(rail.opposite, corner) && has(end.opposite, corner))
-                return SectionType.X_CONNECT
+            if(has(xAxis) && has(zAxis))
+                return FloorSection.OUTER
 
-            return SectionType.X_END
-        }
+            if(!has(xAxis) && !has(zAxis)
+                    && exists(posX) && !has(xAxis.opposite, posX)
+                    && exists(posZ) && !has(zAxis.opposite, posZ)
+                    ) {
+                if(exists(corner) && !has(xAxis.opposite, corner) && !has(zAxis.opposite, corner))
+                    return FloorSection.MIDDLE
+                return FloorSection.INNER
+            }
 
-        private fun calculateOpenCorner(rail: EnumFacing, end: EnumFacing): SectionType? {
-            val touching = pos.offset(end)
-            val corner = touching.offset(rail)
-            val side = pos.offset(rail)
-            if(!has(end.opposite, touching) && has(rail, touching))
-                return SectionType.X_GAP
-            if(!has(end.opposite, touching) && !has(rail, touching) && !has(rail.opposite, corner) && has(end.opposite, corner))
-                return SectionType.X_GAP
+            if(!has(zAxis)) {
+                if(exists(posZ) && !has(zAxis.opposite, posZ))
+                    return FloorSection.Z_EDGE
+            }
+            if(!has(xAxis)) {
+                if(exists(posX) && !has(xAxis.opposite, posX))
+                    return FloorSection.X_EDGE
+            }
 
-            return null
+            return FloorSection.OUTER
         }
 
     }
