@@ -19,7 +19,8 @@ import thecodewarrior.catwalks.model.RailSection
 @TileRegister("catwalk")
 class TileCatwalk : TileMod() {
     @Save var sides = enumMapOf<EnumFacing, Boolean>()
-//    @Save var material
+    @Save var material = CatwalkMaterial.CLASSIC
+
 //    @Save var decorations
     init {
         EnumFacing.values().forEach { sides[it] = true }
@@ -50,17 +51,19 @@ class TileCatwalk : TileMod() {
             return getCached(pos)?.has(side) ?: false
         }
 
-        fun calculate() = CatwalkState(
-                getRailState(EnumFacing.WEST, EnumFacing.NORTH),
-                getRailState(EnumFacing.EAST, EnumFacing.NORTH),
-                getRailState(EnumFacing.WEST, EnumFacing.SOUTH),
-                getRailState(EnumFacing.EAST, EnumFacing.SOUTH),
+        fun calculate(): CatwalkState {
+            return CatwalkState(
+                    getRailState(EnumFacing.WEST, EnumFacing.NORTH),
+                    getRailState(EnumFacing.EAST, EnumFacing.NORTH),
+                    getRailState(EnumFacing.WEST, EnumFacing.SOUTH),
+                    getRailState(EnumFacing.EAST, EnumFacing.SOUTH),
 
-                getFloorState(EnumFacing.WEST, EnumFacing.NORTH),
-                getFloorState(EnumFacing.EAST, EnumFacing.NORTH),
-                getFloorState(EnumFacing.WEST, EnumFacing.SOUTH),
-                getFloorState(EnumFacing.EAST, EnumFacing.SOUTH)
-        )
+                    if(!has(EnumFacing.DOWN)) null else getFloorState(EnumFacing.WEST, EnumFacing.NORTH),
+                    if(!has(EnumFacing.DOWN)) null else getFloorState(EnumFacing.EAST, EnumFacing.NORTH),
+                    if(!has(EnumFacing.DOWN)) null else getFloorState(EnumFacing.WEST, EnumFacing.SOUTH),
+                    if(!has(EnumFacing.DOWN)) null else getFloorState(EnumFacing.EAST, EnumFacing.SOUTH)
+            )
+        }
 
         fun getRailState(xAxis: EnumFacing, zAxis: EnumFacing): RailSection {
             val posX = pos.offset(xAxis)
@@ -101,6 +104,7 @@ class TileCatwalk : TileMod() {
             }
             return RailSection.MIDDLE
         }
+
         fun getFloorState(xAxis: EnumFacing, zAxis: EnumFacing): FloorSection {
             val posX = pos.offset(xAxis)
             val posZ = pos.offset(zAxis)
@@ -110,20 +114,20 @@ class TileCatwalk : TileMod() {
                 return FloorSection.OUTER
 
             if(!has(xAxis) && !has(zAxis)
-                    && exists(posX) && !has(xAxis.opposite, posX)
-                    && exists(posZ) && !has(zAxis.opposite, posZ)
+                    && exists(posX) && has(EnumFacing.DOWN, posX) && !has(xAxis.opposite, posX)
+                    && exists(posZ) && has(EnumFacing.DOWN, posZ) && !has(zAxis.opposite, posZ)
                     ) {
-                if(exists(corner) && !has(xAxis.opposite, corner) && !has(zAxis.opposite, corner))
+                if(exists(corner) && has(EnumFacing.DOWN, corner) && !has(xAxis.opposite, corner) && !has(zAxis.opposite, corner))
                     return FloorSection.MIDDLE
                 return FloorSection.INNER
             }
 
             if(!has(zAxis)) {
-                if(exists(posZ) && !has(zAxis.opposite, posZ))
+                if(exists(posZ) && has(EnumFacing.DOWN, posZ) && !has(zAxis.opposite, posZ))
                     return FloorSection.Z_EDGE
             }
             if(!has(xAxis)) {
-                if(exists(posX) && !has(xAxis.opposite, posX))
+                if(exists(posX) && has(EnumFacing.DOWN, posX) && !has(xAxis.opposite, posX))
                     return FloorSection.X_EDGE
             }
 

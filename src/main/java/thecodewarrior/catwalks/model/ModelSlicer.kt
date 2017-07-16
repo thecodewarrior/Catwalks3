@@ -39,18 +39,13 @@ object ModelSlicer {
         val positions = Array<Vec3d>(4) { Vec3d.ZERO }
         var i = 0
 
-        val builder = UnpackedBakedQuad.Builder(quad.format)
+        var builder = UnpackedBakedQuad.Builder(quad.format)
 
         quad.pipe(object : VertexTransformer(builder) {
-            override fun put(element: Int, vararg data_: Float) {
-                var data = data_
+            override fun put(element: Int, vararg data: Float) {
                 val usage = parent.vertexFormat.getElement(element).usage
                 if(usage == VertexFormatElement.EnumUsage.POSITION && data.size >= 3) {
                     positions[i++] = vec(data[0], data[1], data[2])
-                    data = data.clone()
-                    data[0] = data[0] - (bb.minX - offset.x).toFloat()
-                    data[1] = data[1] - (bb.minY - offset.y).toFloat()
-                    data[2] = data[2] - (bb.minZ - offset.z).toFloat()
                 }
                 super.put(element, *data)
             }
@@ -61,6 +56,28 @@ object ModelSlicer {
         val pos = (positions.fold(Vec3d.ZERO) { fold, it -> fold + it } / 4) - (normal * 0.001)
 
         if(pos !in bb) return null
+
+        builder = UnpackedBakedQuad.Builder(quad.format)
+
+        quad.pipe(object : VertexTransformer(builder) {
+            override fun put(element: Int, vararg data_: Float) {
+                var data = data_
+                val usage = parent.vertexFormat.getElement(element).usage
+                if(usage == VertexFormatElement.EnumUsage.POSITION && data.size >= 3) {
+                    data = data.clone()
+                    data[0] = data[0] - (bb.minX - offset.x).toFloat()
+                    data[1] = data[1] - (bb.minY - offset.y).toFloat()
+                    data[2] = data[2] - (bb.minZ - offset.z).toFloat()
+                }
+                if(usage == VertexFormatElement.EnumUsage.NORMAL && data.size >= 3 && i >= 2) {
+                    data = data.clone()
+                    data[0] = normal.x.toFloat()
+                    data[1] = normal.y.toFloat()
+                    data[2] = normal.z.toFloat()
+                }
+                super.put(element, *data)
+            }
+        })
 
         val unpacked = builder.build()
 

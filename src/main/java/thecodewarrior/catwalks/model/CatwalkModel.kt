@@ -17,19 +17,6 @@ import java.util.*
 // Model in blockstate: "modid:resource/path!.postfix!catwalks:catwalk"
 // (postfix used for stuff like .obj models. Just use !! if you don't need a postfix)
 //
-// Resource location: "modid:resource/path/complete.postfix"
-//
-// 0, 0
-// ├─────────────┐
-// │╔═══════════╗│
-// │║           ║│
-// │║           ║│
-// │║           ║│
-// │║           ║│
-// │╚═══════════╝│
-// └─────────────┤
-//          16, 16
-//
 // Resource location: "modid:resource/path/rails.postfix"
 //
 // -16, -16
@@ -150,12 +137,12 @@ enum class RailSection(x_: Int, z_: Int) {
 
 class CatwalkState private constructor(
         val rail: Array<RailSection>,
-        val floor: Array<FloorSection>,
+        val floor: Array<FloorSection?>,
         private val layers: TIntSet) {
 
     constructor(
-             railNW:  RailSection,  railNE:  RailSection,  railSW:  RailSection,  railSE:  RailSection,
-            floorNW: FloorSection, floorNE: FloorSection, floorSW: FloorSection, floorSE: FloorSection,
+             railNW:  RailSection,   railNE:  RailSection,   railSW:  RailSection,   railSE:  RailSection,
+            floorNW: FloorSection?, floorNE: FloorSection?, floorSW: FloorSection?, floorSE: FloorSection?,
             vararg layers: Int
     ) : this(arrayOf(railNW, railNE, railSE, railSW), arrayOf(floorNW, floorNE, floorSE, floorSW), TIntHashSet(layers))
 
@@ -207,7 +194,9 @@ class CatwalkModel(val item: IBakedModel, val rails: IBakedModel, val floor: IBa
                         if(it > 1) 0.5 else 0.0
                 )
                 ModelSlicer.sliceInto(builder, railQuads, cwState.rail[it].boundingBoxes[it], offset, filter)
-                ModelSlicer.sliceInto(builder, floorQuads, cwState.floor[it].boundingBoxes[it], offset, filter)
+                cwState.floor[it]?.also { section ->
+                    ModelSlicer.sliceInto(builder, floorQuads, section.boundingBoxes[it], offset, filter)
+                }
             }
 
             return@getOrPut builder.build()
@@ -216,7 +205,7 @@ class CatwalkModel(val item: IBakedModel, val rails: IBakedModel, val floor: IBa
 
     override fun isBuiltInRenderer() = false
 
-    override fun isAmbientOcclusion() = true
+    override fun isAmbientOcclusion() = false
 
     override fun isGui3d() = false
 

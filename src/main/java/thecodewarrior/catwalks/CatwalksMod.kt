@@ -18,6 +18,7 @@ object CatwalksMod {
 
     @Mod.EventHandler
     fun preInit(e: FMLPreInitializationEvent) {
+        Const
         PROXY.pre(e)
     }
 

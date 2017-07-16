@@ -1,0 +1,10 @@
+{
+	"variants": {
+		"material=classic": {
+			"model": "catwalks:catwalk/classic/item"
+		},
+		"material=magneticraft_steel": {
+			"model": "catwalks:catwalk/magneticraft_steel/item"
+		}
+	}
+}
