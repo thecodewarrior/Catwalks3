@@ -1,0 +1,23 @@
+{
+	"type": "forge:ore_shaped",
+	"pattern": [
+		"B B",
+		"IBI"
+	],
+	"key": {
+		"B": {
+			"item": "minecraft:iron_bars"
+		},
+		"I": {
+			"type": "forge:ore_dict",
+			"ore": "ingotIron"
+		}
+	},
+	"result": {
+		"item": "catwalks:catwalk",
+		"count": 4,
+		"nbt": {
+			"material": "CLASSIC"
+		}
+	}
+}

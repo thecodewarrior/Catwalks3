@@ -1,0 +1,20 @@
+{
+	"type": "forge:ore_shaped",
+	"pattern": [
+		"  F",
+		" I ",
+		"I  "
+	],
+	"key": {
+		"F": {
+			"item": "minecraft:flint_and_steel"
+		},
+		"I": {
+			"type": "forge:ore_dict",
+			"ore": "ingotIron"
+		}
+	},
+	"result": {
+		"item": "catwalks:blowtorch"
+	}
+}
