@@ -40,7 +40,7 @@ object CatwalkModelLoader : ICustomModelLoader {
 }
 
 class CatwalkModelWrapper(domain: String, path: String, postfix: String) : IModel {
-    val item_rl = ResourceLocation(domain, "$path/complete$postfix")
+    val item_rl = ResourceLocation(domain, "$path/item$postfix")
     val rails_rl = ResourceLocation(domain, "$path/rails$postfix")
     val floor_rl = ResourceLocation(domain, "$path/floor$postfix")
 

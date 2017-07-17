@@ -1,0 +1,14 @@
+language: java
+install:
+  - ./gradlew setupCIWorkspace
+  -  sed -i 's:^[ \t]*build_number[ \t]*=\([ \t]*.*\)$:build_number=\1-SNAPSHOT:' build.properties
+script:
+  - ./gradlew build
+before_cache:
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+jdk:
+  - oraclejdk8
