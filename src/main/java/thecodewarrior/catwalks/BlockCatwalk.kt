@@ -3,6 +3,7 @@ package thecodewarrior.catwalks
 import com.teamwizardry.librarianlib.features.base.block.tile.BlockModContainer
 import com.teamwizardry.librarianlib.features.kotlin.*
 import com.teamwizardry.librarianlib.features.utilities.client.ClientRunnable
+import net.minecraft.block.SoundType
 import net.minecraft.block.material.Material
 import net.minecraft.block.properties.PropertyEnum
 import net.minecraft.block.state.BlockStateContainer
@@ -53,8 +54,10 @@ class BlockCatwalk : BlockModContainer("catwalk", Material.IRON) {
         }
     }
 
-    override fun createItemForm(): ItemBlock? {
-        return ItemBlockCatwalk(this)
+    init {
+        setHardness(1f)
+        setResistance(5f)
+        setSoundType(SoundType.METAL)
     }
 
     override fun onBlockActivated(worldIn: World, pos: BlockPos, state: IBlockState, playerIn: EntityPlayer, hand: EnumHand, facing: EnumFacing, hitX: Float, hitY: Float, hitZ: Float): Boolean {
@@ -127,11 +130,15 @@ class BlockCatwalk : BlockModContainer("catwalk", Material.IRON) {
         }
     }
 
-    override fun getDrops(drops: NonNullList<ItemStack>, world: IBlockAccess, pos: BlockPos, state: IBlockState?, fortune: Int) {
-        val tile = world.getTileEntity(pos) as? TileCatwalk ?: return
+    override fun getDrops(drops: NonNullList<ItemStack>, world: IBlockAccess, pos: BlockPos, state: IBlockState, fortune: Int) {
         val stack = ItemStack(this, 1)
-        stack.nbt["material"] = tile.material.toNBT()
+        val mat = state[PROPERTY_MATERIAL]
+        stack.nbt["material"] = mat.toNBT()
         drops.add(stack)
+    }
+
+    override fun createItemForm(): ItemBlock? {
+        return ItemBlockCatwalk(this)
     }
 
     override fun createTileEntity(world: World, state: IBlockState): TileEntity? {

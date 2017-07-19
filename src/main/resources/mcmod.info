@@ -1,16 +1,16 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "catwalks",
+  "name": "Catwalks",
+  "description": "Adds industrial decorations, most notably catwalks",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["TheCodeWarrior"],
+  "credits": "WindDelay for models and textures",
   "logoFile": "",
   "screenshots": [],
-  "dependencies": []
+  "dependencies": ["forgelin", "librarianlib"]
 }
 ]

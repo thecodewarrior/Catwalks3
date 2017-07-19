@@ -69,6 +69,7 @@ processResources {
 }
 
 compileKotlin {
+    sourceCompatibility = targetCompatibility = '1.8'
     kotlinOptions {
         javaParameters = true
         jvmTarget = 1.8

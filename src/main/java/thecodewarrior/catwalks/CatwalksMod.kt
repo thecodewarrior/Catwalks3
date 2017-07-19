@@ -34,11 +34,11 @@ object CatwalksMod {
 
     const val MODID = "catwalks"
     const val MODNAME = "Catwalks"
-    const val VERSION = "3.0.1"
+    const val VERSION = "3.0.3"
     const val ALLOWED = "[1.12,)"
     const val CLIENT = "thecodewarrior.catwalks.proxy.ClientProxy"
     const val SERVER = "thecodewarrior.catwalks.proxy.CommonProxy"
-    const val DEPENDENCIES = "required-after:forgelin;required-after:forge@[13.19.1.2195,)"
+    const val DEPENDENCIES = "required-after:forgelin;required-after:librarianlib@[4.0,);required-after:forge@[13.19.1.2195,)"
     const val ADAPTER = "net.shadowfacts.forgelin.KotlinAdapter"
 
     @SidedProxy(clientSide = CLIENT, serverSide = SERVER)

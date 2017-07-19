@@ -4,6 +4,8 @@ import net.minecraftforge.client.model.ModelLoaderRegistry
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.common.gameevent.TickEvent
 import thecodewarrior.catwalks.model.CatwalkModelLoader
 
 /**
@@ -27,4 +29,11 @@ class ClientProxy : CommonProxy() {
         super.post(e)
 
     }
+
+    @SubscribeEvent
+    fun client(e: TickEvent.PlayerTickEvent) {
+        if(!e.player.world.isRemote) return
+        stepSoundTick(e.player)
+    }
+
 }
