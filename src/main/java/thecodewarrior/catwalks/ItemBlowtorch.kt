@@ -7,4 +7,8 @@ import com.teamwizardry.librarianlib.features.base.item.ItemMod
  *
  * Created by TheCodeWarrior
  */
-class ItemBlowtorch : ItemMod("blowtorch")
+class ItemBlowtorch : ItemMod("blowtorch") {
+    init {
+        this.setMaxStackSize(1)
+    }
+}

@@ -34,7 +34,7 @@ object CatwalksMod {
 
     const val MODID = "catwalks"
     const val MODNAME = "Catwalks"
-    const val VERSION = "3.0.3"
+    const val VERSION = "3.0.4"
     const val ALLOWED = "[1.12,)"
     const val CLIENT = "thecodewarrior.catwalks.proxy.ClientProxy"
     const val SERVER = "thecodewarrior.catwalks.proxy.CommonProxy"

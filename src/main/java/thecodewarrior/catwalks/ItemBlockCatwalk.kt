@@ -5,7 +5,6 @@ import com.teamwizardry.librarianlib.features.kotlin.fromNBT
 import com.teamwizardry.librarianlib.features.kotlin.nbt
 import com.teamwizardry.librarianlib.features.kotlin.toNBT
 import com.teamwizardry.librarianlib.features.utilities.client.ClientRunnable
-import net.minecraft.client.renderer.ItemMeshDefinition
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.item.ItemStack
@@ -18,7 +17,7 @@ import java.util.*
  *
  * Created by TheCodeWarrior
  */
-class ItemBlockCatwalk(val block: BlockCatwalk) : ItemModBlock(block), ItemMeshDefinition {
+class ItemBlockCatwalk(val block: BlockCatwalk) : ItemModBlock(block) {
     init {
         ClientRunnable.run {
             ModelLoader.registerItemVariants(this, *CatwalkMaterial.values().map { type ->
@@ -45,7 +44,7 @@ class ItemBlockCatwalk(val block: BlockCatwalk) : ItemModBlock(block), ItemMeshD
     override val meshDefinition: ((ItemStack) -> ModelResourceLocation)?
         get() = this::getModelLocation
 
-    override fun getModelLocation(stack: ItemStack): ModelResourceLocation {
+    fun getModelLocation(stack: ItemStack): ModelResourceLocation {
         val type = stack.nbt["material"]?.fromNBT<CatwalkMaterial>() ?: CatwalkMaterial.CLASSIC
 
         val name = type.name.toLowerCase(Locale.ROOT)
